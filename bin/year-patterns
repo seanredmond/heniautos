@@ -1,0 +1,84 @@
+#!/usr/bin/python3
+
+import csv
+from sys import stdout
+
+# To generate all the possible patterns, treat 'full' and 'hollow' as
+# binary 1 and 0. 6 hollow months followed 6 full months is binary
+# 000000111111 which equals decimal 63. 6 full followed by 6 hollow is
+# 111111000000 which equals 4032.
+#
+# in intercalary year with 7 hollow months is still 63, but an
+# intercalary year beginning with 7 full months is 1111111000000 which
+# is equal to decimal 8128. To summarize:
+#
+# 6 hollow and 6 full  000000111111 =   63
+# 6 full and 6 hollow  111111000000 = 4032
+# 7 hollow and 6 full 0000000111111 =   63
+# 7 full and 7 hollow 1111111000000 = 8128
+#
+# None of these combinations could have actually occured, but we can
+# loop over all the values 63 <= n <= 8128 to get all the possible
+# combinations of full and hollow months (1s and 0s), then filter them
+# for combinations that might have actually existed. The filter
+# conditions are:
+#
+# 1. Every year must have exactly 6 or 7 Full months
+# 2. At most 3 full or hollow months can occur in a row
+
+def repscan(pat):
+    """ Return the longest string of repeated characters. """
+    count = 0
+    max_c = 0
+    last_c = ""
+    
+    for p in pat:
+        if p != last_c:
+            if count > max_c:
+                max_c = count
+            count = 1 
+        else:
+            count += 1
+
+        last_c = p
+
+    if count > max_c:
+        return count
+
+    return max_c
+            
+
+def sortkey(q):
+    """ Generate a key to sort on multiple values."""
+    return f"{q[0]:02d} {q[1]:03d} {q[2]} {q[3]}"
+
+
+def stats(pat):
+    """ Return a tuple containing stats about the pattern. """
+    return (len(pat),
+            day_count(pat),
+            repscan(pat),
+            pat.replace("0", "h").replace("1", "F"))
+
+
+def day_count(pat):
+    """ Return the number of days in the year represented by the pattern. """
+
+    # The count is 29 plus 1 for every full month
+    return (29 * len(pat)) + pat.count("1")
+
+# Generate and filter the patterns
+patterns = [q for q in 
+            [stats(f"{i:012b}") for i in range(63, 4032)] + \
+            [stats(f"{i:013b}") for i in range(63, 8129)] 
+            if q[2] < 4 and q[3].count("F") in (6,7)]
+
+
+writer = csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
+
+
+for i, p in enumerate(sorted(patterns, key=lambda q: sortkey(q))):
+    writer.writerow((f"{i+1:04d}",) + p)
+    
+    
+                  
