@@ -1,8 +1,9 @@
 from enum import IntEnum
+from itertools import product
 from skyfield import api
 from skyfield import almanac
 from skyfield.api import GREGORIAN_START
-import sys
+
 
 # from  .patterndata import *
 
@@ -592,3 +593,153 @@ def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
                   in prytanies(year, pryt_type=pryt_type,
                                pryt_start=pryt_start, rule=rule,
                                rule_of_aristotle=rule_of_aristotle)])
+
+
+PrytanyOrd = IntEnum("PrytanyOrd", "VARIABLE STRICT")
+
+
+# class TribeCount(IntEnum):
+#     TEN = 10
+#     TWELVE = 12
+
+
+# YearType = IntEnum("YearType", "O I")
+
+    
+# def _prytany_sum(lengths, counts):
+#     return sum([lengths[x] * counts[x] for x in [0, 1]])
+
+
+# def _pry_valid(full_count, pry, strict):
+#     if strict == PrytanyOrd.STRICT:
+#         full_min = 4 if pry > 4 else pry
+#         return full_count == full_min
+
+#     return True
+
+
+# def _prytany_doy_10(pry, day, strict: PrytanyOrd=PrytanyOrd.STRICT):
+#     plen = dict(zip(YearType, [[36, 35], [39, 38]]))
+
+#     return [{"doy": _prytany_sum(b[0], plen[b[1]]) + day,
+#              "intercalation": b[1] == YearType.I,
+#              "preceding": b[0]}
+#             for b in product([[p, pry - p]
+#                               for p in range(0, pry + 1)
+#                               if _pry_valid(p, pry, strict)], YearType)]
+
+
+#     # return [[_prytany_sum(b[0], plen[b[1]]) + day, b[1], b[0]]
+#     #         for b in product([[p, pry - p]
+#     #                           for p in range(0, pry + 1)
+#     #                           if _pry_valid(p, pry, strict)], YearType)]
+
+
+
+def _months_sum(s):
+    """ Return the sum of pairs of ints multiplied by each other.
+
+    That is given numbers of months and their lengths, calculate their sum.
+
+    For example: 
+    ((30, 1), (29, 2)) =
+    (30 * 1) + (29 * 2) =
+    30 + 58
+    = 88
+    """
+    return sum([(x[0] * x[1]) for x in s])
+
+
+def _cal_doy_single(pry, day, interc, length):
+    """ Return a dict with DOY calculated from pairs of months and lengths
+    where there is only one length.
+
+    That is, calculate potential DOYs if all the months are 32 days.
+    """
+    return tuple([{"doy": p * length + day,
+                   "lengths": ((length, p),),
+                   "intercalated": interc}
+                  for p in [pry - 1]])
+
+
+def _cal_doy_len(pry, day, interc, lengths):
+    """ Return a dict with DOY calculated from pairs of months and lengths
+
+    That is, calculate potential DOYs give a number of months of length L1 and
+    a number of months of L2.
+    """
+    return tuple([{"doy": _months_sum(c) + day,
+                   "lengths": c,
+                   "intercalated": interc}
+                  for c in [tuple(zip(lengths, [p, pry-p-1]))
+                            for p in range(pry)]])
+
+
+def _cal_lengths_calc(pry, day, interc, lengths):
+    """ Dispatch correct DOY calculation depending on whether there months 
+    are all one length or different lengths.
+    """
+    return _cal_doy_single(pry, day, interc, lengths[0]) \
+        if len(lengths) == 1 \
+        else _cal_doy_len(pry, day, interc, lengths)
+
+
+def _cal_length_sort(cal):
+    """ Sort a list of DOY dicts ont the "doy" value. """
+    return sorted(cal, key=lambda d: d["doy"])
+
+
+def _within_max_diff(l, max_d):
+    if max_d and len(l["lengths"]) > 1:
+        return abs(l["lengths"][0][1] - l["lengths"][1][1]) <= max_d
+    
+    return True
+
+
+def _cal_lengths(pry, day, lengths, max_diff):
+    """ Return a flattened list of DOYs of all lengths in lengths. """
+    return _cal_length_sort(
+        [c for c in [a for b in
+         [_cal_lengths_calc(pry, day, i, l)
+          for i, l in lengths]
+                     for a in b] if _within_max_diff(c, max_diff)])
+
+
+def festival_doy(month, day, max_diff=4):
+    return tuple(
+        _cal_length_sort(
+            _cal_lengths(month + 1, day, ((False, (30, 29)),), max_diff) + 
+            _cal_lengths(month + 2, day, ((True, (30, 29)),), max_diff)))
+
+
+def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
+
+    pryt_auto = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
+
+    if pryt_auto == Prytany.QUASI_SOLAR:
+        return tuple(
+            _cal_length_sort(
+                _cal_lengths(pry, day,
+                             ((False, (37, 36)),), max_diff)))
+    
+    if pryt_auto == Prytany.ALIGNED_10:
+        return tuple(
+            _cal_length_sort(
+                _cal_lengths(pry, day,
+                             ((False, (36, 35)), (True, (39, 38))), max_diff)))
+    
+    if pryt_auto == Prytany.ALIGNED_12:
+        return tuple(
+            _cal_length_sort(
+                _cal_lengths(pry, day,
+                             ((False, (30, 29)), (True, (32,))), max_diff)))
+
+    if pryt_auto == Prytany.ALIGNED_13:
+        return tuple(
+            _cal_length_sort(
+                _cal_lengths(pry, day,
+                             ((False, (28, 27)), (True, (30, 29))), max_diff)))
+    
+    raise HeniautosError("No Prytany type identified. Did you forget to "
+                         "supply a year?")
+

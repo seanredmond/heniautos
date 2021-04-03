@@ -755,3 +755,56 @@ def test_prytany_calendar_13_intercalated_aristotle():
     assert len(p3[-2]["days"]) == 29
     assert len(p3[-1]["days"]) == 29
 
+
+def test_months_sum():
+    s = ((30, 0), (29, 8))
+    assert heniautos._months_sum(s) == 232
+
+
+def test_cal_lengths_default_max():
+    c = heniautos._cal_lengths(9, 28, ((False, (30, 29)),), 3)
+    assert len(c) == 3
+    assert [d["doy"] for d in c] == [263, 264, 265]
+
+
+def test_cal_lengths_choose_max():
+    c = heniautos._cal_lengths(9, 28, ((False, (30, 29)),), 5)
+    assert len(c) == 5
+    assert [d["doy"] for d in c] == [262, 263, 264, 265, 266]
+
+
+def test_cal_lengths_no_max():
+    c = heniautos._cal_lengths(9, 28, ((False, (30, 29)),), 0)
+    assert len(c) == 9
+    assert [d["doy"] for d in c] == [260, 261, 262, 263, 264, 265, 266,
+                                     267, 268]
+
+
+def test_prytany_doy_aligned_12():
+    doy = prytany_doy(9, 28, pryt_type=Prytany.ALIGNED_12)
+    assert isinstance(doy, tuple)
+    assert len(doy) == 10
+    assert doy[0]["doy"] == 260
+    assert doy[0]["intercalated"] == False
+    assert doy[-1]["doy"] == 284
+    assert doy[-1]["intercalated"] == True
+
+
+def test_festival_doy():
+    doy = festival_doy(Months.MAI, 27)
+    assert isinstance(doy, tuple)
+    assert len(doy) == 9
+    assert doy[0]["doy"] == 143
+    assert doy[0]["intercalated"] == False
+    assert doy[-1]["doy"] == 176
+    assert doy[-1]["intercalated"] == True
+
+
+def test_festival_doy_no_max():
+    doy = festival_doy(Months.MAI, 27, max_diff=0)
+    assert isinstance(doy, tuple)
+    assert len(doy) == 11
+    assert doy[0]["doy"] == 143
+    assert doy[0]["intercalated"] == False
+    assert doy[-1]["doy"] == 177
+    assert doy[-1]["intercalated"] == True
