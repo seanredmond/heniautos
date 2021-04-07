@@ -14,10 +14,10 @@ from setuptools import find_packages, setup, Command
 # Package meta-data.
 NAME = 'heniautos'
 DESCRIPTION = 'Generate Attic years'
-URL = 'https://github.com/seanredmond/py-marc-data'
+URL = 'https://github.com/seanredmond/heniautos'
 EMAIL = 'github-smr@sneakemail.com'
 AUTHOR = 'Sean Redmond'
-REQUIRES_PYTHON = '>=3.5.0'
+REQUIRES_PYTHON = '>=3.8.0'
 VERSION = None
 
 # What packages are required for this module to be executed?
@@ -27,7 +27,6 @@ REQUIRED = [
 
 # What packages are optional?
 EXTRAS = {
-    # 'fancy feature': ['django'],
     'dev': [
             'pytest',
         ]
