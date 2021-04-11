@@ -1,5 +1,5 @@
 from enum import IntEnum
-from itertools import product
+from itertools import product, zip_longest
 from skyfield import api
 from skyfield import almanac
 from skyfield.api import GREGORIAN_START
@@ -46,6 +46,22 @@ class Months(IntEnum):
     THA = 10
     SKI = 11
     INT = 12
+
+
+class Prytanies(IntEnum):
+    I = 1
+    II = 2
+    III = 3
+    IV = 4
+    V = 5
+    VI = 6
+    VII = 7
+    VIII = 8
+    IX = 9
+    X = 10
+    XI = 11
+    XII = 12
+    XIII = 13
 
 
 MONTH_NAMES = ("Hekatombaiṓn",
@@ -650,38 +666,40 @@ def _months_sum(s):
     return sum([(x[0] * x[1]) for x in s])
 
 
-def _cal_doy_single(pry, day, interc, length):
+def _cal_doy_single(pry_orig, pry, day, interc, length):
     """ Return a dict with DOY calculated from pairs of months and lengths
     where there is only one length.
 
     That is, calculate potential DOYs if all the months are 32 days.
     """
-    return tuple([{"doy": p * length + day,
+    return tuple([{"date": (pry_orig, day),
+                   "doy": p * length + day,
                    "lengths": ((length, p),),
                    "intercalated": interc}
                   for p in [pry - 1]])
 
 
-def _cal_doy_len(pry, day, interc, lengths):
+def _cal_doy_len(pry_orig, pry, day, interc, lengths):
     """ Return a dict with DOY calculated from pairs of months and lengths
 
     That is, calculate potential DOYs give a number of months of length L1 and
     a number of months of L2.
     """
-    return tuple([{"doy": _months_sum(c) + day,
+    return tuple([{"date": (pry_orig, day),
+                   "doy": _months_sum(c) + day,
                    "lengths": c,
                    "intercalated": interc}
                   for c in [tuple(zip(lengths, [p, pry-p-1]))
                             for p in range(pry)]])
 
 
-def _cal_lengths_calc(pry, day, interc, lengths):
+def _cal_lengths_calc(pry_orig, pry, day, interc, lengths):
     """ Dispatch correct DOY calculation depending on whether there months 
     are all one length or different lengths.
     """
-    return _cal_doy_single(pry, day, interc, lengths[0]) \
+    return _cal_doy_single(pry_orig, pry, day, interc, lengths[0]) \
         if len(lengths) == 1 \
-        else _cal_doy_len(pry, day, interc, lengths)
+        else _cal_doy_len(pry_orig, pry, day, interc, lengths)
 
 
 def _cal_length_sort(cal):
@@ -696,11 +714,11 @@ def _within_max_diff(l, max_d):
     return True
 
 
-def _cal_lengths(pry, day, lengths, max_diff):
+def _cal_lengths(pry_orig, pry, day, lengths, max_diff):
     """ Return a flattened list of DOYs of all lengths in lengths. """
     return _cal_length_sort(
         [c for c in [a for b in
-         [_cal_lengths_calc(pry, day, i, l)
+         [_cal_lengths_calc(pry_orig, pry, day, i, l)
           for i, l in lengths]
                      for a in b] if _within_max_diff(c, max_diff)])
 
@@ -708,38 +726,91 @@ def _cal_lengths(pry, day, lengths, max_diff):
 def festival_doy(month, day, max_diff=4):
     return tuple(
         _cal_length_sort(
-            _cal_lengths(month + 1, day, ((False, (30, 29)),), max_diff) + 
-            _cal_lengths(month + 2, day, ((True, (30, 29)),), max_diff)))
+            _cal_lengths(month, month + 1, day, ((False, (30, 29)),),
+                         max_diff) + 
+            _cal_lengths(month, month + 2, day, ((True, (30, 29)),),
+                         max_diff)))
 
 
 def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
-
-    pryt_auto = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
+    pryt_auto = _pryt_auto(year) \
+        if year is not None and pryt_type == Prytany.AUTO else pryt_type
 
     if pryt_auto == Prytany.QUASI_SOLAR:
         return tuple(
             _cal_length_sort(
-                _cal_lengths(pry, day,
+                _cal_lengths(pry, pry, day,
                              ((False, (37, 36)),), max_diff)))
     
     if pryt_auto == Prytany.ALIGNED_10:
         return tuple(
             _cal_length_sort(
-                _cal_lengths(pry, day,
+                _cal_lengths(pry, pry, day,
                              ((False, (36, 35)), (True, (39, 38))), max_diff)))
     
     if pryt_auto == Prytany.ALIGNED_12:
         return tuple(
             _cal_length_sort(
-                _cal_lengths(pry, day,
+                _cal_lengths(pry, pry, day,
                              ((False, (30, 29)), (True, (32,))), max_diff)))
 
     if pryt_auto == Prytany.ALIGNED_13:
         return tuple(
             _cal_length_sort(
-                _cal_lengths(pry, day,
+                _cal_lengths(pry, pry, day,
                              ((False, (28, 27)), (True, (30, 29))), max_diff)))
     
     raise HeniautosError("No Prytany type identified. Did you forget to "
                          "supply a year?")
 
+
+def _fest_eq(months, max_diff=4):
+    try:
+        return festival_doy(months[0], months[1], max_diff)
+    except TypeError as e:
+        # We got a tuple of tuples
+        if "to tuple" in e.__str__():
+            pass
+        else:
+            raise e
+    except IndexError:
+        # We got a tuple of tuples, but the len is only 1
+        pass        
+
+    return tuple(
+        [a for b in [_fest_eq(m, max_diff) for m in months] for a in b])
+
+
+def _pryt_eq(prytanies, max_diff=0, year=None, pryt_type=Prytany.AUTO):
+    try:
+        return prytany_doy(prytanies[0], prytanies[1], year=year,
+                           max_diff=max_diff, pryt_type=pryt_type)
+    except TypeError as e:
+        if "'tuple' object" in e.__str__():
+            pass
+        else:
+            raise e
+    except IndexError:
+        pass
+
+    return tuple(
+        [a for b in [_pryt_eq(p, max_diff=max_diff, year=year,
+                              pryt_type=pryt_type) for p in prytanies]
+         for a in b])
+                       
+    
+
+def equations(months, prytanies, max_fest_diff=4, max_pryt_diff=0, year=None,
+              pryt_type=Prytany.AUTO):
+    pryt_eqs = _pryt_eq(prytanies, max_pryt_diff, year, pryt_type)
+    fest_eqs = _fest_eq(months, max_fest_diff)
+    #matches = sorted(set([x["doy"] for x in fest_eqs + pryt_eqs]))
+
+    matches = sorted(
+        set([p["doy"] for p in pryt_eqs]) & set([f["doy"] for f in fest_eqs]))
+
+    return tuple([{
+        "doy": doy,
+        "equations": {"festival": [f for f in fest_eqs if f["doy"] == doy],
+                      "conciliar": [p for p in pryt_eqs if p["doy"] == doy]}}
+                  for doy in matches])
