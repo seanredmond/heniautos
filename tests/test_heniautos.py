@@ -761,18 +761,51 @@ def test_months_sum():
     assert heniautos._months_sum(s) == 232
 
 
+def test_cal_lengths_normal_12th():
+    c = heniautos._cal_lengths(12, 12, 19, ((False, (30, 29)),), 0, 12, 5, 5)
+
+    assert min([d["lengths"][0][1] for d in c]) == 4
+    assert min([d["lengths"][1][1] for d in c]) == 4
+
+
+def test_cal_lengths_normal_6th():
+    c = heniautos._cal_lengths(6, 6, 19, ((False, (30, 29)),), 0, 12, 5, 5)
+
+    assert min([d["lengths"][0][1] for d in c]) == 0
+    assert min([d["lengths"][1][1] for d in c]) == 0
+
+
+def test_cal_lengths_normal_9th():
+    c = heniautos._cal_lengths(9, 9, 19, ((False, (30, 29)),), 0, 12, 5, 5)
+
+    assert min([d["lengths"][0][1] for d in c]) == 1
+    assert min([d["lengths"][1][1] for d in c]) == 1
+
+
+def test_cal_lengths_intercalary_12th():
+    c = heniautos._cal_lengths(12, 12, 19, ((False, (30, 29)),), 0, 13, 6, 5)
+    print(c)
+
+    assert min([d["lengths"][0][1] for d in c]) == 4
+    assert min([d["lengths"][1][1] for d in c]) == 3
+
+
+
+@pytest.mark.skip(reason="reevaluating max_diff")
 def test_cal_lengths_default_max():
     c = heniautos._cal_lengths(9, 9, 28, ((False, (30, 29)),), 3)
     assert len(c) == 3
     assert [d["doy"] for d in c] == [263, 264, 265]
 
 
+@pytest.mark.skip(reason="reevaluating max_diff")
 def test_cal_lengths_choose_max():
     c = heniautos._cal_lengths(9, 9, 28, ((False, (30, 29)),), 5)
     assert len(c) == 5
     assert [d["doy"] for d in c] == [262, 263, 264, 265, 266]
 
 
+@pytest.mark.skip(reason="reevaluating max_diff")
 def test_cal_lengths_no_max():
     c = heniautos._cal_lengths(9, 9, 28, ((False, (30, 29)),), 0)
     assert len(c) == 9
@@ -782,9 +815,10 @@ def test_cal_lengths_no_max():
 
 def test_prytany_doy_aligned_12():
     doy = prytany_doy(9, 28, pryt_type=Prytany.ALIGNED_12)
+    print(doy)
     assert isinstance(doy, tuple)
-    assert len(doy) == 10
-    assert doy[0]["doy"] == 260
+    assert len(doy) == 8
+    assert doy[0]["doy"] == 261
     assert doy[0]["intercalated"] == False
     assert doy[-1]["doy"] == 284
     assert doy[-1]["intercalated"] == True
@@ -793,10 +827,10 @@ def test_prytany_doy_aligned_12():
 def test_festival_doy():
     doy = festival_doy(Months.MAI, 27)
     assert isinstance(doy, tuple)
-    assert len(doy) == 9
+    assert len(doy) == 11
     assert doy[0]["doy"] == 143
     assert doy[0]["intercalated"] == False
-    assert doy[-1]["doy"] == 176
+    assert doy[-1]["doy"] == 177
     assert doy[-1]["intercalated"] == True
 
 
@@ -892,3 +926,13 @@ def test_equations_nested():
     assert eq[0]["equations"]["conciliar"][0]["intercalated"] == False
     assert eq[0]["equations"]["conciliar"][1]["date"] == (Prytanies.I, 30)
     assert eq[0]["equations"]["conciliar"][1]["intercalated"] == True
+
+    
+@pytest.mark.skip(reason="reevaluating if this needs a test")
+def test_0_prytanies():
+    eq = equations((Months.MET, 9), (Prytanies.I, 39),
+                   pryt_type=Prytany.ALIGNED_10)
+
+    assert len(eq) == 1
+    assert len(eq[0]["equations"]["conciliar"]) == 1
+    

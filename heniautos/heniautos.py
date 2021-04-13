@@ -694,7 +694,7 @@ def _cal_doy_len(pry_orig, pry, day, interc, lengths):
 
 
 def _cal_lengths_calc(pry_orig, pry, day, interc, lengths):
-    """ Dispatch correct DOY calculation depending on whether there months 
+    """ Dispatch correct DOY calculation depending on whether the months 
     are all one length or different lengths.
     """
     return _cal_doy_single(pry_orig, pry, day, interc, lengths[0]) \
@@ -710,26 +710,53 @@ def _cal_length_sort(cal):
 def _within_max_diff(l, max_d):
     if max_d and len(l["lengths"]) > 1:
         return abs(l["lengths"][0][1] - l["lengths"][1][1]) <= max_d
-    
+
     return True
 
 
-def _cal_lengths(pry_orig, pry, day, lengths, max_diff):
+def _calc_min_count(cal_count, full, hollow, test_min, test):
+    return (test_min - test) <= (cal_count - full - hollow)
+
+    
+def _meets_min_count(c, cal_count, min_full, min_hollow):
+    # Intercalary, 12 tribes, all are 32-days so ignore min count
+    if len(c["lengths"]) == 1 and c["lengths"][0][0] == 32:
+           return True
+           
+    return _calc_min_count(
+        cal_count, c["lengths"][0][1], c["lengths"][1][1],
+        min_full, c["lengths"][0][1]) and \
+        _calc_min_count(
+            cal_count, c["lengths"][0][1], c["lengths"][1][1],
+            min_hollow, c["lengths"][1][1])
+
+    
+def _cal_lengths(pry_orig, pry, day, lengths, max_diff, cal_c, min_f, min_h):
     """ Return a flattened list of DOYs of all lengths in lengths. """
+    # return _cal_length_sort(
+    #     [c for c in [a for b in
+    #      [_cal_lengths_calc(pry_orig, pry, day, i, l)
+    #       for i, l in lengths]
+    #                  for a in b] if _within_max_diff(c, max_diff)])
+
     return _cal_length_sort(
-        [c for c in [a for b in
-         [_cal_lengths_calc(pry_orig, pry, day, i, l)
-          for i, l in lengths]
-                     for a in b] if _within_max_diff(c, max_diff)])
+        [c for c in
+         [a for b in
+          [_cal_lengths_calc(pry_orig, pry, day, i, l) for i, l in lengths]
+          for a in b]
+         if _meets_min_count(c, cal_c, min_f, min_h)
+         and _within_max_diff(c, max_diff)])
+    
 
 
-def festival_doy(month, day, max_diff=4):
+
+def festival_doy(month, day, max_diff=0):
     return tuple(
         _cal_length_sort(
             _cal_lengths(month, month + 1, day, ((False, (30, 29)),),
-                         max_diff) + 
+                         max_diff, 12, 5, 5) + 
             _cal_lengths(month, month + 2, day, ((True, (30, 29)),),
-                         max_diff)))
+                         max_diff, 13, 6, 5)))
 
 
 def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
@@ -740,31 +767,34 @@ def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
         return tuple(
             _cal_length_sort(
                 _cal_lengths(pry, pry, day,
-                             ((False, (37, 36)),), max_diff)))
+                             ((False, (37, 36)),), max_diff, 10, 5, 5)))
     
     if pryt_auto == Prytany.ALIGNED_10:
         return tuple(
             _cal_length_sort(
                 _cal_lengths(pry, pry, day,
-                             ((False, (36, 35)), (True, (39, 38))), max_diff)))
+                             ((False, (36, 35)), (True, (39, 38))),
+                             max_diff, 10, 4, 6)))
     
     if pryt_auto == Prytany.ALIGNED_12:
         return tuple(
             _cal_length_sort(
                 _cal_lengths(pry, pry, day,
-                             ((False, (30, 29)), (True, (32,))), max_diff)))
+                             ((False, (30, 29)), (True, (32,))),
+                             max_diff, 12, 5, 5)))
 
     if pryt_auto == Prytany.ALIGNED_13:
         return tuple(
             _cal_length_sort(
                 _cal_lengths(pry, pry, day,
-                             ((False, (28, 27)), (True, (30, 29))), max_diff)))
+                             ((False, (28, 27)), (True, (30, 29))),
+                             max_diff, 13, 3, 7)))
     
     raise HeniautosError("No Prytany type identified. Did you forget to "
                          "supply a year?")
 
 
-def _fest_eq(months, max_diff=4):
+def _fest_eq(months, max_diff=0):
     try:
         return festival_doy(months[0], months[1], max_diff)
     except TypeError as e:
@@ -800,7 +830,7 @@ def _pryt_eq(prytanies, max_diff=0, year=None, pryt_type=Prytany.AUTO):
                        
     
 
-def equations(months, prytanies, max_fest_diff=4, max_pryt_diff=0, year=None,
+def equations(months, prytanies, max_fest_diff=0, max_pryt_diff=0, year=None,
               pryt_type=Prytany.AUTO):
     pryt_eqs = _pryt_eq(prytanies, max_pryt_diff, year, pryt_type)
     fest_eqs = _fest_eq(months, max_fest_diff)
