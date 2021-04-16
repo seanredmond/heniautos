@@ -28,8 +28,9 @@ class Phases(IntEnum):
 
 
 class Visible(IntEnum):
-    NEXT_DAY = 0
-    SECOND_DAY = 1
+    CONJUNCTION = 0
+    NEXT_DAY = 1
+    SECOND_DAY = 2
 
 
 class Months(IntEnum):
@@ -262,6 +263,9 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY):
     astronomical new moon.
 
     """
+    if rule == Visible.CONJUNCTION:
+        return new_moons(year)
+    
     if rule == Visible.NEXT_DAY:
         return [add_days(n, 1) for n in new_moons(year)]
 

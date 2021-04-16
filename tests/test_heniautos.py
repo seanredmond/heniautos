@@ -167,6 +167,10 @@ def test_festival_months():
     v = festival_months(-99, rule=Visible.NEXT_DAY)
     assert as_gmt(v[0]["start"]) == "BCE 0100-Jul-05"
 
+    # with CONJUNCTION
+    v = festival_months(-99, rule=Visible.CONJUNCTION)
+    assert as_gmt(v[0]["start"]) == "BCE 0100-Jul-04"
+
 
 def test_festival_calendar():
     p = festival_calendar(-99)
