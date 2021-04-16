@@ -2,16 +2,87 @@
 
 Naive ancient Attic calendar generator
 
-## Warning
-
-Do _not_ get interested in the ancient Attic calendar. It is a
-fascinating but frustrating topic, full of contradictory evidence and
-unsolvable puzzles. The further you read, the less anyone can help
-you...
-
 ## The Basics
 
-`heniautos` (Greek for ["the span of a year"](https://logeion.uchicago.edu/%E1%BC%90%CE%BD%CE%B9%CE%B1%CF%85%CF%84%CF%8C%CF%82)) tries to generate what the ancient Athenian calendar _might have_ been for any given year or span of years. However the Athenians had to make a lot of ad hoc adjustments to keep the calendar aligned with the seasons and the adjustments they made were, for practical purposes, rather random and unpredictable. The only adjustment `heniautos` makes is to add a month ("intercalate") where it seems necessary. These probably do not line up with actual historical intercalations, but it's good enough to get a feel for the Athenian calendar, and to place any date (5th century BCE date, at least) within about a month of a Julian date.
+`heniautos` (Greek for ["the span of a
+year"](https://logeion.uchicago.edu/%E1%BC%90%CE%BD%CE%B9%CE%B1%CF%85%CF%84%CF%8C%CF%82))
+tries to generate what the ancient Athenian calendar _might have_ been
+for any given year.
+
+The Athenian calendar functioned according to a few certain principals:
+
+* It was
+  [lunisolar](https://en.wikipedia.org/wiki/Lunisolar_calendar),
+  depending partly on the sun, partly on the moon.
+* There were twelve months. Each began on the new moon and had 30 days
+  (called a "full" month) or 29 (called "hollow")
+* The year began on the first new moon following the summer solstice
+* Twelve lunar months is 11 days shorter than one solar year, so about
+  every third year a thirteenth month to be added ("intercalated") to
+  fill out the time until the next solstice.
+  
+The same principals were followed throughout the ancient Greek world,
+although different cities used different names for the months and
+began the year at different times. For instance, in Sparta the year
+began after the fall equinox.
+
+Beyond this there are many questions. Did the months alternate
+regulary between full and hollow? If not, what determined whether a
+month was full or hollow. Was there a fixed schedule of intercalations
+(as the Julian and Gregorian calendars have a fixed rule for leap
+years)? If not how was this determined? Did the Athenians fix the new
+moon by observation, by calculation, or even by guessing? and there
+seem to be as many answers to these questions as there are scholars
+studying them.
+
+
+`heniautos` generates "naive" calendars, aligning ancient Greek dates with Julian calendar dates, according to astronomical data \(provided by the [`Skyfield`](https://rhodesmill.org/skyfield/) library\) using a few simple rules:
+
+1. Each month begins on the "observed" new moon, two days after the [astronomical conjunction](https://en.wikipedia.org/wiki/New_moon)
+2. The year begins on the first observed new moon on or after the day of the summer solstice.
+3. Intercalations are made when _astronomically_ necessary. Essentially, if one year ends close enough to the summer solstice that twelve lunar months will not be enough to reach the next solstice, then the next year will be intercalary.
+
+For example, `heniautos`' calendar for 416/415 BCE:
+
+|  # | Month        | Julian Date     | # days|
+|---:|--------------|-----------------|------:|
+|  1 | Hekatombaiṓn | BCE 0416-Jul-20 | 29    |
+|  2 | Metageitniṓn | BCE 0416-Aug-18 | 30    |
+|  3 | Boēdromiṓn   | BCE 0416-Sep-17 | 29    |
+|  4 | Puanepsiṓn   | BCE 0416-Oct-16 | 30    |
+|  5 | Maimaktēriṓn | BCE 0416-Nov-15 | 29    |
+|  6 | Poseidēiṓn   | BCE 0416-Dec-14 | 30    |
+|  7 | Gamēliṓn     | BCE 0415-Jan-13 | 30    |
+|  8 | Anthestēriṓn | BCE 0415-Feb-12 | 30    |
+|  9 | Elaphēboliṓn | BCE 0415-Mar-14 | 29    |
+| 10 | Mounuchiṓn   | BCE 0415-Apr-12 | 30    |
+| 11 | Thargēliṓn   | BCE 0415-May-12 | 29    |
+| 12 | Skirophoriṓn | BCE 0415-Jun-10 | 30    |
+
+Notice that the hollow and full months do not alternate regularly (unless you observed enough over a long enough period of time to see the actual, natural cycles of the moon). 19-year cycles of intercalation recognized by the ancients \([Metonic cycles](https://en.wikipedia.org/wiki/Metonic_cycle), 7 intercalations every 19 years\) do appear in `heniautos`, but by observation rather than by prescription.
+
+An example of an intercalary year is 417/416 BCE:
+
+|  # | Month        | Julian Date     | # days|
+|---:|--------------|-----------------|------:|
+|  1 | Hekatombaiṓn | BCE 0417-Jul-01 | 29    |
+|  2 | Metageitniṓn | BCE 0417-Jul-30 | 30    |
+|  3 | Boēdromiṓn   | BCE 0417-Aug-29 | 29    |
+|  4 | Puanepsiṓn   | BCE 0417-Sep-27 | 30    |
+|  5 | Maimaktēriṓn | BCE 0417-Oct-27 | 30    |
+|  6 | Poseidēiṓn   | BCE 0417-Nov-26 | 29    |
+|  7 | Poseidēiṓn hústeros | BCE 0417-Dec-25 | 30    |
+|  8 | Gamēliṓn     | BCE 0416-Jan-24 | 30    |
+|  9 | Anthestēriṓn | BCE 0416-Feb-23 | 29    |
+| 10 | Elaphēboliṓn | BCE 0416-Mar-24 | 30    |
+| 11 | Mounuchiṓn   | BCE 0416-Apr-23 | 29    |
+| 12 | Thargēliṓn   | BCE 0416-May-22 | 30    |
+| 13 | Skirophoriṓn | BCE 0416-Jun-21 | 29    |
+
+Since the 12th month ends on June 20, before the solstice (June 28 on the Julian calendar at this time), a year needed a 13th month to extend  through to the beginning of the next year, after the solstice. Athenians intercalated by repeating one of the months. By default, `heniautos` intercalates a second Poseidēiṓn which seems most common, but you can choose other months.
+
+
+However the Athenians had to make a lot of ad hoc adjustments to keep the calendar aligned with the seasons and the adjustments they made were, for practical purposes, rather random and unpredictable. The only adjustment `heniautos` makes is to add a month ("intercalate") where it seems necessary. These probably do not line up with actual historical intercalations, but it's good enough to get a feel for the Athenian calendar, and to place any date (5th century BCE date, at least) within about a month of a Julian date.
 
 The ancient Greeks used a [lunisolar](https://en.wikipedia.org/wiki/Lunisolar_calendar) calendar in which the months were determined bylunar rhythms but the year governed by solar events. The mismatch of two made it all very complicated. Similar calendars with different names for the months and different times for the start of the new year were used across most of Greece and Greek colonies. `heniautos` is limited to the Athenian calendar, the for which we have the most evidence.
 
