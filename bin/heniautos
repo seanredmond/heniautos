@@ -3,20 +3,8 @@
 import argparse
 import csv
 from datetime import datetime
-from heniautos import *
+import heniautos as ha
 from sys import stdout, exit
-
-def parse_date(d):
-    # Acceptable:
-    # Jun 28, June 28, 06/28
-    for fmt in ("%b %d", "%B %d", "%m/%d", "%m-%d"):
-        try:
-            return datetime.strptime(d, fmt).timetuple()[1:3]
-        except ValueError:
-            pass
-
-    raise ValueError("Could not parse '{d}' as a date")
-
 
 def julian_fmt(d):
     return " ".join((bce_as_bce(tuple(d.utc)[0]), d.utc_strftime("%b %d")))
@@ -28,14 +16,14 @@ def years(start, end, ce):
         # Single year, return a range
         if ce:
             return range(start, start + 1)
-        return range(bce_as_negative(start), bce_as_negative(start) + 1)
+        return range(ha.bce_as_negative(start), ha.bce_as_negative(start) + 1)
     if ce:
         if end > start:
             return range(start, end + 1)
     else:
         if end <= start:
             # multiple years, return as range
-            return range(bce_as_negative(start), bce_as_negative(end) + 1)
+            return range(ha.bce_as_negative(start), ha.bce_as_negative(end) + 1)
 
     raise ValueError("End year must be later than the start year")
 
@@ -50,47 +38,45 @@ def month_n(m, int_m, abbrev, greek=False):
         
     return month_name(m, int_m, greek)
 
+
+def arkhon_year(y):
+    eet = ha.as_eet(y)
+    epoch = eet[:3]
+    year1 = int(eet[4:8])
+    year2 = year1 - 1 if epoch == "BCE" else year1 + 1
+    return f"{epoch} {year1}/{year2}"
+
+
 def output_daily(y, writer, args):
     for year in y:
-        int_m = args.intercalate if year["intercalated"] else None
-        for month in year["calendar"]:
+        ay = arkhon_year(year[0]["days"][0]["date"])
+        for month in year:
             for day in month["days"]:
                 writer.writerow((
-                    julian_fmt(day["date"]),
+                    ay,
                     month["month"],
-                    month_n(month["month"], int_m, args.abbreviations,
-                            args.greek_names),
                     day["day"],
-                    festival(month_n(month["month"], int_m,
-                                     False, True),
-                             day["day"])))
+                    ha.as_eet(day["date"]),
+                    day["doy"]))
 
 
 def output_monthly(y, writer, args):
     for year in y:
-        # # for s in year["solstices"]:
-        # #     print(s.utc_jpl())
-        int_m = args.intercalate if year["intercalated"] else None
-        for month in year["calendar"]:
+        ay = arkhon_year(year[0]["days"][0]["date"])
+        for month in year:
             writer.writerow((
-                bce_as_bce(tuple(month["days"][0]["date"].utc)[0]),
-                month["days"][0]["date"].utc_strftime("%b %d"),
-                month_n(month["month"], int_m, args.abbreviations,
-                        args.greek_names),
-                len(month["days"]),
-                
-            ))
+                ay,
+                month["month"],
+                ha.as_eet(month["days"][0]["date"]),
+                len(month["days"])))
 
 
 def output_yearly(y, writer, args):
     for year in y:
-        writer.writerow((
-            utc_as_arkhon(year["calendar"][0]["days"][0]["date"]),
-            "I" if year["intercalated"] else "O",
-            year["calendar"][0]["days"][0]["date"].utc_strftime("%b %d"),
-            sum([len(m["days"]) for m in year["calendar"]]),
-            year_as_pattern([len(m["days"]) for m in year["calendar"]])
-        ))
+        writer.writerow((arkhon_year(year[0]["days"][0]["date"]),
+                         "I" if len(year) > 12 else "O",
+                         ha.as_eet(year[0]["days"][0]["date"]),
+                         sum(len(m["days"]) for m in year)))
 
             
 
@@ -103,15 +89,13 @@ if __name__ == "__main__":
     parser.add_argument("end_year", type=int, nargs='?', default=None)
     parser.add_argument("-m", "--month-summary", action="store_true")
     parser.add_argument("-y", "--year-summary", action="store_true")
-    parser.add_argument("--pattern", type=str)
-    parser.add_argument("--start-day", type=str)
-    parser.add_argument("--intercalate", type=int, default=6,
+    parser.add_argument("--intercalate", type=int, default=5,
                         help="Month after which to intercalate")
     parser.add_argument("--as-ce", action="store_true",
                        help="Treat dates as CE rather than BCE")
     parser.add_argument("-a", "--abbreviations", action="store_true",
                         help="Abbreviate month names")
-    parser.add_argument("--greek-names", action="store_true",
+    parser.add_argument("-g", "--greek-names", action="store_true",
                         help="Use Greek names for months")
     parser.add_argument("--new-moons", action="store_true",
                         help="Only list times of astronomical new moons")
@@ -119,53 +103,41 @@ if __name__ == "__main__":
                         help="Only list dates of solstices")
     parser.add_argument("--utc", action="store_true",
                         help="Format times as UTC (rather than EET)")
-    parser.add_argument("--min-lunar-illumination", type=float, default=3.0)
     args = parser.parse_args()
     
     #print(args)
 
+    ha.init_data()
     writer = csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
-    ts = api.load.timescale()
-    ts.julian_calendar_cutoff = GREGORIAN_START
-    eph = api.load('de422.bsp')
 
     if args.new_moons:
         for year in years(args.start_year, args.end_year, args.as_ce):
-            for nm in new_moons0(year):
+            for nm in ha.new_moons(year):
                 if args.utc:
-                    print(as_utc(nm))
+                    print(ha.as_utc(nm, True))
                 else:
-                    print(as_eet(nm))
+                    print(ha.as_eet(nm, True))
         exit()
 
     if args.solstices:
         for year in years(args.start_year, args.end_year, args.as_ce):
             if args.utc:
-                print(as_utc(sum_sol(year)))
+                print(ha.as_utc(ha.summer_solstice(year), True))
             else:
-                print(as_eet(sum_sol(year)))
+                print(ha.as_eet(ha.summer_solstice(year), True))
         exit()
     
-    if not args.start_day:
-        year = [months_of_year(y, args.min_lunar_illumination)
-                for y in years(args.start_year, args.end_year, args.as_ce)]
+    year = [ha.festival_calendar(y, abbrev=args.abbreviations,
+                                 greek=args.greek_names,
+                                 intercalate=args.intercalate - 1)
+            for y in years(args.start_year, args.end_year, args.as_ce)]
 
-        if args.year_summary:
-            output_yearly(year, writer, args)
-        elif args.month_summary:
-            output_monthly(year, writer, args)
-        else:
-            output_daily(year, writer, args)
-                
-    if args.start_day:
-        start_y = bce_as_negative(args.start_year)
-        start_m, start_d = parse_date(args.start_day)
-        start_at = heniautos.utc(start_y, start_m, start_d)
+    if args.year_summary:
+        output_yearly(year, writer, args)
+        exit()
 
-        if args.pattern:
-            output_daily(
-                heniautos.year_from_pattern(start_at, args.pattern),
-                writer)
-                        
-
-    
+    if args.month_summary:
+        output_monthly(year, writer, args)
+        exit()
+        
+    output_daily(year, writer, args)
