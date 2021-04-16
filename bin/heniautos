@@ -27,6 +27,15 @@ def years(start, end, ce):
 
     raise ValueError("End year must be later than the start year")
 
+def get_rule(r):
+    if r == 0:
+        return ha.Visible.CONJUNCTION
+
+    if r == 1:
+        return ha.Visible.NEXT_DAY
+
+    return ha.Visible.SECOND_DAY
+
 
 def month_n(m, int_m, abbrev, greek=False):
     if abbrev:
@@ -103,10 +112,13 @@ if __name__ == "__main__":
                         help="Only list dates of solstices")
     parser.add_argument("--utc", action="store_true",
                         help="Format times as UTC (rather than EET)")
+    parser.add_argument("-r", "--rule", choices=[0, 1, 2], default=2,
+                        type=int,
+                        help="Rule for determining date of new moon. "
+                        "0, 1, or 2 days after astronomical conjunction "
+                        "(default: 2)")
     args = parser.parse_args()
     
-    #print(args)
-
     ha.init_data()
     writer = csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
 
@@ -129,7 +141,8 @@ if __name__ == "__main__":
     
     year = [ha.festival_calendar(y, abbrev=args.abbreviations,
                                  greek=args.greek_names,
-                                 intercalate=args.intercalate - 1)
+                                 intercalate=args.intercalate - 1,
+                                 rule=get_rule(args.rule))
             for y in years(args.start_year, args.end_year, args.as_ce)]
 
     if args.year_summary:
