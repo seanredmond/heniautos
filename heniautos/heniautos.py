@@ -1,11 +1,13 @@
 from enum import IntEnum
 from itertools import product, zip_longest
+from pathlib import Path
 from skyfield import api
 from skyfield import almanac
 from skyfield.api import GREGORIAN_START
 
 
 # from  .patterndata import *
+#from  .dinsmoor import *
 
 
 class HeniautosError(Exception):
@@ -31,6 +33,7 @@ class Visible(IntEnum):
     CONJUNCTION = 0
     NEXT_DAY = 1
     SECOND_DAY = 2
+    DINSMOOR = 3
 
 
 class Months(IntEnum):
@@ -47,6 +50,7 @@ class Months(IntEnum):
     THA = 10
     SKI = 11
     INT = 12
+    UNC = 13
 
 
 class Prytanies(IntEnum):
@@ -382,6 +386,8 @@ def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
     greek=True will override abbrev=True
 
     """
+    if rule == Visible.DINSMOOR:
+        return dinsmoor_months(year, abbrev, greek)
     months = calendar_months(year, rule)
 
     return tuple([{"month": m[0][0],
@@ -848,3 +854,112 @@ def equations(months, prytanies, max_fest_diff=0, max_pryt_diff=0, year=None,
         "equations": {"festival": [f for f in fest_eqs if f["doy"] == doy],
                       "conciliar": [p for p in pryt_eqs if p["doy"] == doy]}}
                   for doy in matches])
+
+def dinsmoor_month_name(m, intercalated, abbrev, greek):
+    if m == Months.UNC:
+        if abbrev:
+            return "Unc"
+        return "Uncertain"
+
+    return (_month_names(abbrev, greek)[m] + _suffix(abbrev, greek)) \
+        if intercalated else _month_names(abbrev, greek)[m]
+    
+
+def dinsmoor_months(year, abbrev=False, greek=False):
+    if "dinsmoor" not in __h:
+        __h["dinsmoor"] = _load_dinsmoor() 
+
+    return [{"month": dinsmoor_month_name(m["constant"], m["intercalated"],
+                                          abbrev, greek),
+             "constant": Months.INT if m["intercalated"] else m["constant"],
+             "start": date(m["year"], m["month"], m["day"]),
+             "end": add_days(date(m["year"], m["month"], m["day"]),
+                             m["length"])}
+             for m in __h["dinsmoor"][year]]
+
+
+def dinsmoor(year, abbrev=False, greek=False):
+    doy = _doy_gen()
+    
+    return tuple([{"month": m["month"],
+                   "constant": m["constant"],
+                   "days": _month_days(m["start"], m["end"], doy)}
+                  for m
+                  in dinsmoor_months(year, abbrev, greek)])
+
+
+def _dinsmoor_line(df, year, prev_month):
+    while True:
+        line = df.readline()
+        if line == '':
+            raise StopIteration()
+
+        if line.startswith("#"):
+            continue
+
+        parts = line[0:-1].split()
+        if parts[0].isnumeric():
+            year = bce_as_negative(int(parts[0]))
+            m = 1
+        else:
+            m = 0
+
+        month = ["Jan.", "Feb.", "March", "April", "May",
+                 "June", "July", "Aug.", "Sept.", "Oct.",
+                 "Nov.", "Dec."].index(parts[m]) + 1
+        day = int(parts[m+1])
+        mtype = {"+": 30, "-": 29}[parts[m+2]]
+        intercalated = False
+        try:
+            if parts[m+3].endswith("*"):
+                intercalated = True
+                gm = parts[m+3][0:-1]
+            else:
+                gm = parts[m+3]
+                    
+            gi = ["He", "Me", "Bo", "Py", "Ma", "Po", "Ga", "An", "El",
+                  "Mo", "Th", "Sk"].index(gm)
+            gmonth = list(Months)[gi]
+            intercalated = intercalated or gmonth == prev_month
+        except IndexError:
+            intercalary = False
+            gmonth = Months.UNC
+
+        return {"year": year,
+                "month": month,
+                "day": day,
+                "constant": gmonth,
+                "length": mtype,
+                "intercalated": intercalated,
+                "parts": parts}
+        
+
+def _load_dinsmoor():
+    d_years = {}
+    with open(Path(__file__).parent / "dinsmoor.txt") as dinsmoor:
+        this_year = None
+        these_months = []
+        last_year = None
+        last_month = None
+        been_read = 0
+        while True:
+            try:
+                line = _dinsmoor_line(dinsmoor, last_year, last_month)
+                if line["constant"] in (Months.HEK, Months.UNC) \
+                   and been_read >= 12:
+                    d_years = d_years | {these_months[0]["year"]: these_months}
+                    these_months = []
+                    been_read = 0
+
+                these_months  = these_months + [line]
+                last_year = line["year"]
+                last_month = line["constant"]
+                been_read += 1
+
+                    
+
+
+            except StopIteration:
+                break
+
+        return d_years

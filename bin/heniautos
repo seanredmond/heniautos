@@ -28,11 +28,14 @@ def years(start, end, ce):
     raise ValueError("End year must be later than the start year")
 
 def get_rule(r):
-    if r == 0:
+    if r == "0":
         return ha.Visible.CONJUNCTION
 
-    if r == 1:
+    if r == "1":
         return ha.Visible.NEXT_DAY
+
+    if r == "d":
+        return ha.Visible.DINSMOOR
 
     return ha.Visible.SECOND_DAY
 
@@ -112,10 +115,11 @@ if __name__ == "__main__":
                         help="Only list dates of solstices")
     parser.add_argument("--utc", action="store_true",
                         help="Format times as UTC (rather than EET)")
-    parser.add_argument("-r", "--rule", choices=[0, 1, 2], default=2,
-                        type=int,
+    parser.add_argument("-r", "--rule", choices=["0", "1", "2", "d"],
+                        default="2", type=str,
                         help="Rule for determining date of new moon. "
-                        "0, 1, or 2 days after astronomical conjunction "
+                        "0, 1, 2 days after astronomical conjunction, or "
+                        "d for Dinsmoor"
                         "(default: 2)")
     args = parser.parse_args()
     

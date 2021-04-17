@@ -940,3 +940,36 @@ def test_0_prytanies():
     assert len(eq) == 1
     assert len(eq[0]["equations"]["conciliar"]) == 1
     
+
+def test_dinsmoor():
+    c = festival_calendar(-430, rule=Visible.DINSMOOR)
+    assert c[5]["month"] == "Poseidēiṓn"
+    assert (as_eet(c[5]["days"][0]["date"])) == "BCE 0431-Nov-29"
+    assert c[5]["days"][0]["doy"] == 148
+    assert c[5]["days"][-1]["doy"] == 177
+
+    d = festival_calendar(-430, rule=Visible.DINSMOOR)
+    assert d[6]["month"] == "Poseidēiṓn hústeros"
+    assert (as_eet(d[6]["days"][0]["date"])) == "BCE 0431-Dec-29"
+    assert d[6]["days"][0]["doy"] == 178
+    assert d[6]["days"][-1]["doy"] == 206
+
+    e = festival_calendar(-310, rule=Visible.DINSMOOR)
+    assert e[0]["month"] == "Uncertain"
+    assert (as_eet(e[0]["days"][0]["date"])) == "BCE 0311-Jun-29"
+
+    
+def test_dinsmoor_months():
+    assert dinsmoor_months(-430)[5]["month"] == "Poseidēiṓn"
+    assert as_eet(dinsmoor_months(-430)[5]["start"]) == "BCE 0431-Nov-29"
+    assert as_eet(dinsmoor_months(-430)[5]["end"]) == "BCE 0431-Dec-29"
+    assert dinsmoor_months(-430)[6]["month"] == "Poseidēiṓn hústeros"
+    assert dinsmoor_months(-430, abbrev=True)[6]["month"] == \
+        "Pos₂"
+    assert dinsmoor_months(-430, greek=True)[6]["month"] == \
+        "Ποσιδηϊών ὕστερος"
+
+
+    assert dinsmoor_months(-310)[0]["month"] == "Uncertain"
+    assert dinsmoor_months(-310, abbrev=True)[0]["month"] == "Unc"
+    assert dinsmoor_months(-310, greek=True)[0]["month"] == "Uncertain"
