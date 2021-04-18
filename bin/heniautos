@@ -101,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("end_year", type=int, nargs='?', default=None)
     parser.add_argument("-m", "--month-summary", action="store_true")
     parser.add_argument("-y", "--year-summary", action="store_true")
-    parser.add_argument("--intercalate", type=int, default=5,
+    parser.add_argument("--intercalate", type=int, default=6,
                         help="Month after which to intercalate")
     parser.add_argument("--as-ce", action="store_true",
                        help="Treat dates as CE rather than BCE")
