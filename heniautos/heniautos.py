@@ -882,16 +882,6 @@ def dinsmoor_months(year, abbrev=False, greek=False):
                              "tables (432-109 BCE)")
 
 
-# def dinsmoor(year, abbrev=False, greek=False):
-#     doy = _doy_gen()
-    
-#     return tuple([{"month": m["month"],
-#                    "constant": m["constant"],
-#                    "days": _month_days(m["start"], m["end"], doy)}
-#                   for m
-#                   in dinsmoor_months(year, abbrev, greek)])
-
-
 def _dinsmoor_line(df, year, prev_month):
     while True:
         line = df.readline()
@@ -959,9 +949,6 @@ def _load_dinsmoor():
                 last_year = line["year"]
                 last_month = line["constant"]
                 been_read += 1
-
-                    
-
 
             except StopIteration:
                 break
