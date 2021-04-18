@@ -59,28 +59,45 @@ def arkhon_year(y):
     return f"{epoch} {year1}/{year2}"
 
 
+def month_filter(month, args):
+    if args.month:
+        return ha.MONTH_ABBREVS.index(args.month) == month["constant"]
+
+    return True
+                
+
+def day_filter(day, args):
+    if args.day:
+        return day["day"] == args.day
+
+    return True
+
+
 def output_daily(y, writer, args):
     for year in y:
         ay = arkhon_year(year[0]["days"][0]["date"])
         for month in year:
-            for day in month["days"]:
-                writer.writerow((
-                    ay,
-                    month["month"],
-                    day["day"],
-                    ha.as_eet(day["date"]),
-                    day["doy"]))
+            if month_filter(month, args):
+                for day in month["days"]:
+                    if day_filter(day, args):
+                        writer.writerow((
+                            ay,
+                            month["month"],
+                            day["day"],
+                            ha.as_eet(day["date"]),
+                            day["doy"]))
 
 
 def output_monthly(y, writer, args):
     for year in y:
         ay = arkhon_year(year[0]["days"][0]["date"])
         for month in year:
-            writer.writerow((
-                ay,
-                month["month"],
-                ha.as_eet(month["days"][0]["date"]),
-                len(month["days"])))
+            if month_filter(month, args):
+                writer.writerow((
+                    ay,
+                    month["month"],
+                    ha.as_eet(month["days"][0]["date"]),
+                    len(month["days"])))
 
 
 def output_yearly(y, writer, args):
@@ -99,9 +116,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("start_year", type=int)
     parser.add_argument("end_year", type=int, nargs='?', default=None)
+    parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,
+                        help="Only show selected month")
+    parser.add_argument("--day", type=int,
+                        help="Only show selected day")
     parser.add_argument("-m", "--month-summary", action="store_true")
     parser.add_argument("-y", "--year-summary", action="store_true")
-    parser.add_argument("--intercalate", type=int, default=6,
+    parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
+                        type=str, default="Pos",
                         help="Month after which to intercalate")
     parser.add_argument("--as-ce", action="store_true",
                        help="Treat dates as CE rather than BCE")
@@ -142,10 +164,13 @@ if __name__ == "__main__":
             else:
                 print(ha.as_eet(ha.summer_solstice(year), True))
         exit()
-    
-    year = [ha.festival_calendar(y, abbrev=args.abbreviations,
+
+        
+    year = [ha.festival_calendar(y,
+                                 abbrev=args.abbreviations,
                                  greek=args.greek_names,
-                                 intercalate=args.intercalate - 1,
+                                 intercalate=ha.MONTH_ABBREVS.index(
+                                     args.intercalate),
                                  rule=get_rule(args.rule))
             for y in years(args.start_year, args.end_year, args.as_ce)]
 
