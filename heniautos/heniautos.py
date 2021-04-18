@@ -869,23 +869,27 @@ def dinsmoor_months(year, abbrev=False, greek=False):
     if "dinsmoor" not in __h:
         __h["dinsmoor"] = _load_dinsmoor() 
 
-    return [{"month": dinsmoor_month_name(m["constant"], m["intercalated"],
-                                          abbrev, greek),
-             "constant": Months.INT if m["intercalated"] else m["constant"],
-             "start": date(m["year"], m["month"], m["day"]),
-             "end": add_days(date(m["year"], m["month"], m["day"]),
-                             m["length"])}
-             for m in __h["dinsmoor"][year]]
+    try:
+        return [{"month": dinsmoor_month_name(m["constant"], m["intercalated"],
+                                              abbrev, greek),
+                 "constant": Months.INT if m["intercalated"] else m["constant"],
+                 "start": date(m["year"], m["month"], m["day"]),
+                 "end": add_days(date(m["year"], m["month"], m["day"]),
+                                 m["length"])}
+                for m in __h["dinsmoor"][year]]
+    except KeyError:
+        raise HeniautosError(f"Year ({year}) outside range of Dinsmoor's "
+                             "tables (432-109 BCE)")
 
 
-def dinsmoor(year, abbrev=False, greek=False):
-    doy = _doy_gen()
+# def dinsmoor(year, abbrev=False, greek=False):
+#     doy = _doy_gen()
     
-    return tuple([{"month": m["month"],
-                   "constant": m["constant"],
-                   "days": _month_days(m["start"], m["end"], doy)}
-                  for m
-                  in dinsmoor_months(year, abbrev, greek)])
+#     return tuple([{"month": m["month"],
+#                    "constant": m["constant"],
+#                    "days": _month_days(m["start"], m["end"], doy)}
+#                   for m
+#                   in dinsmoor_months(year, abbrev, greek)])
 
 
 def _dinsmoor_line(df, year, prev_month):
