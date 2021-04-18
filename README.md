@@ -6,10 +6,15 @@ Naive ancient Attic calendar generator
 
 `heniautos` (Greek for ["the span of a
 year"](https://logeion.uchicago.edu/%E1%BC%90%CE%BD%CE%B9%CE%B1%CF%85%CF%84%CF%8C%CF%82))
-tries to generate what the ancient Athenian calendar _might have_ been
-for any given year.
+generates examples of _possible_ Athenian calendars for any given year, ancient or modern, and provides some features for exploring the calendar and working with calendar equations. `heniautos` is hopefully useful for:
 
-The Athenian calendar functioned according to a few certain principals:
+* Learning about and teaching the ancient Athenian Calendar
+* Following along with often complex discussions of ancient dating event in ancient Greek hsitory
+* Just having fun with questions like "When would the City Dionysia be this year, if it was still being held."
+
+While what A. W. Gomme wrote in 1970[^1] is still true today—"It does
+not seem easy at the present time to make any statement about the
+Athenian calendar which is both significant and undisputed"—there are a few principalson which the Athenian calendar functioned that are certain:
 
 * It was
   [lunisolar](https://en.wikipedia.org/wiki/Lunisolar_calendar),
@@ -38,8 +43,8 @@ studying them.
 
 `heniautos` generates "naive" calendars, aligning ancient Greek dates with Julian calendar dates, according to astronomical data \(provided by the [`Skyfield`](https://rhodesmill.org/skyfield/) library\) using a few simple rules:
 
-1. Each month begins on the "observed" new moon, two days after the [astronomical conjunction](https://en.wikipedia.org/wiki/New_moon)
-2. The year begins on the first observed new moon on or after the day of the summer solstice.
+1. Each month begins, by default, on an "observed" new moon two days after the [astronomical conjunction](https://en.wikipedia.org/wiki/New_moon). You can choose other values.
+2. The year begins on the first observed (by rule #1) new moon on or after the day of the summer solstice.
 3. Intercalations are made when _astronomically_ necessary. Essentially, if one year ends close enough to the summer solstice that twelve lunar months will not be enough to reach the next solstice, then the next year will be intercalary.
 
 For example, `heniautos`' calendar for 416/415 BCE:
@@ -82,37 +87,73 @@ An example of an intercalary year is 417/416 BCE:
 Since the 12th month ends on June 20, before the solstice (June 28 on the Julian calendar at this time), a year needed a 13th month to extend  through to the beginning of the next year, after the solstice. Athenians intercalated by repeating one of the months. By default, `heniautos` intercalates a second Poseidēiṓn which seems most common, but you can choose other months.
 
 
-However the Athenians had to make a lot of ad hoc adjustments to keep the calendar aligned with the seasons and the adjustments they made were, for practical purposes, rather random and unpredictable. The only adjustment `heniautos` makes is to add a month ("intercalate") where it seems necessary. These probably do not line up with actual historical intercalations, but it's good enough to get a feel for the Athenian calendar, and to place any date (5th century BCE date, at least) within about a month of a Julian date.
+However the Athenians had to make a lot of ad hoc adjustments to keep the calendar aligned with the seasons and the adjustments they made were, for practical purposes, rather random and unpredictable. The only adjustment `heniautos` makes is to add a month ("intercalate") where it seems necessary. These probably do not line up with actual historical intercalations, but it's good enough to get a feel for the Athenian calendar, and to place any date within about one or two days a Julian date with the caution that there is an additional 30 days' uncertainty without knowing when actual intercalations took place.
 
-The ancient Greeks used a [lunisolar](https://en.wikipedia.org/wiki/Lunisolar_calendar) calendar in which the months were determined bylunar rhythms but the year governed by solar events. The mismatch of two made it all very complicated. Similar calendars with different names for the months and different times for the start of the new year were used across most of Greece and Greek colonies. `heniautos` is limited to the Athenian calendar, the for which we have the most evidence.
+## Command-line script
 
-The main principles of the Attic calendar are:
+This package installs a command-line script (also `heniautos`) to make lookups easy. The command. The simplest usage takes a year (BCE) and prints out the full calendar. It gives the Greek year, Greek month name, day of that month, Julian date, and day of the year:
 
-1. There are 12 months:
-	1. Hekatombaiṓn
-  	1. Metageitniṓn
-  	1. Boēdromiṓn
-  	1. Puanepsiṓn
-  	1. Maimaktēriṓn
-  	1. Poseidēiṓn
-  	1. Gamēliṓn
-  	1. Anthestēriṓn
-  	1. Elaphēboliṓn
-  	1. Mounuchiṓn
-  	1. Thargēliṓn
-  	1. Skirophoriṓn 
-1. The year begins on the first new moon after the summer solstice.
-2. Months starts on the _visible_ new moon, when the first sliver of the waxing crescent can be seen.
-3. Days begin and end at sundown.
+    > heniautos 416
+    "BCE 416/415"	"Hekatombaiṓn"	1	"BCE 0416-Jul-20"	1
+    "BCE 416/415"	"Hekatombaiṓn"	2	"BCE 0416-Jul-21"	2
+    "BCE 416/415"	"Hekatombaiṓn"	3	"BCE 0416-Jul-22"	3
+    "BCE 416/415"	"Hekatombaiṓn"	4	"BCE 0416-Jul-23"	4
+    "BCE 416/415"	"Hekatombaiṓn"	5	"BCE 0416-Jul-24"	5
+	...
+	"BCE 416/415"	"Skirophoriṓn"	26	"BCE 0415-Jul-05"	351
+    "BCE 416/415"	"Skirophoriṓn"	27	"BCE 0415-Jul-06"	352
+    "BCE 416/415"	"Skirophoriṓn"	28	"BCE 0415-Jul-07"	353
+    "BCE 416/415"	"Skirophoriṓn"	29	"BCE 0415-Jul-08"	354
+    "BCE 416/415"	"Skirophoriṓn"	30	"BCE 0415-Jul-09"	355
+    
+If you save this output to a file it is suitable for importing into a spreadsheet.
 
-We tend to think of the "new moon" as the _absence_ of any moon in the sky because that is the conceptual opposite of the full moon. For the ancient Greeks (and many cultures then and now) the new moon was the first sliver of moon to appear as it started to wax. When that was observed 
+You can get a summary of just the months with `-m`:
 
-`heniautos` uses [`Skyfield`](https://rhodesmill.org/skyfield/) to find these astronomical events in the past and construct a "naive" calendar around them. The _visible_ new moon is taken to be the date calculated by `Skyfield` + 2 days. The moment of the modern astronomical definition of the ["new moon"](https://en.wikipedia.org/wiki/New_moon) takes place during the daytime
+    > heniautos 416 -m
+    "BCE 416/415"	"Hekatombaiṓn"	"BCE 0416-Jul-20"	29
+    "BCE 416/415"	"Metageitniṓn"	"BCE 0416-Aug-18"	30
+    "BCE 416/415"	"Boēdromiṓn"	"BCE 0416-Sep-17"	29
+    "BCE 416/415"	"Puanepsiṓn"	"BCE 0416-Oct-16"	30
+    "BCE 416/415"	"Maimaktēriṓn"	"BCE 0416-Nov-15"	29
+    "BCE 416/415"	"Poseidēiṓn"	"BCE 0416-Dec-14"	30
+    "BCE 416/415"	"Gamēliṓn"	"BCE 0415-Jan-13"	30
+    "BCE 416/415"	"Anthestēriṓn"	"BCE 0415-Feb-12"	30
+    "BCE 416/415"	"Elaphēboliṓn"	"BCE 0415-Mar-14"	29
+    "BCE 416/415"	"Mounuchiṓn"	"BCE 0415-Apr-12"	30
+    "BCE 416/415"	"Thargēliṓn"	"BCE 0415-May-12"	29
+    "BCE 416/415"	"Skirophoriṓn"	"BCE 0415-Jun-10"	30
 
+If you enter two years you will get the calendar for the span of those years. This is most useful with the year summary (`-y`):
 
-The first two principles affect how we identify the beginning of a month based on modern astronomical calculations find a particular conjunction which is not actually visible (except during a solar eclipse). Skyview, which Heniautos uses, date the new moon the the day (or night, really) _before_ this conjunction when the moon is _about to disappear_. Therefore the visible new moon is one day after Skyview's calculated new moon.
+    > heniautos 416 411 -y
+    "BCE 416/415"	"O"	"BCE 0416-Jul-20"	355
+    "BCE 415/414"	"O"	"BCE 0415-Jul-10"	354
+    "BCE 414/413"	"I"	"BCE 0414-Jun-29"	384
+    "BCE 413/412"	"O"	"BCE 0413-Jul-17"	354
+    "BCE 412/411"	"I"	"BCE 0412-Jul-06"	384
+    "BCE 411/410"	"O"	"BCE 0411-Jul-25"	354
+    
+This output is the Greek year, whether it is normal (O) or intercalary (I), the date on which the year starts, and the number of days in the year.
 
+Years are treated as BCE by default, but you can change this with `--as-ce`:
 
+    heniautos 2020 -m --as-ce
+    " CE 2020/2021"	"Hekatombaiṓn"	" CE 2020-Jun-23"	29
+    " CE 2020/2021"	"Metageitniṓn"	" CE 2020-Jul-22"	30
+    " CE 2020/2021"	"Boēdromiṓn"	" CE 2020-Aug-21"	29
+    " CE 2020/2021"	"Puanepsiṓn"	" CE 2020-Sep-19"	29
+    " CE 2020/2021"	"Maimaktēriṓn"	" CE 2020-Oct-18"	30
+    " CE 2020/2021"	"Poseidēiṓn"	" CE 2020-Nov-17"	29
+    " CE 2020/2021"	"Poseidēiṓn hústeros"	" CE 2020-Dec-16"	30
+    " CE 2020/2021"	"Gamēliṓn"	" CE 2021-Jan-15"	29
+    " CE 2020/2021"	"Anthestēriṓn"	" CE 2021-Feb-13"	30
+    " CE 2020/2021"	"Elaphēboliṓn"	" CE 2021-Mar-15"	30
+    " CE 2020/2021"	"Mounuchiṓn"	" CE 2021-Apr-14"	29
+    " CE 2020/2021"	"Thargēliṓn"	" CE 2021-May-13"	30
+    " CE 2020/2021"	"Skirophoriṓn"	" CE 2021-Jun-12"	30
+
+## Example
 Thucydides (5.19.1) quotes the peace treaty between Athens and Sparta
 which contains this date:
 
@@ -124,32 +165,35 @@ which contains this date:
 > fourth day from the end of Artemisios, in Athens in the arkhonship
 > of Alkaios on the sixth day from the end of Elaphēboliṓn.
 
-First, A year is named according to magistrates who served for the year. At Sparta the was one of the _éphoroi_, at Athens the _árkhōn epṓnumos_ or "eponymous archon." Alkaios held this position in 422/1 BCE. Why the year is written that way, as spanning two years and why it can be hard to pin down a Greek date to a specific Julian date depends on the specifics of how Attic calendar (an those of other cities) operated.
+Alkaios was arkhon in 422/421, so we can find the sixth day from the end (counting inclusively) like so:
 
-Some essentials:
+    heniautos 422 --month Ela |tail -n 6
+    "BCE 422/421"	"Elaphēboliṓn"	24	"BCE 0421-Apr-11"	260
+    "BCE 422/421"	"Elaphēboliṓn"	25	"BCE 0421-Apr-12"	261
+    "BCE 422/421"	"Elaphēboliṓn"	26	"BCE 0421-Apr-13"	262
+    "BCE 422/421"	"Elaphēboliṓn"	27	"BCE 0421-Apr-14"	263
+    "BCE 422/421"	"Elaphēboliṓn"	28	"BCE 0421-Apr-15"	264
+    "BCE 422/421"	"Elaphēboliṓn"	29	"BCE 0421-Apr-16"	265
+    
+This is not to be taken as _truth_. Meritt first made it April 9[^2] while Dinsmoor[^3] said April 10. Meritt then citicized Dinsmoor at some length[^4] to conclude[^5] that it should be April 11--`heniautos` arrives at this date but by a different path than Meritt. Gomme concludes that it should be "about March 12"[^6] because he has a different view about the intercalations. Most recently, Planeux calculates April 11 again.[^7]
 
-* We conventionally use the [Julian
-  calendar](https://en.wikipedia.org/wiki/Julian_calendar) for ancient
-  dates. This means there are leap years, but not
-  [Gregorian](https://en.wikipedia.org/wiki/Gregorian_calendar)
-  corrections. Since there is no year 0, the leap years are "off" by
-  one--421 BCE is a leap year, not 420.
-* The Attic calendar begins after the summer solstice. So Alkaios took
-  office in summer 422 and the year and his term ran until
-  summer 421. Hence "422/1." The summer solstice today occurs July 20
-  or 21 but, Because of the slight inaccuracy of the Julian calendar,
-  the drifts later for ancient dates. In the 5th century BCE, it falls
-  usually on the 28th.
-* The Attic calendar consisted of twelve months, and each began on the
-  "visible" new moon, meaning when the first sliver of the waxing moon
-  could be seen in the night sky. This comes one night after modern,
-  mathematical calculations of the new moon. Thus the year began on
-  the first _visible_ new moon after the summer solstice. The months
-  are, in order:
-  
-* Days were reckoned from sundown to sundown, so the first day of the
-  month began during the evening when the new moon was first
-  visible. The "business" hours were what we might think of as the
-  next day.
+That said, the date given by `heniautos` is within two days of all calculations, or thirty days if there is a difference in intercalation. This margin of error should hold for any ancient date. The cited discussions are complex, and `heniautos` should help anyone less steeped in ancient Athenian calendar equations follow along and check their calculations.
+
+
+[^1]: Gomme, A. W., Andrewes, and Dover (1945-1981) 4.264.
+[^2]: Meritt (1928) 109.
+[^3]: Dinsmoor (1931) 334-335.
+[^4]: Meritt (1932) 146-151.
+[^5]: Meritt (1932) 146-151.
+[^6]: Gomme, A. W., Andrewes, and Dover (1945-1981) 4.711-713.
+[^7]: Planeaux (forthcoming) 187
+
+## Works Cited
+
+* Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press. 
+* Gomme, A. W., A. Andrewes, and K. J. Dover. 1945-1981. _A Historical Commentary on Thucydides_. 5 vols. Oxford: Oxford University Press.
+* Meritt, Benjamin D. 1928. _The Athenian Calendar in the Fifth Century_. Cambridge: Harvard University Press. 
+* ----------. 1932. _Athenian Financial Documents of the Fifth Century_. Ann Arbor: University of Michigan Press.
+* Planeux, Christopher. Forthcoming. _The Athenian Year Primer_.
 
 
