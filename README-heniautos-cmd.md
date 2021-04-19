@@ -296,7 +296,7 @@ This has the effect of advancing all the Julian dates by 1 or 2 days relative to
 
 As you can see, the two-day default has the effect of making 414/13 intercalary, while one- or zero- day rule make 415/14 the intercalary year.
 
-There is one more, special value for the `-r` parameter. Using `-r d` will use months as calculated by Dinsmoor (1931, 424-440). Since his tables for the years 432-109 BCE[^3] were used as a reference and point of departure for much of the debate that followed, they are included as a useful option in `heniautos`. They are also as different as you can get from `heniautos`s versions, since Dinsmoor uses the conjunction (`-r 0`) and tries to keep as near a perfect alternation of full as hollow months as possible:
+There is one more, special value for the `-r` parameter. Using `-r d` will use months as calculated by Dinsmoor (1931). Since his tables for the years 432-109 BCE (1931, 424-440) are used as a reference and point of departure for much of the debate that followed him, they are included as a useful option in `heniautos`. They are also as different as you can get from `heniautos`s versions, since Dinsmoor uses the conjunction (`-r 0`) and tries to keep as near a perfect alternation of full as hollow months as possible:
 
     > heniautos 415 -m -r d
 	"BCE 415/414"	"Hekatombaiṓn"	"BCE 0415-Jul-08"	29
