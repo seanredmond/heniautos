@@ -135,8 +135,8 @@ if __name__ == "__main__":
                         help="Only list times of astronomical new moons")
     parser.add_argument("--solstices", action="store_true",
                         help="Only list dates of solstices")
-    parser.add_argument("--utc", action="store_true",
-                        help="Format times as UTC (rather than EET)")
+    parser.add_argument("--gmt", action="store_true",
+                        help="Format times as GMT (rather than EET)")
     parser.add_argument("-r", "--rule", choices=["0", "1", "2", "d"],
                         default="2", type=str,
                         help="Rule for determining date of new moon. "
@@ -151,16 +151,16 @@ if __name__ == "__main__":
     if args.new_moons:
         for year in years(args.start_year, args.end_year, args.as_ce):
             for nm in ha.new_moons(year):
-                if args.utc:
-                    print(ha.as_utc(nm, True))
+                if args.gmt:
+                    print(ha.as_gmt(nm, True))
                 else:
                     print(ha.as_eet(nm, True))
         exit()
 
     if args.solstices:
         for year in years(args.start_year, args.end_year, args.as_ce):
-            if args.utc:
-                print(ha.as_utc(ha.summer_solstice(year), True))
+            if args.gmt:
+                print(ha.as_gmt(ha.summer_solstice(year), True))
             else:
                 print(ha.as_eet(ha.summer_solstice(year), True))
         exit()
