@@ -2,11 +2,13 @@
 
 `heniautos` provides a command-line script to provide convenient access to the most common features. You should be able to run this command in a terminal. To get the various options, just type `heniautos -h`:
 
-	heniautos -h
+	> heniautos -h
 	usage: heniautos [-h]
 	                 [--month {Hek,Met,Boe,Pua,Mai,Pos,Gam,Ant,Ela,Mou,Tha,Ski}]
 	                 [--day DAY] [-m] [-y]
 	                 [--intercalate {Hek,Met,Boe,Pua,Mai,Pos,Gam,Ant,Ela,Mou,Tha,Ski}]
+	                 [-c] [--arabic]
+	                 [--prytany {I,II,III,IV,V,VI,VII,VIII,IX,X,XI,XII,XIII}]
 	                 [--as-ce] [-a] [-g] [--new-moons] [--solstices] [--gmt]
 	                 [-r {0,1,2,d}]
 	                 start_year [end_year]
@@ -24,6 +26,11 @@
 	  -y, --year-summary
 	  --intercalate {Hek,Met,Boe,Pua,Mai,Pos,Gam,Ant,Ela,Mou,Tha,Ski}
 	                        Month after which to intercalate
+	  -c, --conciliar       Output conciliar calendar (prytanies)
+	  --arabic              Display prytany numbers as Arabic rather than Roman
+	                        numerals
+	  --prytany {I,II,III,IV,V,VI,VII,VIII,IX,X,XI,XII,XIII}
+	                        Only show selected prytany
 	  --as-ce               Treat dates as CE rather than BCE
 	  -a, --abbreviations   Abbreviate month names
 	  -g, --greek-names     Use Greek names for months
@@ -34,7 +41,8 @@
 	                        Rule for determining date of new moon. 0, 1, 2 days
 	                        after astronomical conjunction, or d for
 	                        Dinsmoor(default: 2)
-	
+                        
+                        	
 ## Days, Months, Years
 
 `heniautos` needs at least one year. By default the year is treated as a year BCE and the command outputs the entire calendar for the year that _begins_ in that year. That is, since ancient Greek years span two Julian years, to see the calendar for 421/42`, use `heniautos 422` (output truncated):
@@ -185,6 +193,60 @@ Use `-g` to get the names in Greek
 	"BCE 420/419"	"Θαργηλιών"	"BCE 0419-May-25"	29
 	"BCE 420/419"	"Σκιροφοριών"	"BCE 0419-Jun-23"	30
 	
+## Conciliar Years
+
+To see the conciliar rather than festival calendar, use `-c` or `--conciliar` (output truncated):
+
+	>heniautos 399 -c 
+	"BCE 399/398"	"I"	1	"BCE 0399-Jul-12"	1
+	"BCE 399/398"	"I"	2	"BCE 0399-Jul-13"	2
+	"BCE 399/398"	"I"	3	"BCE 0399-Jul-14"	3
+	"BCE 399/398"	"I"	4	"BCE 0399-Jul-15"	4
+	"BCE 399/398"	"I"	5	"BCE 0399-Jul-16"	5
+	...
+	"BCE 399/398"	"X"	32	"BCE 0398-Jun-27"	351
+	"BCE 399/398"	"X"	33	"BCE 0398-Jun-28"	352
+	"BCE 399/398"	"X"	34	"BCE 0398-Jun-29"	353
+	"BCE 399/398"	"X"	35	"BCE 0398-Jun-30"	354
+	"BCE 399/398"	"X"	36	"BCE 0398-Jul-01"	355
+	
+You can use `-y` and `-m` options as with the festival calendar:
+
+	> heniautos 397 -c -m
+	"BCE 397/396"	"I"	"BCE 0397-Jul-20"	36
+	"BCE 397/396"	"II"	"BCE 0397-Aug-25"	36
+	"BCE 397/396"	"III"	"BCE 0397-Sep-30"	36
+	"BCE 397/396"	"IV"	"BCE 0397-Nov-05"	36
+	"BCE 397/396"	"V"	"BCE 0397-Dec-11"	35
+	"BCE 397/396"	"VI"	"BCE 0396-Jan-15"	35
+	"BCE 397/396"	"VII"	"BCE 0396-Feb-19"	35
+	"BCE 397/396"	"VIII"	"BCE 0396-Mar-26"	35
+	"BCE 397/396"	"IX"	"BCE 0396-Apr-30"	35
+	"BCE 397/396"	"X"	"BCE 0396-Jun-04"	35
+	
+And limit output with `	--prytany` (which takes a roman numeral) and `--day`:
+
+	> heniautos 397 -c --prytany VII --day 10
+	"BCE 397/396"	"VII"	10	"BCE 0396-Feb-28"	224
+
+Use `--arabic` to have the prytany numbers output as Arabic rather than Roman numerals:
+
+	>heniautos 397 -c -m --arabic
+	"BCE 397/396"	1	"BCE 0397-Jul-20"	36
+	"BCE 397/396"	2	"BCE 0397-Aug-25"	36
+	"BCE 397/396"	3	"BCE 0397-Sep-30"	36
+	"BCE 397/396"	4	"BCE 0397-Nov-05"	36
+	"BCE 397/396"	5	"BCE 0397-Dec-11"	35
+	"BCE 397/396"	6	"BCE 0396-Jan-15"	35
+	"BCE 397/396"	7	"BCE 0396-Feb-19"	35
+	"BCE 397/396"	8	"BCE 0396-Mar-26"	35
+	"BCE 397/396"	9	"BCE 0396-Apr-30"	35
+	"BCE 397/396"	10	"BCE 0396-Jun-04"	35
+
+Since the number, length, and starting dates of prytanies varied over time, `heniautos` determines the correct values from the year. While we are not sure when prytanies began they certainly did not exist before Kleisthenes' reforms in 508 BCE, so `heniautos` will print an error and exit if you ask for the conciliar calendar before then.
+
+For years after the 1st century BCE--by which time the Julian calendar had replaced the traditional Athenian one--`heniautos` whill output ten prytanies beginning and ending with the festival year (the system used in the 5th and 4th centuries BCE).
+
 ## Intercalations
 
 When an intercalation is required, `heniautos` intercalates a second Poseidēiṓn by default. This seemed to be the ancient "default" as well. However, any month _could_ be intercalated and select a different one use `--intercalated` with the same abbreviations as the `--month` parameter, above. For instance, to force an intercalated Metageitniṓn:

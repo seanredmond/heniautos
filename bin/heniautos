@@ -4,7 +4,10 @@ import argparse
 import csv
 from datetime import datetime
 import heniautos as ha
-from sys import stdout, exit
+from sys import stdout, stderr, exit
+
+ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+         "XII", "XIII")
 
 def julian_fmt(d):
     return " ".join((bce_as_bce(tuple(d.utc)[0]), d.utc_strftime("%b %d")))
@@ -59,13 +62,6 @@ def arkhon_year(y):
     return f"{epoch} {year1}/{year2}"
 
 
-def month_filter(month, args):
-    if args.month:
-        return ha.MONTH_ABBREVS.index(args.month) == month["constant"]
-
-    return True
-                
-
 def day_filter(day, args):
     if args.day:
         return day["day"] == args.day
@@ -73,42 +69,80 @@ def day_filter(day, args):
     return True
 
 
-def output_daily(y, writer, args):
-    for year in y:
-        ay = arkhon_year(year[0]["days"][0]["date"])
-        for month in year:
-            if month_filter(month, args):
-                for day in month["days"]:
-                    if day_filter(day, args):
-                        writer.writerow((
-                            ay,
-                            month["month"],
-                            day["day"],
-                            ha.as_eet(day["date"]),
-                            day["doy"]))
+def month_filter(month, args):
+    if args.conciliar:
+        if args.prytany:
+            return ROMAN.index(args.prytany) + 1 == month["prytany"]
+        
+    if (not args.conciliar) and args.month:
+        return ha.MONTH_ABBREVS.index(args.month) == month["constant"]
+
+    return True
 
 
-def output_monthly(y, writer, args):
-    for year in y:
-        ay = arkhon_year(year[0]["days"][0]["date"])
-        for month in year:
-            if month_filter(month, args):
-                writer.writerow((
-                    ay,
-                    month["month"],
-                    ha.as_eet(month["days"][0]["date"]),
-                    len(month["days"])))
+def display_month(month, args):
+    if args.conciliar:
+        if not args.arabic:
+            return ROMAN[month-1]
+
+    return month
+
+    
+def yearly(year, writer, args):
+    writer.writerow((
+        arkhon_year(year[0]["days"][0]["date"]),
+        "I" if year[-1]["days"][-1]["doy"] > 355 else "O",
+        ha.as_eet(year[0]["days"][0]["date"]),
+        sum(len(m["days"]) for m in year)))
 
 
-def output_yearly(y, writer, args):
-    for year in y:
-        writer.writerow((arkhon_year(year[0]["days"][0]["date"]),
-                         "I" if len(year) > 12 else "O",
-                         ha.as_eet(year[0]["days"][0]["date"]),
-                         sum(len(m["days"]) for m in year)))
+def monthly(year, writer, month_key, args):
+    ay = arkhon_year(year[0]["days"][0]["date"])
+    for month in year:
+        if month_filter(month, args):
+            writer.writerow((
+                ay,
+                display_month(month[month_key], args),
+                ha.as_eet(month["days"][0]["date"]),
+                len(month["days"])))
 
-            
 
+def daily(year, writer, month_key, args):
+    ay = arkhon_year(year[0]["days"][0]["date"])
+    for month in year:
+        if month_filter(month, args):
+            for day in month["days"]:
+                if day_filter(day, args):
+                    writer.writerow((
+                        ay,
+                        display_month(month[month_key], args),
+                        day["day"],
+                        ha.as_eet(day["date"]),
+                        day["doy"]))
+
+        
+def output_years(args, writer):
+    for year in years(args.start_year, args.end_year, args.as_ce):
+        if args.conciliar:
+            cal = ha.prytany_calendar(year)
+            month_key = "prytany"
+
+        else:
+            cal = ha.festival_calendar(year,
+                                       abbrev=args.abbreviations,
+                                       greek=args.greek_names,
+                                       intercalate=ha.MONTH_ABBREVS.index(
+                                           args.intercalate),
+                                       rule=get_rule(args.rule))
+            month_key = "month"
+
+        if args.year_summary:
+            yearly(cal, writer, args)
+        elif args.month_summary:
+            monthly(cal, writer, month_key, args)
+        else:
+            daily(cal, writer, month_key, args)
+    
 
 
 
@@ -125,6 +159,13 @@ if __name__ == "__main__":
     parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
                         type=str, default="Pos",
                         help="Month after which to intercalate")
+    parser.add_argument("-c", "--conciliar", action="store_true",
+                        help="Output conciliar calendar (prytanies)")
+    parser.add_argument("--arabic", action="store_true",
+                        help="Display prytany numbers as Arabic rather than "
+                        "Roman numerals")
+    parser.add_argument("--prytany", choices=ROMAN, type=str,
+                        help="Only show selected prytany")
     parser.add_argument("--as-ce", action="store_true",
                        help="Treat dates as CE rather than BCE")
     parser.add_argument("-a", "--abbreviations", action="store_true",
@@ -165,21 +206,9 @@ if __name__ == "__main__":
                 print(ha.as_eet(ha.summer_solstice(year), True))
         exit()
 
-        
-    year = [ha.festival_calendar(y,
-                                 abbrev=args.abbreviations,
-                                 greek=args.greek_names,
-                                 intercalate=ha.MONTH_ABBREVS.index(
-                                     args.intercalate),
-                                 rule=get_rule(args.rule))
-            for y in years(args.start_year, args.end_year, args.as_ce)]
-
-    if args.year_summary:
-        output_yearly(year, writer, args)
-        exit()
-
-    if args.month_summary:
-        output_monthly(year, writer, args)
-        exit()
-        
-    output_daily(year, writer, args)
+    try:
+        output_years(args, writer)
+    except ha.HeniautosError as e:
+        print(e, file=stderr)
+        exit(1)
+    
