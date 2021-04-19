@@ -1,0 +1,214 @@
+#!/usr/bin/env python3
+
+import argparse
+import csv
+from datetime import datetime
+import heniautos as ha
+from sys import stdout, stderr, exit
+
+ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
+         "XII", "XIII")
+
+def julian_fmt(d):
+    return " ".join((bce_as_bce(tuple(d.utc)[0]), d.utc_strftime("%b %d")))
+
+
+def years(start, end, ce):                            
+    """ Return a list of years from START to END inclusive."""
+    if end is None:
+        # Single year, return a range
+        if ce:
+            return range(start, start + 1)
+        return range(ha.bce_as_negative(start), ha.bce_as_negative(start) + 1)
+    if ce:
+        if end > start:
+            return range(start, end + 1)
+    else:
+        if end <= start:
+            # multiple years, return as range
+            return range(ha.bce_as_negative(start), ha.bce_as_negative(end) + 1)
+
+    raise ValueError("End year must be later than the start year")
+
+def get_rule(r):
+    if r == "0":
+        return ha.Visible.CONJUNCTION
+
+    if r == "1":
+        return ha.Visible.NEXT_DAY
+
+    if r == "d":
+        return ha.Visible.DINSMOOR
+
+    return ha.Visible.SECOND_DAY
+
+
+def month_n(m, int_m, abbrev, greek=False):
+    if abbrev:
+        n = month_name(m, int_m, greek).split(" ")
+        if len(n) > 1:
+            return f"{n[0][0:3]} II"
+
+        return n[0][0:3]
+        
+    return month_name(m, int_m, greek)
+
+
+def arkhon_year(y):
+    eet = ha.as_eet(y)
+    epoch = eet[:3]
+    year1 = int(eet[4:8])
+    year2 = year1 - 1 if epoch == "BCE" else year1 + 1
+    return f"{epoch} {year1}/{year2}"
+
+
+def day_filter(day, args):
+    if args.day:
+        return day["day"] == args.day
+
+    return True
+
+
+def month_filter(month, args):
+    if args.conciliar:
+        if args.prytany:
+            return ROMAN.index(args.prytany) + 1 == month["prytany"]
+        
+    if (not args.conciliar) and args.month:
+        return ha.MONTH_ABBREVS.index(args.month) == month["constant"]
+
+    return True
+
+
+def display_month(month, args):
+    if args.conciliar:
+        if not args.arabic:
+            return ROMAN[month-1]
+
+    return month
+
+    
+def yearly(year, writer, args):
+    writer.writerow((
+        arkhon_year(year[0]["days"][0]["date"]),
+        "I" if year[-1]["days"][-1]["doy"] > 355 else "O",
+        ha.as_eet(year[0]["days"][0]["date"]),
+        sum(len(m["days"]) for m in year)))
+
+
+def monthly(year, writer, month_key, args):
+    ay = arkhon_year(year[0]["days"][0]["date"])
+    for month in year:
+        if month_filter(month, args):
+            writer.writerow((
+                ay,
+                display_month(month[month_key], args),
+                ha.as_eet(month["days"][0]["date"]),
+                len(month["days"])))
+
+
+def daily(year, writer, month_key, args):
+    ay = arkhon_year(year[0]["days"][0]["date"])
+    for month in year:
+        if month_filter(month, args):
+            for day in month["days"]:
+                if day_filter(day, args):
+                    writer.writerow((
+                        ay,
+                        display_month(month[month_key], args),
+                        day["day"],
+                        ha.as_eet(day["date"]),
+                        day["doy"]))
+
+        
+def output_years(args, writer):
+    for year in years(args.start_year, args.end_year, args.as_ce):
+        if args.conciliar:
+            cal = ha.prytany_calendar(year)
+            month_key = "prytany"
+
+        else:
+            cal = ha.festival_calendar(year,
+                                       abbrev=args.abbreviations,
+                                       greek=args.greek_names,
+                                       intercalate=ha.MONTH_ABBREVS.index(
+                                           args.intercalate),
+                                       rule=get_rule(args.rule))
+            month_key = "month"
+
+        if args.year_summary:
+            yearly(cal, writer, args)
+        elif args.month_summary:
+            monthly(cal, writer, month_key, args)
+        else:
+            daily(cal, writer, month_key, args)
+    
+
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("start_year", type=int)
+    parser.add_argument("end_year", type=int, nargs='?', default=None)
+    parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,
+                        help="Only show selected month")
+    parser.add_argument("--day", type=int,
+                        help="Only show selected day")
+    parser.add_argument("-m", "--month-summary", action="store_true")
+    parser.add_argument("-y", "--year-summary", action="store_true")
+    parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
+                        type=str, default="Pos",
+                        help="Month after which to intercalate")
+    parser.add_argument("-c", "--conciliar", action="store_true",
+                        help="Output conciliar calendar (prytanies)")
+    parser.add_argument("--arabic", action="store_true",
+                        help="Display prytany numbers as Arabic rather than "
+                        "Roman numerals")
+    parser.add_argument("--prytany", choices=ROMAN, type=str,
+                        help="Only show selected prytany")
+    parser.add_argument("--as-ce", action="store_true",
+                       help="Treat dates as CE rather than BCE")
+    parser.add_argument("-a", "--abbreviations", action="store_true",
+                        help="Abbreviate month names")
+    parser.add_argument("-g", "--greek-names", action="store_true",
+                        help="Use Greek names for months")
+    parser.add_argument("--new-moons", action="store_true",
+                        help="Only list times of astronomical new moons")
+    parser.add_argument("--solstices", action="store_true",
+                        help="Only list dates of solstices")
+    parser.add_argument("--gmt", action="store_true",
+                        help="Format times as GMT (rather than EET)")
+    parser.add_argument("-r", "--rule", choices=["0", "1", "2", "d"],
+                        default="2", type=str,
+                        help="Rule for determining date of new moon. "
+                        "0, 1, 2 days after astronomical conjunction, or "
+                        "d for Dinsmoor"
+                        "(default: 2)")
+    args = parser.parse_args()
+    
+    ha.init_data()
+    writer = csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
+
+    if args.new_moons:
+        for year in years(args.start_year, args.end_year, args.as_ce):
+            for nm in ha.new_moons(year):
+                if args.gmt:
+                    print(ha.as_gmt(nm, True))
+                else:
+                    print(ha.as_eet(nm, True))
+        exit()
+
+    if args.solstices:
+        for year in years(args.start_year, args.end_year, args.as_ce):
+            if args.gmt:
+                print(ha.as_gmt(ha.summer_solstice(year), True))
+            else:
+                print(ha.as_eet(ha.summer_solstice(year), True))
+        exit()
+
+    try:
+        output_years(args, writer)
+    except ha.HeniautosError as e:
+        print(e, file=stderr)
+        exit(1)
+    
