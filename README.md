@@ -6,15 +6,20 @@ Naive ancient Attic calendar generator
 
 `heniautos` (Greek for ["the span of a
 year"](https://logeion.uchicago.edu/%E1%BC%90%CE%BD%CE%B9%CE%B1%CF%85%CF%84%CF%8C%CF%82))
-generates examples of _possible_ Athenian calendars for any given year, ancient or modern, and provides some features for exploring the calendar and working with calendar equations. `heniautos` is hopefully useful for:
+generates examples of _possible_ Athenian calendars for any given
+year, ancient or modern, and provides some features for exploring the
+calendar and working with calendar equations. `heniautos` is hopefully
+useful for:
 
 * Learning about and teaching the ancient Athenian Calendar
 * Following along with often complex discussions of ancient dating event in ancient Greek hsitory
 * Just having fun with questions like "When would the City Dionysia be this year, if it was still being held."
 
-While what A. W. Gomme wrote in 1970[^1] is still true today—"It does
-not seem easy at the present time to make any statement about the
-Athenian calendar which is both significant and undisputed"—there are a few principalson which the Athenian calendar functioned that are certain:
+While what A. W. Gomme wrote in 1970 (Gomme, 1945-1981,) 4.264) is
+still true today—"It does not seem easy at the present time to make
+any statement about the Athenian calendar which is both significant
+and undisputed"—there are a few principalson which the Athenian
+calendar functioned that are certain:
 
 * It was
   [lunisolar](https://en.wikipedia.org/wiki/Lunisolar_calendar),
@@ -41,7 +46,10 @@ seem to be as many answers to these questions as there are scholars
 studying them.
 
 
-`heniautos` generates "naive" calendars, aligning ancient Greek dates with Julian calendar dates, according to astronomical data \(provided by the [`Skyfield`](https://rhodesmill.org/skyfield/) library\) using a few simple rules:
+`heniautos` generates "naive" calendars, aligning ancient Greek dates
+with Julian calendar dates, according to astronomical data \(provided
+by the [`Skyfield`](https://rhodesmill.org/skyfield/) library\) using
+a few simple rules:
 
 1. Each month begins, by default, on an "observed" new moon two days after the [astronomical conjunction](https://en.wikipedia.org/wiki/New_moon). You can choose other values.
 2. The year begins on the first observed (by rule #1) new moon on or after the day of the summer solstice.
@@ -64,7 +72,13 @@ For example, `heniautos`' calendar for 416/415 BCE:
 | 11 | Thargēliṓn   | BCE 0415-May-12 | 29    |
 | 12 | Skirophoriṓn | BCE 0415-Jun-10 | 30    |
 
-Notice that the hollow and full months do not alternate regularly (unless you observed enough over a long enough period of time to see the actual, natural cycles of the moon). 19-year cycles of intercalation recognized by the ancients \([Metonic cycles](https://en.wikipedia.org/wiki/Metonic_cycle), 7 intercalations every 19 years\) do appear in `heniautos`, but by observation rather than by prescription.
+Notice that the hollow and full months do not alternate regularly
+(unless you observed enough over a long enough period of time to see
+the actual, natural cycles of the moon). 19-year cycles of
+intercalation recognized by the ancients \([Metonic
+cycles](https://en.wikipedia.org/wiki/Metonic_cycle), 7 intercalations
+every 19 years\) do appear in `heniautos`, but by observation rather
+than by prescription.
 
 An example of an intercalary year is 417/416 BCE:
 
@@ -84,14 +98,30 @@ An example of an intercalary year is 417/416 BCE:
 | 12 | Thargēliṓn   | BCE 0416-May-22 | 30    |
 | 13 | Skirophoriṓn | BCE 0416-Jun-21 | 29    |
 
-Since the 12th month ends on June 20, before the solstice (June 28 on the Julian calendar at this time), a year needed a 13th month to extend  through to the beginning of the next year, after the solstice. Athenians intercalated by repeating one of the months. By default, `heniautos` intercalates a second Poseidēiṓn which seems most common, but you can choose other months.
+Since the 12th month ends on June 20, before the solstice (June 28 on
+the Julian calendar at this time), a year needed a 13th month to
+extend through to the beginning of the next year, after the
+solstice. Athenians intercalated by repeating one of the months. By
+default, `heniautos` intercalates a second Poseidēiṓn which seems most
+common, but you can choose other months.
 
 
-However the Athenians had to make a lot of ad hoc adjustments to keep the calendar aligned with the seasons and the adjustments they made were, for practical purposes, rather random and unpredictable. The only adjustment `heniautos` makes is to add a month ("intercalate") where it seems necessary. These probably do not line up with actual historical intercalations, but it's good enough to get a feel for the Athenian calendar, and to place any date within about one or two days a Julian date with the caution that there is an additional 30 days' uncertainty without knowing when actual intercalations took place.
+However the Athenians had to make a lot of ad hoc adjustments to keep
+the calendar aligned with the seasons and the adjustments they made
+were, for practical purposes, rather random and unpredictable. The
+only adjustment `heniautos` makes is to add a month ("intercalate")
+where it seems necessary. These probably do not line up with actual
+historical intercalations, but it's good enough to get a feel for the
+Athenian calendar, and to place any date within about one or two days
+a Julian date with the caution that there is an additional 30 days'
+uncertainty without knowing when actual intercalations took place.
 
 ## Command-line script
 
-This package installs a command-line script (also `heniautos`) to make lookups easy. The command. The simplest usage takes a year (BCE) and prints out the full calendar. It gives the Greek year, Greek month name, day of that month, Julian date, and day of the year:
+This package installs a command-line script (also `heniautos`) to make
+lookups easy. The command. The simplest usage takes a year (BCE) and
+prints out the full calendar. It gives the Greek year, Greek month
+name, day of that month, Julian date, and day of the year:
 
     > heniautos 416
     "BCE 416/415"	"Hekatombaiṓn"	1	"BCE 0416-Jul-20"	1
@@ -124,7 +154,8 @@ You can get a summary of just the months with `-m`:
     "BCE 416/415"	"Thargēliṓn"	"BCE 0415-May-12"	29
     "BCE 416/415"	"Skirophoriṓn"	"BCE 0415-Jun-10"	30
 
-If you enter two years you will get the calendar for the span of those years. This is most useful with the year summary (`-y`):
+If you enter two years you will get the calendar for the span of those
+years. This is most useful with the year summary (`-y`):
 
     > heniautos 416 411 -y
     "BCE 416/415"	"O"	"BCE 0416-Jul-20"	355
@@ -134,7 +165,9 @@ If you enter two years you will get the calendar for the span of those years. Th
     "BCE 412/411"	"I"	"BCE 0412-Jul-06"	384
     "BCE 411/410"	"O"	"BCE 0411-Jul-25"	354
     
-This output is the Greek year, whether it is normal (O) or intercalary (I), the date on which the year starts, and the number of days in the year.
+This output is the Greek year, whether it is normal (O) or intercalary
+(I), the date on which the year starts, and the number of days in the
+year.
 
 Years are treated as BCE by default, but you can change this with `--as-ce`:
 
@@ -165,7 +198,8 @@ which contains this date:
 > fourth day from the end of Artemisios, in Athens in the arkhonship
 > of Alkaios on the sixth day from the end of Elaphēboliṓn.
 
-Alkaios was arkhon in 422/421, so we can find the sixth day from the end (counting inclusively) like so:
+Alkaios was arkhon in 422/421, so we can find the sixth day from the
+end (counting inclusively) like so:
 
     heniautos 422 --month Ela |tail -n 6
     "BCE 422/421"	"Elaphēboliṓn"	24	"BCE 0421-Apr-11"	260
@@ -175,25 +209,32 @@ Alkaios was arkhon in 422/421, so we can find the sixth day from the end (counti
     "BCE 422/421"	"Elaphēboliṓn"	28	"BCE 0421-Apr-15"	264
     "BCE 422/421"	"Elaphēboliṓn"	29	"BCE 0421-Apr-16"	265
     
-This is not to be taken as _truth_. Meritt first made it April 9[^2] while Dinsmoor[^3] said April 10. Meritt then citicized Dinsmoor at some length[^4] to conclude[^5] that it should be April 11--`heniautos` arrives at this date but by a different path than Meritt. Gomme concludes that it should be "about March 12"[^6] because he has a different view about the intercalations. Most recently, Planeux calculates April 11 again.[^7]
+This is not to be taken as _truth_. Meritt (1928, 109) first made it
+April 9 while Dinsmoor (1931, 334-335) said April 10. Meritt then
+citicized Dinsmoor at some length (1932, 146-151) to conclude (1932,
+178) that it should be April 11--`heniautos` arrives at this date but
+by a different path than Meritt. Gomme concludes that it should be
+"about March 12" (1945-1981, 4.711-713) because he has a different
+view about the intercalations. Most recently, Planeux calculates April
+11 again (forthcoming, 187).
 
-That said, the date given by `heniautos` is within two days of all calculations, or thirty days if there is a difference in intercalation. This margin of error should hold for any ancient date. The cited discussions are complex, and `heniautos` should help anyone less steeped in ancient Athenian calendar equations follow along and check their calculations.
-
-
-[^1]: Gomme, A. W., Andrewes, and Dover (1945-1981) 4.264.
-[^2]: Meritt (1928) 109.
-[^3]: Dinsmoor (1931) 334-335.
-[^4]: Meritt (1932) 146-151.
-[^5]: Meritt (1932) 146-151.
-[^6]: Gomme, A. W., Andrewes, and Dover (1945-1981) 4.711-713.
-[^7]: Planeaux (forthcoming) 187
+That said, the date given by `heniautos` is within two days of all
+calculations, or thirty days if there is a difference in
+intercalation. This margin of error should hold for any ancient
+date. The cited discussions are complex, and `heniautos` should help
+anyone less steeped in ancient Athenian calendar equations follow
+along and check their calculations.
 
 ## Works Cited
 
-* Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press. 
-* Gomme, A. W., A. Andrewes, and K. J. Dover. 1945-1981. _A Historical Commentary on Thucydides_. 5 vols. Oxford: Oxford University Press.
-* Meritt, Benjamin D. 1928. _The Athenian Calendar in the Fifth Century_. Cambridge: Harvard University Press. 
-* ----------. 1932. _Athenian Financial Documents of the Fifth Century_. Ann Arbor: University of Michigan Press.
+* Dinsmoor, William Bell. 1931. _The Archons of Athens in the
+  Hellenistic Age_. Cambridge: Harvard University Press.
+* Gomme, A. W., A. Andrewes, and K. J. Dover. 1945-1981. _A Historical
+  Commentary on Thucydides_. 5 vols. Oxford: Oxford University Press.
+* Meritt, Benjamin D. 1928. _The Athenian Calendar in the Fifth
+  Century_. Cambridge: Harvard University Press.
+* ----------. 1932. _Athenian Financial Documents of the Fifth
+  Century_. Ann Arbor: University of Michigan Press.
 * Planeux, Christopher. Forthcoming. _The Athenian Year Primer_.
 
 
