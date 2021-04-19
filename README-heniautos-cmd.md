@@ -349,6 +349,12 @@ Times are, by default, in Eastern European Time (EET, the time zone of Athens) _
 	BCE 0414-Jun-28 21:48:17 GMT
 	BCE 0413-Jun-28 03:31:29 GMT
 	
+## Ephemeris File
+
+The first time (or any time) you run `heniautos` it may download a large file named `de422.bsp`. This file is an "ephemeris"--data about astronomical objects--that `heniautos` needs for its calculations. `heniautos` will use an existing copy if it can find one instead of downloading another. You can explicitly provide the path to an existing copy using the `-e` or `--ephemeris` option:
+
+    > heniautos 415 -e /full/path/to/your/copy/of/de422.bsp
+	
 ## Works Cited
 * Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
 * Dunn, Francis M. 1998. “Tampering with the Calendar.” _Zeitschrift Für Papyrologie Und Epigraphik_ 123: 213–31.

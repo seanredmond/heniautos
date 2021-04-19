@@ -184,9 +184,12 @@ def main():
                         "0, 1, 2 days after astronomical conjunction, or "
                         "d for Dinsmoor"
                         "(default: 2)")
+    parser.add_argument("-e", "--ephemeris", metavar="FILE", type=str,
+                        help="Use existing ephemeris FILE (if it cannot "
+                        "automatically be found)", default=None)
     args = parser.parse_args()
     
-    ha.init_data()
+    ha.init_data(args.ephemeris)
     writer = csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
 
     if args.new_moons:
