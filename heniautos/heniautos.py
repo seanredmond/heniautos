@@ -6,10 +6,6 @@ from skyfield import almanac
 from skyfield.api import GREGORIAN_START
 
 
-# from  .patterndata import *
-#from  .dinsmoor import *
-
-
 class HeniautosError(Exception):
     pass
 
@@ -162,6 +158,14 @@ def bce_as_negative(year):
 
 
 def date(y, m, d, h=9):
+    """Return a ut1 date from calendar date.
+
+    Parameters:
+        y (int): The year, negative for BCE
+        m (int): The month
+        d (int): The day
+        h (int): The hour (default 9)
+    """
     return __h["ts"].ut1(y, m, d, h, 0, 0)
 
 
@@ -188,6 +192,7 @@ def span(first, second):
 
 
 def _epoch(t):
+    """Return a string (BCE/CE) indicating the epoch of date t."""
     if is_bce(t):
         return "BCE"
 
@@ -216,6 +221,7 @@ def as_eet(t, full=False):
 
 
 def _solar_events(year):
+    """Return Time objects for solstices and equinoxes for year y."""
     return tuple(
         zip(*almanac.find_discrete(
             __h["ts"].ut1(year, 1, 31),
@@ -235,11 +241,12 @@ def solar_event(year, e):
 
 
 def summer_solstice(year):
-    """Return the Time object for the summer solstice for the given year."""
+    """Return Time objects for the summer solstice for the given year."""
     return solar_event(year, Seasons.SUMMER_SOLSTICE)
 
 
 def _all_moon_phases(year):
+    """Return Time objects for all moon phases in year y."""
     return tuple(zip(*almanac.find_discrete(
         __h["ts"].ut1(year, 1, 1),
         __h["ts"].ut1(year, 12, 31, 23, 59, 59),
@@ -247,7 +254,8 @@ def _all_moon_phases(year):
 
 
 def moon_phases(year, p):
-    """Return a list of Time objects for all lunar phases e in the given year.
+    """Return a list of Time objects for each indicated lunar phase in the
+    given year.
 
     Parameters:
         year (int): The year
@@ -284,7 +292,7 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY):
     """
     if rule == Visible.CONJUNCTION:
         return new_moons(year)
-    
+
     if rule == Visible.NEXT_DAY:
         return [add_days(n, 1) for n in new_moons(year)]
 
@@ -293,14 +301,17 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY):
 
 
 def _make_hour(t, h=9):
+    """Return Time object for date t set to hour h (default 9)."""
     return __h["ts"].ut1(*(t.ut1_calendar()[0:3] + (h, 0, 0)))
 
 
 def _on_after(t1, t2):
+    """Is time t1 on or after time t2?"""
     return t1.tt > t2.tt
 
 
 def _before(t1, t2):
+    """Is time t1 before t2?"""
     return not _on_after(t1, t2)
 
 
@@ -343,6 +354,12 @@ def _insert_interc(names, i, suffix):
 
 
 def _suffix(abbrev=False, greek=False):
+    """Return suffix (if required) indicating an intercalated month.
+
+    Parameters:
+        abbrev (bool): Return abbreviated version
+        greek (bool): Return Greek version (overrides abbrev)
+    """
     if greek:
         return " ὕστερος"
 
@@ -414,11 +431,19 @@ def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
 
 
 def _doy_gen(n=1):
+    """Recursivly return natural numbers starting with n."""
     yield n
     yield from _doy_gen(n + 1)
 
 
 def _month_days(start, finish, doy):
+    """Return tuple of dicts representing days of a month.
+
+    Parameters:
+        start: Start time of the month
+        finish: Start time of next month
+        doy: generator function to get the next day of the year
+    """
     return tuple([{"day":  d + 1,
                    "date": add_days(start, d),
                    "doy":  next(doy)}
@@ -431,8 +456,8 @@ def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
 
     Parameters:
         year (int): The year for the calendar
-        intercalate (int): index of month to intercalate if necessary
-    (starting with 1 default 6 = Poseidēiṓn)
+        intercalate (Months): Month constant for month to intercalate if
+necessary (default Months.POS)
         abbrev (bool): Return month names as abbreviations (default False)
         greek (bool): Return month names in Greek (default False)
         rule (Visible): Constant from Visible indicating the desired rule
@@ -471,7 +496,19 @@ def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
 
 def find_date(year, month, day, intercalate=Months.POS, abbrev=False,
               greek=False, rule=Visible.SECOND_DAY):
+    """Find the Athenian date corresponding to a Julian date
 
+    Parameters:
+        year (int): The Julian year, negative for BCE
+        month (int): The Julian month
+        day (int): The Julian day
+        intercalate (Months): Month constant for month to intercalate if
+necessary (default Months.POS)
+        abbrev (bool): Return month names as abbreviations (default False)
+        greek (bool): Return month names in Greek (default False)
+        rule (Visible): Constant from Visible indicating the desired rule
+(default Visible.SECOND_DAY)
+    """
     try:
         return [a for b
                 in [[{**{"month": f["month"], "constant": f["constant"]}, **d}
@@ -490,6 +527,12 @@ def find_date(year, month, day, intercalate=Months.POS, abbrev=False,
 
 
 def _pryt_len(days, count=4):
+    """Recursively generate prytany lengths.
+
+    Generator for conciliar years that have count number of prytanies
+    of days length, with the remaining being days - 1. E.g. Four
+    36-day pryanties followed by 35-day prytanies.
+    """
     if count:
         yield days
         yield from _pryt_len(days, count - 1)
@@ -501,6 +544,7 @@ def _pryt_len(days, count=4):
 
 
 def _pryt_len_festival(cal):
+    """Recursivly generate prytanies that match the festival calendar."""
     if len(cal) == 0:
         return
 
@@ -509,7 +553,7 @@ def _pryt_len_festival(cal):
 
 
 def _pryt_gen(start, end, length, num=10, count=1):
-
+    """Recursively generate dicts representing prytanies."""
     if count == num:
         # If this is the 10th prytany, return the EOY date as the end
         # date of the prytany, which may be one day more or one day
@@ -524,9 +568,10 @@ def _pryt_gen(start, end, length, num=10, count=1):
 
 
 def _pryt_auto(year):
+    """Determine prytany type base on year."""
     if year < -507:
-        raise HeniautosError("There were no prytanies before the foundation of"
-                             "democracy in Athens in 508 BCE")
+        raise HeniautosError("There were no prytanies before the foundation "
+                             "of democracy in Athens in 508 BCE")
 
     if year >= -507 and year <= -409:
         return Prytany.QUASI_SOLAR
@@ -544,6 +589,10 @@ def _pryt_auto(year):
 
 
 def _pryt_auto_start(year, start):
+    """Determine start dates for quasi-solar prytanies. Based on Meritt
+    (1961)
+
+    """
     if start == Prytany.AUTO:
         if year < -423:
             return __h["ts"].ut1(year, 7, 4, 12, 0, 0)
@@ -565,7 +614,7 @@ def _pryt_solar_end(start):
 
 def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
               rule=Visible.SECOND_DAY, rule_of_aristotle=False):
-
+    """Return tuple of prytanies. See prytany_celendar for parameters."""
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
 
     if auto_type == Prytany.QUASI_SOLAR:
@@ -626,6 +675,29 @@ def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
 
 def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
                      rule=Visible.SECOND_DAY, rule_of_aristotle=False):
+    """Return a tuple representing Athenian conciliar calendar.
+
+    Parameters:
+        year (int): The year for the calendar
+        pryt_type (Prytany): Constant representign the type of prytanies
+(default Prytany,AUTO)
+        pryt_start: start day (in June) for quasi-solar prytanies. If
+Prytany.AUTO it will be calculated.
+        rule (Visible): Constant from Visible indicating the desired rule
+(default Visible.SECOND_DAY)
+
+    See calendar_months for documentation of visibility rules.
+
+    Each member of the returned tuple is a dict containing:
+        "prytany": the number of the prytany
+        "days": a tuple with one member for day of the month.
+
+    Each member of the "days" tuple is a dict containing:
+         "day": the day of the month
+         "date": the Julian date of the day
+         "doy": the day of the year the day represents.
+    """
+
     doy = _doy_gen()
 
     return tuple([{"prytany": p["prytany"],
@@ -636,53 +708,12 @@ def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
                                rule_of_aristotle=rule_of_aristotle)])
 
 
-PrytanyOrd = IntEnum("PrytanyOrd", "VARIABLE STRICT")
-
-
-# class TribeCount(IntEnum):
-#     TEN = 10
-#     TWELVE = 12
-
-
-# YearType = IntEnum("YearType", "O I")
-
-    
-# def _prytany_sum(lengths, counts):
-#     return sum([lengths[x] * counts[x] for x in [0, 1]])
-
-
-# def _pry_valid(full_count, pry, strict):
-#     if strict == PrytanyOrd.STRICT:
-#         full_min = 4 if pry > 4 else pry
-#         return full_count == full_min
-
-#     return True
-
-
-# def _prytany_doy_10(pry, day, strict: PrytanyOrd=PrytanyOrd.STRICT):
-#     plen = dict(zip(YearType, [[36, 35], [39, 38]]))
-
-#     return [{"doy": _prytany_sum(b[0], plen[b[1]]) + day,
-#              "intercalation": b[1] == YearType.I,
-#              "preceding": b[0]}
-#             for b in product([[p, pry - p]
-#                               for p in range(0, pry + 1)
-#                               if _pry_valid(p, pry, strict)], YearType)]
-
-
-#     # return [[_prytany_sum(b[0], plen[b[1]]) + day, b[1], b[0]]
-#     #         for b in product([[p, pry - p]
-#     #                           for p in range(0, pry + 1)
-#     #                           if _pry_valid(p, pry, strict)], YearType)]
-
-
-
 def _months_sum(s):
     """ Return the sum of pairs of ints multiplied by each other.
 
     That is given numbers of months and their lengths, calculate their sum.
 
-    For example: 
+    For example:
     ((30, 1), (29, 2)) =
     (30 * 1) + (29 * 2) =
     30 + 58
@@ -719,7 +750,7 @@ def _cal_doy_len(pry_orig, pry, day, interc, lengths):
 
 
 def _cal_lengths_calc(pry_orig, pry, day, interc, lengths):
-    """ Dispatch correct DOY calculation depending on whether the months 
+    """ Dispatch correct DOY calculation depending on whether the months
     are all one length or different lengths.
     """
     return _cal_doy_single(pry_orig, pry, day, interc, lengths[0]) \
@@ -732,22 +763,25 @@ def _cal_length_sort(cal):
     return sorted(cal, key=lambda d: d["doy"])
 
 
-def _within_max_diff(l, max_d):
-    if max_d and len(l["lengths"]) > 1:
-        return abs(l["lengths"][0][1] - l["lengths"][1][1]) <= max_d
+def _within_max_diff(ln, max_d):
+    """Is the difference in count of follow and hollow less than max_d? """
+    if max_d and len(ln["lengths"]) > 1:
+        return abs(ln["lengths"][0][1] - ln["lengths"][1][1]) <= max_d
 
     return True
 
 
 def _calc_min_count(cal_count, full, hollow, test_min, test):
+    """Do the count of full and hollow meet minimums?"""
     return (test_min - test) <= (cal_count - full - hollow)
 
-    
+
 def _meets_min_count(c, cal_count, min_full, min_hollow):
+    """Do the count of full and hollow meet minimums?"""
     # Intercalary, 12 tribes, all are 32-days so ignore min count
     if len(c["lengths"]) == 1 and c["lengths"][0][0] == 32:
-           return True
-           
+        return True
+
     return _calc_min_count(
         cal_count, c["lengths"][0][1], c["lengths"][1][1],
         min_full, c["lengths"][0][1]) and \
@@ -755,15 +789,9 @@ def _meets_min_count(c, cal_count, min_full, min_hollow):
             cal_count, c["lengths"][0][1], c["lengths"][1][1],
             min_hollow, c["lengths"][1][1])
 
-    
+
 def _cal_lengths(pry_orig, pry, day, lengths, max_diff, cal_c, min_f, min_h):
     """ Return a flattened list of DOYs of all lengths in lengths. """
-    # return _cal_length_sort(
-    #     [c for c in [a for b in
-    #      [_cal_lengths_calc(pry_orig, pry, day, i, l)
-    #       for i, l in lengths]
-    #                  for a in b] if _within_max_diff(c, max_diff)])
-
     return _cal_length_sort(
         [c for c in
          [a for b in
@@ -771,20 +799,20 @@ def _cal_lengths(pry_orig, pry, day, lengths, max_diff, cal_c, min_f, min_h):
           for a in b]
          if _meets_min_count(c, cal_c, min_f, min_h)
          and _within_max_diff(c, max_diff)])
-    
-
 
 
 def festival_doy(month, day, max_diff=0):
+    """Return the possible values of DOY for a Greek month and day."""
     return tuple(
         _cal_length_sort(
             _cal_lengths(month, month + 1, day, ((False, (30, 29)),),
-                         max_diff, 12, 5, 5) + 
+                         max_diff, 12, 5, 5) +
             _cal_lengths(month, month + 2, day, ((True, (30, 29)),),
                          max_diff, 13, 6, 5)))
 
 
 def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
+    """Return the possible values of DOY for a prytany and day."""
     pryt_auto = _pryt_auto(year) \
         if year is not None and pryt_type == Prytany.AUTO else pryt_type
 
@@ -793,14 +821,14 @@ def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
             _cal_length_sort(
                 _cal_lengths(pry, pry, day,
                              ((False, (37, 36)),), max_diff, 10, 5, 5)))
-    
+
     if pryt_auto == Prytany.ALIGNED_10:
         return tuple(
             _cal_length_sort(
                 _cal_lengths(pry, pry, day,
                              ((False, (36, 35)), (True, (39, 38))),
                              max_diff, 10, 4, 6)))
-    
+
     if pryt_auto == Prytany.ALIGNED_12:
         return tuple(
             _cal_length_sort(
@@ -814,7 +842,7 @@ def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
                 _cal_lengths(pry, pry, day,
                              ((False, (28, 27)), (True, (30, 29))),
                              max_diff, 13, 3, 7)))
-    
+
     raise HeniautosError("No Prytany type identified. Did you forget to "
                          "supply a year?")
 
@@ -830,7 +858,7 @@ def _fest_eq(months, max_diff=0):
             raise e
     except IndexError:
         # We got a tuple of tuples, but the len is only 1
-        pass        
+        pass
 
     return tuple(
         [a for b in [_fest_eq(m, max_diff) for m in months] for a in b])
@@ -852,14 +880,24 @@ def _pryt_eq(prytanies, max_diff=0, year=None, pryt_type=Prytany.AUTO):
         [a for b in [_pryt_eq(p, max_diff=max_diff, year=year,
                               pryt_type=pryt_type) for p in prytanies]
          for a in b])
-                       
-    
+
 
 def equations(months, prytanies, max_fest_diff=0, max_pryt_diff=0, year=None,
               pryt_type=Prytany.AUTO):
+    """Return possible solutions for a calendar equation
+
+    Parameters:
+        month (tuple): A tuple consisting of a Month constant and a day, or a
+tuple of such tuples
+        prytanies: A tuple consisting of a Prytany constant and a day, or a
+tuple of such tuples
+        year (int): Year, used to calculate prytany type is Prytany.AUTO
+        pryt_type (Prytany): Type of prytany calendar to use
+(default Prytany.AUTO)
+
+    """
     pryt_eqs = _pryt_eq(prytanies, max_pryt_diff, year, pryt_type)
     fest_eqs = _fest_eq(months, max_fest_diff)
-    #matches = sorted(set([x["doy"] for x in fest_eqs + pryt_eqs]))
 
     matches = sorted(
         set([p["doy"] for p in pryt_eqs]) & set([f["doy"] for f in fest_eqs]))
@@ -870,7 +908,9 @@ def equations(months, prytanies, max_fest_diff=0, max_pryt_diff=0, year=None,
                       "conciliar": [p for p in pryt_eqs if p["doy"] == doy]}}
                   for doy in matches])
 
+
 def dinsmoor_month_name(m, intercalated, abbrev, greek):
+    """Accomodate uncertain months in Dinsmoor data"""
     if m == Months.UNC:
         if abbrev:
             return "Unc"
@@ -878,16 +918,18 @@ def dinsmoor_month_name(m, intercalated, abbrev, greek):
 
     return (_month_names(abbrev, greek)[m] + _suffix(abbrev, greek)) \
         if intercalated else _month_names(abbrev, greek)[m]
-    
+
 
 def dinsmoor_months(year, abbrev=False, greek=False):
+    """Return festival calendar according to Dinsmoor (1931)."""
     if "dinsmoor" not in __h:
-        __h["dinsmoor"] = _load_dinsmoor() 
+        __h["dinsmoor"] = _load_dinsmoor()
 
     try:
         return [{"month": dinsmoor_month_name(m["constant"], m["intercalated"],
                                               abbrev, greek),
-                 "constant": Months.INT if m["intercalated"] else m["constant"],
+                 "constant": Months.INT if m["intercalated"]
+                 else m["constant"],
                  "start": date(m["year"], m["month"], m["day"]),
                  "end": add_days(date(m["year"], m["month"], m["day"]),
                                  m["length"])}
@@ -898,6 +940,7 @@ def dinsmoor_months(year, abbrev=False, greek=False):
 
 
 def _dinsmoor_line(df, year, prev_month):
+    """Parse a line of Dinsmoor data."""
     while True:
         line = df.readline()
         if line == '':
@@ -925,7 +968,7 @@ def _dinsmoor_line(df, year, prev_month):
                 gm = parts[m+3][0:-1]
             else:
                 gm = parts[m+3]
-                    
+
             gi = ["He", "Me", "Bo", "Py", "Ma", "Po", "Ga", "An", "El",
                   "Mo", "Th", "Sk"].index(gm)
             gmonth = list(Months)[gi]
@@ -941,9 +984,10 @@ def _dinsmoor_line(df, year, prev_month):
                 "length": mtype,
                 "intercalated": intercalated,
                 "parts": parts}
-        
+
 
 def _load_dinsmoor():
+    """Load Dinsmoor data."""
     d_years = {}
     with open(Path(__file__).parent / "dinsmoor.txt") as dinsmoor:
         this_year = None
@@ -960,7 +1004,7 @@ def _load_dinsmoor():
                     these_months = []
                     been_read = 0
 
-                these_months  = these_months + [line]
+                these_months = these_months + [line]
                 last_year = line["year"]
                 last_month = line["constant"]
                 been_read += 1
