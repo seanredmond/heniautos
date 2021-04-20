@@ -117,6 +117,21 @@ __h = {
 
 
 def init_data(eph=None, lat=37.983972, lon=23.727806, force=False):
+    """Initialize data required for calculations.
+
+    Parameters:
+        eph (str): Path to ephemeris file
+        lat (float): Latitude for calculations (default 37.983972)
+        lon (float): Longitude for calculations (default 23.727806)
+        force (bool): Force reinitialization
+
+    If an ephemeris file cannot be found in the path and no file is
+    specified by the eph parameter, de422.bsp will be downloaded.
+
+    Longitude and latitude are set for Athens by default but can be changed.
+
+    Initialization will only be done once unless the force parameter is True.
+    """
     if __h["init"] is True and not force:
         return
 
@@ -126,7 +141,7 @@ def init_data(eph=None, lat=37.983972, lon=23.727806, force=False):
     __h["eph"] = api.load(__h["eph_file"])
     __h["ts"] = api.load.timescale()
     __h["ts"].julian_calendar_cutoff = GREGORIAN_START
-    __h["loc"] = api.wgs84.latlon(37.983972, 23.727806)
+    __h["loc"] = api.wgs84.latlon(lat, lon)
     __h["init"] = True
 
     return api.load.path_to(__h["eph_file"])
