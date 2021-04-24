@@ -286,7 +286,7 @@ def test_prytanies_solar_leap():
 
 
 @pytest.mark.xfail
-def test_prytanies_10_normal_long():
+def test_prytanies_10_ordinary_long():
     c2 = festival_months(O_10_LONG)
     p2 = prytanies(O_10_LONG)
     assert len(p2) == 10
@@ -410,7 +410,7 @@ def test_prytany_calendar_solar_leap():
 
 # Ten prytanies: 409-308 BCE
 
-def test_prytanies_10_normal():
+def test_prytanies_10_ordinary():
     year = bce_as_negative(O_10)
     c3 = festival_months(year)
     p3 = prytanies(year)
@@ -430,7 +430,7 @@ def test_prytanies_10_normal():
     assert span(p3[-1]["start"], p3[-1]["end"]) == 35
 
 
-def test_prytanies_10_normal_long():
+def test_prytanies_10_ordinary_long():
     year = bce_as_negative(O_10_LONG)    
     c3 = festival_months(year)
     p3 = prytanies(year)
@@ -471,7 +471,7 @@ def test_prytanies_10_intercalated():
 
 # Twelve prytanies: 307-224 BCE & 200-101 BCE
 
-def test_prytanies_12_normal():
+def test_prytanies_12_ordinary():
     year = bce_as_negative(O_12)
     c3 = festival_months(year)
     p3 = prytanies(year)
@@ -492,7 +492,7 @@ def test_prytanies_12_normal():
     assert span(p3[-1]["start"], p3[-1]["end"]) == 29
 
 
-def test_prytanies_12_normal_aristotle():
+def test_prytanies_12_ordinary_aristotle():
     year = bce_as_negative(O_12)
     c3 = festival_months(year)
     p3 = prytanies(year, rule_of_aristotle=True)
@@ -597,7 +597,7 @@ def test_prytanies_12_intercalated():
 
 # Thirteen prytanies: 223-201 BCE
     
-def test_prytanies_13_normal():
+def test_prytanies_13_ordinary():
     year = bce_as_negative(O_13)
     c3 = festival_months(year)
     p3 = prytanies(year)
@@ -690,7 +690,7 @@ def test_prytanies_13_intercalated_aristotle():
     assert span(p3[-1]["start"], p3[-1]["end"]) == 29
 
 
-def test_prytany_calendar_10_normal():
+def test_prytany_calendar_10_ordinary():
     year = bce_as_negative(O_10)
     c3 = festival_calendar(year)
     p3 = prytany_calendar(year)
@@ -709,7 +709,7 @@ def test_prytany_calendar_10_normal():
     assert len(p3[-1]["days"]) == 35
 
 
-def test_prytany_calendar_10_normal_long():
+def test_prytany_calendar_10_ordinary_long():
     year = bce_as_negative(O_10_LONG)
     c3 = festival_calendar(year)
     p3 = prytany_calendar(year)
@@ -742,7 +742,7 @@ def test_prytany_calendar_10_intercalated():
     assert len(p3[4]["days"]) == 38
     assert len(p3[-1]["days"]) == 38
 
-def test_prytany_calendar_12_normal():
+def test_prytany_calendar_12_ordinary():
     year = bce_as_negative(O_12)
     c3 = festival_calendar(year)
     p3 = prytany_calendar(year)
@@ -762,7 +762,7 @@ def test_prytany_calendar_12_normal():
     assert len(p3[-1]["days"]) == 29
 
 
-def test_prytany_calendar_12_normal_aristotle():
+def test_prytany_calendar_12_ordinary_aristotle():
     year = bce_as_negative(O_12)
     c3 = festival_calendar(year)
     p3 = prytany_calendar(year, rule_of_aristotle=True)
@@ -840,7 +840,7 @@ def test_prytany_calendar_12_intercalated():
     assert len(p3[-1]["days"]) == 32
 
 
-def test_prytany_calendar_13_normal():
+def test_prytany_calendar_13_ordinary():
     year = bce_as_negative(O_13)
     c3 = festival_calendar(year)
     p3 = prytany_calendar(year)
@@ -922,21 +922,21 @@ def test_months_sum():
     assert heniautos._months_sum(s) == 232
 
 
-def test_cal_lengths_normal_12th():
+def test_cal_lengths_ordinary_12th():
     c = heniautos._cal_lengths(12, 12, 19, ((False, (30, 29)),), 0, 12, 5, 5)
 
     assert min([d["lengths"][0][1] for d in c]) == 4
     assert min([d["lengths"][1][1] for d in c]) == 4
 
 
-def test_cal_lengths_normal_6th():
+def test_cal_lengths_ordinary_6th():
     c = heniautos._cal_lengths(6, 6, 19, ((False, (30, 29)),), 0, 12, 5, 5)
 
     assert min([d["lengths"][0][1] for d in c]) == 0
     assert min([d["lengths"][1][1] for d in c]) == 0
 
 
-def test_cal_lengths_normal_9th():
+def test_cal_lengths_ordinary_9th():
     c = heniautos._cal_lengths(9, 9, 19, ((False, (30, 29)),), 0, 12, 5, 5)
 
     assert min([d["lengths"][0][1] for d in c]) == 1
