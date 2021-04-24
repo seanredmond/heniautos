@@ -124,7 +124,7 @@ def daily(year, writer, month_key, args):
 def output_years(args, writer):
     for year in years(args.start_year, args.end_year, args.as_ce):
         if args.conciliar:
-            cal = ha.prytany_calendar(year)
+            cal = ha.prytany_calendar(year, rule=get_rule(args.rule))
             month_key = "prytany"
 
         else:
