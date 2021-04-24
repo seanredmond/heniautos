@@ -33,20 +33,20 @@ class Visible(IntEnum):
 
 
 class Months(IntEnum):
-    HEK = 0
-    MET = 1
-    BOE = 2
-    PUA = 3
-    MAI = 4
-    POS = 5
-    GAM = 6
-    ANT = 7
-    ELA = 8
-    MOU = 9
-    THA = 10
-    SKI = 11
-    INT = 12
-    UNC = 13
+    HEK = 1
+    MET = 2
+    BOE = 3
+    PUA = 4
+    MAI = 5
+    POS = 6
+    GAM = 7
+    ANT = 8
+    ELA = 9
+    MOU = 10
+    THA = 11
+    SKI = 12
+    INT = 13
+    UNC = 14
 
 
 class Prytanies(IntEnum):
@@ -364,7 +364,7 @@ def calendar_months(year, rule=Visible.SECOND_DAY):
 def _insert_interc(names, i, suffix):
     """Insert intercalated month name i with suffix suffix into list of
     month names names."""
-    return names[:i+1] + ((names[i][0] + suffix, Months.INT),) + names[i+1:]
+    return names[:i] + ((names[i-1][0] + suffix, Months.INT),) + names[i:]
 
 
 def _suffix(abbrev=False, greek=False):
@@ -383,13 +383,22 @@ def _suffix(abbrev=False, greek=False):
     return " hústeros"
 
 
-def _intercalate(m, i, abbrev, greek):
-    """Insert an intercalated month into a list of month names."""
+def _maybe_intercalate(m, i, abbrev, greek):
+    """Return a list of month names, with an intercalation if necessary
 
+    Parameters:
+        m (int): The number of months required
+        i (Month): The month to intercalate (if required)
+        abbrev (bool): Return names as abbreviations
+        greek (bool): Return names in Greek
+
+    """
+    print(m, i, abbrev, greek)
     if m == 12:
         return tuple(zip(_month_names(abbrev, greek), Months))
 
-    return _insert_interc(_intercalate(12, i, abbrev, greek), i,
+    return _insert_interc(_maybe_intercalate(12, i, abbrev, greek)
+                          , i,
                           _suffix(abbrev, greek))
 
 
@@ -440,8 +449,10 @@ def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
                    "constant": m[0][1],
                    "start": m[1][0],
                    "end": m[1][1]}
-                  for m in zip(_intercalate(len(months), intercalate,
-                                            abbrev, greek), months)])
+                  for m in zip(
+                          _maybe_intercalate(
+                              len(months), intercalate, abbrev, greek),
+                          months)])
 
 
 def _doy_gen(n=1):
@@ -931,8 +942,8 @@ def dinsmoor_month_name(m, intercalated, abbrev, greek):
             return "Unc"
         return "Uncertain"
 
-    return (_month_names(abbrev, greek)[m] + _suffix(abbrev, greek)) \
-        if intercalated else _month_names(abbrev, greek)[m]
+    return (_month_names(abbrev, greek)[m-1] + _suffix(abbrev, greek)) \
+        if intercalated else _month_names(abbrev, greek)[m-1]
 
 
 def dinsmoor_months(year, abbrev=False, greek=False):

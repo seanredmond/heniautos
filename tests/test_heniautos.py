@@ -109,26 +109,32 @@ def test_suffix():
     assert heniautos._suffix(abbrev=True, greek=True) == " ὕστερος"
     
 
-def test_intercalate():
-    assert heniautos._intercalate(12, Months.POS, False, False)[0] == \
+def test_maybe_intercalate():
+    # No intercalations, just the list of ordinary months
+    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == \
         ("Hekatombaiṓn", Months.HEK)
-    assert heniautos._intercalate(12, Months.POS, False, False)[3] == \
+    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == \
         ("Puanepsiṓn", Months.PUA)
-    assert heniautos._intercalate(12, Months.POS, False, False)[6] == \
+    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == \
         ("Gamēliṓn", Months.GAM)
 
-    assert heniautos._intercalate(13, Months.POS, False, False)[3] == \
+    # Intercalates Pos
+    # Month before Pos unchanged
+    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == \
         ("Puanepsiṓn", Months.PUA)
-    assert heniautos._intercalate(13, Months.POS, False, False)[6] == \
+    # The intercalated month
+    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == \
         ("Poseidēiṓn hústeros", Months.INT)
-    assert heniautos._intercalate(13, Months.POS, False, False)[7] == \
+    # Indexes of months after the intercalation 1 more than usual
+    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == \
         ("Gamēliṓn", Months.GAM)
 
-    assert heniautos._intercalate(13, Months.BOE, False, False)[3] == \
+    # Intercalated Boe
+    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == \
         ("Boēdromiṓn hústeros", Months.INT)
-    assert heniautos._intercalate(13, Months.BOE, False, False)[6] == \
+    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == \
         ("Poseidēiṓn", Months.POS)
-    assert heniautos._intercalate(13, Months.BOE, False, False)[7] == \
+    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == \
         ("Gamēliṓn", Months.GAM)
     
 
