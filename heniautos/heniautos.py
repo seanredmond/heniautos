@@ -157,6 +157,16 @@ def bce_as_negative(year):
     return year * -1 + 1
 
 
+def tt_day(t):
+    # Convert time to noonish of the day
+    return __h["ts"].tt_jd(int(t.tt))
+
+
+def tt_round(t, adv=0):
+    return __h["ts"].tt_jd(round(t.tt) + adv)
+    
+
+
 def date(y, m, d, h=9):
     """Return a ut1 date from calendar date.
 
@@ -188,7 +198,8 @@ def add_years(t, y):
 
 def span(first, second):
     """Return the number of days between two dates."""
-    return int(second.tt) - int(first.tt)
+    # return int(second.tt) - int(first.tt)
+    return int(second.ut1) - int(first.ut1)
 
 
 def _epoch(t):
@@ -291,13 +302,13 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY):
 
     """
     if rule == Visible.CONJUNCTION:
-        return new_moons(year)
+        return [tt_round(m) for m in new_moons(year)]
 
     if rule == Visible.NEXT_DAY:
-        return [add_days(n, 1) for n in new_moons(year)]
+        return [tt_round(n, 1) for n in new_moons(year)]
 
     if rule == Visible.SECOND_DAY:
-        return [add_days(n, 2) for n in new_moons(year)]
+        return [tt_round(n, 2) for n in new_moons(year)]
 
 
 def _make_hour(t, h=9):
@@ -308,6 +319,7 @@ def _make_hour(t, h=9):
 def _on_after(t1, t2):
     """Is time t1 on or after time t2?"""
     return t1.tt > t2.tt
+    #return t1.ut1 > t2.ut1
 
 
 def _before(t1, t2):
@@ -337,10 +349,12 @@ def calendar_months(year, rule=Visible.SECOND_DAY):
     meaningful. Only the Julian year, month, and day are relevant.
 
     """
-    sol1 = summer_solstice(year)
-    sol2 = summer_solstice(year + 1)
+    sol1 = tt_round(summer_solstice(year))
+    sol2 = tt_round(summer_solstice(year + 1))
 
-    moons = [_make_hour(v) for v in visible_new_moons(year, rule) +
+    #moons = [_make_hour(v) for v in visible_new_moons(year, rule) +
+    #         visible_new_moons(year + 1, rule)]
+    moons = [v for v in visible_new_moons(year, rule) +
              visible_new_moons(year + 1, rule)]
 
     return tuple([(m) for m in zip(moons, moons[1:])
@@ -561,7 +575,7 @@ def _pryt_gen(start, end, length, num=10, count=1):
         yield {"prytany": count, "start": start, "end": end}
         return
 
-    p_end = add_days(start, next(length))
+    p_end = tt_round(start, next(length))
 
     yield {"prytany": count, "start": start, "end": p_end}
     yield from _pryt_gen(p_end, end, length, num, count + 1)
@@ -576,10 +590,10 @@ def _pryt_auto(year):
     if year >= -507 and year <= -409:
         return Prytany.QUASI_SOLAR
 
-    if year >= -306 and year <= -221:
+    if year >= -306 and year <= -223:
         return Prytany.ALIGNED_12
 
-    if year >= -220 and year <= -200:
+    if year >= -222 and year <= -200:
         return Prytany.ALIGNED_13
 
     if year >= -199 and year <= -100:
@@ -595,21 +609,21 @@ def _pryt_auto_start(year, start):
     """
     if start == Prytany.AUTO:
         if year < -423:
-            return __h["ts"].ut1(year, 7, 4, 12, 0, 0)
+            return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
 
         if year < -419:
-            return __h["ts"].ut1(year, 7, 7, 12, 0, 0)
+            return tt_round(__h["ts"].ut1(year, 7, 7, 12, 0, 0))
 
         if year < -418:
-            return __h["ts"].ut1(year, 7, 8, 12, 0, 0)
+            return tt_round(__h["ts"].ut1(year, 7, 8, 12, 0, 0))
 
-        return __h["ts"].ut1(year, 7, 9, 12, 0, 0)
+        return tt_round(__h["ts"].ut1(year, 7, 9, 12, 0, 0))
 
-    return __h["ts"].ut1(year, 7, start, 12, 0, 0)
+    return tt_round(__h["ts"].ut1(year, 7, start, 12, 0, 0))
 
 
 def _pryt_solar_end(start):
-    return add_years(start, 1)
+    return tt_round(add_years(start, 1))
 
 
 def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
@@ -627,6 +641,7 @@ def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
     # Get the calendar for the requested year
     cal = calendar_months(year, rule)
     y_len = sum([span(*m) for m in calendar_months(year, rule)])
+
     if auto_type == Prytany.ALIGNED_10:
         # Generate prytanies
         return tuple([p for p
@@ -976,6 +991,9 @@ def _dinsmoor_line(df, year, prev_month):
         except IndexError:
             intercalary = False
             gmonth = Months.UNC
+        except KeyError as e:
+            print(line)
+            raise e
 
         return {"year": year,
                 "month": month,
