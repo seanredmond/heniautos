@@ -393,7 +393,6 @@ def _maybe_intercalate(m, i, abbrev, greek):
         greek (bool): Return names in Greek
 
     """
-    print(m, i, abbrev, greek)
     if m == 12:
         return tuple(zip(_month_names(abbrev, greek), Months))
 
@@ -734,148 +733,177 @@ Prytany.AUTO it will be calculated.
                                rule_of_aristotle=rule_of_aristotle)])
 
 
-def _months_sum(s):
-    """ Return the sum of pairs of ints multiplied by each other.
+def _preceding_ranges(month):
+    """Return possible preceding months."""
+    return [a + b for a, b
+            in zip([(30,) * m for m in range(month)],
+                   [(29,) * m for m in reversed(range(month))])]
 
-    That is given numbers of months and their lengths, calculate their sum.
 
-    For example:
-    ((30, 1), (29, 2)) =
-    (30 * 1) + (29 * 2) =
-    30 + 58
-    = 88
+def _fest_doy_ranges(month, day, offset, intercalation):
+    """Return possible DOYs with preceding months."""
+    return [{"date": (month, day),
+             "doy": sum(m) + day,
+             "preceding": m,
+             "intercalation": intercalation}
+            for m in _preceding_ranges(month + offset)]
+
+
+def festival_doy(month, day):
+    """Return possible DOYs for a given month and day.
+    
+    Calculates every possible DOY for a month and day with all the
+    possible comibinations of full and hollow months preceding it.
+
+    Parameters:
+        month (Months): Months constant for the month
+        day (int): Day of the month
+
+    Returns a tuple of dicts, one for each DOY, and each consisting of:
+        date: Month and day supplied
+        doy: The DOY
+        preceding: tuple of ints that are the lengths of the months preceding
+                   the given date, which goes in the DOY calculation
+        intercalation: True if the DOY requires in intercalation among the 
+                       months preceding the given date. False otherwise
+
     """
-    return sum([(x[0] * x[1]) for x in s])
+    if month == Months.HEK:
+        return _fest_doy_ranges(month, day, 0, False)
+
+    return tuple(sorted(_fest_doy_ranges(month, day, 0, False) +
+                        _fest_doy_ranges(month, day, 1, True),
+                        key=lambda m: m["doy"]))
 
 
-def _cal_doy_single(pry_orig, pry, day, interc, length):
-    """ Return a dict with DOY calculated from pairs of months and lengths
-    where there is only one length.
+def _max_or_fewer(n, mx):
+    """Return n if n is less than mx, otherwise mx."""
+    return n if n < mx else mx
 
-    That is, calculate potential DOYs if all the months are 32 days.
+
+def _pryt_long_count(n, pryt_type, intercalated):
+    """ Return the number of long prytanies allowed for prytany type."""
+    if pryt_type == Prytany.QUASI_SOLAR:
+        return _max_or_fewer(n - 1, 5)
+
+    if pryt_type == Prytany.ALIGNED_10:
+        return _max_or_fewer(n - 1, 4)
+
+    if pryt_type == Prytany.ALIGNED_12:
+        return _max_or_fewer(n - 1, 7)
+
+    if pryt_type == Prytany.ALIGNED_13 and not intercalated:
+        return _max_or_fewer(n - 1, 3)
+
+    if pryt_type == Prytany.ALIGNED_13 and intercalated:
+        return _max_or_fewer(n - 1, 7)
+    
+    raise HeniautosError("Unhandled")
+
+
+def _pryt_short_count(n, pryt_type, intercalated):
+    """ Return the number of short prytanies allowed for prytany type."""
+    if pryt_type == Prytany.QUASI_SOLAR:
+        return _max_or_fewer(n - 1, 5)
+
+    if pryt_type == Prytany.ALIGNED_10:
+        return _max_or_fewer(n - 1, 6)
+
+    if pryt_type == Prytany.ALIGNED_12:
+        return _max_or_fewer(n - 1, 5)
+    
+    if pryt_type == Prytany.ALIGNED_13 and not intercalated:
+        return _max_or_fewer(n - 1, 10)
+
+    if pryt_type == Prytany.ALIGNED_13 and intercalated:
+        return _max_or_fewer(n - 1, 6)
+
+    raise HeniautosError("Unhandled")
+
+
+def _pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
+    """Return possible DOYs with preceding prytanies."""
+    if pryt_type == Prytany.ALIGNED_12 and intercalation:
+        return [{"date": (pry, day),
+                 "doy": sum(r) + day,
+                 "preceding": r,
+                 "intercalation": intercalation}
+                for r in ((32,) * (pry - 1),)]
+    
+    max_long = _pryt_long_count(pry, pryt_type, intercalation)
+    max_short = _pryt_short_count(pry, pryt_type, intercalation)
+    min_long = int(pry - 1) - max_short
+    min_short = int(pry - 1) - max_long
+
+    pairs = [p for p in product(range(min_long, max_long + 1),
+                                range(min_short, max_short + 1))
+             if sum(p) == pry-1]
+
+    ranges = [(lng,) * p[0] + (lng - 1,) * p[1] for p in pairs]
+
+    return [{"date": (pry, day),
+             "doy": sum(r) + day,
+             "preceding": r,
+             "intercalation": intercalation} for r in ranges]
+
+
+def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
+    """Return possible DOYs for a given prytany and day.
+    
+    Calculates every possible DOY for a prytany and day with all the
+    possible combinations of long and short prytanies preceding it.
+
+    Parameters:
+        pry (Prytanies): Prytanies constant for the month
+        day (int): Day of the prytany
+        pryt_type: Prytany constant for the type of prytany
+        year: year, needed of pryt_type is Prytany.AUTO
+
+    Returns a tuple of dicts, one for each DOY, and each consisting of:
+        date: Prytany and day supplied
+        doy: The DOY
+        preceding: tuple of ints that are the lengths of the prytanies 
+                   preceding the given date, which goes in the DOY calculation
+        intercalation: True if the DOY is for an intercalated year. N.B.: this
+                       is different from festival_doy() because it True
+                       for and intercalary DOY whether or not the intercalation
+                       occurs before the given prytany or not.
+
     """
-    return tuple([{"date": (pry_orig, day),
-                   "doy": p * length + day,
-                   "lengths": ((length, p),),
-                   "intercalated": interc}
-                  for p in [pry - 1]])
+    if pryt_type == Prytany.AUTO:
+        if year is None:
+            raise HeniautosError("Year required if pryt_type is Prytany.AUTO")
+        return prytany_doy(pry, day, _pryt_auto(year))
+    
+    if pryt_type == Prytany.QUASI_SOLAR:
+        return tuple(sorted(
+            _pryt_doy_ranges(pry, day, pryt_type, 37, None),
+            key=lambda p: p["doy"]))
+        
+    if pryt_type == Prytany.ALIGNED_10:
+        return tuple(sorted(
+            _pryt_doy_ranges(pry, day, pryt_type, 36, False) + 
+            _pryt_doy_ranges(pry, day, pryt_type, 39, True),
+            key=lambda p: p["doy"]))
 
+    if pryt_type == Prytany.ALIGNED_12:
+        return tuple(sorted(
+            _pryt_doy_ranges(pry, day, pryt_type, 30, False) + 
+            _pryt_doy_ranges(pry, day, pryt_type, 32, True),
+            key=lambda p: p["doy"]))
 
-def _cal_doy_len(pry_orig, pry, day, interc, lengths):
-    """ Return a dict with DOY calculated from pairs of months and lengths
+    if pryt_type == Prytany.ALIGNED_13:
+        return tuple(sorted(
+            _pryt_doy_ranges(pry, day, pryt_type, 28, False) + 
+            _pryt_doy_ranges(pry, day, pryt_type, 30, True),
+            key=lambda p: p["doy"]))
 
-    That is, calculate potential DOYs give a number of months of length L1 and
-    a number of months of L2.
-    """
-    return tuple([{"date": (pry_orig, day),
-                   "doy": _months_sum(c) + day,
-                   "lengths": c,
-                   "intercalated": interc}
-                  for c in [tuple(zip(lengths, [p, pry-p-1]))
-                            for p in range(pry)]])
-
-
-def _cal_lengths_calc(pry_orig, pry, day, interc, lengths):
-    """ Dispatch correct DOY calculation depending on whether the months
-    are all one length or different lengths.
-    """
-    return _cal_doy_single(pry_orig, pry, day, interc, lengths[0]) \
-        if len(lengths) == 1 \
-        else _cal_doy_len(pry_orig, pry, day, interc, lengths)
-
-
-def _cal_length_sort(cal):
-    """ Sort a list of DOY dicts ont the "doy" value. """
-    return sorted(cal, key=lambda d: d["doy"])
-
-
-def _within_max_diff(ln, max_d):
-    """Is the difference in count of follow and hollow less than max_d? """
-    if max_d and len(ln["lengths"]) > 1:
-        return abs(ln["lengths"][0][1] - ln["lengths"][1][1]) <= max_d
-
-    return True
-
-
-def _calc_min_count(cal_count, full, hollow, test_min, test):
-    """Do the count of full and hollow meet minimums?"""
-    return (test_min - test) <= (cal_count - full - hollow)
-
-
-def _meets_min_count(c, cal_count, min_full, min_hollow):
-    """Do the count of full and hollow meet minimums?"""
-    # Intercalary, 12 tribes, all are 32-days so ignore min count
-    if len(c["lengths"]) == 1 and c["lengths"][0][0] == 32:
-        return True
-
-    return _calc_min_count(
-        cal_count, c["lengths"][0][1], c["lengths"][1][1],
-        min_full, c["lengths"][0][1]) and \
-        _calc_min_count(
-            cal_count, c["lengths"][0][1], c["lengths"][1][1],
-            min_hollow, c["lengths"][1][1])
-
-
-def _cal_lengths(pry_orig, pry, day, lengths, max_diff, cal_c, min_f, min_h):
-    """ Return a flattened list of DOYs of all lengths in lengths. """
-    return _cal_length_sort(
-        [c for c in
-         [a for b in
-          [_cal_lengths_calc(pry_orig, pry, day, i, l) for i, l in lengths]
-          for a in b]
-         if _meets_min_count(c, cal_c, min_f, min_h)
-         and _within_max_diff(c, max_diff)])
-
-
-def festival_doy(month, day, max_diff=0):
-    """Return the possible values of DOY for a Greek month and day."""
-    return tuple(
-        _cal_length_sort(
-            _cal_lengths(month, month + 1, day, ((False, (30, 29)),),
-                         max_diff, 12, 5, 5) +
-            _cal_lengths(month, month + 2, day, ((True, (30, 29)),),
-                         max_diff, 13, 6, 5)))
-
-
-def prytany_doy(pry, day, year=None, pryt_type=Prytany.AUTO, max_diff=0):
-    """Return the possible values of DOY for a prytany and day."""
-    pryt_auto = _pryt_auto(year) \
-        if year is not None and pryt_type == Prytany.AUTO else pryt_type
-
-    if pryt_auto == Prytany.QUASI_SOLAR:
-        return tuple(
-            _cal_length_sort(
-                _cal_lengths(pry, pry, day,
-                             ((False, (37, 36)),), max_diff, 10, 5, 5)))
-
-    if pryt_auto == Prytany.ALIGNED_10:
-        return tuple(
-            _cal_length_sort(
-                _cal_lengths(pry, pry, day,
-                             ((False, (36, 35)), (True, (39, 38))),
-                             max_diff, 10, 4, 6)))
-
-    if pryt_auto == Prytany.ALIGNED_12:
-        return tuple(
-            _cal_length_sort(
-                _cal_lengths(pry, pry, day,
-                             ((False, (30, 29)), (True, (32,))),
-                             max_diff, 12, 5, 5)))
-
-    if pryt_auto == Prytany.ALIGNED_13:
-        return tuple(
-            _cal_length_sort(
-                _cal_lengths(pry, pry, day,
-                             ((False, (28, 27)), (True, (30, 29))),
-                             max_diff, 13, 3, 7)))
-
-    raise HeniautosError("No Prytany type identified. Did you forget to "
-                         "supply a year?")
+    raise HeniautosError("Unhandled")
 
 
 def _fest_eq(months, max_diff=0):
     try:
-        return festival_doy(months[0], months[1], max_diff)
+        return festival_doy(months[0], months[1])
     except TypeError as e:
         # We got a tuple of tuples
         if "to tuple" in e.__str__():
@@ -893,9 +921,9 @@ def _fest_eq(months, max_diff=0):
 def _pryt_eq(prytanies, max_diff=0, year=None, pryt_type=Prytany.AUTO):
     try:
         return prytany_doy(prytanies[0], prytanies[1], year=year,
-                           max_diff=max_diff, pryt_type=pryt_type)
+                           pryt_type=pryt_type)
     except TypeError as e:
-        if "'tuple' object" in e.__str__():
+        if "'tuple'" in e.__str__():
             pass
         else:
             raise e
