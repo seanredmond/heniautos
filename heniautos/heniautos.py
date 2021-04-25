@@ -915,7 +915,7 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
     raise HeniautosError("Unhandled")
 
 
-def _fest_eq(months, max_diff=0):
+def _fest_eq(months):
     try:
         return festival_doy(months[0], months[1])
     except TypeError as e:
@@ -929,13 +929,13 @@ def _fest_eq(months, max_diff=0):
         pass
 
     return tuple(
-        [a for b in [_fest_eq(m, max_diff) for m in months] for a in b])
+        [a for b in [_fest_eq(m) for m in months] for a in b])
 
 
-def _pryt_eq(prytanies, max_diff=0, year=None, pryt_type=Prytany.AUTO):
+def _pryt_eq(prytanies, pryt_type=Prytany.AUTO, year=None):
     try:
-        return prytany_doy(prytanies[0], prytanies[1], year=year,
-                           pryt_type=pryt_type)
+        return prytany_doy(prytanies[0], prytanies[1], pryt_type=pryt_type,
+                           year=year)
     except TypeError as e:
         if "'tuple'" in e.__str__():
             pass
@@ -945,13 +945,12 @@ def _pryt_eq(prytanies, max_diff=0, year=None, pryt_type=Prytany.AUTO):
         pass
 
     return tuple(
-        [a for b in [_pryt_eq(p, max_diff=max_diff, year=year,
-                              pryt_type=pryt_type) for p in prytanies]
+        [a for b in [_pryt_eq(p, pryt_type=pryt_type, year=year)
+                     for p in prytanies]
          for a in b])
 
 
-def equations(months, prytanies, max_fest_diff=0, max_pryt_diff=0, year=None,
-              pryt_type=Prytany.AUTO):
+def equations(months, prytanies, pryt_type=Prytany.AUTO, year=None):
     """Return possible solutions for a calendar equation
 
     Parameters:
@@ -985,8 +984,8 @@ tuple of such tuples
     date.
 
     """
-    pryt_eqs = _pryt_eq(prytanies, max_pryt_diff, year, pryt_type)
-    fest_eqs = _fest_eq(months, max_fest_diff)
+    pryt_eqs = _pryt_eq(prytanies, pryt_type, year)
+    fest_eqs = _fest_eq(months)
 
     intersection = sorted(set([f["doy"] for f in fest_eqs]) & \
                           set([p["doy"] for p in pryt_eqs]))
