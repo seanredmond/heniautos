@@ -577,12 +577,18 @@ def _pryt_gen(start, end, length, num=10, count=1):
         # If this is the 10th prytany, return the EOY date as the end
         # date of the prytany, which may be one day more or one day
         # less than the expected length. Then stop
-        yield {"prytany": count, "start": start, "end": end}
+        yield {"prytany": count,
+               "constant": list(Prytanies)[count-1],
+               "start": start,
+               "end": end}
         return
 
     p_end = tt_round(start, next(length))
 
-    yield {"prytany": count, "start": start, "end": p_end}
+    yield {"prytany": count,
+           "constant": list(Prytanies)[count-1],
+           "start": start,
+           "end": p_end}
     yield from _pryt_gen(p_end, end, length, num, count + 1)
 
 
@@ -633,7 +639,7 @@ def _pryt_solar_end(start):
 
 def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
               rule=Visible.SECOND_DAY, rule_of_aristotle=False):
-    """Return tuple of prytanies. See prytany_celendar for parameters."""
+    """Return tuple of prytanies. See prytany_calendar for parameters."""
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
 
     if auto_type == Prytany.QUASI_SOLAR:
@@ -710,6 +716,7 @@ Prytany.AUTO it will be calculated.
 
     Each member of the returned tuple is a dict containing:
         "prytany": the number of the prytany
+        "constant": Prytanies constant for the prytany
         "days": a tuple with one member for day of the month.
 
     Each member of the "days" tuple is a dict containing:
@@ -721,11 +728,33 @@ Prytany.AUTO it will be calculated.
     doy = _doy_gen()
 
     return tuple([{"prytany": p["prytany"],
+                   "constant": p["constant"],
                    "days": _month_days(p["start"], p["end"], doy)}
                   for p
                   in prytanies(year, pryt_type=pryt_type,
                                pryt_start=pryt_start, rule=rule,
                                rule_of_aristotle=rule_of_aristotle)])
+
+
+def doy_to_julian(doy, year, rule=Visible.SECOND_DAY):
+    """Return the Julian date from DOY in the given year."""
+    return [a for b in
+            [[d["date"] for d in m["days"] if d["doy"] == doy]
+             for m in festival_calendar(year, rule=rule)] for a in b][0]
+
+
+def festival_to_julian(month, day, year, rule=Visible.SECOND_DAY):
+    return [a for b in
+            [[d["date"] for d in m["days"] if d["day"] == day]
+             for m in festival_calendar(year, rule=rule)
+             if m["constant"] == month] for a in b][0]
+
+
+def prytany_to_julian(prytany, day, year, rule=Visible.SECOND_DAY):
+    return [a for b in
+            [[d["date"] for d in p["days"] if d["day"] == day]
+             for p in prytany_calendar(year, rule=rule)
+             if p["constant"] == prytany] for a in b][0]
 
 
 def _fest_long_count(n, intercalated):

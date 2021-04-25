@@ -1394,6 +1394,50 @@ def test_dinsmoor_months():
     assert dinsmoor_months(-310, greek=True)[0]["month"] == "Uncertain"
 
 
+def test_doy_to_julian():
+    assert as_eet(
+        doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-02"
+
+    assert as_eet(
+        doy_to_julian(256, bce_as_negative(332),
+                      rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
+    assert as_eet(
+        doy_to_julian(256, bce_as_negative(332),
+                      rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+
+
+def test_festival_to_julian():
+    assert as_eet(
+        festival_to_julian(Months.ELA, 19,
+                           bce_as_negative(332))) == "BCE 0331-Apr-02"
+
+    assert as_eet(
+        festival_to_julian(Months.ELA, 19,
+                           bce_as_negative(332),
+                           rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
+
+    assert as_eet(
+        festival_to_julian(Months.ELA, 19,
+                           bce_as_negative(332),
+                           rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+
+
+def test_prytany_to_julian():
+    assert as_eet(
+        prytany_to_julian(Prytanies.VIII, 7,
+                          bce_as_negative(332))) == "BCE 0331-Apr-02"
+
+    assert as_eet(
+        prytany_to_julian(Prytanies.VIII, 7,
+                          bce_as_negative(332),
+                          rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
+
+    assert as_eet(
+        prytany_to_julian(Prytanies.VIII, 7,
+                          bce_as_negative(332),
+                          rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+
+
 def test_320():
     # Bug: For the year 320 (2-day rule), the boundaries betweem many
     # months had problems.
