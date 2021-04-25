@@ -963,18 +963,38 @@ tuple of such tuples
         pryt_type (Prytany): Type of prytany calendar to use
 (default Prytany.AUTO)
 
+    Returns a tuple of tuples. Each inner tuple is a pair of dicts,
+    one for festival and one for conciliar calendar conditions that
+    satisfy the equation for a particular DOY. Each of these dicts
+    consists of:
+
+        date: The festival or prytany date
+        doy: The DOY of the date
+        preceding: A tuple of lengths of the preceding months or prytanies
+        intercalation: True if intercalation required for this solution
+
+    Intercalation means something slightly different for the festival
+    and conciliar calendar solutions. For the conciliar calendar True
+    means that the year is intercalary because that affects the
+    lengths of all the prytanies. For the festival calendar True means
+    that an intercalation must precede the date because that effects
+    the number of months, not the lengths. If a pair has intercalation
+    = False in the festival solution but intercalation = True in the
+    conciliar, it indicated that that solution is valid for an
+    intercalary, but only if the intercalation follows the festival
+    date.
+
     """
     pryt_eqs = _pryt_eq(prytanies, max_pryt_diff, year, pryt_type)
     fest_eqs = _fest_eq(months, max_fest_diff)
 
-    matches = sorted(
-        set([p["doy"] for p in pryt_eqs]) & set([f["doy"] for f in fest_eqs]))
+    intersection = sorted(set([f["doy"] for f in fest_eqs]) & \
+                          set([p["doy"] for p in pryt_eqs]))
 
-    return tuple([{
-        "doy": doy,
-        "equations": {"festival": [f for f in fest_eqs if f["doy"] == doy],
-                      "conciliar": [p for p in pryt_eqs if p["doy"] == doy]}}
-                  for doy in matches])
+    return tuple([a for b in
+                  [tuple(product([f for f in fest_eqs if f["doy"] == i],
+                                 [p for p in pryt_eqs if p["doy"] == i]))
+                   for i in intersection] for a in b])
 
 
 def dinsmoor_month_name(m, intercalated, abbrev, greek):

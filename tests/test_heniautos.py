@@ -1303,10 +1303,41 @@ def test_pryt_eq_nested():
 def test_equations_tuples():
     eq = equations((Months.MET, 10), (Prytanies.II, 4),
                    pryt_type=Prytany.ALIGNED_10)
-    print(eq)
+
+    # Two solutions to this equation:
     assert len(eq) == 2
-    assert eq[0]["doy"] == 39
-    assert len(eq[0]["equations"]) == 2
+
+    # The first solution is DOY 39 (these should be sorted by DOY)
+    assert len(eq[0]) == 2
+    f, c = eq[0]
+
+    assert f["doy"] == 39
+    assert c["doy"] == 39
+
+    assert f["preceding"] == (29,)
+    assert c["preceding"] == (35,)
+
+    assert f["intercalation"] == False
+    assert c["intercalation"] == False
+    
+    # The second solution is DOY 40
+    assert len(eq[1]) == 2
+    f, c = eq[1]
+    assert f["doy"] == 40
+    assert c["doy"] == 40
+
+    assert f["preceding"] == (30,)
+    assert c["preceding"] == (36,)
+
+    assert f["intercalation"] == False
+    assert c["intercalation"] == False
+
+    eq = equations((Months.POS, 14), (Prytanies.V, 36),
+                   pryt_type=Prytany.ALIGNED_10)
+
+    assert len(eq) == 5
+    assert [f[0]["doy"] for f in eq] == [188, 189, 190, 191, 192]
+    assert [p[0]["doy"] for p in eq] == [188, 189, 190, 191, 192]
 
 
 def test_equations_nested():
@@ -1314,16 +1345,10 @@ def test_equations_nested():
                    ((Prytanies.I, 30), (Prytanies.I, 31)),
                    pryt_type=Prytany.ALIGNED_10)
 
-    assert len(eq) == 2
-    assert eq[0]["doy"] == 30
-    assert len(eq[0]["equations"]["festival"]) == 2
-    assert eq[0]["equations"]["festival"][0]["date"] == (Months.HEK, 30)
-    assert eq[0]["equations"]["festival"][1]["date"] == (Months.MET, 1)
-    assert len(eq[0]["equations"]["conciliar"]) == 2
-    assert eq[0]["equations"]["conciliar"][0]["date"] == (Prytanies.I, 30)
-    assert eq[0]["equations"]["conciliar"][0]["intercalation"] == False
-    assert eq[0]["equations"]["conciliar"][1]["date"] == (Prytanies.I, 30)
-    assert eq[0]["equations"]["conciliar"][1]["intercalation"] == True
+    assert all([e[0]["date"] == (Months.HEK, 30) for e in eq[0:2]])
+    assert all([e[0]["date"] == (Months.MET, 1) for e in eq[2:]])
+
+    assert len(eq) == 6
 
     
 @pytest.mark.skip(reason="reevaluating if this needs a test")
