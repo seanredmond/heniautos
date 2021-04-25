@@ -947,6 +947,23 @@ def test_prytany_calendar_13_intercalated_aristotle():
     assert len(p3[-1]["days"]) == 29
 
 
+# def test_fest_doy_ranges():
+#     for r in heniautos._fest_doy_ranges(Months.MOU, 10, 0, False):
+#         print(r)
+#     print("----")
+#     for r in heniautos._fest_doy_ranges2(Months.MOU, 10, 0, False):
+#         print(r)
+#     print("====")
+
+#     for r in heniautos._fest_doy_ranges(Months.MOU, 10, 30, True):
+#         print(r)
+#     print("----")
+#     for r in heniautos._fest_doy_ranges2(Months.MOU, 10, 30, True):
+#         print(r)
+
+#     assert False
+    
+
 def test_festival_doy():
     # 1st month, no intercalation possible
     doy = festival_doy(Months.HEK, 5)
@@ -959,6 +976,7 @@ def test_festival_doy():
 
     # 2nd month
     doy = festival_doy(Months.MET, 5)
+    print(doy)
     assert len(doy) == 5
     assert doy[0]["doy"] == 34
     assert len(doy[0]["preceding"]) == 1
@@ -984,6 +1002,18 @@ def test_festival_doy():
     assert not any([d["intercalation"] for d in doy if d["doy"] < 172])
     assert all([d["intercalation"] for d in doy if d["doy"] > 147])
 
+    doy = festival_doy(Months.MOU, 27)
+    assert len(doy) == 8
+    assert doy[0]["doy"] == 292
+    assert len(doy[0]["preceding"]) == 9
+    assert doy[0]["intercalation"] == False
+
+    assert doy[-1]["doy"] == 324
+    assert len(doy[-1]["preceding"]) == 10
+    assert doy[-1]["intercalation"] == True
+    assert not any([d["intercalation"] for d in doy if d["doy"] < 321])
+    assert all([d["intercalation"] for d in doy if d["doy"] > 295])
+    
 
 def test_prytany_doy_quasi_solar():
     # 1st prytany

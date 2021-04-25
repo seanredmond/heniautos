@@ -164,7 +164,6 @@ def tt_day(t):
 
 def tt_round(t, adv=0):
     return __h["ts"].tt_jd(round(t.tt) + adv)
-    
 
 
 def date(y, m, d, h=9):
@@ -319,7 +318,6 @@ def _make_hour(t, h=9):
 def _on_after(t1, t2):
     """Is time t1 on or after time t2?"""
     return t1.tt > t2.tt
-    #return t1.ut1 > t2.ut1
 
 
 def _before(t1, t2):
@@ -352,8 +350,6 @@ def calendar_months(year, rule=Visible.SECOND_DAY):
     sol1 = tt_round(summer_solstice(year))
     sol2 = tt_round(summer_solstice(year + 1))
 
-    #moons = [_make_hour(v) for v in visible_new_moons(year, rule) +
-    #         visible_new_moons(year + 1, rule)]
     moons = [v for v in visible_new_moons(year, rule) +
              visible_new_moons(year + 1, rule)]
 
@@ -396,8 +392,7 @@ def _maybe_intercalate(m, i, abbrev, greek):
     if m == 12:
         return tuple(zip(_month_names(abbrev, greek), Months))
 
-    return _insert_interc(_maybe_intercalate(12, i, abbrev, greek)
-                          , i,
+    return _insert_interc(_maybe_intercalate(12, i, abbrev, greek), i,
                           _suffix(abbrev, greek))
 
 
@@ -733,25 +728,44 @@ Prytany.AUTO it will be calculated.
                                rule_of_aristotle=rule_of_aristotle)])
 
 
-def _preceding_ranges(month):
-    """Return possible preceding months."""
-    return [a + b for a, b
-            in zip([(30,) * m for m in range(month)],
-                   [(29,) * m for m in reversed(range(month))])]
+def _fest_long_count(n, intercalated):
+    if not intercalated:
+        return _max_or_fewer(n - 1, 7)
+
+    return _max_or_fewer(n, 7)
 
 
-def _fest_doy_ranges(month, day, offset, intercalation):
+def _fest_short_count(n, intercalated):
+    if not intercalated:
+        return _max_or_fewer(n - 1, 5)
+
+    return _max_or_fewer(n, 6)
+
+
+def _fest_doy_ranges(month, day, lng, intercalation):
     """Return possible DOYs with preceding months."""
+
+    max_long = _fest_long_count(month, intercalation)
+    max_short = _fest_short_count(month, intercalation)
+    min_long = int(month - (0 if intercalation else 1)) - max_short
+    min_short = int(month - (0 if intercalation else 1)) - max_long
+
+    pairs = [p for p in product(range(min_long, max_long + 1),
+                                range(min_short, max_short + 1))
+             if sum(p) == month - (0 if intercalation else 1)]
+
+    ranges = [(lng,) * p[0] + (lng - 1,) * p[1] for p in pairs]
+
     return [{"date": (month, day),
              "doy": sum(m) + day,
              "preceding": m,
              "intercalation": intercalation}
-            for m in _preceding_ranges(month + offset)]
+            for m in ranges]
 
 
 def festival_doy(month, day):
     """Return possible DOYs for a given month and day.
-    
+
     Calculates every possible DOY for a month and day with all the
     possible comibinations of full and hollow months preceding it.
 
@@ -764,15 +778,15 @@ def festival_doy(month, day):
         doy: The DOY
         preceding: tuple of ints that are the lengths of the months preceding
                    the given date, which goes in the DOY calculation
-        intercalation: True if the DOY requires in intercalation among the 
+        intercalation: True if the DOY requires in intercalation among the
                        months preceding the given date. False otherwise
 
     """
     if month == Months.HEK:
-        return _fest_doy_ranges(month, day, 0, False)
+        return _fest_doy_ranges(month, day, 30, False)
 
-    return tuple(sorted(_fest_doy_ranges(month, day, 0, False) +
-                        _fest_doy_ranges(month, day, 1, True),
+    return tuple(sorted(_fest_doy_ranges(month, day, 30, False) +
+                        _fest_doy_ranges(month, day, 30, True),
                         key=lambda m: m["doy"]))
 
 
@@ -797,7 +811,7 @@ def _pryt_long_count(n, pryt_type, intercalated):
 
     if pryt_type == Prytany.ALIGNED_13 and intercalated:
         return _max_or_fewer(n - 1, 7)
-    
+
     raise HeniautosError("Unhandled")
 
 
@@ -811,7 +825,7 @@ def _pryt_short_count(n, pryt_type, intercalated):
 
     if pryt_type == Prytany.ALIGNED_12:
         return _max_or_fewer(n - 1, 5)
-    
+
     if pryt_type == Prytany.ALIGNED_13 and not intercalated:
         return _max_or_fewer(n - 1, 10)
 
@@ -829,7 +843,7 @@ def _pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
                  "preceding": r,
                  "intercalation": intercalation}
                 for r in ((32,) * (pry - 1),)]
-    
+
     max_long = _pryt_long_count(pry, pryt_type, intercalation)
     max_short = _pryt_short_count(pry, pryt_type, intercalation)
     min_long = int(pry - 1) - max_short
@@ -849,7 +863,7 @@ def _pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
 
 def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
     """Return possible DOYs for a given prytany and day.
-    
+
     Calculates every possible DOY for a prytany and day with all the
     possible combinations of long and short prytanies preceding it.
 
@@ -862,7 +876,7 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
     Returns a tuple of dicts, one for each DOY, and each consisting of:
         date: Prytany and day supplied
         doy: The DOY
-        preceding: tuple of ints that are the lengths of the prytanies 
+        preceding: tuple of ints that are the lengths of the prytanies
                    preceding the given date, which goes in the DOY calculation
         intercalation: True if the DOY is for an intercalated year. N.B.: this
                        is different from festival_doy() because it True
@@ -874,27 +888,27 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
         if year is None:
             raise HeniautosError("Year required if pryt_type is Prytany.AUTO")
         return prytany_doy(pry, day, _pryt_auto(year))
-    
+
     if pryt_type == Prytany.QUASI_SOLAR:
         return tuple(sorted(
             _pryt_doy_ranges(pry, day, pryt_type, 37, None),
             key=lambda p: p["doy"]))
-        
+
     if pryt_type == Prytany.ALIGNED_10:
         return tuple(sorted(
-            _pryt_doy_ranges(pry, day, pryt_type, 36, False) + 
+            _pryt_doy_ranges(pry, day, pryt_type, 36, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 39, True),
             key=lambda p: p["doy"]))
 
     if pryt_type == Prytany.ALIGNED_12:
         return tuple(sorted(
-            _pryt_doy_ranges(pry, day, pryt_type, 30, False) + 
+            _pryt_doy_ranges(pry, day, pryt_type, 30, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 32, True),
             key=lambda p: p["doy"]))
 
     if pryt_type == Prytany.ALIGNED_13:
         return tuple(sorted(
-            _pryt_doy_ranges(pry, day, pryt_type, 28, False) + 
+            _pryt_doy_ranges(pry, day, pryt_type, 28, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 30, True),
             key=lambda p: p["doy"]))
 
@@ -906,7 +920,7 @@ def _fest_eq(months, max_diff=0):
         return festival_doy(months[0], months[1])
     except TypeError as e:
         # We got a tuple of tuples
-        if "to tuple" in e.__str__():
+        if "tuple" in e.__str__():
             pass
         else:
             raise e
