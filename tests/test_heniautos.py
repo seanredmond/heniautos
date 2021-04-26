@@ -1519,3 +1519,87 @@ def test_320():
     assert festival_calendar(
         bce_as_negative(320),
         rule=Visible.CONJUNCTION)[-1]["days"][-1]["doy"] == 384
+
+def test_is_contained_in():
+    assert heniautos._is_contained_in(
+        (29, 29, 29, 29),
+        (30, 30, 30, 29, 29, 29, 29, 29)) == (30, 30, 30, 29)
+
+    with pytest.raises(HeniautosNoMatchError):
+        heniautos._is_contained_in(
+            (29, 29, 29, 29),
+            (30, 30, 30, 30, 30, 29, 29, 29)) == (30, 30, 30, 29)
+
+    with pytest.raises(HeniautosNoMatchError):
+        heniautos._is_contained_in((29, 29, 29, 29), (29, 29, 29))
+        
+
+def test_each_overlaps():
+    s = [(29, 29, 29, 29),
+         (30, 30, 30, 29, 29, 29, 29, 29),
+         (30, 30, 30, 30, 29, 29, 29, 29, 29)]
+
+    assert heniautos._each_overlaps(s) == \
+        ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
+
+    s = [(29, 29, 29, 29),
+         (30, 30, 30, 29, 29, 29, 29, 29),
+         (30, 30, 30, 30, 30, 29, 29, 29, 29)]
+
+    with pytest.raises(HeniautosNoMatchError):
+        heniautos._each_overlaps(s) == \
+            ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
+
+
+    
+def test_no_deintercalations():
+    assert heniautos._no_deintercalations((False, False, False)) == True
+    assert heniautos._no_deintercalations((True, True, True)) == True
+    assert heniautos._no_deintercalations((False, True, True)) == True
+    assert heniautos._no_deintercalations((False, False, True)) == True
+    assert heniautos._no_deintercalations((True, False, True)) == False
+    assert heniautos._no_deintercalations((True, True, False)) == False
+    assert heniautos._no_deintercalations((True, False, False)) == False
+    
+
+def test_collations():
+    # Equation 1: Boe 11 = II 31
+    eq1 = equations((Months.MAI, 11), (Prytanies.IV, 21),
+                    year=bce_as_negative(319))
+    #print(eq1)
+    eq2 = equations((Months.ELA, 12), (Prytanies.VII, 34),
+                    year=bce_as_negative(319))
+    #print(eq2)
+
+    eq3 = equations((Months.MOU, 12), (Prytanies.VIII, 29),
+                    year=bce_as_negative(319))
+
+    c = collations(eq1, eq2, eq3)
+    assert len(c) == 6
+
+    # Festival year partitions
+    assert c[0]["partitions"]["festival"] == ((29, 29, 29, 29),
+                                              (30, 30, 30, 29),
+                                              (30,))
+    assert c[0]["partitions"]["conciliar"] == ((36, 35, 35),
+                                               (36, 36, 35),
+                                               (35,))
+
+    # Festival DOYs
+    assert [e[0]["doy"] for e in c[0]["equations"]] == [127, 247, 277]
+
+    # Conciliar DOYs
+    assert [e[1]["doy"] for e in c[0]["equations"]] == [127, 247, 277]
+
+    # Festival Intercalations
+    assert [e[0]["intercalation"] for e in c[0]["equations"]] == [False,
+                                                                  False,
+                                                                  False]
+    # Conciliar Intercalations
+    assert [e[1]["intercalation"] for e in c[0]["equations"]] == [False,
+                                                                  False,
+                                                                  False]
+
+    
+    c = collations(eq1, eq2, eq3, failures=True)
+    assert len(c) == 6

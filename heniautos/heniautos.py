@@ -9,6 +9,9 @@ from skyfield.api import GREGORIAN_START
 class HeniautosError(Exception):
     pass
 
+class HeniautosNoMatchError(Exception):
+    pass
+
 
 class Seasons(IntEnum):
     """Constants representing the solar year seasons."""
@@ -1024,8 +1027,150 @@ tuple of such tuples
                                  [p for p in pryt_eqs if p["doy"] == i]))
                    for i in intersection] for a in b])
 
+def _no_deintercalations(i, pre=False):
+    """Check festival intercalation sequence.
+
+    Recursively check a sequence of festival month equation
+    intercalation requirements. In festival month equation one with no
+    intercalation can precede one with intercalation (because it's
+    about when the intercalation occurse). Once one of the equations
+    requires an intecalation before (True) none that follow can
+    require no intercalation (False)
+
+    """
+    if not i:
+        # If we got to then end of the sequence, it is good
+        return True
+    
+    if pre == False and i[0] == False:
+        # Proceed, no intercalation yet
+        return _no_deintercalations(i[1:], False)
+
+    if pre == True and i[0] == True:
+        # Proceed, we have intercalation
+        return _no_deintercalations(i[1:], True)
+
+    if pre == False and i[0] == True:
+        # Proceed, switch from no intercalation to intercalation
+        return _no_deintercalations(i[1:], True)
+
+    # The only condition left in pre == True and i[0] == False.
+    # The forbidden condition. We have a precedeing intercalation
+    # but the current equation requires none
+    return False
+
+def _is_contained_in(a, b):
+    """Test whether the values in first tuple are contained in second."""
+    if not len(a):
+        # Successfully exhausted the first tuple. Return remainder
+        return b
+
+    try:
+        i = b.index(a[0])
+        return _is_contained_in(a[1:], b[:i] + b[i+1:])
+    except ValueError as e:
+        raise HeniautosNoMatchError(f"{a[0]} not found in {b}")
+
+
+def _each_overlaps(b, a=tuple()):
+    """ Test overlapping series of months or prytanies. """
+    if not a:
+        # First pass
+        return _each_overlaps(b[1:], a + (b[0],))
+
+    if not b:
+        # Finished succesfully. Results in a
+        return a
+
+    # Just use a flattened version of a, results are the same
+    # raises HeniautosNoMatchError if unsuccessful
+    c = _is_contained_in([x for y in a for x in y], b[0])
+
+    return _each_overlaps(b[1:], (a + (c,)))
+    
+
+
+# def _lengths_overlap(c, pre=tuple()):
+#     print("-"*10, "_lengths_overlap()", "-"*10)
+#     print("    c:",   c)
+#     print("    pre:", pre)
+    
+#     if not pre:
+#         print("c[0]:", c[0])
+#         print("c[1:]:", c[1:])
+#         return _lengths_overlap(c[1:], (c[0],))
+
+#     _is_contained_in(pre, c[0])
+    
+
+
+def collations(*args, failures=False):
+    """Collate multiple equations, looking for those that fit together.
+
+    Take an arbitrary number of calendar equation results (args,
+    i.e. results from equations()) and find those that fit together
+    according to the following criteria:
+
+        1) required conciliar years are all normal or all intercalary
+        2) all equations that require festival year intercalation follow any
+           that require no intercalations
+        3) Each sequence of month and prytany lengths fits into the following
+           sequences.
+
+    Each equation results probably has multiple solutions. This test
+    all combinations of solutions. Returns results as a tuple of dicts, each consiting of 
+    
+        partitions: a dict with two members: "festival" and
+        "conciliar." Each is a list of month or prytany lengths
+        partitioned according to the requirements of the
+        equations. For instance, ((30, 29), (30, 29), (30, 30, 29))
+        means that the first equation must be preceded by one full and
+        one hollow month; after the first equation but before the
+        second there must by on full and one hollow month; after the
+        second but before the third there must be two full and one
+        hollow.
+
+        equations: a list of equations making up this combined
+        solution. Each is identical to a result returned from
+        equations().
+
+    If the optional "failures" parameter is true, return combinations
+    that cannot be fitted together, as a list of combinations
+
+    """
+    successes = tuple()
+    not_successes = tuple()
+
+    for p in product(*args):
+        try:
+            # Criterion #1
+            if len(set([c[1]["intercalation"] for c in p])) > 1:
+                raise HeniautosNoMatchError()
+
+            # Criterion #2
+            if not _no_deintercalations([c[0]["intercalation"] for c in p]):
+                raise HeniautosNoMatchError()
+
+
+            # Criterion #3
+            fest_partitions = _each_overlaps([c[0]["preceding"] for c in p])
+            pryt_partitions = _each_overlaps([c[1]["preceding"] for c in p])
+            successes = successes + ({"partitions":
+                                      {"festival": fest_partitions,
+                                       "conciliar": pryt_partitions},
+                                      "equations": p},)
+
+        except HeniautosNoMatchError as e:
+            not_successes = not_successes + (p,)
+
+    if failures is True:
+        return not_successes
+    
+    return successes
+        
 
 def dinsmoor_month_name(m, intercalated, abbrev, greek):
+
     """Accomodate uncertain months in Dinsmoor data"""
     if m == Months.UNC:
         if abbrev:
