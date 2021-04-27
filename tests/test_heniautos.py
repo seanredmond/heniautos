@@ -1345,30 +1345,6 @@ def test_equations_tuples():
     assert [p[0]["doy"] for p in eq] == [188, 189, 190, 191, 192]
 
 
-# def test_pryt_ordinary_max():
-#     assert heniautos._pryt_ordinary_max(Prytany.QUASI_SOLAR) == 37
-#     assert heniautos._pryt_ordinary_max(Prytany.ALIGNED_10) == 36
-#     assert heniautos._pryt_ordinary_max(Prytany.ALIGNED_12) == 30
-#     assert heniautos._pryt_ordinary_max(Prytany.ALIGNED_13) == 28
-
-
-# def test_matches_intercalation():
-#     # Prytany day = 39 and intercalation is True
-#     eq1 = ({'date': (Months.MET, 9), 'doy': 39, 'preceding': (30,),
-#             'intercalation': False},
-#            {'date': (Prytanies.I, 39), 'doy': 39, 'preceding': (),
-#             'intercalation': True})
-
-#     # Prytany day = 39 and intercalation is False. This one is impossible
-#     eq2 = ({'date': (Months.MET, 9), 'doy': 39, 'preceding': (30,),
-#             'intercalation': False},
-#            {'date': (Prytanies.I, 39), 'doy': 39, 'preceding': (),
-#             'intercalation': False})
-
-#     assert heniautos._matches_intercalation(eq1, Prytany.ALIGNED_10) == True
-#     assert heniautos._matches_intercalation(eq2, Prytany.ALIGNED_10) == False
-
-    
 def test_equations_must_be_intercalary():
     eq1 = equations((Months.MET, 9), (Prytanies.I, 39),
                    pryt_type=Prytany.ALIGNED_10)
