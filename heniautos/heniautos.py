@@ -927,18 +927,34 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
             key=lambda p: p["doy"]))
 
     if pryt_type == Prytany.ALIGNED_10:
+        if day > 36:
+            # Must be intercalary
+            return tuple(sorted(
+                _pryt_doy_ranges(pry, day, pryt_type, 39, True),
+                key=lambda p: p["doy"]))
+            
         return tuple(sorted(
             _pryt_doy_ranges(pry, day, pryt_type, 36, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 39, True),
             key=lambda p: p["doy"]))
 
     if pryt_type == Prytany.ALIGNED_12:
+        if day > 30:
+            return tuple(sorted(
+                _pryt_doy_ranges(pry, day, pryt_type, 32, True),
+                key=lambda p: p["doy"]))
+            
         return tuple(sorted(
             _pryt_doy_ranges(pry, day, pryt_type, 30, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 32, True),
             key=lambda p: p["doy"]))
 
     if pryt_type == Prytany.ALIGNED_13:
+        if day > 28:
+            return tuple(sorted(
+                _pryt_doy_ranges(pry, day, pryt_type, 30, True),
+                key=lambda p: p["doy"]))
+
         return tuple(sorted(
             _pryt_doy_ranges(pry, day, pryt_type, 28, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 30, True),
@@ -980,39 +996,6 @@ def _pryt_eq(prytanies, pryt_type=Prytany.AUTO, year=None):
         [a for b in [_pryt_eq(p, pryt_type=pryt_type, year=year)
                      for p in prytanies]
          for a in b])
-
-
-def _pryt_ordinary_max(pryt_type):
-    """Length of longest ordinary year prytany."""
-    if pryt_type == Prytany.ALIGNED_10:
-        return 36
-
-    if pryt_type == Prytany.ALIGNED_12:
-        return 30
-
-    if pryt_type == Prytany.ALIGNED_13:
-        return 28
-
-    return 37
-
-
-def _matches_intercalation(e, pryt_type):
-    """Check whether prytany date requires intercalation.
-
-    If the prytany day is greater than the highest number day for an
-    ordinary year prytany for the give prytany type, make sure that
-    the equation is for an intercalary year.
-
-    For example, if interalation is False, and the prytany day is 39,
-    return False because a 39 day prytany can only occur in an
-    intercalary year
-
-    """
-    print(e)
-    if e[1]["date"][1] > _pryt_ordinary_max(pryt_type):
-        return e[1]["intercalation"] == True
-    
-    return True
 
 
 def equations(months, prytanies, pryt_type=Prytany.AUTO, year=None):
@@ -1058,8 +1041,7 @@ tuple of such tuples
     return tuple([a for b in
                   [tuple(product([f for f in fest_eqs if f["doy"] == i],
                                  [p for p in pryt_eqs if p["doy"] == i]))
-                   for i in intersection] for a in b
-                  if _matches_intercalation(a, pryt_type)])
+                   for i in intersection] for a in b])
 
 def _no_deintercalations(i, pre=False):
     """Check festival intercalation sequence.
