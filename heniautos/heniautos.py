@@ -774,19 +774,14 @@ def _fest_short_count(n, intercalated):
     return _max_or_fewer(n, 6)
 
 
-def _fest_doy_ranges(month, day, lng, intercalation):
+def _fest_doy_ranges(month, day, intercalation):
     """Return possible DOYs with preceding months."""
+    pairs = [p for p
+             in [(r, (int(month) + (0 if intercalation else -1)) - r)
+                 for r in range(int(month) + (1 if intercalation else 0))]
+             if p[0] <= 7 and p[1] <= (6 + (1 if intercalation else 0))]
 
-    max_long = _fest_long_count(month, intercalation)
-    max_short = _fest_short_count(month, intercalation)
-    min_long = int(month - (0 if intercalation else 1)) - max_short
-    min_short = int(month - (0 if intercalation else 1)) - max_long
-
-    pairs = [p for p in product(range(min_long, max_long + 1),
-                                range(min_short, max_short + 1))
-             if sum(p) == month - (0 if intercalation else 1)]
-
-    ranges = [(lng,) * p[0] + (lng - 1,) * p[1] for p in pairs]
+    ranges = [(30,) * p[0] + (29,) * p[1] for p in pairs]
 
     return [{"date": (month, day),
              "doy": sum(m) + day,
@@ -815,10 +810,10 @@ def festival_doy(month, day):
 
     """
     if month == Months.HEK:
-        return _fest_doy_ranges(month, day, 30, False)
+        return _fest_doy_ranges(month, day, False)
 
-    return tuple(sorted(_fest_doy_ranges(month, day, 30, False) +
-                        _fest_doy_ranges(month, day, 30, True),
+    return tuple(sorted(_fest_doy_ranges(month, day, False) +
+                        _fest_doy_ranges(month, day, True),
                         key=lambda m: m["doy"]))
 
 

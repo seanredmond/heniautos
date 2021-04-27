@@ -947,21 +947,36 @@ def test_prytany_calendar_13_intercalated_aristotle():
     assert len(p3[-1]["days"]) == 29
 
 
-# def test_fest_doy_ranges():
-#     for r in heniautos._fest_doy_ranges(Months.MOU, 10, 0, False):
-#         print(r)
-#     print("----")
-#     for r in heniautos._fest_doy_ranges2(Months.MOU, 10, 0, False):
-#         print(r)
-#     print("====")
+def test_fest_doy_ranges():
+    r = heniautos._fest_doy_ranges(Months.ELA, 19, False)
+    assert len(r) == 6
+    assert min([m["doy"] for m in r]) == 253
+    assert max([m["doy"] for m in r]) == 258
 
-#     for r in heniautos._fest_doy_ranges(Months.MOU, 10, 30, True):
-#         print(r)
-#     print("----")
-#     for r in heniautos._fest_doy_ranges2(Months.MOU, 10, 30, True):
-#         print(r)
+    r = heniautos._fest_doy_ranges(Months.ELA, 19, True)
+    assert len(r) == 6
+    assert min([m["doy"] for m in r]) == 282
+    assert max([m["doy"] for m in r]) == 287
 
-#     assert False
+    r = heniautos._fest_doy_ranges(Months.MAI, 19, False)
+    assert len(r) == 5
+    assert min([m["doy"] for m in r]) == 135
+    assert max([m["doy"] for m in r]) == 139
+
+    r = heniautos._fest_doy_ranges(Months.MAI, 19, True)
+    assert len(r) == 6
+    assert min([m["doy"] for m in r]) == 164
+    assert max([m["doy"] for m in r]) == 169
+
+    r = heniautos._fest_doy_ranges(Months.MOU, 27, False)
+    assert len(r) == 5
+    assert min([m["doy"] for m in r]) == 291
+    assert max([m["doy"] for m in r]) == 295
+
+    r = heniautos._fest_doy_ranges(Months.MOU, 27, True)
+    assert len(r) == 5
+    assert min([m["doy"] for m in r]) == 320
+    assert max([m["doy"] for m in r]) == 324
     
 
 def test_festival_doy():
@@ -1003,15 +1018,15 @@ def test_festival_doy():
     assert all([d["intercalation"] for d in doy if d["doy"] > 147])
 
     doy = festival_doy(Months.MOU, 27)
-    assert len(doy) == 8
-    assert doy[0]["doy"] == 292
+    assert len(doy) == 10
+    assert doy[0]["doy"] == 291
     assert len(doy[0]["preceding"]) == 9
     assert doy[0]["intercalation"] == False
 
     assert doy[-1]["doy"] == 324
     assert len(doy[-1]["preceding"]) == 10
     assert doy[-1]["intercalation"] == True
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 321])
+    assert not any([d["intercalation"] for d in doy if d["doy"] < 320])
     assert all([d["intercalation"] for d in doy if d["doy"] > 295])
     
 
@@ -1596,21 +1611,23 @@ def test_collations():
                     year=bce_as_negative(319))
 
     c = collations(eq1, eq2, eq3)
-    assert len(c) == 6
+    assert len(c) == 8
 
     # Festival year partitions
     assert c[0]["partitions"]["festival"] == ((29, 29, 29, 29),
-                                              (30, 30, 30, 29),
+                                              (30, 30, 29, 29),
                                               (30,))
+
     assert c[0]["partitions"]["conciliar"] == ((36, 35, 35),
-                                               (36, 36, 35),
+                                               (36, 35, 35),
                                                (35,))
 
+
     # Festival DOYs
-    assert [e[0]["doy"] for e in c[0]["equations"]] == [127, 247, 277]
+    assert [e[0]["doy"] for e in c[0]["equations"]] == [127, 246, 276]
 
     # Conciliar DOYs
-    assert [e[1]["doy"] for e in c[0]["equations"]] == [127, 247, 277]
+    assert [e[1]["doy"] for e in c[0]["equations"]] == [127, 246, 276]
 
     # Festival Intercalations
     assert [e[0]["intercalation"] for e in c[0]["equations"]] == [False,
@@ -1623,4 +1640,4 @@ def test_collations():
 
     
     c = collations(eq1, eq2, eq3, failures=True)
-    assert len(c) == 6
+    assert len(c) == 19
