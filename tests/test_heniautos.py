@@ -105,6 +105,17 @@ def test_calendar_months():
     assert p[0][1] == p[1][0]
 
 
+def test_month_label():
+    assert month_label(Months.HEK) == "Hekatombaiṓn"
+    assert month_label(Months.HEK, abbrev=True) == "Hek"
+    assert month_label(Months.HEK, greek=True) == "Ἑκατομβαιών"
+
+
+def test_prytany_label():
+    assert prytany_label(Prytanies.I) == "I"
+    assert prytany_label(Prytanies.X) == "X"
+    
+    
 def test_suffix():
     assert heniautos._suffix() == " hústeros"
     assert heniautos._suffix(abbrev=True) == "₂"

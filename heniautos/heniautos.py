@@ -410,6 +410,20 @@ def _month_names(abbrev, greek):
     return MONTH_NAMES
 
 
+def month_label(m, abbrev=False, greek=False):
+    if m == Months.INT:
+        if abbrev:
+            return "Int"
+        return "Intercalated"
+    
+    return _month_names(abbrev, greek)[int(m)-1]
+
+
+def prytany_label(p):
+    return ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
+            "XI", "XII", "XIII")[int(p)-1]
+
+
 def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
                     rule=Visible.SECOND_DAY):
     """Return a tuple representing Athenian festival calendar months.
