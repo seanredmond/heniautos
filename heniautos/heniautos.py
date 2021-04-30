@@ -1050,7 +1050,17 @@ tuple of such tuples
     return tuple([a for b in
                   [tuple(product([f for f in fest_eqs if f["doy"] == i],
                                  [p for p in pryt_eqs if p["doy"] == i]))
-                   for i in intersection] for a in b])
+                   for i in intersection] for a in b
+                  if not _misaligned_intercalation(a)])
+
+
+def _misaligned_intercalation(i):
+    """ Check if festival is intercalated but conciliar not."""
+    if i[0]["intercalation"] == True and i[1]["intercalation"] == False:
+        return True
+    
+    return False
+
 
 def _no_deintercalations(i, pre=False):
     """Check festival intercalation sequence.

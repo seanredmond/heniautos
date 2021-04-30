@@ -1609,6 +1609,30 @@ def test_no_deintercalations():
     assert heniautos._no_deintercalations((True, False, False)) == False
     
 
+def test_no_misaligned_intercalations():
+    eq = equations([(m, 14) for m in Months], 
+                   [(p, 2) for p in Prytanies],
+                   year=bce_as_negative(336))
+
+    assert len(eq) == 19
+    
+    # Okay for festival intercalation to be False when conciliar
+    # intercaltion is True
+    assert [(f["intercalation"], p["intercalation"])
+            for f, p in eq].count((False, True)) == 6
+
+    # Okay for both to be the same
+    assert [(f["intercalation"], p["intercalation"])
+            for f, p in eq].count((True, True)) == 6
+    assert [(f["intercalation"], p["intercalation"])
+            for f, p in eq].count((False, False)) == 7
+
+    # This must be 0. There cannot be festival intercalations
+    # alongside an ordinary conciliar year
+    assert [(f["intercalation"], p["intercalation"])
+            for f, p in eq].count((True, False)) == 0
+
+    
 def test_collations():
     # Equation 1: Boe 11 = II 31
     eq1 = equations((Months.MAI, 11), (Prytanies.IV, 21),
