@@ -132,7 +132,7 @@ def output_years(args, writer):
                                        abbrev=args.abbreviations,
                                        greek=args.greek_names,
                                        intercalate=ha.MONTH_ABBREVS.index(
-                                           args.intercalate),
+                                           args.intercalate) + 1,
                                        rule=get_rule(args.rule))
             month_key = "month"
 
