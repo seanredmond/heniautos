@@ -87,8 +87,16 @@ def display_month(month, args):
 
     return month
 
-    
-def yearly(year, writer, args):
+
+def yearly_table(year, writer, args):
+    writer.writerow((
+        f"{arkhon_year(year[0]['days'][0]['date']):13} ",
+        " I " if year[-1]["days"][-1]["doy"] > 355 else " O ",
+        f" {ha.as_eet(year[0]['days'][0]['date'])} ",
+        f"{sum(len(m['days']) for m in year):>5}"))
+
+
+def yearly_tsv(year, writer, args):
     writer.writerow((
         arkhon_year(year[0]["days"][0]["date"]),
         "I" if year[-1]["days"][-1]["doy"] > 355 else "O",
@@ -96,7 +104,18 @@ def yearly(year, writer, args):
         sum(len(m["days"]) for m in year)))
 
 
-def monthly(year, writer, month_key, args):
+def monthly_table(year, writer, month_key, args):
+    ay = arkhon_year(year[0]["days"][0]["date"])
+    for month in year:
+        if month_filter(month, args):
+            writer.writerow((
+                f"{ay:13} ",
+                f" {display_month(month[month_key], args):22}",
+                f" {ha.as_eet(month['days'][0]['date'])} ",
+                f"{len(month['days']):>5}"))
+
+    
+def monthly_tsv(year, writer, month_key, args):
     ay = arkhon_year(year[0]["days"][0]["date"])
     for month in year:
         if month_filter(month, args):
@@ -107,7 +126,21 @@ def monthly(year, writer, month_key, args):
                 len(month["days"])))
 
 
-def daily(year, writer, month_key, args):
+def daily_table(year, writer, month_key, args):
+    ay = arkhon_year(year[0]["days"][0]["date"])
+    for month in year:
+        if month_filter(month, args):
+            for day in month["days"]:
+                if day_filter(day, args):
+                    writer.writerow((
+                        f"{ay:13} ",
+                        f" {display_month(month[month_key], args):22}",
+                        f"{day['day']:>4} ",
+                        f" {ha.as_eet(day['date'])} ",
+                        f"{day['doy']:>4}"))
+
+
+def daily_tsv(year, writer, month_key, args):
     ay = arkhon_year(year[0]["days"][0]["date"])
     for month in year:
         if month_filter(month, args):
@@ -121,7 +154,18 @@ def daily(year, writer, month_key, args):
                         day["doy"]))
 
         
-def output_years(args, writer):
+def output_years(args, writer, tabs):
+    if not tabs:
+        if args.year_summary:
+            print(f"{'Year':^14}| Y |{'Start':^17}| Days")
+            print("|".join(["-"*n for n in (14, 3, 17, 5)]))
+        elif args.month_summary:
+            print(f"{'Year':^14}|{'Month':^23}|{'Start':^17}| Days")
+            print("|".join(["-"*n for n in (14, 23, 17, 5)]))
+        else:
+            print(f"{'Year':^14}|{'Month':^23}| Day |{'Start':^17}| DOY")
+            print("|".join(["-"*n for n in (14, 23, 5, 17, 4)]))
+    
     for year in years(args.start_year, args.end_year, args.as_ce):
         if args.conciliar:
             cal = ha.prytany_calendar(year, rule=get_rule(args.rule))
@@ -137,13 +181,27 @@ def output_years(args, writer):
             month_key = "month"
 
         if args.year_summary:
-            yearly(cal, writer, args)
+            if tabs:
+                yearly_tsv(cal, writer, args)
+            else:
+                yearly_table(cal, writer, args)
         elif args.month_summary:
-            monthly(cal, writer, month_key, args)
+            if tabs:
+                monthly_tsv(cal, writer, month_key, args)
+            else:
+                monthly_table(cal, writer, month_key, args)
         else:
-            daily(cal, writer, month_key, args)
+            if tabs:
+                daily_tsv(cal, writer, month_key, args)
+            else:
+                daily_table(cal, writer, month_key, args)
     
 
+def get_writer(tabs):
+    if tabs:
+        return csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
+
+    return csv.writer(stdout, delimiter="|", quoting=csv.QUOTE_NONE)
 
 
 def main():
@@ -187,10 +245,13 @@ def main():
     parser.add_argument("-e", "--ephemeris", metavar="FILE", type=str,
                         help="Use existing ephemeris FILE (if it cannot "
                         "automatically be found)", default=None)
+    parser.add_argument("--tab", action="store_true",
+                        help="Output in tab-delimited format")
     args = parser.parse_args()
     
     ha.init_data(args.ephemeris)
-    writer = csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
+
+    writer = get_writer(args.tab)
 
     if args.new_moons:
         for year in years(args.start_year, args.end_year, args.as_ce):
@@ -210,7 +271,7 @@ def main():
         exit()
 
     try:
-        output_years(args, writer)
+        output_years(args, writer, args.tab)
     except ha.HeniautosError as e:
         print(e, file=stderr)
         exit(1)
