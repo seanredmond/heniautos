@@ -629,6 +629,19 @@ def _pryt_auto(year):
 
     return Prytany.ALIGNED_10
 
+def phulai_count(year):
+    """ Return the number of phulaí in a given year. """
+    pryt_t = _pryt_auto(year)
+
+    if pryt_t == Prytany.ALIGNED_12:
+        return 12
+
+    if pryt_t == Prytany.ALIGNED_13:
+        return 13
+
+    return 10
+    
+
 
 def _pryt_auto_start(year, start):
     """Determine start dates for quasi-solar prytanies. Based on Meritt
