@@ -163,14 +163,15 @@ def daily_tsv(year, writer, month_key, args):
         
 def output_years(args, writer, tabs):
     if not tabs:
+        m_or_p = "Prytany" if args.conciliar else "Month  "
         if args.year_summary:
             print(f"{'Year':^14}| Y |{'Start':^17}| Days")
             print("|".join(["-"*n for n in (14, 3, 17, 5)]))
         elif args.month_summary:
-            print(f"{'Year':^14}|{'Month':^23}|{'Start':^17}| Days")
+            print(f"{'Year':^14}|{m_or_p:^23}|{'Start':^17}| Days")
             print("|".join(["-"*n for n in (14, 23, 17, 5)]))
         else:
-            print(f"{'Year':^14}|{'Month':^23}| Day |{'Start':^17}| DOY")
+            print(f"{'Year':^14}|{m_or_p:^23}| Day |{'Start':^17}| DOY")
             print("|".join(["-"*n for n in (14, 23, 5, 17, 4)]))
     
     for year in years(args.start_year, args.end_year, args.as_ce):
