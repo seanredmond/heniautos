@@ -82,7 +82,7 @@ def month_filter(month, args):
             return ROMAN.index(args.prytany) + 1 == month["prytany"]
         
     if (not args.conciliar) and args.month:
-        return ha.MONTH_ABBREVS.index(args.month) == month["constant"]
+        return ha.MONTH_ABBREVS.index(args.month) + 1 == month["constant"]
 
     return True
 
