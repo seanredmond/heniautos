@@ -69,6 +69,13 @@ def day_filter(day, args):
     return True
 
 
+def doy_filter(day, doy):
+    if doy:
+        return day["doy"] == doy
+
+    return True
+
+
 def month_filter(month, args):
     if args.conciliar:
         if args.prytany:
@@ -131,7 +138,7 @@ def daily_table(year, writer, month_key, args):
     for month in year:
         if month_filter(month, args):
             for day in month["days"]:
-                if day_filter(day, args):
+                if day_filter(day, args) and doy_filter(day, args.doy):
                     writer.writerow((
                         f"{ay:13} ",
                         f" {display_month(month[month_key], args):22}",
@@ -145,7 +152,7 @@ def daily_tsv(year, writer, month_key, args):
     for month in year:
         if month_filter(month, args):
             for day in month["days"]:
-                if day_filter(day, args):
+                if day_filter(day, args) and doy_filter(day, args.doy):
                     writer.writerow((
                         ay,
                         display_month(month[month_key], args),
@@ -212,6 +219,8 @@ def main():
                         help="Only show selected month")
     parser.add_argument("--day", type=int,
                         help="Only show selected day")
+    parser.add_argument("--doy", type=int,
+                        help="Only show selected day of year")
     parser.add_argument("-m", "--month-summary", action="store_true")
     parser.add_argument("-y", "--year-summary", action="store_true")
     parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
