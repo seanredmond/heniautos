@@ -166,8 +166,8 @@ def cmd_parse_month_or_prytany(month, abbrevs):
     return (abbrevs[month.lower()], )
 
 
-def cmd_parse_prytany_range(year):
-    ph_cnt = ha.phulai_count(ha.bce_as_negative(year))
+def cmd_parse_prytany_range(pryt_type, year):
+    ph_cnt = phulai_count(pryt_type, year)
 
     if ph_cnt == 10:
         return range(1, 40)
@@ -178,12 +178,12 @@ def cmd_parse_prytany_range(year):
     return range(1, 31)
 
 
-def cmd_parse_days(day, is_festival, year=None):
+def cmd_parse_days(day, is_festival, pryt_type, year):
     if day == "any":
         if is_festival:
             return range(1, 31)
 
-        return cmd_parse_prytany_range(year)
+        return cmd_parse_prytany_range(pryt_type, year)
 
     if day == "last":
         if is_festival:
@@ -198,11 +198,11 @@ def cmd_parse_days(day, is_festival, year=None):
     return (int(day), )
     
 
-def cmd_parse_abbrevs(month, day, abbrevs, year=None):
+def cmd_parse_abbrevs(month, day, abbrevs, pryt_type=None, year=None):
     try:
                                
         months = cmd_parse_month_or_prytany(month, abbrevs)
-        days = cmd_parse_days(day, abbrevs == CMD_MONTHS, year)
+        days = cmd_parse_days(day, abbrevs == CMD_MONTHS, pryt_type, year)
         
         return tuple(product(months, days))
     except KeyError as e:
@@ -222,14 +222,14 @@ def cmd_parse_festival(month, day):
     return cmd_parse_abbrevs(month, day, CMD_MONTHS)
 
 
-def cmd_parse_conciliar(prytany, day, year):
-    return cmd_parse_abbrevs(prytany, day, CMD_PRYT, year)
+def cmd_parse_conciliar(prytany, day, pryt_type, year):
+    return cmd_parse_abbrevs(prytany, day, CMD_PRYT, pryt_type, year)
     
 
-def cmd_parse_equations(equation, year):
+def cmd_parse_equations(equation, pryt_type, year):
     try:
         fest = cmd_parse_festival(*equation[:2])
-        conc = cmd_parse_conciliar(*equation[2:], year)
+        conc = cmd_parse_conciliar(*equation[2:], pryt_type, year)
 
         return (fest, conc)
     except TypeError as e:
@@ -276,7 +276,8 @@ def main():
 
     pryt_type, year  = prytany_type_year(args.prytanies, args.year)
     
-    equations = [cmd_parse_equations(e, args.year) for e in args.equation]
+    equations = [cmd_parse_equations(e, pryt_type, year)
+                 for e in args.equation]
 
     [output_solution(fest, pryt, pryt_type, year, i, len(args.equation),
                      args.ordinary, args.intercalary)
