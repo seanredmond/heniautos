@@ -153,7 +153,7 @@ def coll_fmt(eq):
         
 def output_collations(collations, pryt_type, year):
     for i, c in enumerate(collations, 1):
-        print(f"{i:>3}:", " ".join([festival_pattern(pat) for pat in c["partitions"]["festival"]]), " ".join([prytany_pattern(pat, phulai_count(pryt_type, year)) for pat in c["partitions"]["conciliar"]]))
+        print(f"{i:>3}:", " ".join([festival_pattern(pat) for pat in c["partitions"]["festival"]]), " ", " ".join([prytany_pattern(pat, phulai_count(pryt_type, year)) for pat in c["partitions"]["conciliar"]]))
 
     for i, c in enumerate(collations, 1):
         print(f"{i:>3}:", coll_fmt(c["equations"]))
