@@ -97,9 +97,9 @@ def eq_fmt(fest, pryt, ph_cnt):
             f" DOY {doy:>3} {p_int} {patterns}")
 
 
-def output_solution(fest, pryt, year, i, cnt, ordinary, intercalary):
+def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary, intercalary):
     solutions = [e for e
-                 in ha.equations(fest, pryt, year=ha.bce_as_negative(year))
+                 in ha.equations(fest, pryt, pryt_type=pryt_type, year=year)
                  if year_type(e, ordinary, intercalary)]
 
     if len(solutions) == 0:
@@ -107,8 +107,22 @@ def output_solution(fest, pryt, year, i, cnt, ordinary, intercalary):
         return
 
     for f, p in solutions:
-        print(eq_fmt(f, p, ha.phulai_count(ha.bce_as_negative(year))))
+        print(eq_fmt(f, p, phulai_count(pryt_type, year)))
 
+
+def phulai_count(pryt_type, year):
+    """Return the number of phulai."""
+    if year is not None:
+        return ha.phulai_count(year)
+
+    if pryt_type == ha.Prytany.ALIGNED_13:
+        return 13
+
+    if pryt_type == ha.Prytany.ALIGNED_12:
+        return 12
+
+    return 10
+    
 
 def year_type(p, ordinary, intercalary):
     """Test whether type of year is requested type."""
@@ -137,16 +151,13 @@ def coll_fmt(eq):
     
 
         
-def output_collations(collations, year):
+def output_collations(collations, pryt_type, year):
     for i, c in enumerate(collations, 1):
-        print(f"{i:>3}:", " ".join([festival_pattern(pat) for pat in c["partitions"]["festival"]]), " ".join([prytany_pattern(pat, ha.phulai_count(ha.bce_as_negative(year))) for pat in c["partitions"]["conciliar"]]))
+        print(f"{i:>3}:", " ".join([festival_pattern(pat) for pat in c["partitions"]["festival"]]), " ".join([prytany_pattern(pat, phulai_count(pryt_type, year)) for pat in c["partitions"]["conciliar"]]))
 
     for i, c in enumerate(collations, 1):
         print(f"{i:>3}:", coll_fmt(c["equations"]))
         
-
-
-
 
 def cmd_parse_month_or_prytany(month, abbrevs):
     if month.lower() == "any":
@@ -232,12 +243,29 @@ def cmd_parse_equations(equation, year):
         sys.exit(-1)
 
 
+def prytany_type_year(pryt_cnt, year):
+    if year is not None:
+        return (ha.Prytany.AUTO, ha.bce_as_negative(year))
+
+    if pryt_cnt == 10:
+        return (ha.Prytany.ALIGNED_10, None)
+
+    if pryt_cnt == 12:
+        return (ha.Prytany.ALIGNED_12, None)
+
+    return (ha.Prytany.ALIGNED_13, None)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--equation", type=str, nargs='+',
                         action="append", required=True)
     parser.add_argument("-c", "--collate", action="store_true")
-    parser.add_argument("-y", "--year", type=int)
+    parser.add_argument("-p", "--prytanies", type=int, default=10,
+                        help="Number of prytanies in equation(s)")
+    parser.add_argument("-y", "--year", type=int,
+                        help="Year of equation(s). Overrides -p and is only"
+                        "used to determine the number of prytanies.")
     parser.add_argument("--ordinary", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="Show solutions for ordinary years")
@@ -246,14 +274,20 @@ def main():
                         help="Show solutions for intercalary years")
     args = parser.parse_args()
 
+    pryt_type, year  = prytany_type_year(args.prytanies, args.year)
+    
     equations = [cmd_parse_equations(e, args.year) for e in args.equation]
 
-    [output_solution(fest, pryt, args.year, i, len(args.equation),
+    [output_solution(fest, pryt, pryt_type, year, i, len(args.equation),
                      args.ordinary, args.intercalary)
      for i, (fest, pryt) in enumerate(equations, 1)]
 
     if args.collate:
-        output_collations(ha.collations(*[ha.equations(fest, pryt, year=ha.bce_as_negative(args.year)) for fest, pryt in equations]), args.year)
+        output_collations(
+            ha.collations(
+                *[ha.equations(fest, pryt, pryt_type=pryt_type, year=year)
+                  for fest, pryt in equations]),
+            pryt_type, year)
 
     
 
