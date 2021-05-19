@@ -2,7 +2,7 @@
 
 [Previous: Festival Calendar Basics](festival-calendar-basics.md)
 
-When the Athenian democracy when instituted in 508 BCE, the citizenry (meaning the population of male citizens since women had no political rights or ability to participate) was divided into ten _phulaí_ (singular _phulḗ_), usually translated as "tribes". These were not "tribes" in any traditional sense, but were simply arbitrary divisions of the population for governmental purposes. Much voting was done by _phulḗ_, boards were often made up of one menber from each _phulḗ_, and the _Boulḗ_, "Council" that prepared legislation and decisions to be voted on by the at-large _Ekklēsía_, or "Assembly", was made up of 50 men chosen by lot from each _phulḗ_.
+When the Athenian democracy when instituted in 508 BCE, the citizenry (meaning the population of male citizens since women had no political rights or ability to participate) was divided into ten ` (singular _phulḗ_), usually translated as "tribes". These were not "tribes" in any traditional sense, but were simply arbitrary divisions of the population for governmental purposes. Much voting was done by _phulḗ_, boards were often made up of one menber from each _phulḗ_, and the _Boulḗ_, "Council" that prepared legislation and decisions to be voted on by the at-large _Ekklēsía_, or "Assembly", was made up of 50 men chosen by lot from each _phulḗ_.
 
 # 508-410 BCE
 
