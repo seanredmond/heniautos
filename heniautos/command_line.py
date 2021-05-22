@@ -9,11 +9,12 @@ from sys import stdout, stderr, exit
 ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
          "XII", "XIII")
 
+
 def julian_fmt(d):
     return " ".join((bce_as_bce(tuple(d.utc)[0]), d.utc_strftime("%b %d")))
 
 
-def years(start, end, ce):                            
+def years(start, end, ce):
     """ Return a list of years from START to END inclusive."""
     if end is None:
         # Single year, return a range
@@ -26,9 +27,11 @@ def years(start, end, ce):
     else:
         if end <= start:
             # multiple years, return as range
-            return range(ha.bce_as_negative(start), ha.bce_as_negative(end) + 1)
+            return range(ha.bce_as_negative(start),
+                         ha.bce_as_negative(end) + 1)
 
     raise ValueError("End year must be later than the start year")
+
 
 def get_rule(r):
     if r == "0":
@@ -50,7 +53,7 @@ def month_n(m, int_m, abbrev, greek=False):
             return f"{n[0][0:3]} II"
 
         return n[0][0:3]
-        
+
     return month_name(m, int_m, greek)
 
 
@@ -80,7 +83,7 @@ def month_filter(month, args):
     if args.conciliar:
         if args.prytany:
             return ROMAN.index(args.prytany) + 1 == month["prytany"]
-        
+
     if (not args.conciliar) and args.month:
         return ha.MONTH_ABBREVS.index(args.month) + 1 == month["constant"]
 
@@ -121,7 +124,7 @@ def monthly_table(year, writer, month_key, args):
                 f" {ha.as_eet(month['days'][0]['date'])} ",
                 f"{len(month['days']):>5}"))
 
-    
+
 def monthly_tsv(year, writer, month_key, args):
     ay = arkhon_year(year[0]["days"][0]["date"])
     for month in year:
@@ -160,7 +163,7 @@ def daily_tsv(year, writer, month_key, args):
                         ha.as_eet(day["date"]),
                         day["doy"]))
 
-        
+
 def output_years(args, writer, tabs):
     if not tabs:
         m_or_p = "Prytany" if args.conciliar else "Month  "
@@ -173,7 +176,7 @@ def output_years(args, writer, tabs):
         else:
             print(f"{'Year':^14}|{m_or_p:^23}| Day |{'Start':^17}| DOY")
             print("|".join(["-"*n for n in (14, 23, 5, 17, 4)]))
-    
+
     for year in years(args.start_year, args.end_year, args.as_ce):
         if args.conciliar:
             cal = ha.prytany_calendar(year, rule=get_rule(args.rule))
@@ -203,7 +206,7 @@ def output_years(args, writer, tabs):
                 daily_tsv(cal, writer, month_key, args)
             else:
                 daily_table(cal, writer, month_key, args)
-    
+
 
 def get_writer(tabs):
     if tabs:
@@ -235,7 +238,7 @@ def main():
     parser.add_argument("--prytany", choices=ROMAN, type=str,
                         help="Only show selected prytany")
     parser.add_argument("--as-ce", action="store_true",
-                       help="Treat dates as CE rather than BCE")
+                        help="Treat dates as CE rather than BCE")
     parser.add_argument("-a", "--abbreviations", action="store_true",
                         help="Abbreviate month names")
     parser.add_argument("-g", "--greek-names", action="store_true",
@@ -258,7 +261,7 @@ def main():
     parser.add_argument("--tab", action="store_true",
                         help="Output in tab-delimited format")
     args = parser.parse_args()
-    
+
     ha.init_data(args.ephemeris)
 
     writer = get_writer(args.tab)
@@ -285,4 +288,3 @@ def main():
     except ha.HeniautosError as e:
         print(e, file=stderr)
         exit(1)
-    
