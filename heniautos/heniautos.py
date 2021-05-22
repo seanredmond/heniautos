@@ -9,6 +9,7 @@ from skyfield.api import GREGORIAN_START
 class HeniautosError(Exception):
     pass
 
+
 class HeniautosNoMatchError(Exception):
     pass
 
@@ -415,7 +416,7 @@ def month_label(m, abbrev=False, greek=False):
         if abbrev:
             return "Int"
         return "Intercalated"
-    
+
     return _month_names(abbrev, greek)[int(m)-1]
 
 
@@ -629,6 +630,7 @@ def _pryt_auto(year):
 
     return Prytany.ALIGNED_10
 
+
 def phulai_count(year):
     """ Return the number of phulaí in a given year. """
     pryt_t = _pryt_auto(year)
@@ -640,7 +642,6 @@ def phulai_count(year):
         return 13
 
     return 10
-    
 
 
 def _pryt_auto_start(year, start):
@@ -954,7 +955,7 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
             return tuple(sorted(
                 _pryt_doy_ranges(pry, day, pryt_type, 39, True),
                 key=lambda p: p["doy"]))
-            
+
         return tuple(sorted(
             _pryt_doy_ranges(pry, day, pryt_type, 36, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 39, True),
@@ -965,7 +966,7 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
             return tuple(sorted(
                 _pryt_doy_ranges(pry, day, pryt_type, 32, True),
                 key=lambda p: p["doy"]))
-            
+
         return tuple(sorted(
             _pryt_doy_ranges(pry, day, pryt_type, 30, False) +
             _pryt_doy_ranges(pry, day, pryt_type, 32, True),
@@ -1057,7 +1058,7 @@ tuple of such tuples
     pryt_eqs = _pryt_eq(prytanies, pryt_type, year)
     fest_eqs = _fest_eq(months)
 
-    intersection = sorted(set([f["doy"] for f in fest_eqs]) & \
+    intersection = sorted(set([f["doy"] for f in fest_eqs]) &
                           set([p["doy"] for p in pryt_eqs]))
 
     return tuple([a for b in
@@ -1069,9 +1070,9 @@ tuple of such tuples
 
 def _misaligned_intercalation(i):
     """ Check if festival is intercalated but conciliar not."""
-    if i[0]["intercalation"] == True and i[1]["intercalation"] == False:
+    if i[0]["intercalation"] is True and i[1]["intercalation"] is False:
         return True
-    
+
     return False
 
 
@@ -1089,16 +1090,16 @@ def _no_deintercalations(i, pre=False):
     if not i:
         # If we got to then end of the sequence, it is good
         return True
-    
-    if pre == False and i[0] == False:
+
+    if pre is False and i[0] is False:
         # Proceed, no intercalation yet
         return _no_deintercalations(i[1:], False)
 
-    if pre == True and i[0] == True:
+    if pre is True and i[0] is True:
         # Proceed, we have intercalation
         return _no_deintercalations(i[1:], True)
 
-    if pre == False and i[0] == True:
+    if pre is False and i[0] is True:
         # Proceed, switch from no intercalation to intercalation
         return _no_deintercalations(i[1:], True)
 
@@ -1106,6 +1107,7 @@ def _no_deintercalations(i, pre=False):
     # The forbidden condition. We have a precedeing intercalation
     # but the current equation requires none
     return False
+
 
 def _is_contained_in(a, b):
     """Test whether the values in first tuple are contained in second."""
@@ -1135,21 +1137,6 @@ def _each_overlaps(b, a=tuple()):
     c = _is_contained_in([x for y in a for x in y], b[0])
 
     return _each_overlaps(b[1:], (a + (c,)))
-    
-
-
-# def _lengths_overlap(c, pre=tuple()):
-#     print("-"*10, "_lengths_overlap()", "-"*10)
-#     print("    c:",   c)
-#     print("    pre:", pre)
-    
-#     if not pre:
-#         print("c[0]:", c[0])
-#         print("c[1:]:", c[1:])
-#         return _lengths_overlap(c[1:], (c[0],))
-
-#     _is_contained_in(pre, c[0])
-    
 
 
 def collations(*args, failures=False):
@@ -1166,8 +1153,9 @@ def collations(*args, failures=False):
            sequences.
 
     Each equation results probably has multiple solutions. This test
-    all combinations of solutions. Returns results as a tuple of dicts, each consiting of 
-    
+    all combinations of solutions. Returns results as a tuple of dicts,
+    each consiting of
+
         partitions: a dict with two members: "festival" and
         "conciliar." Each is a list of month or prytany lengths
         partitioned according to the requirements of the
@@ -1199,7 +1187,6 @@ def collations(*args, failures=False):
             if not _no_deintercalations([c[0]["intercalation"] for c in p]):
                 raise HeniautosNoMatchError()
 
-
             # Criterion #3
             fest_partitions = _each_overlaps([c[0]["preceding"] for c in p])
             pryt_partitions = _each_overlaps([c[1]["preceding"] for c in p])
@@ -1213,9 +1200,9 @@ def collations(*args, failures=False):
 
     if failures is True:
         return not_successes
-    
+
     return successes
-        
+
 
 def dinsmoor_month_name(m, intercalated, abbrev, greek):
 
