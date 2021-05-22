@@ -773,14 +773,14 @@ def doy_to_julian(doy, year, rule=Visible.SECOND_DAY):
              for m in festival_calendar(year, rule=rule)] for a in b][0]
 
 
-def festival_to_julian(month, day, year, rule=Visible.SECOND_DAY):
+def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY):
     return [a for b in
             [[d["date"] for d in m["days"] if d["day"] == day]
              for m in festival_calendar(year, rule=rule)
              if m["constant"] == month] for a in b][0]
 
 
-def prytany_to_julian(prytany, day, year, rule=Visible.SECOND_DAY):
+def prytany_to_julian(year, prytany, day, rule=Visible.SECOND_DAY):
     return [a for b in
             [[d["date"] for d in p["days"] if d["day"] == day]
              for p in prytany_calendar(year, rule=rule)

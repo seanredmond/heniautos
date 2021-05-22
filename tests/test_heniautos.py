@@ -1455,33 +1455,29 @@ def test_doy_to_julian():
 
 def test_festival_to_julian():
     assert as_eet(
-        festival_to_julian(Months.ELA, 19,
-                           bce_as_negative(332))) == "BCE 0331-Apr-02"
+        festival_to_julian(
+            bce_as_negative(332), Months.ELA, 19)) == "BCE 0331-Apr-02"
 
     assert as_eet(
-        festival_to_julian(Months.ELA, 19,
-                           bce_as_negative(332),
+        festival_to_julian(bce_as_negative(332), Months.ELA, 19,
                            rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
 
     assert as_eet(
-        festival_to_julian(Months.ELA, 19,
-                           bce_as_negative(332),
+        festival_to_julian(bce_as_negative(332), Months.ELA, 19,
                            rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
 
 
 def test_prytany_to_julian():
     assert as_eet(
-        prytany_to_julian(Prytanies.VIII, 7,
-                          bce_as_negative(332))) == "BCE 0331-Apr-02"
+        prytany_to_julian(
+            bce_as_negative(332), Prytanies.VIII, 7)) == "BCE 0331-Apr-02"
 
     assert as_eet(
-        prytany_to_julian(Prytanies.VIII, 7,
-                          bce_as_negative(332),
+        prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
                           rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
 
     assert as_eet(
-        prytany_to_julian(Prytanies.VIII, 7,
-                          bce_as_negative(332),
+        prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
                           rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
 
 
