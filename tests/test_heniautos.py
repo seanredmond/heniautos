@@ -1397,14 +1397,13 @@ def test_equations_nested():
 
     assert len(eq) == 6
 
-    
-@pytest.mark.skip(reason="reevaluating if this needs a test")
+
 def test_0_prytanies():
     eq = equations((Months.MET, 9), (Prytanies.I, 39),
                    pryt_type=Prytany.ALIGNED_10)
 
     assert len(eq) == 1
-    assert len(eq[0]["equations"]["conciliar"]) == 1
+    assert len(eq[0][1]["preceding"]) == 0
     
 
 def test_dinsmoor():
