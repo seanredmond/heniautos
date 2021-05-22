@@ -41,7 +41,7 @@ Because the prescripts follow such a regular formula, and because the inscriptio
     [.]ΑΜΑΝΤΙΔ[..................]
     [.]ΧΑΙΡΕΣ[...................]
 
-Expecting the prescript to begin with ἐπὶ and the name of the arkhon (and knowing that there was an arkhon named Phrynikhos in 337/6) we can immediately fill in most of the furst line (remember that any spaces or punctuation we add doesn't count towards the number of character in the line):
+Expecting the prescript to begin with ἐπὶ and the name of the arkhon (and knowing that there was an arkhon named Phrynikhos in 337/6) we can immediately fill in most of the first line (remember that any spaces or punctuation we add doesn't count towards the number of characters in the line):
 
     [ἐ]πὶ Φρυνί[χου ἄρχοντος ἐπὶ τῆς .]
     [.]ΑΜΑΝΤΙΔ[..................]
@@ -202,7 +202,7 @@ The days appear in the dative and there is a special way of counting the days of
 | ὀγδόηι ἐπὶ δέκα    | 18  | 18     |
 | ἐνάτηι ἐπὶ δέκα    | 19  | 19     |
 
-The last days, however, are counted backwards as if the reflect the waning moon. From the fifth through most of the fourth century, the count after εἰκοστή  (20th) used φθίνοντος, "waning" or "dwindling" (from [φθίω](https://logeion.uchicago.edu/%CF%86%CE%B8%CE%AF%CF%89)).
+The last days, however, are counted backwards as if the reflect the waning moon. From the fifth through most of the fourth century, the count after εἰκοστή  (20th) used φθίνοντος, "waning" or "dwindling" (from [φθίω](https://logeion.uchicago.edu/%CF%86%CE%B8%CE%AF%CF%89)). It is in the genitive--we must supply the word μηνός so δεκάτηι φθίνοντος means "the tenth of the waning (moon)"
 
 
 | Name               | Full Month day | Hollow Month Day |Letters |
@@ -221,7 +221,7 @@ The last days, however, are counted backwards as if the reflect the waning moon.
 
 The backwards count is different for full and hollow months. The "waning ninth" is the 22nd in a full month (nine days from the 30th, counting inclusively) but of a hollow month it is the 21st (nine days from the 29th, inclusive). ἕνη καὶ νέα is the 30th of a full month or the 29th of a hollow.
 
-This backwards count always starts after the 20th (εἰκοστη), so a hollow month never has a δεκάτηι φθίνοντος. This is called the "omitted day" and the omission is what makes the hollow month "hollow."
+This backwards count always starts after the 20th (εἰκοστη), so a hollow month never has a δεκάτη φθίνοντος. This is called the "omitted day" and the omission is what makes the hollow month "hollow."
 
 Towards the end of the fourth century, a new style came into use, counting backwards with μετ’ εἰκάδας "after the 20th") instead of φθίνοντος. In this style, the 20th is called (oddly) δεκάτη προτέρα or "the prior tenth", the 21st δεκάτη ὑστέρα, "the later 10th"
 
@@ -240,6 +240,6 @@ Towards the end of the fourth century, a new style came into use, counting backw
 | δευτέραι μετ’ εἰκάδας | 29             | 28               | 18     |
 | ἕνηι καὶ νέαι         | 30             | 29               | 11     |
 
-The omitted day in this style is ἐνάτη μετ’ εἰκάδας. For a long time it was thought that this was a forward count, or sometimes backwards and sometimes forwards so you need to be careful with older restorations with μετ’ εἰκάδας as they may be based on a misunderstanding of the name. 
+The omitted day in this style is ἐνάτη μετ’ εἰκάδας. For a long time it was thought that this was a forward count, or sometimes backwards and sometimes forwards so you need to be careful with older restorations that use μετ’ εἰκάδας as they may be based on a misunderstanding of the name. 
 
 
