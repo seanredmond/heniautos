@@ -9,18 +9,18 @@ import sys
 
 
 # Conversions for argument parameters to Months constants
-CMD_MONTHS={"hek": ha.Months.HEK,
-            "met": ha.Months.MET,
-            "boe": ha.Months.BOE,
-            "pua": ha.Months.PUA,
-            "mai": ha.Months.MAI,
-            "pos": ha.Months.POS,
-            "gam": ha.Months.GAM,
-            "ant": ha.Months.ANT,
-            "ela": ha.Months.ELA,
-            "mou": ha.Months.MOU,
-            "tha": ha.Months.THA,
-            "ski": ha.Months.SKI}
+CMD_MONTHS = {"hek": ha.Months.HEK,
+              "met": ha.Months.MET,
+              "boe": ha.Months.BOE,
+              "pua": ha.Months.PUA,
+              "mai": ha.Months.MAI,
+              "pos": ha.Months.POS,
+              "gam": ha.Months.GAM,
+              "ant": ha.Months.ANT,
+              "ela": ha.Months.ELA,
+              "mou": ha.Months.MOU,
+              "tha": ha.Months.THA,
+              "ski": ha.Months.SKI}
 
 # Conversions for argument parameters to Prytanies constants
 CMD_PRYT = {"i": ha.Prytanies.I,
@@ -53,13 +53,12 @@ def prytany_abbrev_from_constant(p):
 def prytany_pattern(p, ph_cnt):
     if len(p) == 0:
         return "∅"
-    
+
     if ph_cnt == 10:
         return "".join(["L" if d in (36, 39) else "S" for d in p])
 
     if ph_cnt == 12:
         return "".join(["L" if d in (30, 32) else "S" for d in p])
-
 
     return "".join(["L" if d in (28, 20) else "S" for d in p])
 
@@ -67,9 +66,9 @@ def prytany_pattern(p, ph_cnt):
 def festival_pattern(f):
     if len(f) == 0:
         return "∅"
-    
-    return "".join(["F" if d == 30 else "H" for d in f])    
-    
+
+    return "".join(["F" if d == 30 else "H" for d in f])
+
 
 def eq_fmt(fest, pryt, ph_cnt):
     m = month_abbrev_from_constant(fest["date"][0])
@@ -86,7 +85,6 @@ def eq_fmt(fest, pryt, ph_cnt):
 
     doy = fest["doy"]
 
-
     fest_p = "".join(["F" if d == 30 else "H" for d in fest["preceding"]])
     pryt_p = prytany_pattern(pryt["preceding"], ph_cnt)
 
@@ -97,7 +95,8 @@ def eq_fmt(fest, pryt, ph_cnt):
             f" DOY {doy:>3} {p_int} {patterns}")
 
 
-def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary, intercalary):
+def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary,
+                    intercalary):
     solutions = [e for e
                  in ha.equations(fest, pryt, pryt_type=pryt_type, year=year)
                  if year_type(e, ordinary, intercalary)]
@@ -122,7 +121,7 @@ def phulai_count(pryt_type, year):
         return 12
 
     return 10
-    
+
 
 def year_type(p, ordinary, intercalary):
     """Test whether type of year is requested type."""
@@ -130,9 +129,9 @@ def year_type(p, ordinary, intercalary):
         return True
 
     if ordinary:
-        return p[1]["intercalation"] == False
+        return p[1]["intercalation"] is False
 
-    return p[1]["intercalation"] == True
+    return p[1]["intercalation"] is True
 
 
 def coll_fmt2(fest, pryt):
@@ -146,18 +145,22 @@ def coll_fmt2(fest, pryt):
 
     return f"{m} {m_day} = {p} {p_day} = {doy}"
 
+
 def coll_fmt(eq):
     return " + ".join([f"{coll_fmt2(f, p)}" for f, p in eq])
-    
 
-        
+
 def output_collations(collations, pryt_type, year):
     for i, c in enumerate(collations, 1):
-        print(f"{i:>3}:", " ".join([festival_pattern(pat) for pat in c["partitions"]["festival"]]), " ", " ".join([prytany_pattern(pat, phulai_count(pryt_type, year)) for pat in c["partitions"]["conciliar"]]))
+        print(f"{i:>3}:", " ".join([festival_pattern(pat)
+                                    for pat in c["partitions"]["festival"]]),
+              " ",
+              " ".join([prytany_pattern(pat, phulai_count(pryt_type, year))
+                        for pat in c["partitions"]["conciliar"]]))
 
     for i, c in enumerate(collations, 1):
         print(f"{i:>3}:", coll_fmt(c["equations"]))
-        
+
 
 def cmd_parse_month_or_prytany(month, abbrevs):
     if month.lower() == "any":
@@ -196,14 +199,14 @@ def cmd_parse_days(day, is_festival, pryt_type, year):
         return tuple([int(d) for d in day.split("/")])
 
     return (int(day), )
-    
+
 
 def cmd_parse_abbrevs(month, day, abbrevs, pryt_type=None, year=None):
     try:
-                               
+
         months = cmd_parse_month_or_prytany(month, abbrevs)
         days = cmd_parse_days(day, abbrevs == CMD_MONTHS, pryt_type, year)
-        
+
         return tuple(product(months, days))
     except KeyError as e:
         if month.lower() in e.__str__():
@@ -224,7 +227,7 @@ def cmd_parse_festival(month, day):
 
 def cmd_parse_conciliar(prytany, day, pryt_type, year):
     return cmd_parse_abbrevs(prytany, day, CMD_PRYT, pryt_type, year)
-    
+
 
 def cmd_parse_equations(equation, pryt_type, year):
     try:
@@ -274,8 +277,8 @@ def main():
                         help="Show solutions for intercalary years")
     args = parser.parse_args()
 
-    pryt_type, year  = prytany_type_year(args.prytanies, args.year)
-    
+    pryt_type, year = prytany_type_year(args.prytanies, args.year)
+
     equations = [cmd_parse_equations(e, pryt_type, year)
                  for e in args.equation]
 
@@ -290,10 +293,6 @@ def main():
                   for fest, pryt in equations]),
             pryt_type, year)
 
-    
-
-
 
 if __name__ == "__main__":
     main()
-
