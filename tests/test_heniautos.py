@@ -128,17 +128,17 @@ def test_maybe_intercalate():
     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == \
         ("Hekatombaiṓn", Months.HEK)
     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == \
-        ("Puanepsiṓn", Months.PUA)
+        ("Puanopsiṓn", Months.PUA)
     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == \
         ("Gamēliṓn", Months.GAM)
 
     # Intercalates Pos
     # Month before Pos unchanged
     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == \
-        ("Puanepsiṓn", Months.PUA)
+        ("Puanopsiṓn", Months.PUA)
     # The intercalated month
     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == \
-        ("Poseidēiṓn hústeros", Months.INT)
+        ("Posideiṓn hústeros", Months.INT)
     # Indexes of months after the intercalation 1 more than usual
     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == \
         ("Gamēliṓn", Months.GAM)
@@ -147,7 +147,7 @@ def test_maybe_intercalate():
     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == \
         ("Boēdromiṓn hústeros", Months.INT)
     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == \
-        ("Poseidēiṓn", Months.POS)
+        ("Posideiṓn", Months.POS)
     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == \
         ("Gamēliṓn", Months.GAM)
     
@@ -176,12 +176,12 @@ def test_festival_months():
     s = festival_months(-101)
     assert len(s) == 13
     # Default intercalation of Poseidēiṓn hústeros
-    assert s[6]["month"] == "Poseidēiṓn hústeros"
+    assert s[6]["month"] == "Posideiṓn hústeros"
     assert s[6]["constant"] == Months.INT
 
     t = festival_months(-101, intercalate=Months.BOE)
     assert t[3]["month"] == "Boēdromiṓn hústeros"
-    assert t[6]["month"] == "Poseidēiṓn"
+    assert t[6]["month"] == "Posideiṓn"
     
     # intercalation with abbreviation
     s1 = festival_months(-101, abbrev=True)
@@ -1409,13 +1409,13 @@ def test_0_prytanies():
 
 def test_dinsmoor():
     c = festival_calendar(-430, rule=Visible.DINSMOOR)
-    assert c[5]["month"] == "Poseidēiṓn"
+    assert c[5]["month"] == "Posideiṓn"
     assert (as_eet(c[5]["days"][0]["date"])) == "BCE 0431-Nov-29"
     assert c[5]["days"][0]["doy"] == 148
     assert c[5]["days"][-1]["doy"] == 177
 
     d = festival_calendar(-430, rule=Visible.DINSMOOR)
-    assert d[6]["month"] == "Poseidēiṓn hústeros"
+    assert d[6]["month"] == "Posideiṓn hústeros"
     assert (as_eet(d[6]["days"][0]["date"])) == "BCE 0431-Dec-29"
     assert d[6]["days"][0]["doy"] == 178
     assert d[6]["days"][-1]["doy"] == 206
@@ -1426,14 +1426,14 @@ def test_dinsmoor():
 
     
 def test_dinsmoor_months():
-    assert dinsmoor_months(-430)[5]["month"] == "Poseidēiṓn"
+    assert dinsmoor_months(-430)[5]["month"] == "Posideiṓn"
     assert as_eet(dinsmoor_months(-430)[5]["start"]) == "BCE 0431-Nov-29"
     assert as_eet(dinsmoor_months(-430)[5]["end"]) == "BCE 0431-Dec-29"
-    assert dinsmoor_months(-430)[6]["month"] == "Poseidēiṓn hústeros"
+    assert dinsmoor_months(-430)[6]["month"] == "Posideiṓn hústeros"
     assert dinsmoor_months(-430, abbrev=True)[6]["month"] == \
         "Pos₂"
     assert dinsmoor_months(-430, greek=True)[6]["month"] == \
-        "Ποσιδηϊών ὕστερος"
+        "Ποσιδειών ὕστερος"
 
 
     assert dinsmoor_months(-310)[0]["month"] == "Uncertain"
