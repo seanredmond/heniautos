@@ -287,7 +287,7 @@ and another in lines 47-49:
     [ν]είας· ἕνει καὶ νέαι· ἑβδόμη[ι καὶ τριακοστῆι τῆς πρυτανεία]-
     [ς]
 
-The festival month is omitted in both, and since the prytany must be restored much relies on one's theories about the calendar. Kirchner's reconstruction of the lengths of the prytanies for this year (given in his commentary on IG II² 330) were 39, 38, 38, 38, 38, 38, 39, 39, 40, 37 days. Dinsmoor's statement that "The second equation, with the 14th of a month falling on the second of a prytany could be either the sixth or the ninth prytany; the third with the last day of a month falling on the 37th of a prytany, could be either the seventh or the tenth prytany" we can check with `calendar-equations`, starting with the first equation, **? 14 = ? 2**: 
+The festival month is omitted in both, and since the prytany must be restored much relies on one's theories about the calendar. Kirchner was very much in the early days of calendar research and reconstructed of the lengths of the prytanies for this year (given in his commentary on IG II² 330) as 39, 38, 38, 38, 38, 38, 39, 39, 40, 37 days. Dinsmoor's statement that "The second equation, with the 14th of a month falling on the second of a prytany could be either the sixth or the ninth prytany; the third with the last day of a month falling on the 37th of a prytany, could be either the seventh or the tenth prytany" we can check with `calendar-equations`, starting with the first equation, **? 14 = ? 2**: 
 
     > calendar_equation.py -e any 14 any 2 --no-ordinary
     Pos 14 ( 7+) =   VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
@@ -303,7 +303,7 @@ The festival month is omitted in both, and since the prytany must be restored mu
     Mou 14 (11+) =   IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS]
     Tha 14 (11-) =   IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS] 
 
-We can simplify this by combining the alternatives for the festival months
+We can simplify this by (manually) combining the alternatives for the festival months
 
     Pos/Gam 14 (7)  =  VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
     Pos/Gam 14 (7)  =  VI  2 =  DOY 193 (I) [FFFFFH, LSSSS]
@@ -327,81 +327,107 @@ And if we do the same simplification for **? 29/30 = ? 37** of the output from `
     Ski 29 (13+)   =    X 37 =  DOY 383 (I) [FFFFFFHHHHHH, LLLLSSSSS]
     Ski 30 (13+)   =    X 37 =  DOY 383 (I) [FFFFFHHHHHHH, LLLLSSSSS]
 
-	
-**<Mou> 14 = [IX] 2**. ἐνάτης is by now means the only possible restoration. πρώτης, τρίτης, and ὀγδόης all have the same number of letters.
+In both the prytany VI and VII solutions those that fit the Rule of Aristotle require an impossible count of festival months while those that are more realistic solutions for the festival months have the worst violations of the Rule. The consensus since Kirchner has been to restore the prytanies as IX and X, and to supply Mounuchiṓn and Skirophoriṓn (assuming that the intercalation came earlier in the year). The second date is very likely to be the last day of the year, so any solution should take into account that the DOY probably also represents the length of the year. 
 
-IG II² 328, ll. 47-49
+Collation does not help much in this situation. We can check all the above possibilities with the `calendar-equation` command 
 
-    [ἐπ]ὶ Πυθοδήλου ἄρχοντος ἐπ[ὶ τῆς ․․6․․․ίδος δεκάτης πρυτα]-
-    [ν]είας, ἕνει καὶ νέαι, ἑβδόμη[ι καὶ τριακοστῆι τῆς πρυτανεία]-
-    [ς]
+    > calendar_equation.py -e Mai 26/27 iv 28/29/31 -e any 14 any 2 -e any last any 37 --no-ordinary -c
     
+But in this case it only serves to multiply the possibilities (289 mathematically valid collations!) rather than narrow them. For simplicity's sake we can highlight the solutions that best fit the two extremes. First those that allow for a perfect alternation of full and hollow months:
 
-Meritt calls the restorations "almost certainly correct" (Meritt 1961, 11) which may be a bit optimistic (Hansen 1982, 343).  
+     54: FFHH FFFHHH FH   LLS LSSSS L
+     64: FFHH FFFHHH FH   LSS LLSSS L
+    150: FFHH FFFHHH FH   LLL SSSSS L
+    160: FFHH FFFHHH FH   LLS LSSSS L
+    185: FFHH FFFHHH FH   SSS LLLSS L
+     54: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+     64: Mai 26 = IV 29 = 144 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+    150: Mai 27 = IV 28 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+    160: Mai 27 = IV 29 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+    185: Mai 27 = IV 31 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
     
-<Ski> 29/30 = [10] [3]7. πέμπτης and ἑβδόμης are equally possible alternates for δεκάτης. ἑβδόμη[ι καὶ τριακοστῆι], however, should be fairly certain and identifies this as an intercalary year since an urdinary year prytany would have no more than 36 days. Meritt settled on three specific equations:
+Second those that fit the Rule of Aristotle:
+
+     97: FFFH FFFHHH HH   LLL LSSSS S
+    155: FFHH FFFFHH HH   LLL LSSSS S
+    198: FFFF FFHHHH HH   LLL LSSSS S
+    242: FFFH FFFHHH HH   LLL LSSSS S
+
+     97: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+    155: Mai 27 = IV 28 = 145 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+    198: Mai 26 = IV 29 = 146 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+    242: Mai 27 = IV 29 = 146 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+
+ Pritchett and Neugebaur settled on these three equations as indications that the Rule of Aristotle should be followed:
+
+* **[Mai] 27 = [IV] [28] = DOY 145**
+* **<Mou> 14 = [IX] 2 = DOY 310**
+* **<Ski> 29 = [X] 37 = DOY 383**
+ 
+Among the `calendar-equations` collations, this is #155, with the counts and partitions: `FFHH FFFFHH HH`, `LLL LSSSS S`. Far from assuming a regular alternation of festival months, it assumes that "the months Mounichion, Thargelion, and Skirophion were each of 29 days duration."
+
+![324/3 BCE](img/pritchett-year-336-2.png)
+
+One consequence of the equation **<Ski> 29 = [X] 37 = DOY 383** that should be noted is that the last prytany is short by a day (37 rather than 38 days) to accomodate a 383 rather than 384 day intercalary year.
+
+Meritt, who did not believe that the festival months were regulated by lunar observations, accepted all of Pritchett and Neugebaur's restorations, but argued that three hollow months in a row should present something of a difficulty for Pritchett and Neugebaur and others who do (Meritt 1961, 13). While three hollow months is more astronomically probable than Meritt makes it seem, it does offer a check against another line of evidence for which he turned to the best astronomical data available to him at the time, calculations published by Parker and Dubberstein (1942, 35-36). Their dates for visible new moons in 336/5 BCE are very close to those from Heniautos:
+
+| Month | P&D Start | P&D Days | Hen. Start | Hen. Days |
+|-------|-----------|----------|------------|-----------|
+| Hek   | Jul-06    | 30       | Jul-06     | 29        |
+| Met   | Aug-05    | 29       | Aug-04     | 30        |
+| Boe   | Sep-03    | 30       | Sep-03     | 29        |
+| Pua   | Oct-03    | 29       | Oct-02     | 30        |
+| Mai   | Nov-01    | 30       | Nov-01     | 29        |
+| Pos   | Dec-01    | 29       | Nov-30     | 30        |
+| Pos₂  | Dec-30    | 30       | Dec-30     | 30        |
+| Gam   | Jan-29    | 30       | Jan-29     | 29        |
+| Ant   | Feb-28    | 29       | Feb-27     | 30        |
+| Ela   | Mar-29    | 30       | Mar-29     | 30        |
+| Mou   | Apr-28    | 29       | Apr-28     | 29        |
+| Tha   | May-27    | 30       | May-27     | 30        |
+| Ski   | Jun-26    | 29       | Jun-26     | 29        | 
+
+Meritt's only appeals to astronomy to weaken Pritchett and Neugebaur's reconstruction of a year ending with three hollow months. His purpose is to show that the Rule of Aristotle is not a requirement and that a sensible reconstruction of the year can be without it while improving on those of Kirchner and Dinsmoor. To this end he settles on these three equations:
 
 * **[Mai] 26 = [IV] [28] = DOY 144**
-* **<Mou> 14 = [IX] 2 = DOY 309**
+* **<Mou> 14 = Prytany [IX] 2 = DOY 309**
 * **<Ski> 29 = [X] [3]7 = DOY 383**
 
-If we give these to `calendar_equation` we get the following results:
+This is #54 from our solutions, above, which has the partitions `FFHH FFFHHH FH` and `LLS LSSSS L`. For τετράδι φθίνοντος to be the 27th, Maimaktēriṓn must be hollow. Assuming a regular alternation of months, as Meritt does, this makes all the odd-numbered months hollow, so Meritt reconstructs this as beginning with a hollow Hekatombaiṓn, and prytanies I, II, VIII and IX with 39 days:
 
-    > calendar_equation.py -e Mai 26 IV 28 -e Mou 14 IX 2 -e Ski 29 X 37
-    Mai 26 ( 5-) =   IV 28 =  DOY 142 (I) [HHHH, SSS]
-    Mai 26 ( 5-) =   IV 28 =  DOY 143 (I) [FHHH, LSS]
-    Mai 26 ( 5-) =   IV 28 =  DOY 144 (I) [FFHH, LLS]
-    Mai 26 ( 5-) =   IV 28 =  DOY 145 (I) [FFFH, LLL]
-    Mou 14 (11+) =   IX  2 =  DOY 308 (I) [FFFFHHHHHH, LLSSSSSS]
-    Mou 14 (11+) =   IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
-    Mou 14 (11+) =   IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS]
-    Ski 29 (13+) =    X 37 =  DOY 382 (I) [FFFFFHHHHHHH, LLLSSSSSS]
-    Ski 29 (13+) =    X 37 =  DOY 383 (I) [FFFFFFHHHHHH, LLLLSSSSS]
+![324/3 BCE](img/meritt-year-336-with-schematic.png)
 
-Which contains Meritt's conclusions:
+His one departure from perfectly regular alternation is, after the last day of Skirophoriṓn (29 = X 37), to posit an "intercalated last day of Skirophoriṓn" so that there is a Ski 29₂ = X 38 which fills out the prytany and brings the year to 384 days rather than Pritchett and Neubegauer's 383.
 
-* Mai 26 ( 5-) =   IV 28 =  DOY 144 (I) [FFHH, LLS]
-* Mou 14 (11+) =   IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
-* Ski 29 (13+) =    X 37 =  DOY 383 (I) [FFFFFFHHHHHH, LLLLSSSSS]
+As we said before, this is mathematically possible but Meritt offers no mechanism by which the Athenians might have decided on this arrangement. It would be very characteristic of them to draw lots for the lengths of prytanies (as the did for the _phulaí_ holding the prytanies), but there is no historical evidence they did so and no one has ever reconstructed conciliar years that random--many of Meritt's reconstructions do fit the decidedly non-random Rule of Aristotle but those that do not usually have some long prytanies at the beginning with the rest coming at or near the end. Lots would require more years that looked like `LSLSLSSSLS` or `LSSSSLLSLS` than `LLSSSSSSLL` or `LLSSSSSLLS`. Without that, what motivation could they have had?
 
-In the full collation of these equations:
+Pritchett and Neubegaur did not have Parker and Dubberstein's calculations of ancient visible moons. With the even better data, from NASA's Jet Propulsion Laboratory, that Heniautos relies on, is their a better solution that fits the Rule of Aristotle? Here is the Heniautos view of 336/5 BCE
 
-     1: HHHH FFFFHH FH   SSS LLSSS L
-     2: HHHH FFFFFH HH   SSS LLLSS S
-     3: HHHH FFFFFH FH   SSS LLLSS L
-     4: HHHH FFFFFF HH   SSS LLLLS S
-     5: FHHH FFFHHH FH   LSS LSSSS L
-     6: FHHH FFFFHH HH   LSS LLSSS S
-     7: FHHH FFFFHH FH   LSS LLSSS L
-     8: FHHH FFFFFH HH   LSS LLLSS S
-     9: FFHH FFHHHH FH   LLS SSSSS L
-    10: FFHH FFFHHH HH   LLS LSSSS S
-    11: FFHH FFFHHH FH   LLS LSSSS L
-    12: FFHH FFFFHH HH   LLS LLSSS S
-    13: FFFH FFHHHH HH   LLL SSSSS S
-    14: FFFH FFHHHH FH   LLL SSSSS L
-    15: FFFH FFFHHH HH   LLL LSSSS S
-     1: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 308 + Ski 29 = X 37 = 382
-     2: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
-     3: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
-     4: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
-     5: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 308 + Ski 29 = X 37 = 382
-     6: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
-     7: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
-     8: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
-     9: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 308 + Ski 29 = X 37 = 382
-    10: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
-    11: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
-    12: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
-    13: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
-    14: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
-    15: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+    > heniautos -m 336
+         Year     |        Month          |      Start      | Days
+    --------------|-----------------------|-----------------|-----
+    BCE 336/335   | Hekatombaiṓn          | BCE 0336-Jul-06 |   29
+    BCE 336/335   | Metageitniṓn          | BCE 0336-Aug-04 |   30
+    BCE 336/335   | Boēdromiṓn            | BCE 0336-Sep-03 |   29
+    BCE 336/335   | Puanopsiṓn            | BCE 0336-Oct-02 |   30
+    BCE 336/335   | Maimaktēriṓn          | BCE 0336-Nov-01 |   29
+    BCE 336/335   | Posideiṓn             | BCE 0336-Nov-30 |   30
+    BCE 336/335   | Posideiṓn hústeros    | BCE 0336-Dec-30 |   30
+    BCE 336/335   | Gamēliṓn              | BCE 0335-Jan-29 |   29
+    BCE 336/335   | Anthestēriṓn          | BCE 0335-Feb-27 |   30
+    BCE 336/335   | Elaphēboliṓn          | BCE 0335-Mar-29 |   30
+    BCE 336/335   | Mounuchiṓn            | BCE 0335-Apr-28 |   29
+    BCE 336/335   | Thargēliṓn            | BCE 0335-May-27 |   30
+    BCE 336/335   | Skirophoriṓn          | BCE 0335-Jun-26 |   29
     
-Meritt's solution is #11, which we can now illustrate alongside the schematic arrangement of the solution:
+This fits one of the `calendar-equations` solutions very well--#155, the same as match Pritchett and Neugebaur's equations. It can fit both becuase the collation of the three equations does not say anything about the length of Skirophoriṓn. Above we made hollow in the schematic representation, below we make it full.
 
-![324/3 BCE](img/meritt-year-336-with-solution.png)
+![324/3 BCE](img/possible-solution-336.png)
 
-Meritt has primed this solution a bit in order to argue against the Rule of Aristotle. His underemphasized assumption is that the months regularyly alternate full and hollow.
+Parker and Duberstein's calculations fit this solution equally well (P&D). It terms of counts, Heniautos and P&D are exactly equivalent and differ only in the arragment of months. The only reason to prefer Heniautos' dates over Parker and Duberstein's is that Heniautos data comes from computer calculations made by an agency that successfully sends probes to Pluto. The only problem (for both) is on the last three months. The collation requires Mounuchiṓn and Thargēliṓn to be hollow, which we can accommodate by moving up the first day of Skirophoriṓn to June 25. This gives us a hollow Thargēliṓn but now the last day, ἕνει καὶ νέαι, of Skirophoriṓn should by Ski 30 = X 38. Perhaps Meritt is correct to posit a Ski 29 = X 37 followed by Ski 29₂ = X 38?
+
+There is a way around this complication. Unfortunate, it requires us to recognize the fact that we cannot put much trust in the recorded festival dates. As cases where there is no good solution for an equation show, Athenians made many silent manipulations of the festival calendar.
 
 ## It Doesn't Always Work Out
 
@@ -662,7 +688,5 @@ This is not much of a sample size--in the 400 years from the 5th through the 2nd
 * Meritt, Benjamin D. 1974. “The Count of Days at Athens.” _American Journal of Philology_ 95 (3): 268–79.
 * Meritt, Benjamin D. 1977. “The Hollow Month at Athens.” _Mnemosyne_ 30 (3): 217–42.
 * Osborne, Michael. 2008. “The Date of the Athenian Archon Thrasyphon.” _Zeitschrift Für Papyrologie und Epigraphik_ 164: 85–89.
+* Parker, Richard Anthony, and Waldo H. Dubberstein. 1942. _Babylonian Chronology 626 B. C.-45._ Studies in Ancient Oriental Civilization 24. Chicago: The University of Chicago Press.
 * Pritchett, W. Kendrick, and Benjamin D. Meritt. 1940. _The Chronology of Hellenistic Athens_. Cambridge: Harvard University Press.
-
-
-
