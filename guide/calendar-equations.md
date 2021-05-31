@@ -1,4 +1,4 @@
-# Calendar Equations: How Accurate Might `heniautos` Be?
+# Calendar Equations
 
 This guide has included many caveats about the accuracy of `heniautos` and noted two documented intercalary years that `heniautos` gets wrong. On the other hand, what might `heniautos` get right, and how could we know? One way is to look for demonstrably intercalary or ordinary years that `heniautos` calculates correctly. This will involve looking into "calendar equations." There is one set of inscriptions with calendar equations using what is called "triple dating" that provide a particularly good experiment.
 
@@ -202,6 +202,206 @@ Note that of the twelve "collated" solutions, this is the _only_ solution that f
 
 **Tha 18 = IX 29 = DOY 313 = ✸May 31, 323 BCE**
 
+## 336/5 BCE
+
+Meritt's interpretation of the evidence for this year (Meritt 1961, 10-15) was briefly discussed under the Rule of Aristotle. We can now examine it in more detail. There are two inscriptions recording dated decrees for 336/5 BCE: IG II² 328 (=IG II² 328) and IG II³,1 327 (=IG II² 330) with two decrees on separate dates.
+
+IG II³,1 329 (Meritt's IG II² 328) is very conservative:
+
+    [․․․․․․․․․․20․․․․․․․․․․ ἐπ]ὶ τῆς Α[․]
+    [․․․․․․․․17․․․․․․․․․ πρυτ]ανείας, ἧ-
+    [ι ․․․․․․․․․19․․․․․․․․․․ ἐ]γραμμάτ-
+    [ευεν· ․․․․․․․14․․․․․․․ τετ]ράδι φθί-
+    [νοντος· ․․․․․․․15․․․․․․․․]ει τῆς πρ-
+    [υτανείας]
+    
+This inscription has a "rich" history of restorations, but let us at least accept the restoration of Pythodelos as the archon (IG II² 328) in line one. 
+
+    [ἐπὶ Πυθοδήλου ἄρχοντος ἐπ]ὶ τῆς Ἀ[.]-
+
+It is interesting to follow some of the process by which successive generations of scholars worked through the problems posed by these texts. Kirchner, in IG II², specified **Mai 27 = IV 31**, restoring the following for lines 2-6.  
+
+    [......... τετάρτης πρυτ]ανείας ἧ-
+    [ι ․․․․․․․․19․․․․․․․․․ ἐ]γραμμάτ-
+    [ευεν· Μαιμακτηριῶνος τετ]ράδι φθί-
+    [νοντος, μιᾶι καὶ τριακοστ]εῖ τῆς πρ-
+    [υτανείας
+
+The interpretion of τετράδι φθίνοντος as the 27th shows that Kirchner assumed Maimaktēriṓn was full (since it would be the 26th of a hollow month). The equation of Mai 27 with IV 31, and the restoration of μιᾶι καὶ τριακοστεῖ for the prytany day rest on the assumption of alternating full and hollow months and years that mostly begin with a full Hekatombaiṓn. Thus Mai 27 = DOY 145 (30 + 29 + 30 + 29 + 27). To make the equation work, the first three pytanies must be 38 days long (38 + 38 + 38 + 31 = 145)
+
+Translated into Heniautos terms, Kirchner's solution for this equation is the only one that accommodates this alternation (by virtue of having an even number of full and hollow months).
+
+
+    > calendar_equation.py -e Mai 27 IV 31
+    Mai 27 ( 5-) =   IV 31 =  DOY 145 (I) [FFHH, SSS]
+    Mai 27 ( 5-) =   IV 31 =  DOY 146 (I) [FFFH, LSS]
+    Mai 27 ( 5-) =   IV 31 =  DOY 147 (I) [FFFF, LLS]
+
+Therefore, his **[Mai] 27 = [IV] [31]** looks like this:
+
+![324/3 BCE](img/kirchner-year-336.png)
+
+Dinsmoor looked at this inscription next (Dinsmoor 1931, 356). He noted that all festival dates in IG II² 328 and 330 require restoring, but "In the first instance [IG II² 328] it was clearly the longest name Maimakterion so that the day must have been 144/145th of the year." He thus reopens the possibility of a hollow Maimaktēriṓn in which τετράδι φθίνοντος means the 26th. He then pursues this, again with the assumption of regularly alternating months: "Beginning the year with Hekatombaion and Maimakterion also being hollow it is probably that the first equation was Maim. 26 = Pryt. IV,29." That is, reading lines 4-5 as:
+
+           [Μαιμακτηριῶνος τετ]ράδι φθί-
+    [νοντος, ἐνάτηι καὶ εἰκοστ]εῖ
+
+Plugging **Mai 26 = IV 29** into `calendar-equation` we have:
+
+    > calendar_equation.py -e Mai 26 IV 29
+    Mai 26 ( 5-) =   IV 29 =  DOY 143 (I) [FHHH, SSS]
+    Mai 26 ( 5-) =   IV 29 =  DOY 144 (I) [FFHH, LSS]
+    Mai 26 ( 5-) =   IV 29 =  DOY 145 (I) [FFFH, LLS]
+    Mai 26 ( 5-) =   IV 29 =  DOY 146 (I) [FFFF, LLL]
+
+Like Kirchner, Dinsmoor settled on the only solution (DOY 144) that worked with alternating full and hollow months (albeit the reverse alternation from Kirchner's), including the fact that "Pryt. I had 39 days, II-III had 38."
+
+![324/3 BCE](img/dinsmoor-year-336.png)
+
+Pritchett and Neugebaur were the first to take Aristotle's statment about prytanies to heart. They disagreed with the previous practice of making restorations "in conformity with this assumption of rigid [sic] sequence of months and days in the civic calendar" since this led to "prytanies of varying lengths" being "interspersed at random thoughout the prytany year." Instead, they proposed that we "reverse the method by positing a rule of regularity in the length and sequence of prytanies" (Pritchett and Neugebauer 1947, 34-35). They thus restored the prytany date of IG II² 328 as the 28th (Pritchett and Neugebauer 1947, 43):
+
+           [Μαιμακτηριῶνος τετ]ράδι φθί-
+    [νοντος, ὀγδόηι καὶ εἰκοστ]εῖ
+    
+Returning to a full Maimaktēriṓn, this gives us an equation **Mai 27 = IV 28** 
+
+    > calendar_equation.py -e Mai 27 IV 28
+    Mai 27 ( 5-) =   IV 28 =  DOY 143 (I) [HHHH, LSS]
+    Mai 27 ( 5-) =   IV 28 =  DOY 144 (I) [FHHH, LLS]
+    Mai 27 ( 5-) =   IV 28 =  DOY 145 (I) [FFHH, LLL]
+
+The DOY 145 solution allows for the Rule of Aristotle.
+
+![324/3 BCE](img/pritchett-year-336.png)
+
+This clearly also still accomodates a regular alternation, but it does not assume it. The difference between Pritchet and Neugebauer's equation and Dinsmoor is that Dinsmoor, beginning with an assumption about the festival year settled on a solution that would only accomodate the Rule of Aristotle if the first four months were full (the DOY 146 solution for Mai 26 = IV 29, above, and astronomically improbable if not impossible). Pritchett and Neugebauer, on the other, begin with an assumption about the conciliar calendar and arrive at a solution that allows for regularity in the prytanies (the Rule) without excluding regularity in the festival months. 
+
+IG II³,1 327 (= IG II² 330) contains two dates, one in lines 29-30:
+
+    [ἐπ]ὶ Πυθοδήλου ἄρχοντος, ἐ[πὶ τῆς ․․․․8․․․․ ἐνάτης πρυτανεί]-
+    [ας]· τετράδι ἐπὶ δέκα· δευτέ[ραι τῆς πρυτανείας
+    
+and another in lines 47-49:
+
+    [ἐπ]ὶ Πυθοδήλου ἄρχοντος, ἐπ[ὶ τῆς ․․․․․10․․․․․ δεκάτης πρυτα]-
+    [ν]είας· ἕνει καὶ νέαι· ἑβδόμη[ι καὶ τριακοστῆι τῆς πρυτανεία]-
+    [ς]
+
+The festival month is omitted in both, and since the prytany must be restored much relies on one's theories about the calendar. Kirchner's reconstruction of the lengths of the prytanies for this year (given in his commentary on IG II² 330) were 39, 38, 38, 38, 38, 38, 39, 39, 40, 37 days. Dinsmoor's statement that "The second equation, with the 14th of a month falling on the second of a prytany could be either the sixth or the ninth prytany; the third with the last day of a month falling on the 37th of a prytany, could be either the seventh or the tenth prytany" we can check with `calendar-equations`, starting with the first equation, **? 14 = ? 2**: 
+
+    > calendar_equation.py -e any 14 any 2 --no-ordinary
+    Pos 14 ( 7+) =   VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
+    Gam 14 ( 7-) =   VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
+    Pos 14 ( 7+) =   VI  2 =  DOY 193 (I) [FFFFFH, LSSSS]
+    Gam 14 ( 7-) =   VI  2 =  DOY 193 (I) [FFFFFH, LSSSS]
+    Pos 14 ( 7+) =   VI  2 =  DOY 194 (I) [FFFFFF, LLSSS]
+    Gam 14 ( 7-) =   VI  2 =  DOY 194 (I) [FFFFFF, LLSSS]
+    Mou 14 (11+) =   IX  2 =  DOY 308 (I) [FFFFHHHHHH, LLSSSSSS]
+    Tha 14 (11-) =   IX  2 =  DOY 308 (I) [FFFFHHHHHH, LLSSSSSS]
+    Mou 14 (11+) =   IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
+    Tha 14 (11-) =   IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
+    Mou 14 (11+) =   IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS]
+    Tha 14 (11-) =   IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS] 
+
+We can simplify this by combining the alternatives for the festival months
+
+    Pos/Gam 14 (7)  =  VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
+    Pos/Gam 14 (7)  =  VI  2 =  DOY 193 (I) [FFFFFH, LSSSS]
+    Pos/Gam 14 (7)  =  VI  2 =  DOY 194 (I) [FFFFFF, LLSSS]
+    Mou/Tha 14 (11) =  IX  2 =  DOY 308 (I) [FFFFHHHHHH, LLSSSSSS]
+    Mou/Tha 14 (11) =  IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
+    Mou/Tha 14 (11) =  IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS]
+
+And if we do the same simplification for **? 29/30 = ? 37** of the output from `calendar_equation.py -e any last any 37 --no-ordinary` we have:
+
+    Ant/Ela 29 (9) =  VII 37 =  DOY 265 (I) [FFFFHHHH, SSSSSS]
+    Ant/Ela 30 (9) =  VII 37 =  DOY 265 (I) [FFFHHHHH, SSSSSS]
+    Ant/Ela 29 (9) =  VII 37 =  DOY 266 (I) [FFFFFHHH, LSSSSS]
+    Ant/Ela 30 (9) =  VII 37 =  DOY 266 (I) [FFFFHHHH, LSSSSS]
+    Ant/Ela 29 (9) =  VII 37 =  DOY 267 (I) [FFFFFFHH, LLSSSS]
+    Ant/Ela 30 (9) =  VII 37 =  DOY 267 (I) [FFFFFHHH, LLSSSS]
+    Ant/Ela 29 (9) =  VII 37 =  DOY 268 (I) [FFFFFFFH, LLLSSS]
+    Ant/Ela 30 (9) =  VII 37 =  DOY 268 (I) [FFFFFFHH, LLLSSS]
+    Ant/Ela 30 (9) =  VII 37 =  DOY 269 (I) [FFFFFFFH, LLLLSS]
+    Ski 29 (13+)   =    X 37 =  DOY 382 (I) [FFFFFHHHHHHH, LLLSSSSSS]
+    Ski 29 (13+)   =    X 37 =  DOY 383 (I) [FFFFFFHHHHHH, LLLLSSSSS]
+    Ski 30 (13+)   =    X 37 =  DOY 383 (I) [FFFFFHHHHHHH, LLLLSSSSS]
+
+	
+**<Mou> 14 = [IX] 2**. ἐνάτης is by now means the only possible restoration. πρώτης, τρίτης, and ὀγδόης all have the same number of letters.
+
+IG II² 328, ll. 47-49
+
+    [ἐπ]ὶ Πυθοδήλου ἄρχοντος ἐπ[ὶ τῆς ․․6․․․ίδος δεκάτης πρυτα]-
+    [ν]είας, ἕνει καὶ νέαι, ἑβδόμη[ι καὶ τριακοστῆι τῆς πρυτανεία]-
+    [ς]
+    
+
+Meritt calls the restorations "almost certainly correct" (Meritt 1961, 11) which may be a bit optimistic (Hansen 1982, 343).  
+    
+<Ski> 29/30 = [10] [3]7. πέμπτης and ἑβδόμης are equally possible alternates for δεκάτης. ἑβδόμη[ι καὶ τριακοστῆι], however, should be fairly certain and identifies this as an intercalary year since an urdinary year prytany would have no more than 36 days. Meritt settled on three specific equations:
+
+* **[Mai] 26 = [IV] [28] = DOY 144**
+* **<Mou> 14 = [IX] 2 = DOY 309**
+* **<Ski> 29 = [X] [3]7 = DOY 383**
+
+If we give these to `calendar_equation` we get the following results:
+
+    > calendar_equation.py -e Mai 26 IV 28 -e Mou 14 IX 2 -e Ski 29 X 37
+    Mai 26 ( 5-) =   IV 28 =  DOY 142 (I) [HHHH, SSS]
+    Mai 26 ( 5-) =   IV 28 =  DOY 143 (I) [FHHH, LSS]
+    Mai 26 ( 5-) =   IV 28 =  DOY 144 (I) [FFHH, LLS]
+    Mai 26 ( 5-) =   IV 28 =  DOY 145 (I) [FFFH, LLL]
+    Mou 14 (11+) =   IX  2 =  DOY 308 (I) [FFFFHHHHHH, LLSSSSSS]
+    Mou 14 (11+) =   IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
+    Mou 14 (11+) =   IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS]
+    Ski 29 (13+) =    X 37 =  DOY 382 (I) [FFFFFHHHHHHH, LLLSSSSSS]
+    Ski 29 (13+) =    X 37 =  DOY 383 (I) [FFFFFFHHHHHH, LLLLSSSSS]
+
+Which contains Meritt's conclusions:
+
+* Mai 26 ( 5-) =   IV 28 =  DOY 144 (I) [FFHH, LLS]
+* Mou 14 (11+) =   IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
+* Ski 29 (13+) =    X 37 =  DOY 383 (I) [FFFFFFHHHHHH, LLLLSSSSS]
+
+In the full collation of these equations:
+
+     1: HHHH FFFFHH FH   SSS LLSSS L
+     2: HHHH FFFFFH HH   SSS LLLSS S
+     3: HHHH FFFFFH FH   SSS LLLSS L
+     4: HHHH FFFFFF HH   SSS LLLLS S
+     5: FHHH FFFHHH FH   LSS LSSSS L
+     6: FHHH FFFFHH HH   LSS LLSSS S
+     7: FHHH FFFFHH FH   LSS LLSSS L
+     8: FHHH FFFFFH HH   LSS LLLSS S
+     9: FFHH FFHHHH FH   LLS SSSSS L
+    10: FFHH FFFHHH HH   LLS LSSSS S
+    11: FFHH FFFHHH FH   LLS LSSSS L
+    12: FFHH FFFFHH HH   LLS LLSSS S
+    13: FFFH FFHHHH HH   LLL SSSSS S
+    14: FFFH FFHHHH FH   LLL SSSSS L
+    15: FFFH FFFHHH HH   LLL LSSSS S
+     1: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 308 + Ski 29 = X 37 = 382
+     2: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
+     3: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+     4: Mai 26 = IV 28 = 142 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+     5: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 308 + Ski 29 = X 37 = 382
+     6: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
+     7: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+     8: Mai 26 = IV 28 = 143 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+     9: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 308 + Ski 29 = X 37 = 382
+    10: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
+    11: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+    12: Mai 26 = IV 28 = 144 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+    13: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 382
+    14: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 309 + Ski 29 = X 37 = 383
+    15: Mai 26 = IV 28 = 145 + Mou 14 = IX 2 = 310 + Ski 29 = X 37 = 383
+    
+Meritt's solution is #11, which we can now illustrate alongside the schematic arrangement of the solution:
+
+![324/3 BCE](img/meritt-year-336-with-solution.png)
+
+Meritt has primed this solution a bit in order to argue against the Rule of Aristotle. His underemphasized assumption is that the months regularyly alternate full and hollow.
 
 ## It Doesn't Always Work Out
 
@@ -385,7 +585,7 @@ There is only one triple date, but it does allow us to establish the dates in th
 
 We can perform some other checks. There are 17 days between II 19 and II 4. There must be the same number of days between Met 21 and Met₂ 8, which requires a full Met (30 - 21 + 8 = 17)--and this is what we have astronomically. There are 36 days between X 19 and XI 23. It requires a hollow Mounuchiṓn for 29 - 11 + 18 to also equal 36, and the astronomy shows a hollow Mounuchiṓn.
 
-### The Omitted Day
+### The Omitted Day: How Accurate Might `heniautos` Be?
 
 A hollow month was metaphorically "hollow" because a day is omitted from the count of days. Meritt (Meritt 1968, 1974, 1977) showed that this day was ἐνάτηι μετ’ εἰκάδας. The 21st was called δεκάτηι ὑστέραι, followed in a full month by ἐνάτηι μετ’ εἰκάδας, "ninth from the end." In a hollow month the 22nd was only the eight from the end was therefore called ὀγδόηι μετ’ εἰκάδας, as was the 23rd in a full month. So each day ὀγδόηι μετ’ εἰκάδας on can be one of two Julian Days, but ἐνάτηι μετ’ εἰκάδας can occur _only_ in a full month.
 
@@ -456,6 +656,7 @@ This is not much of a sample size--in the 400 years from the 5th through the 2nd
 ## Works Cited
 
 * Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
+* Hansen, Mogens Herman. 1982. “When Did the Athenian Ecclesia Meet?” _GRBS_ 23 (4): 331–50.
 * Meritt, Benjamin D. 1938. “Greek Inscriptions.” _Hesperia_ 7 (1): 77–160.
 * Meritt, Benjamin D. 1968. “Calendar Studies.” _Αρχαιολογική Εφημερίς_, 77–115.
 * Meritt, Benjamin D. 1974. “The Count of Days at Athens.” _American Journal of Philology_ 95 (3): 268–79.

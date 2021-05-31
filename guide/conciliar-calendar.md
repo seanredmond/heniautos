@@ -1,12 +1,12 @@
 # The Conciliar Calendar
 
-[Previous: Festival Calendar Basics](festival-calendar-basics.md)
+[Top: Intro](README.md) | [Previous: Festival Calendar Basics](festival-calendar-basics.md) | [Next: The `heniautos` Command](heniautos-command.md)
 
-When the Athenian democracy when instituted in 508 BCE, the citizenry (meaning the population of male citizens since women had no political rights or ability to participate) was divided into ten ` (singular _phulḗ_), usually translated as "tribes". These were not "tribes" in any traditional sense, but were simply arbitrary divisions of the population for governmental purposes. Much voting was done by _phulḗ_, boards were often made up of one menber from each _phulḗ_, and the _Boulḗ_, "Council" that prepared legislation and decisions to be voted on by the at-large _Ekklēsía_, or "Assembly", was made up of 50 men chosen by lot from each _phulḗ_.
+## 508-410 BCE
 
-# 508-410 BCE
+When the Athenian democracy was instituted in 508 BCE, the citizenry (meaning the population of male citizens since women had no political rights or ability to participate) was divided into ten [_phulaí_](https://logeion.uchicago.edu/%CF%86%CF%85%CE%BB%CE%AE) (singular _phulḗ_), usually translated as "tribes". These were not "tribes" in any traditional sense, but were simply arbitrary divisions of the population for civic purposes. Much voting was done by _phulḗ_, boards were often made up of one member from each _phulḗ_, and the _Boulḗ_ (or "Council") that prepared legislation and decisions to be voted on by the at-large _Ekklēsía_ (or "Assembly") was made up of 50 men chosen by lot from each _phulḗ_.
 
-This is important for the calendar because the each tribal delegation served as a standing committee for one-tenth of the year. While serving as this standing committee they were called _prutáneis_ (essentialy "presidents") and their term was a _prutaneía_, a "presidency" or as historians call it a "prytany". Some activities were reserved for particular prytanies. For instance, generals were elected in the seventh prytany (or later if the omens were not good).
+This is important for the calendar because each or the ten tribal delegations served as a standing committee for one-tenth of the year. While serving as this standing committee they were called [_prutáneis_](https://logeion.uchicago.edu/%CF%80%CF%81%CF%8D%CF%84%CE%B1%CE%BD%CE%B9%CF%82) (essentialy "presidents") and their term was a [_prutaneía_](https://logeion.uchicago.edu/%CF%80%CF%81%CF%85%CF%84%CE%B1%CE%BD%CE%B5%CE%AF%CE%B1), a "presidency" or as historians call it a "prytany". Some activities were reserved for particular prytanies. For instance, generals were usually elected in the seventh prytany.
 
 The ten _phulaí_ in this period, in their traditional order, were:
 
@@ -21,28 +21,30 @@ The ten _phulaí_ in this period, in their traditional order, were:
 9. Aiantís
 10. Antiokhís
 
-This order was used for the rotation of some offices, such as secretary of the council. As an anti-corruption measure, however, the prytanies were chosen by lot and not very far ahead of time. It was only after one prytany was well under way that lots would be drawn to determine which _phulḗ_ would hold the next.
+This order was used for the rotation of some offices, such as secretary of the council. As an anti-corruption measure, however, the prytanies were chosen by lot and not very far ahead of time. It was only after one prytany was under way that lots would be drawn to determine which _phulḗ_ would hold the next.
 
-Athenians inscribed their offical decrees on stone in order publish them. Thousands of these inscriptions still exist and many are dated by the prytany. In the fifth century, these inscriptions usually name the _árkhon_ (the chief magistrate), the first secretary of the council, and the _phulḗ_ that held the prytany when the decree was passed. We can tell the year from the _árkhon_, but the name of the tribe alone is no help because of the random order.
+Athenians inscribed their offical decrees on stone in order publish them. Thousands of these inscriptions still exist and many are dated by the prytany. In the fifth century, these inscriptions usually name the [_árkhōn_](https://logeion.uchicago.edu/%E1%BC%84%CF%81%CF%87%CF%89%CE%BD) (the chief magistrate), the [_grammateús_](https://logeion.uchicago.edu/%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B5%CF%8D%CF%82) (secretary of the council), and the _phulḗ_ that held the prytany when the decree was passed. We can tell the year from the _árkhōn_, but the name of the tribe alone is no help because of the random order.
 
 Sometimes, however we are luckier. In an inscription that records payments made to generals who were sent to Corcyra in 433/2, we are told that 26 talents were given to them "in Aiantis' prytany, the first prytany,
 thirteen days had elapsed" and 50 talents "in Aiantis' prytany, the first prytany, on the final day of the prytany" ([IG I³ 364](https://epigraphy.packhum.org/text/375?&bookid=4&location=1701), translation from Fornara [1983] 143). When were the 13th and last days of the first prytany.
 
-In the first period of the democracy, the prytanies operated on something like a solar year. Five of the prytanies lasted for 37 days and five for 36, for a total of 365 days. Given the evidence we have it is hard to say on what day these conciliar years started, but `heniautos` uses the dates calculated by Meritt (1961). The `-c` option of the `heniautos` command will output the conciliar year:
+In the first period of the democracy, the prytanies operated on something like a solar year. Five of the prytanies lasted for 37 days and five for 36, for a total of 365 days. Given the evidence we have it is difficult to say on what day these conciliar years started, but `heniautos` uses the dates calculated by Meritt (1961). The `-c` option of the `heniautos` command will output the conciliar year:
 
     > heniautos 433 -m -c 
-    "BCE 433/432"	"I"	"BCE 0433-Jul-04"	37
-    "BCE 433/432"	"II"	"BCE 0433-Aug-10"	37
-    "BCE 433/432"	"III"	"BCE 0433-Sep-16"	37
-    "BCE 433/432"	"IV"	"BCE 0433-Oct-23"	37
-    "BCE 433/432"	"V"	"BCE 0433-Nov-29"	37
-    "BCE 433/432"	"VI"	"BCE 0432-Jan-05"	36
-    "BCE 433/432"	"VII"	"BCE 0432-Feb-10"	36
-    "BCE 433/432"	"VIII"	"BCE 0432-Mar-18"	36
-    "BCE 433/432"	"IX"	"BCE 0432-Apr-23"	36
-    "BCE 433/432"	"X"	"BCE 0432-May-29"	36
+         Year     |        Prytany        |      Start      | Days 
+    --------------|-----------------------|-----------------|-----
+    BCE 433/432   | I                     | BCE 0433-Jul-04 |   37
+    BCE 433/432   | II                    | BCE 0433-Aug-10 |   37
+    BCE 433/432   | III                   | BCE 0433-Sep-16 |   37
+    BCE 433/432   | IV                    | BCE 0433-Oct-23 |   37
+    BCE 433/432   | V                     | BCE 0433-Nov-29 |   37
+    BCE 433/432   | VI                    | BCE 0432-Jan-05 |   36
+    BCE 433/432   | VII                   | BCE 0432-Feb-10 |   36
+    BCE 433/432   | VIII                  | BCE 0432-Mar-18 |   36
+    BCE 433/432   | IX                    | BCE 0432-Apr-23 |   36
+    BCE 433/432   | X                     | BCE 0432-May-29 |   36
 
-The 13th day of the 1st prytany would be about July 16 433 BCE, and the last day about August 9. Note that the prytanies have no connection to the lunar months, or in this period to the solstice. The festival year 433/2 began on July 28, or June 28 if it was intercalary which is perhaps more likely (see below, "The Start of 433/2"). The lengths of the prytanies are calculated according to a rule that sought to make the time served by the _prutáneis_ as even as possible.
+The 13th day of the 1st prytany would be about July 16 433 BCE, and the last day about August 9. Note that the prytanies have no connection to the lunar months, or in this period to the solstice. The festival year 433/2 began on July 28, or June 28 if it was intercalary which is perhaps more likely (see below, ["The Start of 433/2"](#the-start-of-4332). The lengths of the prytanies are calculated according to a rule that sought to make the time served by the _prutáneis_ as even as possible.
 
 If the generals for the next year were elected in the 7th prytany, in 433/2 that would have meant sometime between about February 10 and March 17
 
@@ -72,7 +74,7 @@ And in an intercalary year, since 384 is evenly divisible by 12, all the prytani
 
 ## 223-201 BCE
 
-For a short time at the end of the third century BCE, there were thirteen tribes with the addition of Ptolemaís. In an ordinary year there were three 28-day and seven 27-day prytanies
+For a short time at the end of the third century BCE, there were thirteen tribes with the addition of Ptolemaís. In an ordinary year there were three 28-day and ten 27-day prytanies
 
 ![210/9 BCE](img/210.png)
 
@@ -82,28 +84,51 @@ In an intercalary year, the thirteen prytanies could mirror the thirteen festiva
 
 Then In 200 BCE, Athens went back to twelve tribes--Antogonís and Dēmētriás were removed, while Ptolemaís remained and was supplemented by a new tribe Attalís--and this arrangement operated for another century until Athens came under firmer Roman control as a province of the Roman Empire.
 
+## The "Rule of Aristotle"
+
+The festival year had months of 29 and 30 days, while the conciliar calendar had prytanies that ranged from 27 and 28 days to 38 and 39 days. The festival months were synchronized with moons, but what determined how long each prytany was? 
+
+A passage in _Athenaion Politeia_ ([43.2](http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0045%3Achapter%3D43%3Asection%3D2)) implies that the longer prytanies all came at the beginning of the year. 
+
+> πρυτανεύει δ᾽ ἐν μέρει τῶν φυλῶν ἑκάστη καθ᾽ ὅ τι ἂν λάχωσιν, αἱ μὲν πρῶται τέτταρες Ϛʹ καὶ λʹ ἡμέρας ἑκάστη, αἱ δὲ Ϛʹ αἱ ὕστεραι πέντε καὶ λʹ ἡμέρας ἑκάστη· κατὰ σελήνην γὰρ ἄγουσιν τὸν ἐνιαυτόν.
+
+> Each of the _phulaí_ holds the prytany in turn by lot, the first four for 36 days each, the next six for 35 days each; for they regulate the year according to the moon.
+ 
+We should take "For they regulate the year according to moon" as a contrast to what preceded it--an Athenian would have understood that meant 29 and 30 day months as opposed to 35 and 36 day prytanies, and perhaps that this meant a rule of four long prytanies followed by six short as opposed to alternating and semi-alternating full and hollow months. The idea that the long prytanies all came at the beginning of the year has come to be known as the "Rule of Aristotle" which different scholars have believed operated to different degrees (see Rhodes [1985] 519-519 for a summary). 
+
+Except for those years when the number of prytanies is the same as the number of festival months Heniautos generates conciliar years that follow the Rule of Aristotle. This is mainly because there is no better criteria for arranging the pryanies. The festival months either alternate as regularly as possible or (as Heniautos calculates them) follow the actual lunar months. Aristotle's rule is the best evidence we have for the arrangment of prytanies. Scholars have postulated a different arrangement of prytanies, such as Meritt did for 336/5 (Meritt 1961, 15):
+
+![298/7 BCE](img/meritt-year-336.png)
+
+But no theory is put forth to explain why the 1st, 2nd, 8th and 9th prytanies are long rather that, say, the 3rd, 5th, 7th, and 10th except that they satisfy Meritt's interpretation of the calendar equations in several inscriptions in such a way that allows for a regular alternation of full and hollow months (Meritt 1961, 10-15). By what mechanism would the Athenians have decided on this arrangment of prytanies except, perhaps, by lot which is _never_ mentioned in relation to the calendar?
+
+Other interpretations are possible. In fact there is one (and only one) solution that satisifes Merrit's calendar equations _and_ follows the Rule of Aristotle. It differs from the default calculations of Heniautos only in the last two months:
+
+![298/7 BCE](img/heniautos-336.png)
+
+This really amount to only single day's difference. Heniautos makes Thargēliṓn a full month ending on the 355th day of the year, Skirophoriṓn hollow beginning on the 356th. By simply ending Thargēliṓn on the 354th day and starting Skirophoriṓn on the 355th, within the "margin of error" of Heniautos' approximations, this matches the solution. 
+
 ## Hypothetical Calendars
 
-`heniautos` will generate a conciliar calendar for any year you want. For any year after the 2nd century BCE, it just uses the "classical" ten prytany schedule. If we had prytanies in 2021:
+Heniautos will generate a conciliar calendar for any year you want. For any year after the 2nd century BCE, it just uses the "classical" ten prytany schedule. If we had prytanies in 2021:
 
     > heniautos 2021 --as-ce -m -c
-    " CE 2021/2022"	"I"	" CE 2021-Jul-12"	36
-    " CE 2021/2022"	"II"	" CE 2021-Aug-17"	36
-    " CE 2021/2022"	"III"	" CE 2021-Sep-22"	36
-    " CE 2021/2022"	"IV"	" CE 2021-Oct-28"	36
-    " CE 2021/2022"	"V"	" CE 2021-Dec-03"	35
-    " CE 2021/2022"	"VI"	" CE 2022-Jan-07"	35
-    " CE 2021/2022"	"VII"	" CE 2022-Feb-11"	35
-    " CE 2021/2022"	"VIII"	" CE 2022-Mar-18"	35
-    " CE 2021/2022"	"IX"	" CE 2022-Apr-22"	35
-    " CE 2021/2022"	"X"	" CE 2022-May-27"	35
-
-
-
+         Year     |        Prytany        |      Start      | Days
+    --------------|-----------------------|-----------------|-----
+     CE 2021/2022 | I                     |  CE 2021-Jul-12 |   36
+     CE 2021/2022 | II                    |  CE 2021-Aug-17 |   36
+     CE 2021/2022 | III                   |  CE 2021-Sep-22 |   36
+     CE 2021/2022 | IV                    |  CE 2021-Oct-28 |   36
+     CE 2021/2022 | V                     |  CE 2021-Dec-03 |   35
+     CE 2021/2022 | VI                    |  CE 2022-Jan-07 |   35
+     CE 2021/2022 | VII                   |  CE 2022-Feb-11 |   35
+     CE 2021/2022 | VIII                  |  CE 2022-Mar-18 |   35
+     CE 2021/2022 | IX                    |  CE 2022-Apr-22 |   35
+     CE 2021/2022 | X                     |  CE 2022-May-27 |   35    
 
 ## The Start of 433/2
 
-In [Festival Calendar Basics](festival-calendar-basics.md) (under "Heniautos and Intercalations") we noted that it was a close call, astronomically, whether or not the year 320/19 was intercalary but that the evidence of inscriptions make it clear that it was even though and that `heniautos`'s _default_ options decide that it wasn't. The year 433/2 is a similar case that `heniautos` probably gets wrong.
+In [Festival Calendar Basics](festival-calendar-basics.md) (under "Heniautos and Intercalations") we noted that it was a close call, astronomically, whether or not the year 320/19 was intercalary but that the evidence of inscriptions makes it clear that it was intercalary, though Heniautos' default calculate it as ordinary. The year 433/2 is a similar case that `heniautos` probably gets wrong.
 
 The summer solstice of 433 BCE occured on June 28. A new moon--meaning the astronomical conjunction--occurred just before, on June 27 at 1:34 AM, Athens time. This is just enough before the solstice that `heniautos` makes 434/433 intercalary with Skirophoriṓn of that year beginning oj June 28 and 433/2 ordinary with Hekatombaiṓn not starting until July 28. 
 
@@ -172,4 +197,6 @@ We can infer from IG I³ 364 that the two payments were on
 * Fornara, Charles W., ed. 1983. _Archaic Times to the End of the Peloponnesian War._ 2nd ed. Translated Documents of Greece and Rome 1. Cambridge: Cambridge University Press.
 * Meritt, Benjamin D. 1961. _The Athenian Year_. Sather Classical Lectures 32. Berkeley: University of California Press.
 * Planeaux, Christopher. Forthcoming. _The Athenian Year Primer_.
+* Rhodes, P. J. 1985. _A Commentary on the Aristotelian Athenaion Politeia_. Oxford: Oxford University Press.
+
 

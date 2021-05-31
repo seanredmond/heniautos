@@ -416,8 +416,6 @@ Heniautos does not try to gracefully handle the transition from "quasi-solar" to
 
 #### Rule of Aristotle
 
-They conciliar year usually had prytanies of two different lengths. For instance, an ordinary 10-prytany year had four 36-day prytanies and six 35-day prytanies. A passage in _Athenaion Politeia_ ([43.2](http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0045%3Achapter%3D43%3Asection%3D2)) implies that the longer prytanies all came at the beginning of the year. This has come to be known as the "Rule of Aristotle" which different scholars have believed operated to different degrees.
-
 Heniautos produces conciliar calendars that follow Rule of Aristotle--out of expediency because, unlike the festival calendar and the moon, there no other external guide to the ordering of long and short prytanies. In this example you can see that the first four prytanies are 36-days long and the remaining 35:
 
     >>> c = ha.prytany_calendar(ha.bce_as_negative(350))
