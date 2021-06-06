@@ -189,7 +189,7 @@ We can infer from IG I³ 364 that the two payments were on
 * Hek 18 = I 13 = July 15, 433 BCE
 * Met 12 = I 37 = August 9, 433 BCE
 
-This is called a "calendar equation." The best kind of historical evidence for the calendar is an inscription with an _explicit_ calendar equation (rather than an implicit one like IG I³ 364). This is the next topic.
+This is called a "calendar equation." The best kind of historical evidence for the calendar is an inscription with an _explicit_ calendar equation (rather than an implicit one like IG I³ 364). This is a [later topic](calendar-equations.md).
 
 [Top: Intro](README.md) | [Previous: Festival Calendar Basics](festival-calendar-basics.md) | [Next: The `heniautos` Command](heniautos-command.md)
 
