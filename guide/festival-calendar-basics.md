@@ -21,7 +21,7 @@ The Athenian "festival year" consisted of twelve lunar months:
 
 Cities thoughout Greece used calendars based on principles similar to those of the Athenian calendar, but the names of the months varied. In Thessaly, for instance, they were Itṓnios, Pánēmos, Themístios, Agagúlios, Hermaîos, Apollṓnios, Leskhanórios, Áphrios, Thuîos, Homolṓios, Hippodrómios, and Phulikkós (Samuel 1972, 85). We know the names of some of the Spartan months--Agriános, Artemísios, Geraístios, Hekatombeús, Hērásios, Karneîos, Huakínthios, Phliásios-- but not their precise order (Samuel 1972, 93).
 
-Many are obviously named for gods, and others are named for festivals (or vice versa) which shows their religious nature. The festival calendar is so called to distinguish it from the conciliar calendar (which we will get to) and because it provided timing for the many, many religious celebrations that Athens held. Some days were always sacred to a particular god--the 3rd of every month to Athena and 7th to Apollo for example. The first few days of every month were taken up with festivals like this (Mikalson 1976 14-20). Other celebrations were held once a year, including the major Athenian festivals (Mikalson 1976 201): 
+Many are obviously named for gods, and others are named for festivals (or vice versa) which shows their religious nature. The festival calendar is so called to distinguish it from the [conciliar calendar](conciliar-calendar.md) (which we will get to) and because it provided timing for the many, many religious celebrations that Athens held. Some days were always sacred to a particular god--the 3rd of every month to Athena and 7th to Apollo for example. The first few days of every month were taken up with festivals like this (Mikalson 1976 14-20). Other celebrations were held once a year, including the major Athenian festivals (Mikalson 1976 201): 
 
 * Panathenaia: Hekatombaiṓn 23-30
 * Eleusinia: Metageitniṓn 15-18
@@ -58,7 +58,7 @@ To make sure that the year began after the solstice, the ancient Greeks would ad
 
 ![idealized intercalary year](img/ideal-intercalated.png)
 
-This intercalation follows the month Posideiṓn and would be called _Posideiṓn hústeros_ "later Posideiṓn", _Posideiṓn deúteros_ "second Posideiṓn" or _Posideiṓn embólimos_ "injected Posideiṓn." When we abbreviate we will indicate this with a subscript number 2: Pos₂. Intercalations were most commonly made after Posideiṓn, but they could occur anywhere in the year, such as after Hekatombaiṓn:
+Since this intercalation follows the month Posideiṓn it would be called _Posideiṓn hústeros_ "later Posideiṓn", _Posideiṓn deúteros_ "second Posideiṓn" or _Posideiṓn embólimos_ "injected Posideiṓn." When we abbreviate we will indicate this with a subscript number 2: Pos₂. Intercalations were most commonly made after Posideiṓn, but they could occur anywhere in the year, such as after Hekatombaiṓn:
 
 ![idealized intercalary year](img/ideal-hek2.png)
 
@@ -111,11 +111,11 @@ The ancient Greeks probably defined the day as beginning at sunset (Samuel 1972,
 
 The top row shows the span of the Greek days, beginning at sunsets (marked by the arrows). The bottom row shows "modern" days, offset because they begin at midnight.
 
-This is the same as the Jewish and Islamic calendars still in use. Days begin at sunset so while we say that Shabbat is "Saturday" it begins in the evening on Friday, as Juma is "Friday" but begins on Thursday. The modern Jewish and Islamic calendars are identical in many ways the to Greek calendar and they all descend from the ancient [Babylonian Calendar](https://en.wikipedia.org/wiki/Babylonian_calendar)
+This is the same as the Jewish and Islamic calendars still in use. Days begin at sunset so while we say that Shabbat is "Saturday" it begins in the evening on Friday, as Juma is "Friday" but begins on Thursday. The modern Jewish and Islamic calendars are identical in many ways the to Greek calendar and they all descend from the ancient [Babylonian Calendar](https://en.wikipedia.org/wiki/Babylonian_calendar) (as do our 12- and 24-hour days, 60-minute hours, and 360° circles).
 
 Heniautos provides two other options for estimating the visible new moon besides the "second day rule." Since we do not know how the Athenians determined the first day of a month, or for sure when their day started or how this might have changed over time, it is important to consider all of the possibilities. 
 
-The median of the number of hours after the astronomical conjunction that the new moon becomes visible (at Athens) is 41.5 hours (see Dunn 1998, 214-216) or just under two days or, to put it another way, just over one. Heniautos can also use a "next day rule," that estimates the visible new moon as one day after the conjunction. To use this with the `heniautos` command, add `-r 1` or `--rule 1` For 424/3 BCE this simply has the effect of advancing all the dates one day:
+The median of the number of hours after the astronomical conjunction that the new moon becomes visible (at Athens) is 41.5 hours (see Dunn 1998, 214-216)--just under two days or, to put it another way, just over one. Heniautos can also use a "next day rule," that estimates the visible new moon as one day after the conjunction. To use this with the `heniautos` command, add `-r 1` or `--rule 1`. For 424/3 BCE this simply has the effect of advancing all the dates one day:
 
     > heniautos 424 -m -r 1
          Year     |        Month          |      Start      | Days
@@ -151,7 +151,7 @@ You can also use `-r 0` to treat months as starting on the day of the astronomic
     BCE 424/423   | Thargēliṓn            | BCE 0423-May-08 |   30
     BCE 424/423   | Skirophoriṓn          | BCE 0423-Jun-07 |   29
 
-Any of these options is adequate for saying the that the City Dionysia took place, and Aristophanes' _Clouds_ was staged for the first time _around_ March 21-27, 423 BCE. The choice of rule can, however, have a large impact on intercalations if the generated calendar when a new moon is very close to the solstice.
+Any of these options is adequate for saying the that the City Dionysia took place and Aristophanes' _Clouds_ was staged for the first time _around_ March 21-27, 423 BCE. The choice of rule can, however, have a large impact on intercalations if the generated calendar when a new moon is very close to the solstice.
 
 ## Heniautos and Intercalations
  
