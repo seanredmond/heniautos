@@ -19,3 +19,11 @@ Once you are more interested in the nitty-gritty of this calendar, read  [Calend
 [Programming with Heniautos](programming-with-heniautos.md) is the full guide to using the Heniautos Python library for writing your own programs.
 
 Finally, [Reading Dated Inscriptions](reading-dated-inscriptions.md) is a very brief overview of the prescripts of dated decrees of the Athenian Ekklēsía that give us so much information about ancient dates. These prescripts follow a fairly inflexible formula, so once you know a few principles, you can easily read many of these inscriptions yourself.
+
+## Ephemeris Files (Important!)
+
+Heniautos relies on a library called [Skyfield](https://rhodesmill.org/skyfield/) for astronomical data and calculations. Skyfield, in turn, requires an [ephemeris](https://rhodesmill.org/skyfield/planets.html) named `de422.bsp` to function. This file comes from [NASA's Jet Propulsion Laboratory](https://ssd.jpl.nasa.gov/?planet_eph_export) and contains data about the positions of celestial objects over time.
+
+Whenever you run the [`heniautos` command](heniautos-command.md) or your own script using [the programming library](programming-with-heniautos.md) your computer will use the first copy of `de422.bsp` it can find on your hard drive.
+
+If a copy of the file cannot be found it will automatically be downloaded into the current working directory. This is normal and safe, but the file is over 600 MB. Once you have a copy, you can tell `heniautos` or the programming library where to find it in order to avoid downloading it again.
