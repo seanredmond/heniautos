@@ -21,12 +21,12 @@ The ten _phulaí_ in this period, in their traditional order, were:
 9. Aiantís
 10. Antiokhís
 
-This order was used for the rotation of some offices, such as secretary of the council. As an anti-corruption measure, however, the prytanies were chosen by lot and not very far ahead of time. It was only after one prytany was under way that lots would be drawn to determine which _phulḗ_ would hold the next.
+This order was used for the rotation of some offices, such as secretary of the council. As an anti-corruption measure, however, the prytanies were chosen by lot and not very far ahead of time. It was only after one prytany was under way that the lots would be drawn to determine the next.
 
 Athenians inscribed their offical decrees on stone in order publish them. Thousands of these inscriptions still exist and many are dated by the prytany. In the fifth century, these inscriptions usually name the [_árkhōn_](https://logeion.uchicago.edu/%E1%BC%84%CF%81%CF%87%CF%89%CE%BD) (the chief magistrate), the [_grammateús_](https://logeion.uchicago.edu/%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B5%CF%8D%CF%82) (secretary of the council), and the _phulḗ_ that held the prytany when the decree was passed. We can tell the year from the _árkhōn_, but the name of the tribe alone is no help because of the random order.
 
 Sometimes, however we are luckier. In an inscription that records payments made to generals who were sent to Corcyra in 433/2, we are told that 26 talents were given to them "in Aiantis' prytany, the first prytany,
-thirteen days had elapsed" and 50 talents "in Aiantis' prytany, the first prytany, on the final day of the prytany" ([IG I³ 364](https://epigraphy.packhum.org/text/375?&bookid=4&location=1701), translation from Fornara [1983] 143). When were the 13th and last days of the first prytany.
+thirteen days had elapsed" and 50 talents "in Aiantis' prytany, the first prytany, on the final day of the prytany" ([IG I³ 364](https://epigraphy.packhum.org/text/375?&bookid=4&location=1701), translation from Fornara [1983] 143). When were the 13th and last days of the first prytany?
 
 In the first period of the democracy, the prytanies operated on something like a solar year. Five of the prytanies lasted for 37 days and five for 36, for a total of 365 days. Given the evidence we have it is difficult to say on what day these conciliar years started, but `heniautos` uses the dates calculated by Meritt (1961). The `-c` option of the `heniautos` command will output the conciliar year:
 
@@ -94,15 +94,15 @@ A passage in _Athenaion Politeia_ ([43.2](http://www.perseus.tufts.edu/hopper/te
 
 > Each of the _phulaí_ holds the prytany in turn by lot, the first four for 36 days each, the next six for 35 days each; for they regulate the year according to the moon.
  
-We should take "For they regulate the year according to moon" as a contrast to what preceded it--an Athenian would have understood that meant 29 and 30 day months as opposed to 35 and 36 day prytanies, and perhaps that this meant a rule of four long prytanies followed by six short as opposed to alternating and semi-alternating full and hollow months. The idea that the long prytanies all came at the beginning of the year has come to be known as the "Rule of Aristotle" which different scholars have believed operated to different degrees (see Rhodes [1985] 519-519 for a summary). 
+We should take "For they regulate the year according to moon" as a contrast to what preceded it--an Athenian would have understood that meant 29 and 30 day months as opposed to 35 and 36 day prytanies, and perhaps that this meant a rule of four long prytanies followed by six short as opposed to alternating or semi-alternating full and hollow months. The idea that the long prytanies all came at the beginning of the year has come to be known as the "Rule of Aristotle" which different scholars have believed operated to different degrees (see Rhodes [1985] 518-520 for a summary). 
 
-Except for those years when the number of prytanies is the same as the number of festival months Heniautos generates conciliar years that follow the Rule of Aristotle. This is mainly because there is no better criteria for arranging the pryanies. The festival months either alternate as regularly as possible or (as Heniautos calculates them) follow the actual lunar months. Aristotle's rule is the best evidence we have for the arrangment of prytanies. Scholars have postulated a different arrangement of prytanies, such as Meritt did for 336/5 (Meritt 1961, 15):
+Except for those years when the number of prytanies is the same as the number of festival months Heniautos generates conciliar years that follow the Rule of Aristotle. This is mainly because there is no better criteria for arranging the pryanies. The festival months we have a choice of external measures: they either alternate as regularly as possible or (as Heniautos calculates them) follow the actual lunar months. However, for pytanies there is no evidence better than Aristotle's rule. Scholars have postulated a different arrangement of prytanies, such as Meritt did for 336/5 (Meritt 1961, 15):
 
 ![298/7 BCE](img/meritt-year-336.png)
 
-But no theory is put forth to explain why the 1st, 2nd, 8th and 9th prytanies are long rather that, say, the 3rd, 5th, 7th, and 10th except that they satisfy Meritt's interpretation of the calendar equations in several inscriptions in such a way that allows for a regular alternation of full and hollow months (Meritt 1961, 10-15). By what mechanism would the Athenians have decided on this arrangment of prytanies except, perhaps, by lot which is _never_ mentioned in relation to the calendar?
+But no theory is put forth to explain why the 1st, 2nd, 8th and 9th prytanies are long rather than, say, the 3rd, 5th, 7th, and 10th except that they satisfy Meritt's interpretation of the calendar equations in several inscriptions in such a way that allows for a regular alternation of full and hollow months (Meritt 1961, 10-15). By what mechanism would the Athenians have decided on this arrangment of prytanies except, perhaps, by lot which is _never_ mentioned in relation to the calendar?
 
-Other interpretations are possible. In fact there is one (and only one) solution that satisifes Merrit's calendar equations _and_ follows the Rule of Aristotle. It differs from the default calculations of Heniautos only in the last two months:
+Other interpretations are possible. In fact there is one (and only one) solution that satisifes Merrit's calendar equations _and_ follows the Rule of Aristotle. It differs from the default calculations of Heniautos only in the last two months (see [Calendar Equations](calendar-equations.md#3365-bce)):
 
 ![298/7 BCE](img/heniautos-336.png)
 
@@ -128,9 +128,9 @@ Heniautos will generate a conciliar calendar for any year you want. For any year
 
 ## The Start of 433/2
 
-In [Festival Calendar Basics](festival-calendar-basics.md) (under "Heniautos and Intercalations") we noted that it was a close call, astronomically, whether or not the year 320/19 was intercalary but that the evidence of inscriptions makes it clear that it was intercalary, though Heniautos' default calculate it as ordinary. The year 433/2 is a similar case that `heniautos` probably gets wrong.
+In [Festival Calendar Basics](festival-calendar-basics.md) (under "Heniautos and Intercalations") we noted that it was a close call, astronomically, whether or not the year 320/19 was intercalary but that the evidence of inscriptions makes it clear that it was intercalary, though Heniautos' calculates it as ordinary by default. The year 433/2 is a similar case that `heniautos` probably gets wrong.
 
-The summer solstice of 433 BCE occured on June 28. A new moon--meaning the astronomical conjunction--occurred just before, on June 27 at 1:34 AM, Athens time. This is just enough before the solstice that `heniautos` makes 434/433 intercalary with Skirophoriṓn of that year beginning oj June 28 and 433/2 ordinary with Hekatombaiṓn not starting until July 28. 
+The summer solstice of 433 BCE occured on June 28. A new moon--meaning the astronomical conjunction--occurred just before, on June 27 at 1:34 AM, Athens time. This is just enough before the solstice that `heniautos` makes 434/433 intercalary with Skirophoriṓn of that year beginning on June 28 and 433/2 ordinary with Hekatombaiṓn not starting until July 28. 
 
 However, the inscription quoted above, IG I³ 364, provides good evidence that Hekatombaiṓn must have come earlier than July 433. The inscription records two payments to two groups of generals, the first made on prytany I 13 and the second on I 37. As Merrit observes (1961, 217) "the Treasurers of Athena, who changed office at the Panathenaia, were different on Prytany I 13 and Prytany I 37 (Merrit refers to this inscription as I² 295). On prytany I 13 the payment was made by someone, whose name is lost, "of Kerameîs and his colleagues, for whom whom Krátēs son of Naúpōn of Lamptraí was secretary. The payment of prytany I 37 was made by "Pronápēs of Erkhía and his colleagues, for whom Euthías son of Aískhrōn of Anáphlustos was secretary. Since the Panathenaia occured on Hekatombaiṓn 23-30. The month that started on June 28, 433 must have been _Hekatombaiṓn_ of 433/2 rather than Skirophoriṓn of 434/3. Hekatombaiṓn and Prytany I would have occured something like this:
 
@@ -154,7 +154,7 @@ However, the inscription quoted above, IG I³ 364, provides good evidence that H
 | Jul 12 | Hek 15   |             | I 09     |             |
 | Jul 13 | Hek 16   |             | I 10     |             |
 | Jul 14 | Hek 17   |             | I 12     |             |
-| Jul 15 | Hek 18   |             | I 13     | 1st Payment |
+| Jul 15 | Hek 18   |             | I 13     | 1st Payment (by ? of Kerameîs, Krátēs son of Naúpōn of Lamptraí as secretary) |
 | Jul 16 | Hek 19   |             | I 14     |             |
 | Jul 17 | Hek 20   |             | I 15     |             |
 | Jul 18 | Hek 21   |             | I 16     |             |
@@ -178,23 +178,24 @@ However, the inscription quoted above, IG I³ 364, provides good evidence that H
 | Aug 06 | Met 09   |             | I 34     |             |
 | Aug 07 | Met 10   |             | I 35     |             |
 | Aug 08 | Met 11   |             | I 36     |             |
-| Aug 09 | Met 12   |             | I 37     | 2nd Payment |
+| Aug 09 | Met 12   |             | I 37     | 2nd Payment (by Pronápēs of Erkhía, Euthías son of Aískhrōn of Anáphlustos, secretary) |
 
-Another bit of circumstantial evidence is the fact that generals took office on Hekatombaiṓn 1, along with most other officials (but not the Treasurers of Athena who took office during the Panathenaia). If Hekatombaiṓn 1 was on July 28, then the first payment would have been made to either A) generals who were not yet in office or B) generals who were about to leave office. It makes much more sense if the new generals took up their posts on _June_ 28, and were then given money to prepare for an expedition to Corcyra.
+Another bit of circumstantial evidence is the fact that generals took office on Hekatombaiṓn 1, along with most other officials (but not the Treasurers of Athena who took office during the Panathenaia). If Hekatombaiṓn 1 was on July 28, then the first payment would have been made to either generals who were not yet in office or generals who were about to leave office. It makes much more sense if the new generals took up their posts on _June_ 28, and were then given money to prepare for an expedition to Corcyra.
 
-There is no astronomical necessity for this arrangement of months. In fact the astronomy _slightly_ favors Hek I = July 28 with 434/3 being intercalary which is therefore the answer you will get from `heniautos`. It hardly matters though because the _historical_ evidence points strongly to Hek I = June 28 with 433/2 being intercalary. This is how Meritt (1961, 218) reconstructs is and, following him Planeaux (forthcoming) 177. This again underlines the fact that `heniautos` provides a useful framework for understanding the Athenian calendar, but historical evidence is much more important.
+There is no astronomical necessity for this arrangement of months. In fact the astronomy _slightly_ favors Hek I = July 28 with 434/3 being intercalary which is therefore the answer you will get from `heniautos`. It hardly matters though because the _historical_ evidence points strongly to Hek I = June 28 with 433/2 being intercalary. This is how Meritt (1961, 218) reconstructs it and, following him Planeaux (forthcoming) 177. This again underlines the fact that `heniautos` provides a useful framework for understanding the Athenian calendar, but historical evidence is much more important.
 
 We can infer from IG I³ 364 that the two payments were on 
 
-* Hek 18 = I 13 ≅ July 15, 433 BCE
-* Met 12 = I 37 ≅ August 9, 433 BCE
+* Hek 18 = I 13 = July 15, 433 BCE
+* Met 12 = I 37 = August 9, 433 BCE
 
-"≅" means "approximately equal to." This is called a "calendar equation." The best kind of historical evidence for the calendar is an inscription with an _explicit_ calendar equation (rather than an implicit one like IG I³ 364). This is the next topic.
+This is called a "calendar equation." The best kind of historical evidence for the calendar is an inscription with an _explicit_ calendar equation (rather than an implicit one like IG I³ 364). This is the next topic.
+
+[Top: Intro](README.md) | [Previous: Festival Calendar Basics](festival-calendar-basics.md) | [Next: The `heniautos` Command](heniautos-command.md)
 
 ## Works Cited
 
-* Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
-* Fornara, Charles W., ed. 1983. _Archaic Times to the End of the Peloponnesian War._ 2nd ed. Translated Documents of Greece and Rome 1. Cambridge: Cambridge University Press.
+* Fornara, Charles W., ed. 1983. _Translated Documents of Greece and Rome, 1: Archaic Times to the End of the Peloponnesian War_. 2nd ed. Cambridge [Cambridgeshire] ; New York: Cambridge University Press.
 * Meritt, Benjamin D. 1961. _The Athenian Year_. Sather Classical Lectures 32. Berkeley: University of California Press.
 * Planeaux, Christopher. Forthcoming. _The Athenian Year Primer_.
 * Rhodes, P. J. 1985. _A Commentary on the Aristotelian Athenaion Politeia_. Oxford: Oxford University Press.
