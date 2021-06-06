@@ -10,9 +10,9 @@
 8. [Reading Dated Inscriptions](reading-dated-inscriptions.md)
 
 
-If you are new to the Athenian calendar, start with [Festival Calendar Basics](festival-calendar-basics.md) and [The Conciliar Calendar](conciliar-calendar.md). Athenians used these two parallel calendars and it is their differences and overlaps that allow us to explore many of the details about how the reckoned the year.
+If you are new to the Athenian calendar, start with [Festival Calendar Basics](festival-calendar-basics.md) and [The Conciliar Calendar](conciliar-calendar.md). Athenians used these two parallel calendars and it is their differences and overlaps that allow us to explore many of the details about how they reckoned the year.
 
-[`heniautos` Command](heniautos-command.md) has full details about how to use this `heniautos` to generate many different views of the Athenian calendar.
+[`heniautos` Command](heniautos-command.md) has full details about how to use `heniautos` to generate many different views of the Athenian calendar.
 
 Once you are more interested in the nitty-gritty of this calendar, read  [Calendar Equations](calendar-equations.md) and [`calendar-equations` Command](calendar-equations-command.md) to get started on the fascinating (and frustrating) puzzles in the evidence from ancient dated inscriptions.
 
