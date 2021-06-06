@@ -1,6 +1,8 @@
 # `heniautos` Command
 
-`heniautos` installs a command-line script, also called `heniautos` that you can run in a terminal window. This offers convenient access to most of the features of `heniautos.` 
+[Top: Intro](README.md) | [Previous: Conciliar Calendar](conciliar-calendar.md) | [Next: Calendar Equations](calendar-equations.md)
+
+Heniautos installs a command-line script (`heniautos`) that you can run in a terminal window. This offers convenient access to most of the features of Heniautos. 
 
 ## Basic calendars
 
@@ -308,6 +310,8 @@ There is one more, special option for `-r`. `-r d` will output the dates for mon
 
 `-g` or `--greek-names` will output month names in Greek.
 
-If `heniautos` cannot find the ephemeris file `de422.bsp` it will download a copy. Use `-e` or `--ephemeris` with the full path and name of the file to specify an existing copy.
+If `heniautos` cannot find the ephemeris file `de422.bsp` it will download a copy. Use `-e` or `--ephemeris` with the full path and name of the file to specify an existing copy. programming-with-heniautos.md#initializing-data
 
 `-h` will output help.
+
+[Top: Intro](README.md) | [Previous: Conciliar Calendar](conciliar-calendar.md) | [Next: Calendar Equations](calendar-equations.md)
