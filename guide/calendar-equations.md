@@ -1,16 +1,15 @@
 # Calendar Equations
 
-This guide has included many caveats about the accuracy of `heniautos` and noted two documented intercalary years that `heniautos` gets wrong. On the other hand, what might `heniautos` get right, and how could we know? One way is to look for demonstrably intercalary or ordinary years that `heniautos` calculates correctly. This will involve looking into "calendar equations." There is one set of inscriptions with calendar equations using what is called "triple dating" that provide a particularly good experiment.
+This guide has included many caveats about the accuracy of `heniautos` and noted two documented intercalary years that `heniautos` gets wrong. On the other hand, what might `heniautos` get right, and how could we know? Welcome to the fascinating world of "calendar equations." These bits of evidence from the historical record allow us to test different theories of how the Athenians really used their calendar, and some cases, give confidence to reconstructions.
 
-The world of calendar equations is complex, though, and will require some introduction.
 
 ## What are Calendar Equations?
 
 The term calendar equation refers to any evidence that relates one calendar to another. In Greek Epigraphy it commonly refers to inscriptions that relate the Athenian festival calendar and conciliar calendar. 
 
-The [previous section](conciliar-calendar.md#the-start-of-4332) looked at an inscription that implied the calendar equations **Hek 18 = I 13** and **Met 12 = I 37**, but there are many inscriptions with _explicit_ calendar equations. In the latter part of the fourth century BCE, Athenians started "double dating" their decrees with a prytany date and a festival (the first surviving instance is from 346/5, [IG XII,6 1,261](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20XII%206,%201,%20261) from the Athenian colony on Samos). Often these inscriptions are fragmentary and require knowledge of the calendar to restore, which is why so much of the initial investigations of the Athenian calendar in the 20th century were done by epigraphers. There is also the risk of circular reasoning since assumptions about the calendar go into the restoration of the inscriptions which then, if you are not careful, might be used to "prove" what they assume.
+[A previous section](conciliar-calendar.md#the-start-of-4332) looked at an inscription that implied the calendar equations **Hek 18 = I 13** and **Met 12 = I 37**, but there are many inscriptions with _explicit_ calendar equations. In the latter part of the fourth century BCE, Athenians started "double dating" their decrees with a prytany date and a festival (the first surviving instance is from 346/5, [IG XII,6 1,261](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20XII%206,%201,%20261) from the Athenian colony on Samos). Often these inscriptions are fragmentary and require knowledge of the calendar to restore, which is why so much of the initial investigations of the Athenian calendar in the 20th century were done by epigraphers, Like Benjamin D. Meritt and W. Kendrick Pritchett. There is also the risk of circular reasoning since assumptions about the calendar go into the restoration of the inscriptions which then, if you are not careful, might be used to "prove" what they assume (see Pritchett [1970] for Pritchett's criticisms of Meritt on this point)
 
-There are, however, perfectly presevered examples To begin with such as  [IG II³ 1,338](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20338) (=IG II² 338). This has a completely standard prescript with no restorations:
+There are, however, perfectly presevered examples, that we can begin with, such as  [IG II³ 1,338](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20338) (=IG II² 338). This has a completely standard prescript with no restorations needed:
 
     ἐπὶ Νικοκράτους ἄρχοντος, ἐπὶ τῆς Αἰγηίδος
     πρώτης πρυτανείας, ἧι Ἀρχέλας Χαιρίου Παλ–
@@ -21,7 +20,7 @@ There are, however, perfectly presevered examples To begin with such as  [IG II�
 The parts of this prescript are:
 
 1. The árkhōn: ἐπὶ Νικοκράτους ἄρχοντος, "in the árkhōnship of Nikokrátēs..." 333/2 BCE.
-1. The prytany and tribe that held it: ἐπὶ τῆς Αἰγηίδος πρώτης πρυτανείας, "...in the first prytany, held by Aigēis..."
+1. The prytany and tribe that held it: ἐπὶ τῆς Αἰγηίδος πρώτης πρυτανείας, "...in the first prytany, of Aigēis..."
 1. The secretary: ἧι Ἀρχέλας Χαιρίου Παλληνεὺς ἐγραμμάτευεν, "...for which Arkhélas son of Khairías from Pallēnē was secretary..."
 1. The festival date: Μεταγειτνιῶνος ἐνάτηι ἱσταμένου, "...9th of Metageitniṓn..."
 1. The prytany day: ἐνάτηι καὶ τριακοστῆι τῆς πρυτανείας, "...39th of the prytany"
@@ -36,35 +35,61 @@ or, for short:
 
 In some cases, the equation provides useful data about the calendar for the year, or the calendar in general. For instance, this inscription tells us three things:
 
-1. The year (333/332 BCE, which we know from the árkhōn) was intercalary because this prytany (the first) has 39 days. In a normal year in [this period](conciliar-calendar.md#409-308-bce) the longest prytanies were 36 days.
+1. The year (333/332 BCE, which we know from the árkhōn) was intercalary because this prytany (the first) has 39 days. In [this period](conciliar-calendar.md#409-308-bce) the longest prytanies in ordinary years were 36 days.
 1. Hekatombaiṓn was full. If the 39th day of the prytany is Metageitniṓn 9, the 31st would be Metageitniṓn 1, and therefore the 30th has to be Hekatombaiṓn 30.
 1. The intercalated month was not Hekatombaiṓn because having a second Hekatombaiṓn before Metageitniṓn would push Metageitniṓn into the second prytany. This is hardly surprising, but it is worth keeping in mind.
 
-I 39 is the 39th day of the year, as is Metageitniṓn 9 if Hekatombaiṓn is full (30 + 9 = 39). The solution to this equation, then, is
+I 39 is the 39th day of the year, as is Metageitniṓn 9 if Hekatombaiṓn is full (30 + 9 = 39). The "solution" to this equation, then, is
 
 **Met 9 = I 39 = DOY 39**
 
-The year is intercalary, and begins with a full Hekatombaiṓn and 39-day prytany I.
+"Solving" the equation means being able to assign it, with some confidence, to a specific day of the year. When we have a solution we are often able to limit the range of possibilities for other aspects of the calendar for the same year. For instance, we can say that 333/2 was intercalary, not ordinary, and that Hekatombaiṓn was full, not hollow.
 
 What does `heniautos` calculate for this year?
 
-    > heniautos 333 -y
-         Year     | Y |      Start      | Days
-    --------------|---|-----------------|-----
-    BCE 333/332   | I | BCE 0333-Jul-03 |  383
+    > heniautos -m 333
+         Year     |        Month          |      Start      | Days
+    --------------|-----------------------|-----------------|-----
+    BCE 333/332   | Hekatombaiṓn          | BCE 0333-Jul-03 |   29
+    BCE 333/332   | Metageitniṓn          | BCE 0333-Aug-01 |   30
+    BCE 333/332   | Boēdromiṓn            | BCE 0333-Aug-31 |   29
+    BCE 333/332   | Puanopsiṓn            | BCE 0333-Sep-29 |   30
+    BCE 333/332   | Maimaktēriṓn          | BCE 0333-Oct-29 |   29
+    BCE 333/332   | Posideiṓn             | BCE 0333-Nov-27 |   30
+    BCE 333/332   | Posideiṓn hústeros    | BCE 0333-Dec-27 |   29
+    BCE 333/332   | Gamēliṓn              | BCE 0332-Jan-25 |   30
+    BCE 333/332   | Anthestēriṓn          | BCE 0332-Feb-24 |   29
+    BCE 333/332   | Elaphēboliṓn          | BCE 0332-Mar-25 |   30
+    BCE 333/332   | Mounuchiṓn            | BCE 0332-Apr-24 |   29
+    BCE 333/332   | Thargēliṓn            | BCE 0332-May-23 |   30
+    BCE 333/332   | Skirophoriṓn          | BCE 0332-Jun-22 |   29
 
-So `heniautos` passes this test. It correctly calculates 333/2 as an intercalary year. We can provisionally put a Julian date to our equation. Since we know the day of the year, we can look it up with the `--doy` option:
+It correctly calculates 333/2 as an intercalary year but, based on the astronomy, makes Hekatombaiṓn hollow. Since Metageitniṓn calculated as full we can "fix" this by simply moving the start date of Metageitniṓn so that Hekatombaiṓn is full instead. 
+
+         Year     |        Month          |      Start      | Days
+    --------------|-----------------------|-----------------|-----
+    BCE 333/332   | Hekatombaiṓn          | BCE 0333-Jul-03 |   30
+    BCE 333/332   | Metageitniṓn          | BCE 0333-Aug-02 |   29
+    ...
+
+This does not disturb the rest of the calculated calendar and means we can be slightly more accurate about dates in Hekatombaiṓn and Metageitniṓn. For the rest of the year, we have no better evidence than astronomy. The important point, as before, is that if you need historical accuracy the calculations made by Heniautos are a framework for examining other evidence. If you need an approximate date Heniautos (and just about any other reconstruction) are close enough/
+
+We can provisionally put a Julian date to our equation. Since we know the day of the year, we can look it up with the `--doy` option:
 
     heniautos 333 --doy 39
          Year     |        Month          | Day |      Start      | DOY
     --------------|-----------------------|-----|-----------------|----
     BCE 333/332   | Metageitniṓn          |  10 | BCE 0333-Aug-10 |  39
     
+(It is Metageitniṓn 10 because Heniautos is working with a hollow Metageitniṓn, so remember that we moved Metageitniṓn 1 to August 2 and know from the evidence of the inscription that this day is actually Metageitniṓn 9)
+    
 **Met 9 = I 39 = DOY 39 = ✸Aug 10, 333 BCE**
 
-I am going to use the star symbol ✸ to mark anything that comes from an astronomical calculation. Using `-r 0` or `-r 1` as the "visibility rule" will simply shift the date to Aug 8 or 9 respectively.
+I am going to use the star symbol ✸ to mark anything that comes from an astronomical calculation and therefore has a margin of error as long as we are not certain how the beginnings of months were observed or calculated. Using `-r 0` or `-r 1` as the "visibility rule" will shift the date to Aug 8 or 9 respectively.
 
-Allong with the `heniautos` command, Heniautos, installs a second command, `calendar-equation` just for working with these.
+## `calendar-equations`
+
+Along with the `heniautos` command, Heniautos, installs a second command, `calendar-equation` for working with these equations.
 
     > calendar_equation.py -y 333 -e Met 9 I 39
     Met  9 ( 2-) =    I 39 =  DOY  39 (I) [F, ∅]
@@ -72,6 +97,8 @@ Allong with the `heniautos` command, Heniautos, installs a second command, `cale
 `calendar-equation` take a year (`-y`) and an equation (`-e`) in the format "month-abbreviation day prytany-number day." The prytany number needs to be a Roman numeral but it does not matter if it or the month abbreviation is capitalized.
 
 The output is rather terse, but you can see that it contains the basic calendar equation. The `( 2-)` after `Met  9` means that Metageitniṓn is the second month (`2`) and is _not_ preceded by an intercalation (`-`). If it were preceded by an intercalation, this would be `( 3+)`. The `(I)` after `DOY  39` indicates that this solution requires an intercalary year; `(O)` would mean it was an ordinary year. `[F, ∅]` indicates the count of festival months and prytanies that must precede this solution--one full month `F`, and no prytanies, `∅` (that is, "null") since this is the first prytany. Hopefully this will become clear with more examples. This solution from `calendar-equation` contains all the facts that we worked out ourselves for this simple equation, and the fact that it only output a single solution indicates that it is the _only_ solution for this equation.
+
+We will use `calendar-equation` for examples in the rest this guide. 
 
 ### Multiple Equations
 
@@ -688,5 +715,6 @@ This is not much of a sample size--in the 400 years from the 5th through the 2nd
 * Meritt, Benjamin D. 1974. “The Count of Days at Athens.” _American Journal of Philology_ 95 (3): 268–79.
 * Meritt, Benjamin D. 1977. “The Hollow Month at Athens.” _Mnemosyne_ 30 (3): 217–42.
 * Osborne, Michael. 2008. “The Date of the Athenian Archon Thrasyphon.” _Zeitschrift Für Papyrologie und Epigraphik_ 164: 85–89.
+* Pritchett, W. Kendrick. 1970. “The Name of the Game Is Restoration.” _California Studies in Classical Antiquity_ 3: 199–214.
 * Parker, Richard Anthony, and Waldo H. Dubberstein. 1942. _Babylonian Chronology 626 B. C.-45._ Studies in Ancient Oriental Civilization 24. Chicago: The University of Chicago Press.
 * Pritchett, W. Kendrick, and Benjamin D. Meritt. 1940. _The Chronology of Hellenistic Athens_. Cambridge: Harvard University Press.
