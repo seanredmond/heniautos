@@ -718,3 +718,5 @@ This is not much of a sample size--in the 400 years from the 5th through the 2nd
 * Pritchett, W. Kendrick. 1970. “The Name of the Game Is Restoration.” _California Studies in Classical Antiquity_ 3: 199–214.
 * Parker, Richard Anthony, and Waldo H. Dubberstein. 1942. _Babylonian Chronology 626 B. C.-45._ Studies in Ancient Oriental Civilization 24. Chicago: The University of Chicago Press.
 * Pritchett, W. Kendrick, and Benjamin D. Meritt. 1940. _The Chronology of Hellenistic Athens_. Cambridge: Harvard University Press.
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

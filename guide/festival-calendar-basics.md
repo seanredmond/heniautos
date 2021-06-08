@@ -229,4 +229,4 @@ While the traditional Greek calendar was replaced by the Julian calendar as Gree
 * Pritchett, W. Kendrick. 1999. “Postscript: The Athenian Calendars.” _Zeitschrift für Papyrologie Und Epigraphik_ 128: 79–93.
 * Samuel, Alan Edouard. 1972. _Greek and Roman Chronology: Calendars and Years in Classical Antiquity_. Handbuch Der Altertumswissenschaft, 1. Abt., 7. T. München: Beck.
 
-    
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

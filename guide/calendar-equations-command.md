@@ -186,3 +186,5 @@ If we "subtract" the first solution from the second we are left with three full 
 ![324/3 BCE](img/partitions-4.png)
 
 Within the partitions, it is the count that matters and not the order. The two full and three hollow months of the first partition can be reordered (within this five month partition) to match aother lines of evidence.
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

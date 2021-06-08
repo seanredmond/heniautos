@@ -27,3 +27,5 @@ Heniautos relies on a library called [Skyfield](https://rhodesmill.org/skyfield/
 Whenever you run the [`heniautos` command](heniautos-command.md) or your own script using [the programming library](programming-with-heniautos.md) your computer will use the first copy of `de422.bsp` it can find on your hard drive.
 
 If a copy of the file cannot be found it will automatically be downloaded into the current working directory. This is normal and safe, but the file is over 600 MB. Once you have a copy, you can tell `heniautos` or the programming library where to find it in order to avoid downloading it again.
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

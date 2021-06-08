@@ -243,3 +243,4 @@ Towards the end of the fourth century, a new style came into use, counting backw
 The omitted day in this style is ἐνάτη μετ’ εἰκάδας. For a long time it was thought that this was a forward count, or sometimes backwards and sometimes forwards so you need to be careful with older restorations that use μετ’ εἰκάδας as they may be based on a misunderstanding of the name. 
 
 
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
