@@ -276,7 +276,13 @@ def prytany_type_year(pryt_cnt, year):
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="Athenian calendar calendar equation solver",
+        epilog="""
+heniautos  Copyright (C) 2021  Sean Redmond
+This program comes with ABSOLUTELY NO WARRANTY.
+This is free software, and you are welcome to redistribute it
+under certain conditions.""")
     parser.add_argument("-e", "--equation", type=str, nargs='+',
                         action="append", required=True)
     parser.add_argument("-c", "--collate", action="store_true")
