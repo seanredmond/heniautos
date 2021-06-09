@@ -5,11 +5,13 @@ This guide has included many caveats about the accuracy of `heniautos` and noted
 
 ## What are Calendar Equations?
 
-The term calendar equation refers to any evidence that relates one calendar to another. In Greek Epigraphy it commonly refers to inscriptions that relate the Athenian festival calendar and conciliar calendar. 
+A "calendar equation" is any piece of evidence that relates one calendar to another. In Greek epigraphy it commonly refers to an inscription that records a date on both the Athenian festival calendar and conciliar calendar. 
 
-[A previous section](conciliar-calendar.md#the-start-of-4332) looked at an inscription that implied the calendar equations **Hek 18 = I 13** and **Met 12 = I 37**, but there are many inscriptions with _explicit_ calendar equations. In the latter part of the fourth century BCE, Athenians started "double dating" their decrees with a prytany date and a festival (the first surviving instance is from 346/5, [IG XII,6 1,261](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20XII%206,%201,%20261) from the Athenian colony on Samos). Often these inscriptions are fragmentary and require knowledge of the calendar to restore, which is why so much of the initial investigations of the Athenian calendar in the 20th century were done by epigraphers, Like Benjamin D. Meritt and W. Kendrick Pritchett. There is also the risk of circular reasoning since assumptions about the calendar go into the restoration of the inscriptions which then, if you are not careful, might be used to "prove" what they assume (see Pritchett [1970] for Pritchett's criticisms of Meritt on this point)
+[A previous section](conciliar-calendar.md#the-start-of-4332) looked at an inscription that implied the calendar equations **Hek 18 = I 13** and **Met 12 = I 37**, but there are many inscriptions with _explicit_ calendar equations. In the latter part of the fourth century BCE, Athenians started "double dating" their decrees with a prytany date and a festival date. The first surviving instance is from 346/5, [IG XII,6 1,261](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20XII%206,%201,%20261) from the Athenian colony on Samos. Often these inscriptions are fragmentary and require knowledge of the calendar to restore, which is why so much of the initial investigations of the Athenian calendar in the 20th century were done by epigraphers, Like Benjamin D. Meritt and W. Kendrick Pritchett. There is also the risk of circular reasoning since assumptions about the calendar go into the restoration of the inscriptions which then, if you are not careful, might be used to "prove" what they assume (see Pritchett [1970] for Pritchett's criticisms of Meritt on this point)
 
-There are, however, perfectly presevered examples, that we can begin with, such as  [IG II³ 1,338](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20338) (=IG II² 338). This has a completely standard prescript with no restorations needed:
+### IG II³ 1,338
+
+There are, however, perfectly preserved examples, that we can begin with, such as  [IG II³ 1,338](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20338) (=IG II² 338). This has a completely standard prescript with no restorations needed:
 
     ἐπὶ Νικοκράτους ἄρχοντος, ἐπὶ τῆς Αἰγηίδος
     πρώτης πρυτανείας, ἧι Ἀρχέλας Χαιρίου Παλ–
@@ -43,7 +45,7 @@ I 39 is the 39th day of the year, as is Metageitniṓn 9 if Hekatombaiṓn is fu
 
 **Met 9 = I 39 = DOY 39**
 
-"Solving" the equation means being able to assign it, with some confidence, to a specific day of the year. When we have a solution we are often able to limit the range of possibilities for other aspects of the calendar for the same year. For instance, we can say that 333/2 was intercalary, not ordinary, and that Hekatombaiṓn was full, not hollow.
+"Solving" the equation means being able to assign it, with some confidence, to a specific day of the year. Once we have a solution we are often able to limit the range of possibilities for other aspects of the calendar for the same year. For instance, we can say that 333/2 was intercalary, not ordinary, and that Hekatombaiṓn was full, not hollow.
 
 What does `heniautos` calculate for this year?
 
@@ -66,13 +68,14 @@ What does `heniautos` calculate for this year?
 
 It correctly calculates 333/2 as an intercalary year but, based on the astronomy, makes Hekatombaiṓn hollow. Since Metageitniṓn calculated as full we can "fix" this by simply moving the start date of Metageitniṓn so that Hekatombaiṓn is full instead. 
 
-         Year     |        Month          |      Start      | Days
-    --------------|-----------------------|-----------------|-----
-    BCE 333/332   | Hekatombaiṓn          | BCE 0333-Jul-03 |   30
-    BCE 333/332   | Metageitniṓn          | BCE 0333-Aug-02 |   29
-    ...
+     Year     |        Month          |      Start       | Days
+--------------|-----------------------|------------------|-----
+BCE 333/332   | Hekatombaiṓn          | BCE 0333-Jul-03  |   30‡
+BCE 333/332   | Metageitniṓn          | BCE 0333-Aug-02† |   29‡
+BCE 333/332   | Boēdromiṓn            | BCE 0333-Aug-31  |   29
+etc...|
 
-This does not disturb the rest of the calculated calendar and means we can be slightly more accurate about dates in Hekatombaiṓn and Metageitniṓn. For the rest of the year, we have no better evidence than astronomy. The important point, as before, is that if you need historical accuracy the calculations made by Heniautos are a framework for examining other evidence. If you need an approximate date Heniautos (and just about any other reconstruction) are close enough/
+Here the dagger (†) indicates what has been changed (the date of Met 1) and the double daggers (‡) what has been affected by this change (the length of Hek and Met). This does not disturb the rest of the calculated calendar and means we can be slightly more accurate about dates in Hekatombaiṓn and Metageitniṓn. For the rest of the year, we have no better evidence than astronomy. The important point, as before, is that if you need historical accuracy the calculations made by Heniautos are a framework for examining other evidence. If you need an approximate date Heniautos (and just about any other reconstruction) are close enough/
 
 We can provisionally put a Julian date to our equation. Since we know the day of the year, we can look it up with the `--doy` option:
 
@@ -81,13 +84,15 @@ We can provisionally put a Julian date to our equation. Since we know the day of
     --------------|-----------------------|-----|-----------------|----
     BCE 333/332   | Metageitniṓn          |  10 | BCE 0333-Aug-10 |  39
     
-(It is Metageitniṓn 10 because Heniautos is working with a hollow Metageitniṓn, so remember that we moved Metageitniṓn 1 to August 2 and know from the evidence of the inscription that this day is actually Metageitniṓn 9)
+(Heniautos calculates the festival date as Metageitniṓn 10, remember, because it is still working with a hollow Hekatombaiṓn. We are only interested here in the Julian date of DOY 39)
     
 **Met 9 = I 39 = DOY 39 = ✸Aug 10, 333 BCE**
 
 I am going to use the star symbol ✸ to mark anything that comes from an astronomical calculation and therefore has a margin of error as long as we are not certain how the beginnings of months were observed or calculated. Using `-r 0` or `-r 1` as the "visibility rule" will shift the date to Aug 8 or 9 respectively.
 
 ## `calendar-equations`
+
+### IG II³ 1,338 Again
 
 Along with the `heniautos` command, Heniautos, installs a second command, `calendar-equation` for working with these equations.
 
@@ -98,11 +103,66 @@ Along with the `heniautos` command, Heniautos, installs a second command, `calen
 
 The output is rather terse, but you can see that it contains the basic calendar equation. The `( 2-)` after `Met  9` means that Metageitniṓn is the second month (`2`) and is _not_ preceded by an intercalation (`-`). If it were preceded by an intercalation, this would be `( 3+)`. The `(I)` after `DOY  39` indicates that this solution requires an intercalary year; `(O)` would mean it was an ordinary year. `[F, ∅]` indicates the count of festival months and prytanies that must precede this solution--one full month `F`, and no prytanies, `∅` (that is, "null") since this is the first prytany. Hopefully this will become clear with more examples. This solution from `calendar-equation` contains all the facts that we worked out ourselves for this simple equation, and the fact that it only output a single solution indicates that it is the _only_ solution for this equation.
 
-We will use `calendar-equation` for examples in the rest this guide. 
+We will use `calendar-equation` for examples in the rest this guide.
 
-### Multiple Equations
+### IG XII,6 1,261
 
-Agora XVI 91 
+We mentioned IG XII,6 1,261 above as the earliest recorded example of a double dated inscription. It comes from Samos, but it seems safe to assume that the Athenian colony there was using the same calendar as at Athens (Pritchett and Neugebauer 1947, 41-2; Meritt 1961, 72-3). The date is in ll. 56-7:
+
+    ἐπὶ Πεισίλεω ἄρχοντος, μηνὸς Ποσιδειῶνος τετράδι φθίνοντος, ἐπὶ τῆς
+    Πανδιονίδος πέμπτης πρυτανείας μιᾶι καὶ τριακοστεῖ
+    
+
+The prytany date is V 31. The festival date is in Posideiṓn, and τετράδι φθίνοντος is the earlier form of the backwards count of days at the end of the month (see ["Days of the Month"](reading-dated-inscriptions.md#days-of-the-month)). Essentially, it means "fourth from the last". Counting inclusively, that would be the 27th of a full month or the 26th of a hollow month. The first version of the equation, then, is:
+
+**Pos 26/27 = V 31**
+
+`calendar-equation` can accommodate the multiple options in the date with "/":
+
+    > calendar_equation -e Pos 26/27 V 31
+    Pos 26 ( 6-) =    V 31 =  DOY 171 (O) [HHHHH, SSSS]
+    Pos 26 ( 6-) =    V 31 =  DOY 172 (O) [FHHHH, LSSS]
+    Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
+    Pos 26 ( 6-) =    V 31 =  DOY 173 (O) [FFHHH, LLSS]
+    Pos 27 ( 6-) =    V 31 =  DOY 173 (O) [FHHHH, LLSS]
+    Pos 26 ( 6-) =    V 31 =  DOY 174 (O) [FFFHH, LLLS]
+    Pos 27 ( 6-) =    V 31 =  DOY 174 (O) [FFHHH, LLLS]
+    Pos 26 ( 6-) =    V 31 =  DOY 175 (O) [FFFFH, LLLL]
+    Pos 27 ( 6-) =    V 31 =  DOY 175 (O) [FFFHH, LLLL]
+    
+Now we have more potential solutions than we did with the previous equations. They all require an ordinary year, and amount to this day falling somewhere in the range of DOY 171-175. We can dismiss the first and third solutions since they require five hollow months in a row (`calendar-equations` will output combinations that are simply mathematically possible).
+
+Interpretations of this date have revolved around the [Rule of Aristotle](conciliar-calendar.md#the-rule-of-aristotle). Pritchett and Neugebaur (1947, 42) opted for **Pos 27 = V 31 = DOY 175** since "it appears that Prytanies I-IV contained 36 days each" (that is, the Rule). Meritt, who did not believe in the Rule, pointed out  (1961, 73) only that "it is equally legitimate to take Ποσιδειῶνος τετράδι φθίνοντος as the 26th day of a hollow month" and that **Pos 26 = V 31 = DOY 174** was valid and "would require that only three of the first four prytanies have 36 days each."
+
+Both are correct. Both solutions require three full and two hollow months in the first five, which is what `heniautos` calculates for 346:
+
+    > heniautos 346 -m
+         Year     |        Month          |      Start      | Days
+    --------------|-----------------------|-----------------|-----
+    BCE 346/345   | Hekatombaiṓn          | BCE 0346-Jul-26 |   30
+    BCE 346/345   | Metageitniṓn          | BCE 0346-Aug-25 |   29
+    BCE 346/345   | Boēdromiṓn            | BCE 0346-Sep-23 |   30
+    BCE 346/345   | Puanopsiṓn            | BCE 0346-Oct-23 |   29
+    BCE 346/345   | Maimaktēriṓn          | BCE 0346-Nov-21 |   30
+    BCE 346/345   | Posideiṓn             | BCE 0346-Dec-21 |   30
+    BCE 346/345   | Gamēliṓn              | BCE 0345-Jan-20 |   30
+    BCE 346/345   | Anthestēriṓn          | BCE 0345-Feb-19 |   29
+    BCE 346/345   | Elaphēboliṓn          | BCE 0345-Mar-19 |   30
+    BCE 346/345   | Mounuchiṓn            | BCE 0345-Apr-18 |   29
+    BCE 346/345   | Thargēliṓn            | BCE 0345-May-17 |   30
+    BCE 346/345   | Skirophoriṓn          | BCE 0345-Jun-16 |   29
+
+`heniautos` makes Posideiṓn full which we might see as giving support to Pritchett and Neugebaur, but that cannot stand for much on its own if we freely adjusted the lengths of Hekatombaiṓn and Metageitniṓn, above, to match the evidence of IG II³ 1,338. If we do accept the truth of the Rule, the full solution with Julian Date will be:
+
+**Pos 27 = V 31 = DOY 175 = ✸Jan 16, 345 BCE**
+
+## Multiple Equations
+
+We are in a much better situation when we have multiple equations, since we can try to find solutions that fit together and support each other. There are two equations for the year 324/3 BCE, Agora XVI 91 and IG II³,1 372, that we can use as an example.
+
+### Agora XVI 91 (=IG II³,1 374)
+
+The restorations in [Agora XVI 91](https://epigraphy.packhum.org/text/232860) are Meritt's (Meritt 1961, 104-105). [IG II³,1 374](https://epigraphy.packhum.org/text/347231) is much more conservative. With the restorations this inscription is, like IG XII,6 1,261, dated on Prytany V 31, towards the end of Posideiṓn, but one day later in the month:
 
     [ἐπὶ Ἡγησίου ἄρχοντος, ἐπ]ὶ τῆς Α-
     [ἰαντίδος πέμπτης πρυτα]νείας
@@ -111,7 +171,12 @@ Agora XVI 91
     [τρίτηι μετ’ εἰκάδας, μιᾶι κ]αὶ τρ-
     [ιακοστῆι τῆς πρυτανείας
 
-The date τρίτηι μετ’ εἰκάδας is a "backward count" an essentially means "third from the end". In full month, this will be the 28th, in a hollow the 27th. We can give the date to `calendar-equation` in the format `Pos 27/28` to test both.
+τρίτηι μετ’ εἰκάδας is a later style of "backward count" (third from the end) like τετράδι φθίνοντος (fourth from the end). In full month, this will be the 28th, in a hollow the 27th, so the equation is: 
+
+**Pos 27/28 = V 31**
+
+
+We can again give the date to `calendar-equation` in the format `Pos 27/28` to test both.
 
     > calendar_equation.py -p 10    -e Pos 27/28 V 31
     Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
@@ -122,20 +187,22 @@ The date τρίτηι μετ’ εἰκάδας is a "backward count" an essenti
     Pos 27 ( 6-) =    V 31 =  DOY 175 (O) [FFFHH, LLLL]
     Pos 28 ( 6-) =    V 31 =  DOY 175 (O) [FFHHH, LLLL]
     
- No we have multiple solutions but all of them require an ordinary year, which is what `heniautos` calculates:
+These solutions all require an ordinary year, which is what `heniautos` calculates for this year (324/3 BCE):
  
     > heniautos 324 -y
          Year     | Y |      Start      | Days
     --------------|---|-----------------|-----
     BCE 324/323   | O | BCE 0324-Jul-23 |  354
     
-`calendar-equations` will output solutions that are mathematically possible but astronomically unlikely or impossible. We can exclude the first and third solutions simply on the grounds that they require all five months before Posideiṓn to be hollow which would never happen.  The second solution requires four hollow months (FHHHH) but _not_ in a row. It is important to remember that this represents a _count_ of four hollow months and the actual _order_ could be two hollow, full, two hollow (that is `HHFHH`) with the same count.
+As we saw above, `calendar-equations` will output solutions that are mathematically possible but astronomically unlikely or impossible. We can exclude the first and third solutions simply on the grounds that they require all five months before Posideiṓn to be hollow which would never happen (we saw a similar combination for Pos 26/27 = V 31).  The second solution requires four hollow months (FHHHH) but _not_ in a row. It is important to remember that this represents a _count_ of four hollow months. The actual _order_ could be two hollow, full, two hollow (that is `HHFHH`) with the same count.
 
 For the prytany counts the order may be important. If we want to observe the Rule of Aristotle, we need the conciliar year to begin with four "long" prytanies. Since there are only four prytanies preceding this equation they must _all_ be long (or the Rule of Aristotle must not be a rule). Two of the solutions satisfy the rule one implying a hollow Posideiṓn (Pos 27 = V 31 = DOY 175) one a full Posideiṓn (Pos 28 = V 31 = DOY 175). We can show the count requirements graphically
 
 ![324/3 BCE](img/324-1.png)
 
 The dotted lines represent the "horizon" of the equation--the solutions give us a count of full and hollow months for the first five months, to the left of the line. Since first solution requires a hollow month and second a full we can fill in this month to the right of the line. We cannot say anything yet about the rest of the festival months so they are empty.  Since the first four prytanies are long, we know the remaining six _must_ be short. We can color them accordingly but leave them with the diagonal hash marks to indicate that they are still hypothetical.
+
+### IG II³,1 372
 
 [IG II³,1 372](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20372) (Meritt 1961, 105)
 	
@@ -152,7 +219,7 @@ IG II³ leaves the festival date unrestored, but we will accept Meritt's ὀγδ
     Tha 18 (11-) =   IX 29 =  DOY 312 (O) [FFFFHHHHHH, LLLSSSSS]
     Tha 18 (11-) =   IX 29 =  DOY 313 (O) [FFFFFHHHHH, LLLLSSSS]
 
-Both solution require an ordinary year, so they are consistent with the Agora XVI 91 solutions. Only the second satisfies the Rule of Aristotle so lets focus on that one for simplicity. If we want to combine the solutions for the two equations we have to look for a way that combines them so that the second solution "contains" the first solution.
+Both solutions require an ordinary year, so they are consistent with the Agora XVI 91 solutions. Only the second satisfies the Rule of Aristotle so lets focus on that one for simplicity. If we want to combine the solutions for the two equations we have to look for a way that combines them so that the second solution "contains" the first solution.
 
 The two solutions for Agora XVI 91 that satisfied the Rule of Aristotle required the festival month counts `FFFHH` or `FFHHH`. We first "subtract" `FFFHH` from `FFFFFHHHHH` (the count required by IG II³,1 372)--that is, take three full and two hollow months out and see what the "remainder" is: `FFFFFHHHHH` - `FFFHH` = `FFHHH`. Put another way, `FFFHHFFFHH` is a rearrangement of the IG II³,1 372 solution that also satisfies the Agora XVI 91 solution.
 
@@ -171,7 +238,16 @@ The two solutions for Agora XVI 91 that satisfied the Rule of Aristotle required
 
 This will simply output solutions for each equation in turn. If you add `-c` or `--collate` to command though, it will generate all the possible "collations" of the two equations together:
 
-    > calendar_equation.py -p 10 -e Pos 27/28 V 31 -e Tha 18 IX 29 -c
+    > calendar_equation -p 10 -e Pos 27/28 V 31 -e Tha 18 IX 29 -c
+    Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
+    Pos 27 ( 6-) =    V 31 =  DOY 173 (O) [FHHHH, LLSS]
+    Pos 28 ( 6-) =    V 31 =  DOY 173 (O) [HHHHH, LLSS]
+    Pos 27 ( 6-) =    V 31 =  DOY 174 (O) [FFHHH, LLLS]
+    Pos 28 ( 6-) =    V 31 =  DOY 174 (O) [FHHHH, LLLS]
+    Pos 27 ( 6-) =    V 31 =  DOY 175 (O) [FFFHH, LLLL]
+    Pos 28 ( 6-) =    V 31 =  DOY 175 (O) [FFHHH, LLLL]
+    Tha 18 (11-) =   IX 29 =  DOY 312 (O) [FFFFHHHHHH, LLLSSSSS]
+    Tha 18 (11-) =   IX 29 =  DOY 313 (O) [FFFFFHHHHH, LLLLSSSS]
       1: HHHHH FFFFH   LSSS LLSS
       2: HHHHH FFFFF   LSSS LLLS
       3: FHHHH FFFHH   LLSS LSSS
@@ -197,7 +273,7 @@ This will simply output solutions for each equation in turn. If you add `-c` or 
      11: Pos 27 = V 31 = 175 + Tha 18 = IX 29 = 313
      12: Pos 28 = V 31 = 175 + Tha 18 = IX 29 = 313
      
-This output could surely be improved, but it shows first the required counts and second the corresponding solutions. The eleventh is the pattern we calculated above and the spacing `FFFHH FFHHH` is to make it easier to distinguish the two "partitions": the five months required by Agora XVI 91 from the five further required by IG II³,1 372 (the "remainder" of "subtracting" the first from the second). Only two collated solutions satisfy the Rule of Aristotle. The first solution only requires two full and three hollow in the second "partition", but since we also know that the interpretation of τρίτηι μετ’ εἰκάδας as Pos 27 requires a hollow Posideiṓn, these months are arranged to show this:
+This output could surely be improved, but the first part gives the individual solution (as without the `-c` switch). Next, we have the required counts numbered to corresponding with the combined solutions that follow. The eleventh is the pattern we calculated above and the spacing `FFFHH FFHHH` is to make it easier to distinguish the two "partitions": the five months required by Agora XVI 91 from the five further required by IG II³,1 372 (the "remainder" of "subtracting" the first from the second). Only two collated solutions satisfy the Rule of Aristotle. The first solution only requires two full and three hollow in the second "partition", but since we also know that the interpretation of τρίτηι μετ’ εἰκάδας as Pos 27 requires a hollow Posideiṓn, these months are arranged to show this:
 
 ![324/3 BCE](img/324-2.png)
 
@@ -223,7 +299,7 @@ In order to fit with the astronomical data, a solution to these two equations mu
 
 ![324/3 BCE](img/324-3.png)
 
-Note that of the twelve "collated" solutions, this is the _only_ solution that fits the astronomical data. None of the others call for three full months in the first five. While we used the Rule of Aristotle simply to reduce the number of possibilities for the purposes of illustration, in the end we got as the part of the unique solution. We can now state the complete solutions to the two calendar equations:
+Note that of the twelve "collated" solutions, this is the _only_ solution that fits the astronomical data. None of the others call for three full months in the first five. While we used the Rule of Aristotle simply to reduce the number of possibilities for the purposes of illustration, in the end we got it as the part of the unique solution. We can now state the complete solutions to the two calendar equations:
 
 **Pos 27 = V 31 = DOY 175 = ✸Jan 13, 323 BCE**
 
@@ -231,7 +307,7 @@ Note that of the twelve "collated" solutions, this is the _only_ solution that f
 
 ## 336/5 BCE
 
-Meritt's interpretation of the evidence for this year (Meritt 1961, 10-15) was briefly discussed under the Rule of Aristotle. We can now examine it in more detail. There are two inscriptions recording dated decrees for 336/5 BCE: IG II² 328 (=IG II² 328) and IG II³,1 327 (=IG II² 330) with two decrees on separate dates.
+Meritt's interpretation of the evidence for this year (Meritt 1961, 10-15) was briefly discussed under the Rule of Aristotle. We can now examine it in more detail and follow some of the process by which successive generations of scholars worked through the problems posed by these texts. There are two inscriptions recording dated decrees for 336/5 BCE: IG II² 328 (=IG II² 328) and IG II³,1 327 (=IG II² 330) with two decrees on separate dates.
 
 IG II³,1 329 (Meritt's IG II² 328) is very conservative:
 
@@ -246,7 +322,7 @@ This inscription has a "rich" history of restorations, but let us at least accep
 
     [ἐπὶ Πυθοδήλου ἄρχοντος ἐπ]ὶ τῆς Ἀ[.]-
 
-It is interesting to follow some of the process by which successive generations of scholars worked through the problems posed by these texts. Kirchner, in IG II², specified **Mai 27 = IV 31**, restoring the following for lines 2-6.  
+Kirchner, in IG II², specified **Mai 27 = IV 31**, restoring the following for lines 2-6.  
 
     [......... τετάρτης πρυτ]ανείας ἧ-
     [ι ․․․․․․․․19․․․․․․․․․ ἐ]γραμμάτ-
@@ -708,6 +784,7 @@ This is not much of a sample size--in the 400 years from the 5th through the 2nd
 
 ## Works Cited
 
+* Agora XVI = Woodhead, A. G. 1997. _Inscriptions: The Decrees_. The Athenian Agora, v. 16. Princeton: American School of Classical Studies at Athens.
 * Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
 * Hansen, Mogens Herman. 1982. “When Did the Athenian Ecclesia Meet?” _GRBS_ 23 (4): 331–50.
 * Meritt, Benjamin D. 1938. “Greek Inscriptions.” _Hesperia_ 7 (1): 77–160.
