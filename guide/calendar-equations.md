@@ -88,7 +88,7 @@ We can provisionally put a Julian date to our equation. Since we know the day of
     
 **Met 9 = I 39 = DOY 39 = ✸Aug 10, 333 BCE**
 
-I am going to use the star symbol ✸ to mark anything that comes from an astronomical calculation and therefore has a margin of error as long as we are not certain how the beginnings of months were observed or calculated. Using `-r 0` or `-r 1` as the "visibility rule" will shift the date to Aug 8 or 9 respectively.
+We will use the star symbol ✸ to mark anything that comes from an astronomical calculation and therefore has a margin of error as long as we are not certain how the beginnings of months were observed or calculated. Using `-r 0` or `-r 1` as the "visibility rule" will shift the date to Aug 8 or 9 respectively.
 
 ## `calendar-equations`
 
@@ -530,18 +530,18 @@ This fits one of the `calendar-equations` solutions very well--#155, the same as
 
 Parker and Duberstein's calculations fit this solution equally well (P&D). It terms of counts, Heniautos and P&D are exactly equivalent and differ only in the arragment of months. The only reason to prefer Heniautos' dates over Parker and Duberstein's is that Heniautos data comes from computer calculations made by an agency that successfully sends probes to Pluto. The only problem (for both) is on the last three months. The collation requires Mounuchiṓn and Thargēliṓn to be hollow, which we can accommodate by moving up the first day of Skirophoriṓn to June 25. This gives us a hollow Thargēliṓn but now the last day, ἕνει καὶ νέαι, of Skirophoriṓn should by Ski 30 = X 38. Perhaps Meritt is correct to posit a Ski 29 = X 37 followed by Ski 29₂ = X 38?
 
-There is a way around this complication. Unfortunate, it requires us to recognize the fact that we cannot put much trust in the recorded festival dates. As cases where there is no good solution for an equation show, Athenians made many silent manipulations of the festival calendar.
+There is a way around this complication. Unfortunately, it requires that we recognize the fact that we cannot put much trust in the recorded festival dates. As cases where there is no good solution for an equation show, Athenians made many silent manipulations of the festival calendar.
 
 ## It Doesn't Always Work Out
 
-It is frequently the case that you have a perfectly clear calendar equation which does not make sense. Take for instance [IG II³,1 917](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20917) from 266/5
+It is frequently the case that you have a perfectly clear calendar equation that has no good solution. Take for instance [IG II³,1 917](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20917) from 266/5
 
     [ἐπ]ὶ Νικίου ἄρχοντος [Ὀτρυνέ]ως ἐπὶ τῆς Ἀκαμαντίδος τρίτ-
     [ης] πρυτανείας, ἧι Ἰσο[κράτ]ης Ἰσοκράτου Ἀλωπεκῆθεν ἐγρα-
     [μμ]άτευεν· Βοηδρομιῶ[νος ἕκτ]ει μετ’ εἰκάδας, ἕκτει καὶ εἰκ-
     [οσ]τεῖ τῆς πρυτανεία[ς
     
-This is from the [period of twelve _phulaí_](conciliar-calendar.md#307-224-bce) and is a normal year so we would the prytanies to be 30 or 29 days, following the festival calendar. Ἕκτει μετ’ εἰκάδας, however, is the 24th or 25th of the month and the prytany date is the 26th (ἕκτει καὶ εἰκοστεῖ) so it seems one or two days off. There are mathematically _possible_ solutions but they require odd arragnements of months and prytanies: 
+This is from the [period of twelve _phulaí_](conciliar-calendar.md#307-224-bce) and is a normal year so we would the prytanies to be 30 or 29 days, following the festival calendar. Ἕκτει μετ’ εἰκάδας, however, is the 24th or 25th of the month and the prytany date is the 26th (ἕκτει καὶ εἰκοστεῖ) so it seems one or two days off. There are mathematically _possible_ solutions but they require odd arrangements of months and prytanies: 
 
     > calendar_equation.py -p 12 -e Boe 24/25 III 26
     Boe 24 ( 3-) =  III 26 =  DOY  84 (O) [FF, SS]
@@ -557,6 +557,20 @@ It is hard to imagine, for instance, why anyone would start a year with two 30-d
     
 We would expect Pos 11 = VI 11 or Pos 12 = VI 12. Inscribing ἑνδεkάτει for δωδεκάτει or vice versa, is not an obvious mistake to make. 
 
+An even more troublesome scenario is in [IG II³,1 352](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20352) (=IG II² 351). This inscription has a prefectly clear date, requiring no important restorations **Tha 11 = IX 19** but, as `calendar-equation` will tell us, there is no solution for this equation:
+
+    > calendar_equation -e Tha 11 IX 19
+    No solutions for ((<Months.THA: 11>, 11),) = ((<Prytanies.IX: 9>, 19),
+    
+There is another inscription from the same year, [IG II³,1 353](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20353) (=IG II² 352) with equally certain equation **Tha 14 = IX 32**. This equation does have solutions, all for an intercalary year which we expect this year (330/29) to be astronomically:
+
+    > calendar_equation.py -p 10 -e Tha 14 IX 32
+    Tha 14 (12+) =   IX 32 =  DOY 338 (I) [FFFFFHHHHHH, LLSSSSSS]
+    Tha 14 (12+) =   IX 32 =  DOY 339 (I) [FFFFFFHHHHH, LLLSSSSS]
+    Tha 14 (12+) =   IX 32 =  DOY 340 (I) [FFFFFFFHHHH, LLLLSSSS]
+    
+The festival dates, Tha 11 and Tha 14, are only three days apart while the prytany dates, IX 11 and IX 32, are 13 days apart. This has led to many hypotheses of errors on the part of the inscriber in IG II³,1 352 (Meritt 1961, 91-94). There is another possibility, though.
+
 ### Triple Dating
 
 [IG II² 1006](https://epigraphy.packhum.org/text/3226) (122/1 BCE) is one of a handful of inscriptions with what is known as a triple date:
@@ -565,235 +579,114 @@ We would expect Pos 11 = VI 11 or Pos 12 = VI 12. Inscribing ἑνδεkάτει 
     μάτευε[ν]· Βοιηδρομιῶνος ὀγδόῃ ἱσταμένου ἐμβολίμωι κατ’ ἄρχοντα, κατὰ θεὸν δὲ ἐνάτῃ ἱσταμένου,
     ἐνάτῃ τῆς πρυτανείας
     
-Here we have one prytany date III 9, and two festival dates: Βοιηδρομιῶνος ὀγδόῃ ἱσταμένου ἐμβολίμωι κατ’ ἄρχοντα, κατὰ θεὸν δὲ ἐνάτῃ ἱσταμένου, "the intercalary (ἐμβολίμωι) eighth of Boēdromiṓn according to the archon (κατ’ ἄρχοντα), according to the god (κατὰ θεὸν) the ninth." Ὀγδόῃ ἱσταμένου ἐμβολίμωι shows that the Athenians not only intercalated months, but even _days_. For a short time in the second century BCE, they also made a practice of sometimes distinguishing dates that are κατ’ ἄρχοντα from those that are κατὰ θεὸν, as is done here.
+Here we have one prytany date III 9, and two festival dates: Βοιηδρομιῶνος ὀγδόῃ ἱσταμένου ἐμβολίμωι κατ’ ἄρχοντα and κατὰ θεὸν δὲ ἐνάτῃ ἱσταμένου, "the intercalary (ἐμβολίμωι) eighth of Boēdromiṓn according to the archon (κατ’ ἄρχοντα), according to the god (κατὰ θεὸν) the ninth." Ὀγδόῃ ἱσταμένου ἐμβολίμωι shows that the Athenians not only intercalated months, but even _days_. For a short time in the second century BCE, they also made a practice of sometimes distinguishing dates that are κατ’ ἄρχοντα from those that are κατὰ θεὸν, as is done here.
 
-Many interpretations of these two terms were offered in the course of the 19th and 20th centuries, but the simplest was finally the one agreed on (see Meritt and Traill 1974, 23-24). Κατὰ θεὸν indicates a "natural" lunar date, which we can translate "according to the heavens"; κατ’ ἄρχοντα indicates a date that is the result of some adjustment on the part of the archon. We are not sure why this was done, but it is likely that it was to manage the times of festivals. Rather than rescheduling the festival, the calendar was adjusted so that the regular date of the festival fell where it was desired.
+Many interpretations of these two terms were offered in the course of the 19th and 20th centuries, but the simplest was finally the one agreed on (see Meritt and Traill 1974, 23-24). Κατὰ θεὸν indicates a "natural" lunar date, the equivalent of κατὰ σελήνην "according to the moon" (or κατὰ Σελήνην, "according the goddess Selene") which is found elsewhere.  κατ’ ἄρχοντα indicates a date that is the result of some adjustment on the part of the archon. We are not sure why this was done, but it is likely that it was to manage the times of festivals. Since certain dates were considered holu, rather than rescheduling a festival, the calendar was adjusted so that the regular date of the festival fell where it was desired. It seems, though, that the prytany dates are never adjusted.
 
-We would expect, Boe 9 to correspond to III 9. Instead, this inscription shows us that in September of 122 BCE, this stretch of the Athenian calendar was "adjusted" by adding a repeating Boe 8: 
+We would expect, Boe 9 to correspond to III 9. Instead, this inscription shows us that in September of 122 BCE, this stretch of the Athenian calendar was "adjusted" by adding a repeating Boe 8 (which we will represent as Boe 8₂): 
 
-| κατὰ θεὸν | κατ’ ἄρχοντα | Prytany | Julian |
-|-----------|--------------|---------|--------|
-| Boe 6     | Boe 6        | III 6   | Sep 13 |
-| Boe 7     | Boe 7        | III 7   | Sep 14 |
-| Boe 8     | Boe 8        | III 8   | Sep 15 |
-| Boe 9     | **Boe 8₂**       | III 9   | Sep 16 |
-| Boe 10    | Boe 9        | III 10  | Sep 17 |
-| Boe 11    | Boe 10       | III 11  | Sep 18 |
+| κατὰ θεὸν | κατ’ ἄρχοντα | Prytany | DOY | Julian |
+|-----------|--------------|---------|----:|--------|
+| Boe 6     | Boe 6        | III 6   | 65  | Sep 13 |
+| Boe 7     | Boe 7        | III 7   | 66  | Sep 14 |
+| Boe 8     | Boe 8        | III 8   | 67  | Sep 15 |
+| Boe 9     | **Boe 8₂**       | III 9 | 68   | Sep 16 |
+| Boe 10    | Boe 9        | III 10  | 69  | Sep 17 |
+| Boe 11    | Boe 10       | III 11  | 70  | Sep 18 |
 
-This would seem to explain IG II³,1 917 and 918 as well. Boe 25 = III 26 and Pos 11 = VI 12 because of some previous intercalary day. This further indicates that any impossible or suspicious  calendar equation is probably the result of an adjustment like this one. It seems, though, that the prytany dates are never adjusted.
+There are three possible solutions for **Boe 9 = III 9**
 
-These triple dated inscriptions offer a way to test the astronomical accuray of Heniautos. They all occur in the period of twelve _phulaí_ so in an ordinary year, any astronomical inaccuracy will be repeated in the festival and conciliar calendar calculations because the prytanies simply follow the lunar months. But in an _intercalary_ year all the prytanies are 32 days long so calculating the day of the year from the prytany date is a simple matter.
-
-The test of accuracy is this: once we calculate the DOY from the prytany date, that DOY should correspond the κατὰ θεὸν date.
-
-
-#### Agora XV 207, 173/2 BCE
-
-    [ἐπὶ Ἀλέξιδος ἄρχοντος ἐπὶ τῆ]ς [Ἱ]ππο[θων]τ[ί]δος ἑν[δ]εκάτης πρυταν[εί]-
-	[ας ἧι — — — — c.19 — — — — ε]ὺ̣ς ἐγ[ραμ]μάτευεν· Θαρ[γ]ηλιῶνος ἑνδ[ε]-
-	[κάτει κατ’ ἄρχοντα, κατὰ θεὸν] δὲ ὀγδόει ἐπὶ δέκα, τρίτει καὶ εἰκοστ[εῖ]
-	[τῆς πρυτανείας·
-	
-The year, 173/2 is intercalary:
-
-    > heniautos 173 -y
-         Year     | Y |      Start      | Days
-    --------------|---|-----------------|-----
-    BCE 173/172   | I | BCE 0173-Jul-03 |  384
+    > calendar_equation -p 12 -e Boe 9 III 9
+    Boe  9 ( 3-) =  III  9 =  DOY  67 (O) [HH, SS]
+    Boe  9 ( 3-) =  III  9 =  DOY  68 (O) [FH, LS]
+    Boe  9 ( 3-) =  III  9 =  DOY  69 (O) [FF, LL]
     
-Prytany XI 23 should be DOY 343 (32 × 10 + 23 = 343)
+The Julian dates above are assigned according to the DOY 68 solution, which fits Heniautos' calculation that Hekatombaiṓn is full and Metageitniṓn is hollow for this year. To give a full, if provisional, equation, we will use the abbreviations κΑ and κΘ for the κατ’ ἄρχοντα and κατὰ θεὸν dates, give the κατ’ ἄρχοντα adjustment in parentheses after that date, and use the star symbol (✸) as above for dates made by astronomical calculation:
 
-    > heniautos 173 -c --prytany XI --day 23
-         Year     |        Prytany        | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | XI                    |  23 | BCE 0172-Jun-10 | 343    
+**Boe 8₂ κΑ (+1) = Boe 9 κΘ = ✸DOY 68 = ✸Sept. 16, 122 BCE**
 
-And DOY 341 should be the κατὰ θεὸν date Tha 18:
 
-    > heniautos 173 --doy 343
-         Year     |        Month          | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | Thargēliṓn            |  18 | BCE 0172-Jun-10 | 343
+This would seem to explain IG II³,1 917 and 918 as well. In those inscriptions, wehad Boe 25 = III 26 where whe would expect it to equal II 25 and Pos 11 = VI 12 where we would expect it to equal VI 11. The obvious hypothesis is that an itercalary day anytime before Boe 25 put the κατὰ θεὸν and κατ’ ἄρχοντα calendars out od sync by one day. This further indicates that any impossible or suspicious  calendar equation is possibly the result of an adjustment like this one. 
+
+[Agora XV 238](https://epigraphy.packhum.org/text/231109) (= IG II² 967) is another example with a much greater adjustment:
+
+    [ἐπ]ὶ Μητροφάνου ἄρχοντος ἐπὶ τῆς Ἀκαμαντίδος δεκάτης πρυτα-
+    νείας, ἧι Ἐπιγένης Μοσχίωνος Λαμπτρεὺς ἐγραμμάτευεν· ἀντι-
+    γραφεὺς Δημοκράτης Δημοκράτου Κυδαθηναιεύς· Ἐλ̣αφηβολιῶνο[ς]
+    ἐνάτει μετ’ εἰκάδας κατ’ ἄρχοντα, κατὰ θεὸν [δ]ὲ Μ̣ουνιχιῶνος δωδε[κά]-
+    τει, δωδεκάτει τῆς πρυτανείας
     
-Success. From this we can state the full equation. We will use "κα" to indicate the κατ’ ἄρχοντα date and give the difference from the lunar calendar in parentheses, "κθ"  for the κατὰ θεὸν date:
+The κατὰ θεὸν date equates the festival and prytany days as we wold expect in an ordinary year in this period (145/4 BCE), Mou 12 = X 12. ἐνάτει μετ’ εἰκάδας is probably the 22nd of a full or 21st of a hollow month, so this represent 20 or 21 intercalary days. `calendar-equation` gives us four possibilities for the κατὰ θεὸν date:
 
-**Tha 11 κα (+7) = Tha 18 κθ = XI 23 = DOY 343 = ✸June 10, 172 BCE**
+    > calendar_equation -p 12 -e Mou 12 X 12
+    Mou 12 (10-) =    X 12 =  DOY 277 (O) [FFFFHHHHH, LLLLSSSSS]
+    Mou 12 (10-) =    X 12 =  DOY 278 (O) [FFFFFHHHH, LLLLLSSSS]
+    Mou 12 (10-) =    X 12 =  DOY 279 (O) [FFFFFFHHH, LLLLLLSSS]
+    Mou 12 (10-) =    X 12 =  DOY 280 (O) [FFFFFFFHH, LLLLLLLSS] 
 
-There are other inscriptions from this year and we can get a good sense of how it unrolled. [IG II³,1 1328](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%201328) contains two equations. The first (ll. 2-4) has no irregularity, if the restorations are correct:
+and the DOY 279 solution matches the 6 full months that Heniautos calculates before Mounuchiṓn 145/4 BCE. We can give a provisional solution, where the date in Elaphēboliṓn as marked with a star because it is based on the calculation that the month is full rather than hollow so that ἐνάτει μετ’ εἰκάδας is the 22nd:
 
-    ἐπὶ Ἀλέξιδος ἄρχοντος, ἐπὶ τῆς Ἀττ[αλίδος δευτέρας πρυ]-
-    τανείας·   Μεταγειτνιῶνος δεκάτει̣ [ὑστέραι· ἐνάτει καὶ δε]-
-    κάτει τῆς πρυτανείας·
-    
-Prytany II 19 should be DOY 51, which should then be Met 21 (δεκάτει ὑστέραι) in the festival calendar:
+**Ela ✸22 κΑ (+20) = Mou 12 κΘ = X 12 = ✸DOY 279 = ✸Apr 27, 144 BCE**
 
-    > heniautos 173 -c --prytany II --day 19
-         Year     |        Prytany        | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | II                    |  19 | BCE 0173-Aug-22 |  51
+Intercalary years in the 3rd century BCE and later are especially useful for understanding the calendar because the prytanies are all the same length (32 days) and avoid any complications due to accepting or rejecting the rule of Aristotle. Triple dated inscriptions from intercalary years would be that much more useful becuase the contain one date that should be that of a true lunar month. Unfortunately there are no examples free of complications from restoration or uncertainty of the date of the archon.
 
-    > heniautos 173 --doy 51
-         Year     |        Month          | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | Metageitniṓn          |  21 | BCE 0173-Aug-22 |  51
+### Implications
 
-So there is no irregularity.
+These calendar adjustments were not limited to the years when triple dating was in use. In an oft-cited passage in Aristophanes' _Clouds_, the chorus reports the complaints of the moon to the Athenians that "you do not manage the days at all correctly but make a jumble all up and down" (615-616); it ends by saying that Hyperbolus "ought to manage the days of his life according to the moon (κατὰ σελήνην)" (626). This is usually interpreted to mean that the kinds of adjustments explicit in the κατ’ ἄρχοντα/κατὰ θεὸν dates were common as early as the 5th century BCE (van der Waerden 1960, 179; Dunn 1998, 228).
 
-The second equation shows that Metageitniṓn was intercalated (ll. 42-44)
- 
-    ἐπὶ Ἀλέξιδος ἄρχοντος, ἐπὶ τῆς Πανδ[ιο]νίδο[ς τρίτης πρυτα]-
-    νείας· Μεταγειτνιῶνος ἐμβολίμου ὀγδόει [ἱσταμένου· τε]-
-    τάρτει τῆς πρυτανείας
-    
-III 4 should be DOY 68, which should be Met₂ 8:
-
-    > heniautos 173 -c --prytany III --day 4
-    
-         Year     |        Prytany        | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | III                   |   4 | BCE 0173-Sep-08 |  68
-
-    > heniautos 173 --doy 68 --intercalate Met
-         Year     |        Month          | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | Metageitniṓn hústeros |   8 | BCE 0173-Sep-08 |  68
-    
-Two inscriptions  [IG II³,1 1330](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%201330) (= IG II² 996) and [Agora XVI 284](https://epigraphy.packhum.org/text/233192?bookid=395&location=1700) were reconstructed together by George Stamires (Meritt, Lethen, and Stamires 1957, 39)
-
-IG II³,1 1330:
-
-    [ἐπὶ Ἀλέξιδος ἄρχοντος, ἐ]πὶ τῆς Πτολεμ[αΐδος δεκάτης πρυτανείας]·
-    [δήμου ψηφίσματα· Μουν]ιχιῶνος ἑνδε[κάτει κατὰ θεόν, ὀγδόει καὶ]
-    [δεκάτει τῆς πρυτανεία]ς·
-
-Agora XVI 284:
-
-    [ἐπὶ Ἀλέξιδος ἄρχοντος ἐπὶ τῆς Πτολεμαίδος δεκάτης]
-    [π]ρ̣υ̣[τανείας· δήμου ψηφίσματα· Μουνιχιῶνος ἑνδε]-
-    κάτε[ι κατὰ θεόν, ὀγδόει καὶ δεκάτει τῆς πρυτανείας]
-    
-Pritchet (1957, 279) objected to but Meritt (1961, 159) defended the restoration of a κατὰ θεόν date without a corresponding κατ’ ἄρχοντα version. X 18 should be DOY 306, which should be Mou 11 but is in fact Mou 10:
-
-    > heniautos 173 -c --prytany X --day 18
-         Year     |        Prytany        | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | X                     |  18 | BCE 0172-May-04 | 306
-
-    > heniautos 173 --doy 306
-         Year     |        Month          | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | Mounuchiṓn            |  10 | BCE 0172-May-04 | 306
-    
-I believe this comes from the fact that Stamires, though he does not state it, assumed a regular alternation of full and hollow months in his restoration. [Μουν]ιχιῶνος ἑνδε[κάτει] is correct in IG II³,1 1330 and with regular alternation Mounuchiṓn would be preceded by 5 full and 5 hollow months. Since, 30 × 5 + 29 × 5 + 11 = 306, this is why [ὀγδόει καὶ δεκάτει] is restored as the prytany date in both.
-
-The astronomical data, however, is that there were _six_ full months before Mounuchiṓn:
-
-![324/3 BCE](img/173-stamires.png)
-
-Therefore, 30 × 6 + 29 × 4 + 11 = 307, and the reading should be ἐνάτηι καὶ δεκάτηι (which has the same number of letters and is easy to substitute).
-
-    > heniautos 173 -c --prytany X --day 19
-         Year     |        Prytany        | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | X                     |  19 | BCE 0172-May-05 | 307
-    > heniautos 173 --doy 307
-         Year     |        Month          | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 173/172   | Mounuchiṓn            |  11 | BCE 0172-May-05 | 307
-    
-Altogether we now have the following equations for the year 173/2:
-
-| κατὰ θεὸν | κατ’ ἄρχοντα | Prytany | DOY | Julian          |
-|-----------|--------------|---------|----:|-----------------|
-| ✸Met 21   |              | II 19   | 51  | ✸Aug 22 173 BCE |
-| ✸Met₂ 8   |              | III 4   | 68  | ✸September 8, 173 BCE |
-| ✸Mou 11   |              | X 19    | 307 | ✸May 5, 172 BCE |
-| Tha 18    | Tha 11 (+7)  | XI 23   | 343 | ✸June 10, 172 BCE |
-
-There is only one triple date, but it does allow us to establish the dates in the other equations as κατὰ θεὸν. 
-
-We can perform some other checks. There are 17 days between II 19 and II 4. There must be the same number of days between Met 21 and Met₂ 8, which requires a full Met (30 - 21 + 8 = 17)--and this is what we have astronomically. There are 36 days between X 19 and XI 23. It requires a hollow Mounuchiṓn for 29 - 11 + 18 to also equal 36, and the astronomy shows a hollow Mounuchiṓn.
-
-### The Omitted Day: How Accurate Might `heniautos` Be?
-
-A hollow month was metaphorically "hollow" because a day is omitted from the count of days. Meritt (Meritt 1968, 1974, 1977) showed that this day was ἐνάτηι μετ’ εἰκάδας. The 21st was called δεκάτηι ὑστέραι, followed in a full month by ἐνάτηι μετ’ εἰκάδας, "ninth from the end." In a hollow month the 22nd was only the eight from the end was therefore called ὀγδόηι μετ’ εἰκάδας, as was the 23rd in a full month. So each day ὀγδόηι μετ’ εἰκάδας on can be one of two Julian Days, but ἐνάτηι μετ’ εἰκάδας can occur _only_ in a full month.
-
-| Name                  | Full Month | Hollow Month |
-|-----------------------|-----------:|-------------:|
-| δεκάτηι ὑστέραι       | 21         | 21           |
-| ἐνάτηι μετ’ εἰκάδας   | 22         | --           |
-| ὀγδόηι μετ’ εἰκάδας   | 23         | 22           |
-| ἑβδόμηι μετ’ εἰκάδας  | 24         | 23           |
-| ἕκτηι μετ’ εἰκάδας    | 25         | 24           |
-| πέμπτηι μετ’ εἰκάδας  | 26         | 25           |
-| τετράδι μετ’ εἰκάδας  | 27         | 26           |
-| τρίτηι μετ’ εἰκάδας   | 28         | 27           |
-| δευτέραι μετ’ εἰκάδας | 29         | 28           |
-| ἕνηι καὶ νέαι         | 30         | 29           |
-
-We can use this fact as another test. The closer Athenians kept their calendar to actual lunar cycles by any method, the more inscriptions contains ἐνάτηι μετ’ εἰκάδας should fall in 30-day months as calculated astronomically. There are 13 inscriptions.
-
-Four inscriptions have a date that needs no restoration. For three of the them the lunar month as calculated by Heniautos has 30 days
-
-| IG II³ | IG II³, 1  | Agora   | Year   | Month          | Lunar 30-day? |
-|--------|------------|---------|--------|----------------|---------------|
-| 362    |            | XVI 85  | 327/6  | Mounuchiṓn     | No?           |
-|        |            | XVI 162 | ?      | Elaphēboliṓn   | No?           |
-|        | 845        |         | 299/8  | [Thargēliṓn]   | Yes           |
-| 680    | 1005       |         | 250/49 | Elaphēboliṓn   | Yes           | 
-|        | 1025       | XVI 218 | 238/7  | [Elaphēboliṓn] | Yes           |
-| 838    | 1146       |         | 225/4  | Metageitniṓn   | Yes           |
-| 848    | 1168       | XV 129  | 211/0  | Boēdromiṓn     | n/a           |
-|        | 1310       | XV 194  | 178/7  | Puanopsiṓn     | No            |
-| 1318   |            | XV 200  | 175/4  | ?              | ?             |
-|        |            | XV 215  | 167/6  | [Posideiṓn]    | Yes?          |          
-|        |            | XVI 305 | 149/8  | [Puanopsiṓn]   | No?           |
-| 967    |            | XV 238  | 145/4  | Elaphēboliṓn   | Yes           |
-|        |            | XV 243  | 135/4  | Gamēliṓn       | Yes           |
+On the positive side, when a calendar equation seems to have no solution, such as IG II³,1 352 **Tha 11 = IX 19** the evidence from triple dating gives us the hypothesis that dates are κατ’ ἄρχοντα, and reflect intercalary days previously added to the calendar. In 330/29, it seems, 10 days added before IG II³,1 352 had been "taken back" before  IG II³,1 353 **Tha 14 = IX 32**, which has solutions as an intercalary year (one of which satisfies the Rule of Aristotle).
 
 
-Both the prytany and month need to be restored in [IG II³,1 845](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20845)--[ἑνδεκά]της and [Θαργηλιῶνος]--but are fairly certain. The calendar equation in [IG II³,1 844](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20845), Met 21 = II 21, makes it certain that 299/8 is an ordinary year so, while δωδεκάτης is a possible restoration for the prytany in II³ 845, that would require the month to be Σκιροφοριῶνος which has too many letters. There is enough of the date, [ἐ]ν̣άτει μετ᾿ ε[ἰκάδας], to make that certain. Heniautos calculates 299/8 as ordinary and Thargēliṓn as full.
+| κατὰ θεὸν | κατ’ ἄρχοντα | Prytany | DOY | Julian |
+|-----------|--------------|---------|-----|--------|
+| Tha 1     | Tha 11       | IX 19   | 327 | May 21 |
+| Tha 2     | ?            | IX 20   | 328 | May 22 |
+| Tha 3     | ?            | IX 21   | 329 | May 23 |
+| Tha 4     | ?            | IX 22   | 330 | May 24 |
+| Tha 5     | ?            | IX 23   | 331 | May 25 |
+| Tha 6     | ?            | IX 24   | 332 | May 26 |
+| Tha 7     | ?            | IX 25   | 333 | May 27 |
+| Tha 8     | ?            | IX 26   | 334 | May 28 |
+| Tha 19    | ?            | IX 27   | 335 | May 29 |
+| Tha 10    | ?            | IX 28   | 336 | May 30 |
+| Tha 11    | ?            | IX 29   | 337 | May 31 |
+| Tha 12    | ?            | IX 30   | 338 | Jun  1 |
+| Tha 13    | ?            | IX 31   | 339 | Jun  2 |
+| Tha 14    | Tha 14       | IX 32   | 340 | Jun  3 |
 
-In [IG II³,1 1025](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%201025) every aspect of the date requires restoration. In the first publication of the text (Meritt, 1938, 123-126), Meritt says of the prytany date that, "The stoichedon arrangement necessitates the restoration [δευτέραι καὶ τριακοστῆι]" which has been universally accepted and shows that year is intercalary (as Heniautos calculates it, as well). He then restored the festival date as [ἐνάτη]ι μετ’ εἰκ[άδας], explaining:
+This, of course, assumes that IG II³,1 352 and 353 are both reporting κατ’ ἄρχοντα dates that by the middle of Thargēliṓn coincided with the κατὰ θεὸν rather than, say, a κατ’ ἄρχοντα in 352 and a κατὰ θεὸν in 353.
 
-> Elaphebolion 22 = Prytany IX, 32. This was the 288th day of the year; each prytany had 32 days, and the civil calendar began with full Hekatombaion-reversing the order of full and hollow months at midyear (or before)
+On the negative side any equation must be treated with suspicion. It is possible for a κατ’ ἄρχοντα date to have solutions. If the decree recorded in IG II² 1006, above, had been passed one date later, Boe 9 (κΑ) rather than Boe 8₂, if it it was double- rather than triple-dated, we would be trying to make sense of an equation **Boe 9 = III 10**. Mathematically, this _has_ solutions:
 
-That is, a perfectly regular alternation of full and hollow months, beginning with a full Hekatombaiṓn (for which he gives no evidence) would make Elaphēboliṓn hollow as the tenth month in an intercalary year. He imagines a sequence such as FHFHFHFFH or FHFHFFHFH before Elaphēboliṓn where the two full consecutive full months are the "reversal" of the the order. Focusing on the count we would simply say it was preceded by five full and four hollow months, which is the only solution for Ela 22 = IX 22
+    > calendar_equation -p 12 -e Boe 9 iii 10
+    Boe  9 ( 3-) =  III 10 =  DOY  68 (O) [FH, SS]
+    Boe  9 ( 3-) =  III 10 =  DOY  69 (O) [FF, LS]
 
-    > calendar_equation.py -p 12 -e Ela 22 IX 32
-    Ela 22 (10+) =   IX 32 =  DOY 288 (I) [FFFFFHHHH, LLLLLLLL]
+These are just misleading about the lengths of months and prytanies.
 
-In Agora XVI, Woodhead restored the date [ὀγδόη]ι μετ’ εἰκ[άδας] in order to preserve the regular alternation:
-
-> But if Elaphebolion 22 is to fall on the 288th day of the year, in complete concordance with the prytany date, either Anthesterion was also full or there had been two successive full months earlier in the year. However [ὀγδόη]ι is an equally possible restoration and has been adopted in the above text. This makes Elaphebolion a hollow month, but the date in modern terms (Elaphebolion 22 = 288th day) remains the same...
-
-Heniautos' astronomical calculations agree with Meritt on the count of full months without regard to any regular alternation. In fact, it would probably make Woodhead blanch since Anthestēriṓn is full _and_ there are two successive full months earlier in the year.
-
-![324/3 BCE](img/238.png)
-
-This is less certain, but Heniautos _does_ calculate that 1) 238 is an intercalary year, 2) with a full Elaphēboliṓn, and 3) with count of full and hollow months preceding Elaphēboliṓn that satisfies the calendar equation Ela 22 = IX 22.
-
-IG II³,1 1146 is dated as Μεταγειτνιῶνος ἐνάτ[ηι μετ’ εἰκάδα]ς̣, [δ]ευτέραι ἐμβολίμωι or "2nd intercalary Metageitniṓn 22nd." The year is intercalary and since the equation is Met 22₂ = III 20, the incalated month has to be Hekatombaiṓn in order for Metageitniṓn to be pushed into the third prytany. Heniautos calculates 225/4 as ordinary with the default visibility rule, but `-r 1` or `-r 0` produce an intercalary year. An intercalated ἐνάτηι μετ’ εἰκάδας clearly implied an ordinary ἐνάτηι μετ’ εἰκάδας, and the third lunar month of this year, Metageitniṓn following intercalated Hekatombaiṓn has 30 days.
-
-In Agora XV 215 the festival date needs to be fully restored in a way that leaves much room for opinion. The year, 167/6, should be intercalary, but Meritt (1968, 94) restored [Ποσιδεῶνος ἐνάτει μετ’ εἰκάδας], that is Pos 22 = VI 22, believing that the year was treated as ordinary, and error which the Athenians caught later and corrected by intercalating a month in the festival calendar while letting the next 166/7 conciliar year start in Skirophoriṓn 167/6. If Meritt is correct then Posideiṓn 167/6 does indeed have 30 days according to Heniautos, but it is safer not to count this either way. 
-
-The decree in Agora XV 200 is dated ἐνάτει μετ’ εἰκ[άδας], but every other part of the date is lost, so nothing can be said. IG II² 848 has a date [ἐνάτει μετ εἰκάδα]ς which Meritt (1961, 173n12) read ἑβδ[ό]μει [μετ’ ε]ἰκ[άδα]ς, so we will not count it as one of our examples. Agora XV 129  Agora XVI 305 also needs too much restoration, although it has a  κατ’ ἄρχοντα date and κατὰ θεὸν date that Meritt restored as ἐνάτει μετ’ εἰκάδας. If his restoration of Πυανοψιῶνος is correct, then Puanopsiṓn of 149/8 has 29 days. However, if we do not put Agora XV 215 in the plus column, we are justified in not putting this in the minus column. Agora XVI 162 cannot be dated more accurately than between 300/299 and 295/4. In Agora XVI 162 the month is Mounuchiṓn, and there is a date ἐνάτει μετ’ εἰκάδ[ας], but something comes between them: Μουνιχιῶνος [...19...] δ' ἐνάτει μετ’ εἰκάδ[ας]. The δε indicates some kind of constrastive phrase (although no verion of κατ’ ἄρχοντα fits). δεκάτει is also an alternate reading for δ' ἐνάτει supported by some. The inscription seem to come from a time when the μετ’ εἰκάδας style of dating was just starting to be used, so perhaps it needed some clarification. In any case, Heniautos calculates Mounuchiṓn 327/6 as having 29 days though there may be some room for doubt about how to interpret the missing words.
-
-This is not much of a sample size--in the 400 years from the 5th through the 2nd centuries BCE there were about 2,450 full months and we have only have 12 examples (not counting IG II² 848), less than one-half of one percent--but seven instances (one uncertain) where the lunar calculation matches the epigraphic eveidence of a full month, four instances (three uncertain) where it does not match. Not bad, but take care.
+The Athenian calendar is a fascinating and frustrating puzzle. The clues provided by these calendar equations are open to multiple interpretations and, while the efforts of epigraphers in the last hundred years have done much to clarify the data, their disagreements were many and interpretations changed a great deal as more information became available. In the end, this may have left more smoke than fire for any who comes to this topic now. I ony hope that Heniautos makes it easier for anytone to explore the evidence, to examine it in different ways, and come up with new and better conclusions.
  
 
 ## Works Cited
 
+* Agora XV = Meritt, Benjamin Dean, and John S. Traill, eds. 1974. _Inscriptions: The Athenian Councillors_. The Athenian Agora 15. Princeton, N.J: American School of Classical Studies at Athens.
 * Agora XVI = Woodhead, A. G. 1997. _Inscriptions: The Decrees_. The Athenian Agora, v. 16. Princeton: American School of Classical Studies at Athens.
 * Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
+* Dunn, Francis M. 1998. “Tampering with the Calendar.” Zeitschrift für Papyrologie Und Epigraphik 123: 213–31.
 * Hansen, Mogens Herman. 1982. “When Did the Athenian Ecclesia Meet?” _GRBS_ 23 (4): 331–50.
 * Meritt, Benjamin D. 1938. “Greek Inscriptions.” _Hesperia_ 7 (1): 77–160.
-* Meritt, Benjamin D. 1968. “Calendar Studies.” _Αρχαιολογική Εφημερίς_, 77–115.
-* Meritt, Benjamin D. 1974. “The Count of Days at Athens.” _American Journal of Philology_ 95 (3): 268–79.
-* Meritt, Benjamin D. 1977. “The Hollow Month at Athens.” _Mnemosyne_ 30 (3): 217–42.
+* ----------. 1947. “Greek Inscriptions.” _Hesperia_ 16 (3): 147–83.
+* ----------. 1964. “Greek Inscriptions.” _Hesperia_ 33 (2): 168–227.
+* ----------. 1968. “Calendar Studies.” _Αρχαιολογική Εφημερίς_, 77–115.
+* ----------. 1974. “The Count of Days at Athens.” _American Journal of Philology_ 95 (3): 268–79.
+* ----------. 1977. “Athenian Archons 347/6-48/7 B.C.” Historia 26 (2): 161–91.
+* ----------. 1977. “The Hollow Month at Athens.” _Mnemosyne_ 30 (3): 217–42.
+* Meritt, Benjamin D., Margaret Larson Lethen, and George A. Stamires. 1957. “Greek Inscriptions.” _Hesperia_ 26 (1): 24–97.
 * Osborne, Michael. 2008. “The Date of the Athenian Archon Thrasyphon.” _Zeitschrift Für Papyrologie und Epigraphik_ 164: 85–89.
-* Pritchett, W. Kendrick. 1970. “The Name of the Game Is Restoration.” _California Studies in Classical Antiquity_ 3: 199–214.
 * Parker, Richard Anthony, and Waldo H. Dubberstein. 1942. _Babylonian Chronology 626 B. C.-45._ Studies in Ancient Oriental Civilization 24. Chicago: The University of Chicago Press.
 * Pritchett, W. Kendrick, and Benjamin D. Meritt. 1940. _The Chronology of Hellenistic Athens_. Cambridge: Harvard University Press.
+* Pritchett, W. Kendrick. 1970. “The Name of the Game Is Restoration.” _California Studies in Classical Antiquity_ 3: 199–214.
+* Waerden, B. L. van der. 1960. “Greek Astronomical Calendars and Their Relation to the Athenian Civil Calendar.” _Journal of Hellenic Studies_ 80: 168–80.
+
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
