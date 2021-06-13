@@ -1,5 +1,7 @@
 # Calendar Equations
 
+[Top: Intro](README.md) | [Previous: `heniautos` Command](heniautos-command.md) | [Next: `calendar-equations` Command](calendar-equations-command.md)
+
 This guide has included many caveats about the accuracy of `heniautos` and noted two documented intercalary years that `heniautos` gets wrong. On the other hand, what might `heniautos` get right, and how could we know? Welcome to the fascinating world of "calendar equations." These bits of evidence from the historical record allow us to test different theories of how the Athenians really used their calendar, and some cases, give confidence to reconstructions.
 
 
@@ -665,7 +667,8 @@ On the negative side any equation must be treated with suspicion. It is possible
 These are just misleading about the lengths of months and prytanies.
 
 The Athenian calendar is a fascinating and frustrating puzzle. The clues provided by these calendar equations are open to multiple interpretations and, while the efforts of epigraphers in the last hundred years have done much to clarify the data, their disagreements were many and interpretations changed a great deal as more information became available. In the end, this may have left more smoke than fire for any who comes to this topic now. I ony hope that Heniautos makes it easier for anytone to explore the evidence, to examine it in different ways, and come up with new and better conclusions.
- 
+
+[Top: Intro](README.md) | [Previous: `heniautos` Command](heniautos-command.md) | [Next: `calendar-equations` Command](calendar-equations-command.md) 
 
 ## Works Cited
 
@@ -673,18 +676,9 @@ The Athenian calendar is a fascinating and frustrating puzzle. The clues provide
 * Agora XVI = Woodhead, A. G. 1997. _Inscriptions: The Decrees_. The Athenian Agora, v. 16. Princeton: American School of Classical Studies at Athens.
 * Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
 * Dunn, Francis M. 1998. “Tampering with the Calendar.” Zeitschrift für Papyrologie Und Epigraphik 123: 213–31.
-* Hansen, Mogens Herman. 1982. “When Did the Athenian Ecclesia Meet?” _GRBS_ 23 (4): 331–50.
-* Meritt, Benjamin D. 1938. “Greek Inscriptions.” _Hesperia_ 7 (1): 77–160.
-* ----------. 1947. “Greek Inscriptions.” _Hesperia_ 16 (3): 147–83.
-* ----------. 1964. “Greek Inscriptions.” _Hesperia_ 33 (2): 168–227.
-* ----------. 1968. “Calendar Studies.” _Αρχαιολογική Εφημερίς_, 77–115.
-* ----------. 1974. “The Count of Days at Athens.” _American Journal of Philology_ 95 (3): 268–79.
-* ----------. 1977. “Athenian Archons 347/6-48/7 B.C.” Historia 26 (2): 161–91.
-* ----------. 1977. “The Hollow Month at Athens.” _Mnemosyne_ 30 (3): 217–42.
+Meritt, Benjamin D. 1961. _The Athenian Year_. Sather Classical Lectures 32. Berkeley: University of California Press.
 * Meritt, Benjamin D., Margaret Larson Lethen, and George A. Stamires. 1957. “Greek Inscriptions.” _Hesperia_ 26 (1): 24–97.
-* Osborne, Michael. 2008. “The Date of the Athenian Archon Thrasyphon.” _Zeitschrift Für Papyrologie und Epigraphik_ 164: 85–89.
 * Parker, Richard Anthony, and Waldo H. Dubberstein. 1942. _Babylonian Chronology 626 B. C.-45._ Studies in Ancient Oriental Civilization 24. Chicago: The University of Chicago Press.
-* Pritchett, W. Kendrick, and Benjamin D. Meritt. 1940. _The Chronology of Hellenistic Athens_. Cambridge: Harvard University Press.
 * Pritchett, W. Kendrick. 1970. “The Name of the Game Is Restoration.” _California Studies in Classical Antiquity_ 3: 199–214.
 * Waerden, B. L. van der. 1960. “Greek Astronomical Calendars and Their Relation to the Athenian Civil Calendar.” _Journal of Hellenic Studies_ 80: 168–80.
 
