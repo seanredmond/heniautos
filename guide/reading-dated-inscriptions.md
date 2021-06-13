@@ -71,9 +71,11 @@ And so we can say that Akamantís held the sixth prytany in 337/6.
 
 ## Prescript Vocabulary 
 
-### Tribes
+Except for the names of archons and secretaries, the vocabulary of the prescripts is fairly limited since it mostly consists of the names of tribes and months, and the numbers of the prytanies and days. The tables below give letter counts to make it easier to fill in gaps as illustrated above. There is a little bit more variation in spelling than is indicated here, but the forms below are most common.
 
-The name of the tribe that held the prytany appears in the genitive in the phrase ἐπὶ τῆς ________ ________ πρυτανείας (for example, ἐπὶ τῆς Αἰγηίδος πρώτης πρυτανείας)
+### Phulaí (or Tribes)
+
+The name of the _phulḗ_ that held the prytany appears in the genitive in the phrase ἐπὶ τῆς ________ ________ πρυτανείας (for example, ἐπὶ τῆς Αἰγηίδος πρώτης πρυτανείας)
 
 | #  | Form         | Name         | Letters |  Years  |
 |---:|--------------|--------------|--------:|---------|
@@ -91,6 +93,8 @@ The name of the tribe that held the prytany appears in the genitive in the phras
 | 12 | Δημητριάδος  | Dēmētriás    | 11      | 307-201 |
 | 13 | Πτολεμαίδος  | Ptolemaís    | 11      | 224–    |
 | 14 | Ἀτταλίδος    | Attalís      | 9       | 201-    |
+
+The order of the _phulaí_ was important for some purposes. For instance, most of the time the office of secretary rotated through the _phulaí_ in order, so the _phulḗ_ of the secretary is important evidence for establishing the order and dates of the archons they served alongside. For prytanies, however, the _phulaí_ were chosen by lot so this order has nothing to do with the order in which they served as _prutáneis_
 
 ### Prytanies
 
@@ -115,7 +119,7 @@ The number of the prytany appears in the genitive.
 
 ### Days of the Prytany
 
-The days of the prytany are given in basic Greek numbers. Epsilon is often used in place of eta, so the first day may be either πρότηι or πρότει.
+The days of the prytany are given in basic Greek numbers. Epsilon is often used in place of eta, so forms such as πρότει are as common as πρότηι. The iota at the end would be printed as a subscript in modern literary editions, so both πρότει and πρότηι are equivalents of the more familiar προτῃ.
 
 | Day | Name                    | Letters |
 |----:|-------------------------|--------:|
@@ -204,45 +208,77 @@ The days appear in the dative and there is a special way of counting the days of
 | ὀγδόηι ἐπὶ δέκα    | 18  | 13     |
 | ἐνάτηι ἐπὶ δέκα    | 19  | 13    |
 
-The last days, however, are counted backwards as if the reflect the waning moon. From the fifth through most of the fourth century, the count after εἰκοστή  (20th) used φθίνοντος, "waning" or "dwindling" (from [φθίω](https://logeion.uchicago.edu/%CF%86%CE%B8%CE%AF%CF%89)). It is in the genitive--we must supply the word μηνός so δεκάτηι φθίνοντος means "the tenth of the waning (moon)"
+The last days, however, are counted backwards as if to reflect the waning moon. From the fifth through most of the fourth century, the count after εἰκοστή  (20th) used φθίνοντος, "waning" or "dwindling" (from [φθίω](https://logeion.uchicago.edu/%CF%86%CE%B8%CE%AF%CF%89)). It is in the genitive--we must supply the word μηνός so δεκάτηι φθίνοντος means "the tenth of the waning (moon)"
 
 
 | Name               | Full Month day | Hollow Month Day |Letters |
-|--------------------|---------------:|-----------------:|-------:|
+|--------------------|---------------:|------------------|--------|
 | εἰκοστῆι           | 20             | 20               | 8      |
-| δεκάτηι φθίνοντος  | 21             | --               | 16     |
-| ἐνάτηι φθίνοντος   | 22             | 21               | 15     |
-| ὀγδόηι φθίνοντος   | 23             | 22               | 15     |
-| ἑβδόμηι φθίνοντος  | 24             | 23               | 16     |
-| ἕκτηι φθίνοντος    | 25             | 24               | 14     |
-| πέμπτηι φθίνοντος  | 26             | 25               | 16     |
-| τετράδι φθίνοντος  | 27             | 26               | 16     |
-| τρίτηι φθίνοντος   | 28             | 27               | 15     |
-| δευτέραι φθίνοντος | 29             | 28               | 17     |
+| δεκάτηι φθίνοντος  | 21             | --/21            | 16     |
+| ἐνάτηι φθίνοντος   | 22             | 21/22            | 15     |
+| ὀγδόηι φθίνοντος   | 23             | 22/23            | 15     |
+| ἑβδόμηι φθίνοντος  | 24             | 23/24            | 16     |
+| ἕκτηι φθίνοντος    | 25             | 24/25            | 14     |
+| πέμπτηι φθίνοντος  | 26             | 25/26            | 16     |
+| τετράδι φθίνοντος  | 27             | 26/27            | 16     |
+| τρίτηι φθίνοντος   | 28             | 27/28            | 15     |
+| δευτέραι φθίνοντος | 29             | 28/--            | 17     |
 | ἕνηι καὶ νέαι      | 30             | 29               | 11     |
 
-The backwards count is different for full and hollow months. The "waning ninth" is the 22nd in a full month (nine days from the 30th, counting inclusively) but of a hollow month it is the 21st (nine days from the 29th, inclusive). ἕνη καὶ νέα is the 30th of a full month or the 29th of a hollow.
-
-This backwards count always starts after the 20th (εἰκοστη), so a hollow month never has a δεκάτη φθίνοντος. This is called the "omitted day" and the omission is what makes the hollow month "hollow."
+The backwards count is different for full and hollow months. The "ninth of the waning moon" is the 22nd in a full month (nine days from the 30th, counting inclusively) but of a hollow month it is the 21st (nine days from the 29th, inclusive). ἕνη καὶ νέα is the 30th of a full month or the 29th of a hollow.
 
 Towards the end of the fourth century, a new style came into use, counting backwards with μετ’ εἰκάδας "after the 20th") instead of φθίνοντος. In this style, the 20th is called (oddly) δεκάτη προτέρα or "the prior tenth", the 21st δεκάτη ὑστέρα, "the later 10th"
 
 
 | Name                  | Full Month day | Hollow Month Day |Letters |
-|-----------------------|---------------:|-----------------:|-------:|
+|-----------------------|----------------|------------------|--------|
 | δεκάτηι προτέραι      | 20             | 20               | 15     |
 | δεκάτηι ὑστέραι       | 21             | 21               | 14     |
-| ἐνάτηι μετ’ εἰκάδας   | 22             | --               | 16     |
-| ὀγδόηι μετ’ εἰκάδας   | 23             | 22               | 16     |
-| ἑβδόμηι μετ’ εἰκάδας  | 24             | 23               | 17     |
-| ἕκτηι μετ’ εἰκάδας    | 25             | 24               | 15     |
-| πέμπτηι μετ’ εἰκάδας  | 26             | 25               | 17     |
-| τετράδι μετ’ εἰκάδας  | 27             | 26               | 17     |
-| τρίτηι μετ’ εἰκάδας   | 28             | 27               | 16     |
-| δευτέραι μετ’ εἰκάδας | 29             | 28               | 18     |
+| ἐνάτηι μετ’ εἰκάδας   | 22             | --/22            | 16     |
+| ὀγδόηι μετ’ εἰκάδας   | 23             | 22/23            | 16     |
+| ἑβδόμηι μετ’ εἰκάδας  | 24             | 23/24            | 17     |
+| ἕκτηι μετ’ εἰκάδας    | 25             | 24/25            | 15     |
+| πέμπτηι μετ’ εἰκάδας  | 26             | 25/26            | 17     |
+| τετράδι μετ’ εἰκάδας  | 27             | 26/27            | 17     |
+| τρίτηι μετ’ εἰκάδας   | 28             | 27/28            | 16     |
+| δευτέραι μετ’ εἰκάδας | 29             | 28/--            | 18     |
 | ἕνηι καὶ νέαι         | 30             | 29               | 11     |
 
-The omitted day in this style is ἐνάτη μετ’ εἰκάδας. For a long time it was thought that this was a forward count, or sometimes backwards and sometimes forwards so you need to be careful with older restorations that use μετ’ εἰκάδας as they may be based on a misunderstanding of the name. 
+For a time, there was a theory that the count μετ’ εἰκάδας was a "forward" count (that is, δευτέραι μετ’ εἰκάδας might be the 22nd, followed by τρίτηι μετ’ εἰκάδας, etc.), but this has been dismissed. Care must be taken with restorations to make sure they are not based on a forward count.
+
+There has always been disagreement about the "omitted" day. Since the 20th has a specific name (εἰκοστῆ, δεκάτη προτέρα) and the last day is always ἕνη καὶ νέα whether it is the 29th or the 30th, in a hollow month there is not room between the two for the full count from δεκάτη φθίνοντος down to δευτέρα φθίνοντος or later, when δεκάτη ὑστέρα is the name of the 21st, from ἐνάτη μετ’ εἰκάδας to δευτέρα μετ’ εἰκάδας. Merrit's final firm view was that ἐνάτη μετ’ εἰκάδας was the omitted day so that in a hollow month, the 21st was δεκάτη ὑστέρα, the 22nd ὀγδόη μετ’ εἰκάδας. Pritchett believed just as firmly that the omitted day was δευτέρα μετ’ εἰκάδας, so that in a hollow month, the 22nd was ἐνάτη μετ’ εἰκάδας and the 28th τρίτη μετ’ εἰκάδας proceeding then to ἕνη καὶ νέα.
+
+Therefor, for hollow month, the count with φθίνοντος would proceed according to each of them:
+
+| Day | Meritt             | Pritchett         |
+|-----|--------------------|-------------------|
+| 20  | εἰκοστῆι           | εἰκοστῆι          |
+| 21  | ἐνάτηι φθίνοντος   | δεκάτηι φθίνοντος |
+| 22  | ὀγδόηι φθίνοντος   | ἐνάτηι φθίνοντος  |
+| 23  | ἑβδόμηι φθίνοντος  | ὀγδόηι φθίνοντος  |
+| 24  | ἕκτηι φθίνοντος    | ἑβδόμηι φθίνοντος |  
+| 25  | πέμπτηι φθίνοντος  | ἕκτηι φθίνοντος   |
+| 26  | τετράδι φθίνοντος  | πέμπτηι φθίνοντος |
+| 27  | τρίτηι φθίνοντος   | τετράδι φθίνοντος |
+| 28  | δευτέραι φθίνοντος | τρίτηι φθίνοντος  | 
+| 29  | ἕνηι καὶ νέαι      | ἕνηι καὶ νέαι     |
+
+And the count with μετ’ εἰκάδας
+
+| Day | Meritt                | Pritchett            |
+|-----|-----------------------|----------------------|
+| 20  | δεκάτηι προτέραι      | δεκάτηι προτέραι     |
+| 21  | δεκάτηι ὑστέραι       | δεκάτηι ὑστέραι      |
+| 22  | ὀγδόηι μετ’ εἰκάδας   | ἐνάτηι μετ’ εἰκάδας  |
+| 23  | ἑβδόμηι μετ’ εἰκάδας  | ὀγδόηι μετ’ εἰκάδας  |
+| 24  | ἕκτηι μετ’ εἰκάδας    | ἑβδόμηι μετ’ εἰκάδας |  
+| 25  | πέμπτηι μετ’ εἰκάδας  | ἕκτηι μετ’ εἰκάδας   |
+| 26  | τετράδι μετ’ εἰκάδας  | πέμπτηι μετ’ εἰκάδας |
+| 27  | τρίτηι μετ’ εἰκάδας   | τετράδι μετ’ εἰκάδας |
+| 28  | δευτέραι μετ’ εἰκάδας | τρίτηι μετ’ εἰκάδας  | 
+| 29  | ἕνηι καὶ νέαι         | ἕνηι καὶ νέαι        |
+
+When it is not certain whether a date with φθίνοντος or μετ’ εἰκάδας is in a full month or a hollow, there are three possible interpretations. FOr instance, πέμπτηι μετ’ εἰκάδας could be: the 26th in a full month, the 26th in a hollow month according to Pritchett's scheme, or the 25th in a hollow month according to Meritt's
 
 [Top: Intro](README.md) | [Previous: Programming with Heniautos](calendar-equations-command.md)
 
