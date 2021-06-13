@@ -225,9 +225,9 @@ The last days, however, are counted backwards as if to reflect the waning moon. 
 | δευτέραι φθίνοντος | 29             | 28/--            | 17     |
 | ἕνηι καὶ νέαι      | 30             | 29               | 11     |
 
-The backwards count is different for full and hollow months. The "ninth of the waning moon" is the 22nd in a full month (nine days from the 30th, counting inclusively) but of a hollow month it is the 21st (nine days from the 29th, inclusive). ἕνη καὶ νέα is the 30th of a full month or the 29th of a hollow.
+The backwards count is different for full and hollow months. The "ninth of the waning moon" is the 22nd in a full month (nine days from the 30th, counting inclusively) but of a hollow month it is the 21st or the 22nd depending on your theory of the "omitted" day (see below). ἕνη καὶ νέα is the 30th of a full month or the 29th of a hollow.
 
-Towards the end of the fourth century, a new style came into use, counting backwards with μετ’ εἰκάδας "after the 20th") instead of φθίνοντος. In this style, the 20th is called (oddly) δεκάτη προτέρα or "the prior tenth", the 21st δεκάτη ὑστέρα, "the later 10th"
+Towards the end of the fourth century, a new style came into use, counting backwards with μετ’ εἰκάδας ("after the 20th") instead of φθίνοντος. In this style, the 20th is called (oddly) δεκάτη προτέρα or "the prior tenth", the 21st δεκάτη ὑστέρα, "the later 10th"
 
 
 | Name                  | Full Month day | Hollow Month Day |Letters |
@@ -248,7 +248,7 @@ For a time, there was a theory that the count μετ’ εἰκάδας was a "f
 
 There has always been disagreement about the "omitted" day. Since the 20th has a specific name (εἰκοστῆ, δεκάτη προτέρα) and the last day is always ἕνη καὶ νέα whether it is the 29th or the 30th, in a hollow month there is not room between the two for the full count from δεκάτη φθίνοντος down to δευτέρα φθίνοντος or later, when δεκάτη ὑστέρα is the name of the 21st, from ἐνάτη μετ’ εἰκάδας to δευτέρα μετ’ εἰκάδας. Merrit's final firm view was that ἐνάτη μετ’ εἰκάδας was the omitted day so that in a hollow month, the 21st was δεκάτη ὑστέρα, the 22nd ὀγδόη μετ’ εἰκάδας. Pritchett believed just as firmly that the omitted day was δευτέρα μετ’ εἰκάδας, so that in a hollow month, the 22nd was ἐνάτη μετ’ εἰκάδας and the 28th τρίτη μετ’ εἰκάδας proceeding then to ἕνη καὶ νέα.
 
-Therefor, for hollow month, the count with φθίνοντος would proceed according to each of them:
+Therefore, for hollow month, the count with φθίνοντος would proceed according to each of them:
 
 | Day | Meritt             | Pritchett         |
 |-----|--------------------|-------------------|
@@ -278,7 +278,7 @@ And the count with μετ’ εἰκάδας
 | 28  | δευτέραι μετ’ εἰκάδας | τρίτηι μετ’ εἰκάδας  | 
 | 29  | ἕνηι καὶ νέαι         | ἕνηι καὶ νέαι        |
 
-When it is not certain whether a date with φθίνοντος or μετ’ εἰκάδας is in a full month or a hollow, there are three possible interpretations. FOr instance, πέμπτηι μετ’ εἰκάδας could be: the 26th in a full month, the 26th in a hollow month according to Pritchett's scheme, or the 25th in a hollow month according to Meritt's
+When it is not certain whether a date with φθίνοντος or μετ’ εἰκάδας is in a full month or a hollow, there are three possible interpretations. πέμπτηι μετ’ εἰκάδας could be: the 26th in a full month, the 26th in a hollow month according to Pritchett's scheme, or the 25th in a hollow month according to Meritt's.
 
 [Top: Intro](README.md) | [Previous: Programming with Heniautos](calendar-equations-command.md)
 
