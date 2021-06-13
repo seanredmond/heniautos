@@ -1,6 +1,6 @@
 # Calendar Equations
 
-[Top: Intro](README.md) | [Previous: `heniautos` Command](heniautos-command.md) | [Next: `calendar-equations` Command](calendar-equations-command.md)
+[Top: Intro](README.md) | [Previous: `heniautos` Command](heniautos-command.md) | [Next: `calendar-equation` Command](calendar-equations-command.md)
 
 This guide has included many caveats about the accuracy of `heniautos` and noted two documented intercalary years that `heniautos` gets wrong. On the other hand, what might `heniautos` get right, and how could we know? Welcome to the fascinating world of "calendar equations." These bits of evidence from the historical record allow us to test different theories of how the Athenians really used their calendar, and some cases, give confidence to reconstructions.
 

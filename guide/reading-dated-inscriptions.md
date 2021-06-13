@@ -1,5 +1,7 @@
 # Reading Dated Inscriptions
 
+[Top: Intro](README.md) | [Previous: Programming with Heniautos](calendar-equations-command.md)
+
 [IG II/III³ 1, 338](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20338) (= IG II² 338) provides a good example of a dated prescript in a 4th century Athenian inscription. The prescript gives the bureaucratic details of the decree being recorded.
 
     ἐπὶ Νικοκράτους ἄρχοντος, ἐπὶ τῆς Αἰγηίδος
@@ -241,6 +243,8 @@ Towards the end of the fourth century, a new style came into use, counting backw
 | ἕνηι καὶ νέαι         | 30             | 29               | 11     |
 
 The omitted day in this style is ἐνάτη μετ’ εἰκάδας. For a long time it was thought that this was a forward count, or sometimes backwards and sometimes forwards so you need to be careful with older restorations that use μετ’ εἰκάδας as they may be based on a misunderstanding of the name. 
+
+[Top: Intro](README.md) | [Previous: Programming with Heniautos](calendar-equations-command.md)
 
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

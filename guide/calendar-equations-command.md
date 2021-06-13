@@ -1,4 +1,6 @@
-# `calendar-equations` Command
+# `calendar-equation` Command
+
+[Top: Intro](README.md) | [Previous: Calendar Equations](calendar-equations.md) | [Next: Programming with Heniautos](programming-with-heniautos.md)
 
 `calendar-equations` gives simple access to some of Heniautos' features for exploring [calendar equations](calendar-equations.md).
 
@@ -6,13 +8,13 @@
 
 Use the `-e` parameter to provide an equation in the format "month month-day prytany prytany-day." For example:
 
-    > calendar_equation.py -e Pos 20 V 24
+    > calendar_equation -e Pos 20 V 24
 
 For the festival month, use a three letter abbreviation, one of "hek": "met", "boe", "pua", "mai", "pos", "gam", "ant", "ela", "mou", "tha", "ski". For the prytany use a Roman numeral. Capitalization does not matter.
 
 The output will be a list of solutions (if there are any) and conditions that satisfy the equation:
 
-    > calendar_equation.py -e Pos 20 V 24
+    > calendar_equation -e Pos 20 V 24
     Pos 20 ( 6-) =    V 24 =  DOY 165 (O) [HHHHH, LSSS]
     Pos 20 ( 6-) =    V 24 =  DOY 166 (O) [FHHHH, LLSS]
     Pos 20 ( 6-) =    V 24 =  DOY 167 (O) [FFHHH, LLLS]
@@ -35,7 +37,7 @@ The output above means that Posideiṓn 20 = Prytany V 24 only if Posideiṓn is
 
 `calendar-equations` excludes some impossible counts but not others. It will not generate solutions that exceed the total possible long or short months or prytanies, but may generate solutions with an unlikely number within that limit. In the above example, the DOY 165 solution is output even though five hollow months in a row is not possible because any year _can_ have five hollow months. With an equation for later in the year:
 
-    > calendar_equation.py -e Ski 30 X 36
+    > calendar_equation -e Ski 30 X 36
     Ski 30 (12-) =    X 36 =  DOY 354 (O) [FFFFFHHHHHH, LLLSSSSSS]
     Ski 30 (12-) =    X 36 =  DOY 355 (O) [FFFFFFHHHHH, LLLLSSSSS]
     
@@ -61,7 +63,7 @@ You can provide multiple options for a festival or prytany day by separating the
     
 τρίτηι, ὀγδόηι, and ἐνάτηι all fit the available space. You can examine all three options at once as `Ela 13/18/19`:
 
-    > calendar_equation.py -e Ela 13/18/19 VIII 7
+    > calendar_equation -e Ela 13/18/19 VIII 7
     Ela 18 ( 9-) = VIII  7 =  DOY 253 (O) [FFFHHHHH, LSSSSSS]
     Ela 19 ( 9-) = VIII  7 =  DOY 253 (O) [FFHHHHHH, LSSSSSS]
     Ela 18 ( 9-) = VIII  7 =  DOY 254 (O) [FFFFHHHH, LLSSSSS]
@@ -75,7 +77,7 @@ You can provide multiple options for a festival or prytany day by separating the
     
 Since the last day of the month, ἕνη καὶ νέα, can always be the 29th or the 30th, you can simply use `last` rather than `29/30`
 
-    > calendar_equation.py -e Ski last X 36
+    > calendar_equation -e Ski last X 36
     Ski 29 (12-) =    X 36 =  DOY 354 (O) [FFFFFFHHHHH, LLLSSSSSS]
     Ski 30 (12-) =    X 36 =  DOY 354 (O) [FFFFFHHHHHH, LLLSSSSSS]
     Ski 29 (12-) =    X 36 =  DOY 355 (O) [FFFFFFFHHHH, LLLLSSSSS]
@@ -84,20 +86,20 @@ Since the last day of the month, ἕνη καὶ νέα, can always be the 29th 
 
 You can use `any` for an unknown month, prytany or day, e.g.
 
-    > calendar_equation.py -e any 19 VIII 7
-    > calendar_equation.py -e Ela any VIII 7
-    > calendar_equation.py -e Ela 19 any 7
-    > calendar_equation.py -e Ela 19 VIII any
+    > calendar_equation -e any 19 VIII 7
+    > calendar_equation -e Ela any VIII 7
+    > calendar_equation -e Ela 19 any 7
+    > calendar_equation -e Ela 19 VIII any
     
 Or in combination, such as
 
-    > calendar_equation.py -e any 19 VIII any
+    > calendar_equation -e any 19 VIII any
 
 ## Collations
 
 Your can provide multiple equations at once simply by adding more with more `-e` options. `calendar-equations` will generate solutions for each in turn:
 
-    > calendar_equation.py -e Pos 27/28 V 31 -e Tha 18 IX 29
+    > calendar_equation -e Pos 27/28 V 31 -e Tha 18 IX 29
     Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
     Pos 27 ( 6-) =    V 31 =  DOY 173 (O) [FHHHH, LLSS]
     Pos 28 ( 6-) =    V 31 =  DOY 173 (O) [HHHHH, LLSS]
@@ -110,7 +112,7 @@ Your can provide multiple equations at once simply by adding more with more `-e`
     
 If you provide multiple equations with the additional `-c` or `--collate` option, `calendar-equations` will _collate_ the equations a generate information on how the equations fit together (if they do). For instance, the above equations collated:
 
-    calendar_equation.py -e Pos 27/28 V 31 -e Tha 18 IX 29 -c
+    calendar_equation -e Pos 27/28 V 31 -e Tha 18 IX 29 -c
     Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
     Pos 27 ( 6-) =    V 31 =  DOY 173 (O) [FHHHH, LLSS]
     Pos 28 ( 6-) =    V 31 =  DOY 173 (O) [HHHHH, LLSS]
@@ -186,5 +188,7 @@ If we "subtract" the first solution from the second we are left with three full 
 ![324/3 BCE](img/partitions-4.png)
 
 Within the partitions, it is the count that matters and not the order. The two full and three hollow months of the first partition can be reordered (within this five month partition) to match aother lines of evidence.
+
+[Top: Intro](README.md) | [Previous: Calendar Equations](calendar-equations.md) | [Next: Programming with Heniautos](programming-with-heniautos.md)
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/80x15.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.

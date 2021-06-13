@@ -1,5 +1,7 @@
 # Programming with Heniautos
 
+[Top: Intro](README.md) | [Previous: `calendar-equation` Command](calendar-equations-command.md) | [Next: Reading Dated Inscriptions](reading-dated-inscriptions.md)
+
 ## Overview
 
 The most important functions in Heniautos, if you are lookig to generate calendars, are:
