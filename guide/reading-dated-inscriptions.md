@@ -206,7 +206,9 @@ The days appear in the dative and there is a special way of counting the days of
 | ἕκτηι ἐπὶ δέκα     | 16  | 12     |
 | ἑβδόμηι ἐπὶ δέκα   | 17  | 14     |
 | ὀγδόηι ἐπὶ δέκα    | 18  | 13     |
-| ἐνάτηι ἐπὶ δέκα    | 19  | 13    |
+| ἐνάτηι ἐπὶ δέκα    | 19  | 13     |
+
+#### The Backwards Count
 
 The last days, however, are counted backwards as if to reflect the waning moon. From the fifth through most of the fourth century, the count after εἰκοστή  (20th) used φθίνοντος, "waning" or "dwindling" (from [φθίω](https://logeion.uchicago.edu/%CF%86%CE%B8%CE%AF%CF%89)). It is in the genitive--we must supply the word μηνός so δεκάτηι φθίνοντος means "the tenth of the waning (moon)"
 
