@@ -26,6 +26,9 @@ I_13 = 214       # 384 days, 13 prytanies
 
 init_data()
 
+def test_version():
+    assert version() == "0.0.5"
+
 
 def test_bce_as_negative():
     assert bce_as_negative(100) == -99

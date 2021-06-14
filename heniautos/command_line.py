@@ -283,6 +283,9 @@ under certain conditions."""
                         "automatically be found)", default=None)
     parser.add_argument("--tab", action="store_true",
                         help="Output in tab-delimited format")
+    parser.add_argument("--version",action="version",
+                        version=f"heniautos {ha.version()}",
+                        help="Print version and exit")
     args = parser.parse_args()
 
     ha.init_data(args.ephemeris)

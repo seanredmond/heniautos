@@ -297,6 +297,9 @@ under certain conditions.""")
     parser.add_argument("--intercalary", action=argparse.BooleanOptionalAction,
                         default=True,
                         help="Show solutions for intercalary years")
+    parser.add_argument("--version",action="version",
+                        version=f"heniautos {ha.version()}",
+                        help="Print version and exit")
     args = parser.parse_args()
 
     pryt_type, year = prytany_type_year(args.prytanies, args.year)

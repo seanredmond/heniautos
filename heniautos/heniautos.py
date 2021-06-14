@@ -20,7 +20,7 @@ from pathlib import Path
 from skyfield import api
 from skyfield import almanac
 from skyfield.api import GREGORIAN_START
-
+from heniautos.__version__ import __version__
 
 class HeniautosError(Exception):
     pass
@@ -1328,3 +1328,7 @@ def _load_dinsmoor():
                 break
 
         return d_years
+
+
+def version():
+    return __version__
