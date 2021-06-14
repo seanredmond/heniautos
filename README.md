@@ -8,14 +8,19 @@ Heniautos (Greek for ["the span of a
 year"](https://logeion.uchicago.edu/%E1%BC%90%CE%BD%CE%B9%CE%B1%CF%85%CF%84%CF%8C%CF%82))
 generates examples of _possible_ Athenian calendars for any given
 year, ancient or modern, and provides has features for exploring the
-calendar and working with calendar equations. It is hopefully
-useful for:
+calendar and working with calendar equations. It is hopefully useful
+for:
 
 * Learning about and teaching the ancient Athenian Calendar
-* Following along with often complex discussions of dating of events in ancient Greek hsitory
+* Following along with often complex discussions of dating of events
+  in ancient Greek hsitory
 * Just having fun with questions like "When would the City Dionysia be this year, if it was still being held."
 
-Heniautos comes with two command-line programs--`heniautos` for genreating calendars, and `calendar-equation` for exploring information provided most ly by ancient inscriptions--and a Python library for writing your own programs. See the [Guide](guide/) for details.
+Heniautos comes with two command-line programs--`heniautos` for
+generating calendars, and `calendar-equation` for exploring
+information provided mostly by ancient inscriptions--and a Python
+library for writing your own programs. See the [Guide](guide/) for
+details.
 
 What A. W. Gomme wrote in 1970 (Gomme, 1945-1981,) 4.264) is
 still true today—"It does not seem easy at the present time to make
@@ -38,8 +43,8 @@ began the year at different times. For instance, in Sparta the year
 began after the fall equinox.
 
 Beyond this there are many questions. Did the months alternate
-regulary between full and hollow? If not, what determined whether a
-month was full or hollow. Was there a fixed schedule of intercalations
+regularly between full and hollow? If not, what determined whether a
+month was full or hollow? Was there a fixed schedule of intercalations
 (as the Julian and Gregorian calendars have a fixed rule for leap
 years)? If not how was this determined? Did the Athenians fix the new
 moon by observation, by calculation, or even by guessing?
@@ -76,10 +81,10 @@ Notice that the hollow and full months do not alternate regularly
 the actual, natural cycles of the moon). 19-year cycles of
 intercalation recognized by the ancients \([Metonic
 cycles](https://en.wikipedia.org/wiki/Metonic_cycle), 7 intercalations
-every 19 years\) do appear in Heniautos, but by observation rather
-than by prescription.
+every 19 years\) do appear in Heniautos, but by orbital calculations,
+rather than by prescription.
 
-An example of an intercalary year is 417/416 BCE:
+417/416 BCE is an example of an intercalary year:
 
 |  # | Month              | Julian Date     | # days|
 |---:|--------------------|-----------------|------:|
@@ -97,10 +102,13 @@ An example of an intercalary year is 417/416 BCE:
 | 12 | Thargēliṓn         | BCE 0416-May-23 | 29    |
 | 13 | Skirophoriṓn       | BCE 0416-Jun-21 | 29    |
 
-Since the 12th month ends on June 20, before the solstice (June 28 on
-the Julian calendar at this time), this year needed a 13th month to
-extend through to the beginning of the next year after the
-solstice. Athenians intercalated by repeating one of the months, usually Posideiṓn which Heniautos intercalates by default (you can choose other months).
+
+Posideiṓn hústeros ("later Posideiṓn") is the intercalated
+month. Without this extra month, the 12th month would end on June 20,
+before the solstice (June 28 on the Julian calendar at this
+time). Athenians intercalated by repeating one of the months, usually
+Posideiṓn as shown here, which Heniautos intercalates by default (you
+can choose other months).
 
 ## Example
 
@@ -114,7 +122,7 @@ We can find a "modern" date for the the peace treaty between Athens and Sparta w
 > fourth day of the waning moon of Artemisios, in Athens in the arkhonship
 > of Alkaios on the sixth day of the waning moon of Elaphēboliṓn.
 
-Alkaios was arkhon in 422/421 so to find the sixth day from the end we can start with the calendar for Elaphēboliṓn that year:
+Alkaios was arkhon in 422/421 so to find the "sixth day of the waning moon" we can start with the calendar for Elaphēboliṓn that year:
 
     > heniautos 422 --month Ela
          Year     |        Month          | Day |      Start      | DOY
@@ -149,17 +157,42 @@ Alkaios was arkhon in 422/421 so to find the sixth day from the end we can start
     BCE 422/421   | Elaphēboliṓn          |  28 | BCE 0421-Apr-15 | 264
     BCE 422/421   | Elaphēboliṓn          |  29 | BCE 0421-Apr-16 | 265
     
-`heniautos 422 --month Ela` means "show me the calendar for the month Elaphēboliṓn in 422/421 BCE. Now, "the sixth day of the waning moon" sounds very poetic, but it was simply the way of naming days in the last ten days of the month. There is disagreement over exactly how to interpret a date like ἕκτῃ φθίνοντος in a hollow month (which this is since it has 29 days, see [The Backwards Count](guide/reading-dated-inscriptions.md#the-backwards-count) in the guide) so this might mean either the 24th or the 25th. These correspond to either April 11 or April 12, 421 BCE.
+`heniautos 422 --month Ela` means "show me the calendar for the month
+Elaphēboliṓn in 422/421 BCE (see [`heniautos`
+Command](guide/heniautos-command.md) in the guide for more
+details). Now, "the sixth day of the waning moon" sounds very poetic,
+but it was simply the way of naming days in the last ten days of the
+month. There is disagreement over exactly how to interpret a date like
+ἕκτῃ φθίνοντος in a hollow month (which this month is since it has 29
+days, see [The Backwards
+Count](guide/reading-dated-inscriptions.md#the-backwards-count) in the
+guide) so this might mean either the 24th or the 25th. These
+correspond to either April 11 or April 12, 421 BCE.
 
-This is simply a starting point. If you want to state something more concretely you will need to apply other evidence or hypotheses. Meritt (1928, 109) first made it April 9 while Dinsmoor (1931, 334-335) said April 10. Meritt then citicized Dinsmoor at some length (1932, 146-151) to conclude (1932, 178) that it should be April 11--Heniautos arrives at this date but by a different path than Meritt. Gomme concludes that it should be "about March 12" (1945-1981, 4.711-713) because he has a different
-view about the intercalations. Most recently, Planeux calculates April
-11 again (forthcoming, 187).
+This is simply a starting point. If you want to state something more
+concretely you will need to apply other evidence or hypotheses. Meritt
+(1928, 109) first made it April 9 while Dinsmoor (1931, 334-335) said
+April 10. Meritt then citicized Dinsmoor at some length (1932,
+146-151) to conclude (1932, 178) that it should be April 11--Heniautos
+arrives at this date but by a different path than Meritt. Gomme
+concludes that it should be "about March 12" (1945-1981, 4.711-713)
+because he has a different view about the intercalations. Most
+recently, Planeux calculates April 11 again (forthcoming, 187).
 
-That said, the date given by Heniautos is close to all calculations, (though least close to Gomme's because of the intercalation). "About April 11" is good enough for most purposes. That is not bad over a span of 2,442 years or over 890,000 days. This margin of error should hold for any ancient date. The cited discussions are complex, and Heniautos can hopefully help anyone less steeped in ancient Athenian calendar equations follow along and check their calculations.
+That said, the date given by Heniautos is close to all calculations,
+(though least close to Gomme's because of the intercalation). "About
+April 11" is good enough for most purposes. That is not bad over a
+span of 2,442 years or more than 890,000 days. This margin of error
+should hold for any ancient date. The cited discussions are complex,
+and Heniautos can hopefully help anyone less steeped in ancient
+Athenian calendar equations follow along and check their calculations.
 
 ## Learn More
 
-Please read the [Guide](guide/) for more about the Athenian calendar and what calendar equations are and how they're used, as well as for details about the usage of `heniautos` command, the `calendar-equation` command, and the Python library.
+Please read the [Guide](guide/) for more about the Athenian calendar
+and what calendar equations are and how they're used, as well as for
+details about the usage of `heniautos` command, the
+`calendar-equation` command, and the Python library.
 
 ## Works Cited
 
