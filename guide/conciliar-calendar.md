@@ -4,9 +4,27 @@
 
 ## 508-410 BCE
 
-When the Athenian democracy was instituted in 508 BCE, the citizenry (meaning the population of male citizens since women had no political rights or ability to participate) was divided into ten [_phulaí_](https://logeion.uchicago.edu/%CF%86%CF%85%CE%BB%CE%AE) (singular _phulḗ_), usually translated as "tribes". These were not "tribes" in any traditional sense, but were simply arbitrary divisions of the population for civic purposes. Much voting was done by _phulḗ_, boards were often made up of one member from each _phulḗ_, and the _Boulḗ_ (or "Council") that prepared legislation and decisions to be voted on by the at-large _Ekklēsía_ (or "Assembly") was made up of 50 men chosen by lot from each _phulḗ_.
+When the Athenian democracy was instituted in 508 BCE, the citizenry
+(meaning the population of male citizens since women had no political
+rights or ability to participate) was divided into ten
+[_phulaí_](https://logeion.uchicago.edu/%CF%86%CF%85%CE%BB%CE%AE)
+(singular _phulḗ_), usually translated as "tribes". These were not
+"tribes" in any traditional sense, but were simply arbitrary divisions
+of the population for civic purposes. Much voting was done by _phulḗ_,
+boards were often made up of one member from each _phulḗ_, and the
+_Boulḗ_ (or "Council") that prepared legislation and decisions to be
+voted on by the at-large _Ekklēsía_ (or "Assembly") was made up of 50
+men chosen by lot from each _phulḗ_.
 
-This is important for the calendar because each or the ten tribal delegations served as a standing committee for one-tenth of the year. While serving as this standing committee they were called [_prutáneis_](https://logeion.uchicago.edu/%CF%80%CF%81%CF%8D%CF%84%CE%B1%CE%BD%CE%B9%CF%82) (essentialy "presidents") and their term was a [_prutaneía_](https://logeion.uchicago.edu/%CF%80%CF%81%CF%85%CF%84%CE%B1%CE%BD%CE%B5%CE%AF%CE%B1), a "presidency" or as historians call it a "prytany". Some activities were reserved for particular prytanies. For instance, generals were usually elected in the seventh prytany.
+This is important for the calendar because each or the ten tribal
+delegations served as a standing committee for one-tenth of the
+year. While serving as this standing committee they were called
+[_prutáneis_](https://logeion.uchicago.edu/%CF%80%CF%81%CF%8D%CF%84%CE%B1%CE%BD%CE%B9%CF%82)
+(essentialy "presidents") and their term was a
+[_prutaneía_](https://logeion.uchicago.edu/%CF%80%CF%81%CF%85%CF%84%CE%B1%CE%BD%CE%B5%CE%AF%CE%B1),
+a "presidency" or as historians call it a "prytany". Some activities
+were reserved for particular prytanies. For instance, generals were
+usually elected in the seventh prytany.
 
 The ten _phulaí_ in this period, in their traditional order, were:
 
@@ -21,9 +39,22 @@ The ten _phulaí_ in this period, in their traditional order, were:
 9. Aiantís
 10. Antiokhís
 
-This order was used for the rotation of some offices, such as secretary of the council. As an anti-corruption measure, however, the prytanies were chosen by lot and not very far ahead of time. It was only after one prytany was under way that the lots would be drawn to determine the next.
+This order was used for the rotation of some offices, such as
+secretary of the council. As an anti-corruption measure, however, the
+prytanies were chosen by lot and not very far ahead of time. It was
+only after one prytany was under way that the lots would be drawn to
+determine the next.
 
-Athenians inscribed their offical decrees on stone in order publish them. Thousands of these inscriptions still exist and many are dated by the prytany. In the fifth century, these inscriptions usually name the [_árkhōn_](https://logeion.uchicago.edu/%E1%BC%84%CF%81%CF%87%CF%89%CE%BD) (the chief magistrate), the [_grammateús_](https://logeion.uchicago.edu/%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B5%CF%8D%CF%82) (secretary of the council), and the _phulḗ_ that held the prytany when the decree was passed. We can tell the year from the _árkhōn_, but the name of the tribe alone is no help because of the random order.
+Athenians inscribed their offical decrees on stone in order publish
+them. Thousands of these inscriptions still exist and many are dated
+by the prytany. In the fifth century, these inscriptions usually name
+the
+[_árkhōn_](https://logeion.uchicago.edu/%E1%BC%84%CF%81%CF%87%CF%89%CE%BD)
+(the chief magistrate), the
+[_grammateús_](https://logeion.uchicago.edu/%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1%CF%84%CE%B5%CF%8D%CF%82)
+(secretary of the council), and the _phulḗ_ that held the prytany when
+the decree was passed. We can tell the year from the _árkhōn_, but the
+name of the tribe alone is no help because of the random order.
 
 Sometimes, however we are luckier. In an inscription that records
 payments made to generals who were sent to Corcyra in 433/2, we are
