@@ -37,7 +37,7 @@ or, for short:
 
 **Met 9 = I 39**
 
-In some cases, the equation provides useful data about the calendar for the year, or the calendar in general. For instance, this inscription tells us three things:
+In some cases, the equation provides useful data about the calendar for the year, or the calendar in general. This inscription tells us three things:
 
 1. The year (333/332 BCE, which we know from the árkhōn) was intercalary because this prytany (the first) has 39 days. In [this period](conciliar-calendar.md#409-308-bce) the longest prytanies in ordinary years were 36 days.
 1. Hekatombaiṓn was full. If the 39th day of the prytany is Metageitniṓn 9, the 31st would be Metageitniṓn 1, and therefore the 30th has to be Hekatombaiṓn 30.
@@ -70,14 +70,23 @@ What does `heniautos` calculate for this year?
 
 It correctly calculates 333/2 as an intercalary year but, based on the astronomy, makes Hekatombaiṓn hollow. Since Metageitniṓn calculated as full we can "fix" this by simply moving the start date of Metageitniṓn so that Hekatombaiṓn is full instead. 
 
-     Year     |        Month          |      Start       | Days
---------------|-----------------------|------------------|-----
-BCE 333/332   | Hekatombaiṓn          | BCE 0333-Jul-03  |   30‡
-BCE 333/332   | Metageitniṓn          | BCE 0333-Aug-02† |   29‡
-BCE 333/332   | Boēdromiṓn            | BCE 0333-Aug-31  |   29
-etc...|
+         Year     |        Month          |      Start       | Days
+    --------------|-----------------------|------------------|-----
+    BCE 333/332   | Hekatombaiṓn          | BCE 0333-Jul-03  |   30‡
+    BCE 333/332   | Metageitniṓn          | BCE 0333-Aug-02† |   29‡
+    BCE 333/332   | Boēdromiṓn            | BCE 0333-Aug-31  |   29
+    etc...|
 
-Here the dagger (†) indicates what has been changed (the date of Met 1) and the double daggers (‡) what has been affected by this change (the length of Hek and Met). This does not disturb the rest of the calculated calendar and means we can be slightly more accurate about dates in Hekatombaiṓn and Metageitniṓn. For the rest of the year, we have no better evidence than astronomy. The important point, as before, is that if you need historical accuracy the calculations made by Heniautos are a framework for examining other evidence. If you need an approximate date Heniautos (and just about any other reconstruction) are close enough/
+Here the dagger (†) indicates what has been changed (the date of Met
+1) and the double daggers (‡) what has been affected by this change
+(the length of Hek and Met). This does not disturb the rest of the
+calculated calendar and means we can be slightly more accurate about
+dates in Hekatombaiṓn and Metageitniṓn. For the rest of the year, we
+have no better evidence than astronomy. The important point, as
+before, is that, if you need historical accuracy, the calculations made
+by Heniautos are a framework for examining other evidence. If you need
+an approximate date Heniautos (and just about any other
+reconstruction) are close enough.
 
 We can provisionally put a Julian date to our equation. Since we know the day of the year, we can look it up with the `--doy` option:
 
@@ -92,16 +101,26 @@ We can provisionally put a Julian date to our equation. Since we know the day of
 
 We will use the star symbol ✸ to mark anything that comes from an astronomical calculation and therefore has a margin of error as long as we are not certain how the beginnings of months were observed or calculated. Using `-r 0` or `-r 1` as the "visibility rule" will shift the date to Aug 8 or 9 respectively.
 
-## `calendar-equations`
+## `calendar-equation`
 
 ### IG II³ 1,338 Again
 
 Along with the `heniautos` command, Heniautos, installs a second command, `calendar-equation` for working with these equations.
 
-    > calendar_equation.py -y 333 -e Met 9 I 39
+    > calendar_equation -y 333 -e Met 9 I 39
     Met  9 ( 2-) =    I 39 =  DOY  39 (I) [F, ∅]
     
-`calendar-equation` take a year (`-y`) and an equation (`-e`) in the format "month-abbreviation day prytany-number day." The prytany number needs to be a Roman numeral but it does not matter if it or the month abbreviation is capitalized.
+`calendar-equation` take a year (`-y`) and an equation (`-e`) in the format "month-abbreviation day prytany-number day." The prytany number needs to be a Roman numeral but it does not matter if it or the month abbreviation is capitalized. The year is only used to determine the number of prytanies, and you can give this number directly with the `-p` option instead of the year.
+
+    > calendar_equation -p 10 -e Met 9 I 39
+    Met  9 ( 2-) =    I 39 =  DOY  39 (I) [F, ∅]
+	
+10 is default for the number of prytanies, so this equation could simply be queried with:
+
+    > calendar_equation -e Met 9 I 39
+    Met  9 ( 2-) =    I 39 =  DOY  39 (I) [F, ∅].
+	
+All three are equivalent.
 
 The output is rather terse, but you can see that it contains the basic calendar equation. The `( 2-)` after `Met  9` means that Metageitniṓn is the second month (`2`) and is _not_ preceded by an intercalation (`-`). If it were preceded by an intercalation, this would be `( 3+)`. The `(I)` after `DOY  39` indicates that this solution requires an intercalary year; `(O)` would mean it was an ordinary year. `[F, ∅]` indicates the count of festival months and prytanies that must precede this solution--one full month `F`, and no prytanies, `∅` (that is, "null") since this is the first prytany. Hopefully this will become clear with more examples. This solution from `calendar-equation` contains all the facts that we worked out ourselves for this simple equation, and the fact that it only output a single solution indicates that it is the _only_ solution for this equation.
 
@@ -132,7 +151,7 @@ The prytany date is V 31. The festival date is in Posideiṓn, and τετράδ�
     Pos 26 ( 6-) =    V 31 =  DOY 175 (O) [FFFFH, LLLL]
     Pos 27 ( 6-) =    V 31 =  DOY 175 (O) [FFFHH, LLLL]
     
-Now we have more potential solutions than we did with the previous equations. They all require an ordinary year, and amount to this day falling somewhere in the range of DOY 171-175. We can dismiss the first and third solutions since they require five hollow months in a row (`calendar-equations` will output combinations that are simply mathematically possible).
+Now we have more potential solutions than we did with the previous equation. They all require an ordinary year, and amount to this day falling somewhere in the range of DOY 171-175. We can dismiss the first and third solutions since they require five hollow months in a row (`calendar-equations` will output combinations that are mathematically possible even if they are astronomically or practically impossible).
 
 Interpretations of this date have revolved around the [Rule of Aristotle](conciliar-calendar.md#the-rule-of-aristotle). Pritchett and Neugebaur (1947, 42) opted for **Pos 27 = V 31 = DOY 175** since "it appears that Prytanies I-IV contained 36 days each" (that is, the Rule). Meritt, who did not believe in the Rule, pointed out  (1961, 73) only that "it is equally legitimate to take Ποσιδειῶνος τετράδι φθίνοντος as the 26th day of a hollow month" and that **Pos 26 = V 31 = DOY 174** was valid and "would require that only three of the first four prytanies have 36 days each."
 
@@ -180,7 +199,7 @@ The restorations in [Agora XVI 91](https://epigraphy.packhum.org/text/232860) ar
 
 We can again give the date to `calendar-equation` in the format `Pos 27/28` to test both.
 
-    > calendar_equation.py -p 10    -e Pos 27/28 V 31
+    > calendar_equation -p 10    -e Pos 27/28 V 31
     Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
     Pos 27 ( 6-) =    V 31 =  DOY 173 (O) [FHHHH, LLSS]
     Pos 28 ( 6-) =    V 31 =  DOY 173 (O) [HHHHH, LLSS]
@@ -217,7 +236,7 @@ The dotted lines represent the "horizon" of the equation--the solutions give us 
     
 IG II³ leaves the festival date unrestored, but we will accept Meritt's ὀγδόηι ἐπὶ δέκα.
 
-    > calendar_equation.py -p 10    -e Tha 18 IX 29
+    > calendar_equation -p 10    -e Tha 18 IX 29
     Tha 18 (11-) =   IX 29 =  DOY 312 (O) [FFFFHHHHHH, LLLSSSSS]
     Tha 18 (11-) =   IX 29 =  DOY 313 (O) [FFFFFHHHHH, LLLLSSSS]
 
@@ -227,7 +246,7 @@ The two solutions for Agora XVI 91 that satisfied the Rule of Aristotle required
 
 `calendar-equation` can help with this. You can provide multiple equations with multiple `-e` options.
 
-    > calendar_equation.py -p 10 -e Pos 27/28 V 31 -e Tha 18 IX 29
+    > calendar_equation -p 10 -e Pos 27/28 V 31 -e Tha 18 IX 29
     Pos 27 ( 6-) =    V 31 =  DOY 172 (O) [HHHHH, LSSS]
     Pos 27 ( 6-) =    V 31 =  DOY 173 (O) [FHHHH, LLSS]
     Pos 28 ( 6-) =    V 31 =  DOY 173 (O) [HHHHH, LLSS]
@@ -275,7 +294,18 @@ This will simply output solutions for each equation in turn. If you add `-c` or 
      11: Pos 27 = V 31 = 175 + Tha 18 = IX 29 = 313
      12: Pos 28 = V 31 = 175 + Tha 18 = IX 29 = 313
      
-This output could surely be improved, but the first part gives the individual solution (as without the `-c` switch). Next, we have the required counts numbered to corresponding with the combined solutions that follow. The eleventh is the pattern we calculated above and the spacing `FFFHH FFHHH` is to make it easier to distinguish the two "partitions": the five months required by Agora XVI 91 from the five further required by IG II³,1 372 (the "remainder" of "subtracting" the first from the second). Only two collated solutions satisfy the Rule of Aristotle. The first solution only requires two full and three hollow in the second "partition", but since we also know that the interpretation of τρίτηι μετ’ εἰκάδας as Pos 27 requires a hollow Posideiṓn, these months are arranged to show this:
+This output could surely be improved, but the first part gives the
+individual solution (as without the `-c` switch). Next, we have the
+required counts numbered to correspond with the combined solutions
+that follow. The eleventh is the pattern we calculated above and the
+spacing `FFFHH FFHHH` is to make it easier to distinguish the two
+"partitions": the five months required by Agora XVI 91 from the five
+further required by IG II³,1 372 (the "remainder" of "subtracting" the
+first from the second). Only two collated solutions satisfy the Rule
+of Aristotle. The first solution only requires two full and three
+hollow in the second "partition", but since we also know that the
+interpretation of τρίτηι μετ’ εἰκάδας as Pos 27 requires a hollow
+Posideiṓn, these months are arranged to show this:
 
 ![324/3 BCE](img/324-2.png)
 
@@ -337,7 +367,7 @@ The interpretion of τετράδι φθίνοντος as the 27th shows that Kir
 Translated into Heniautos terms, Kirchner's solution for this equation is the only one that accommodates this alternation (by virtue of having an even number of full and hollow months).
 
 
-    > calendar_equation.py -e Mai 27 IV 31
+    > calendar_equation -e Mai 27 IV 31
     Mai 27 ( 5-) =   IV 31 =  DOY 145 (I) [FFHH, SSS]
     Mai 27 ( 5-) =   IV 31 =  DOY 146 (I) [FFFH, LSS]
     Mai 27 ( 5-) =   IV 31 =  DOY 147 (I) [FFFF, LLS]
@@ -353,7 +383,7 @@ Dinsmoor looked at this inscription next (Dinsmoor 1931, 356). He noted that all
 
 Plugging **Mai 26 = IV 29** into `calendar-equation` we have:
 
-    > calendar_equation.py -e Mai 26 IV 29
+    > calendar_equation -e Mai 26 IV 29
     Mai 26 ( 5-) =   IV 29 =  DOY 143 (I) [FHHH, SSS]
     Mai 26 ( 5-) =   IV 29 =  DOY 144 (I) [FFHH, LSS]
     Mai 26 ( 5-) =   IV 29 =  DOY 145 (I) [FFFH, LLS]
@@ -370,7 +400,7 @@ Pritchett and Neugebaur were the first to take Aristotle's statment about prytan
     
 Returning to a full Maimaktēriṓn, this gives us an equation **Mai 27 = IV 28** 
 
-    > calendar_equation.py -e Mai 27 IV 28
+    > calendar_equation -e Mai 27 IV 28
     Mai 27 ( 5-) =   IV 28 =  DOY 143 (I) [HHHH, LSS]
     Mai 27 ( 5-) =   IV 28 =  DOY 144 (I) [FHHH, LLS]
     Mai 27 ( 5-) =   IV 28 =  DOY 145 (I) [FFHH, LLL]
@@ -392,9 +422,9 @@ and another in lines 47-49:
     [ν]είας· ἕνει καὶ νέαι· ἑβδόμη[ι καὶ τριακοστῆι τῆς πρυτανεία]-
     [ς]
 
-The festival month is omitted in both, and since the prytany must be restored much relies on one's theories about the calendar. Kirchner was very much in the early days of calendar research and reconstructed of the lengths of the prytanies for this year (given in his commentary on IG II² 330) as 39, 38, 38, 38, 38, 38, 39, 39, 40, 37 days. Dinsmoor's statement that "The second equation, with the 14th of a month falling on the second of a prytany could be either the sixth or the ninth prytany; the third with the last day of a month falling on the 37th of a prytany, could be either the seventh or the tenth prytany" we can check with `calendar-equations`, starting with the first equation, **? 14 = ? 2**: 
+The festival month is omitted in both, and since the prytany must be restored much relies on one's theories about the calendar. Kirchner was very much in the early days of calendar research and reconstructed of the lengths of the prytanies for this year (given in his commentary on IG II² 330) as 39, 38, 38, 38, 38, 38, 39, 39, 40, 37 days. Dinsmoor's statement that "The second equation, with the 14th of a month falling on the second of a prytany could be either the sixth or the ninth prytany; the third with the last day of a month falling on the 37th of a prytany, could be either the seventh or the tenth prytany" we can check with `calendar-equation`, starting with the first equation, **? 14 = ? 2**: 
 
-    > calendar_equation.py -e any 14 any 2 --no-ordinary
+    > calendar_equation -e any 14 any 2 --no-ordinary
     Pos 14 ( 7+) =   VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
     Gam 14 ( 7-) =   VI  2 =  DOY 192 (I) [FFFFHH, SSSSS]
     Pos 14 ( 7+) =   VI  2 =  DOY 193 (I) [FFFFFH, LSSSS]
@@ -417,7 +447,7 @@ We can simplify this by (manually) combining the alternatives for the festival m
     Mou/Tha 14 (11) =  IX  2 =  DOY 309 (I) [FFFFFHHHHH, LLLSSSSS]
     Mou/Tha 14 (11) =  IX  2 =  DOY 310 (I) [FFFFFFHHHH, LLLLSSSS]
 
-And if we do the same simplification for **? 29/30 = ? 37** of the output from `calendar_equation.py -e any last any 37 --no-ordinary` we have:
+And if we do the same simplification for **? 29/30 = ? 37** of the output from `calendar_equation -e any last any 37 --no-ordinary` we have:
 
     Ant/Ela 29 (9) =  VII 37 =  DOY 265 (I) [FFFFHHHH, SSSSSS]
     Ant/Ela 30 (9) =  VII 37 =  DOY 265 (I) [FFFHHHHH, SSSSSS]
@@ -436,7 +466,7 @@ In both the prytany VI and VII solutions those that fit the Rule of Aristotle re
 
 Collation does not help much in this situation. We can check all the above possibilities with the `calendar-equation` command 
 
-    > calendar_equation.py -e Mai 26/27 iv 28/29/31 -e any 14 any 2 -e any last any 37 --no-ordinary -c
+    > calendar_equation -e Mai 26/27 iv 28/29/31 -e any 14 any 2 -e any last any 37 --no-ordinary -c
     
 But in this case it only serves to multiply the possibilities (289 mathematically valid collations!) rather than narrow them. For simplicity's sake we can highlight the solutions that best fit the two extremes. First those that allow for a perfect alternation of full and hollow months:
 
@@ -493,7 +523,7 @@ Meritt, who did not believe that the festival months were regulated by lunar obs
 | Tha   | May-27    | 30       | May-27     | 30        |
 | Ski   | Jun-26    | 29       | Jun-26     | 29        | 
 
-Meritt's only appeals to astronomy to weaken Pritchett and Neugebaur's reconstruction of a year ending with three hollow months. His purpose is to show that the Rule of Aristotle is not a requirement and that a sensible reconstruction of the year can be without it while improving on those of Kirchner and Dinsmoor. To this end he settles on these three equations:
+Meritt only appeals to astronomy to weaken Pritchett and Neugebaur's reconstruction of a year ending with three hollow months. His purpose is to show that the Rule of Aristotle is not a requirement and that a sensible reconstruction of the year can be without it while improving on those of Kirchner and Dinsmoor. To this end he settles on these three equations:
 
 * **[Mai] 26 = [IV] [28] = DOY 144**
 * **<Mou> 14 = Prytany [IX] 2 = DOY 309**
@@ -507,7 +537,7 @@ His one departure from perfectly regular alternation is, after the last day of S
 
 As we said before, this is mathematically possible but Meritt offers no mechanism by which the Athenians might have decided on this arrangement. It would be very characteristic of them to draw lots for the lengths of prytanies (as the did for the _phulaí_ holding the prytanies), but there is no historical evidence they did so and no one has ever reconstructed conciliar years that random--many of Meritt's reconstructions do fit the decidedly non-random Rule of Aristotle but those that do not usually have some long prytanies at the beginning with the rest coming at or near the end. Lots would require more years that looked like `LSLSLSSSLS` or `LSSSSLLSLS` than `LLSSSSSSLL` or `LLSSSSSLLS`. Without that, what motivation could they have had?
 
-Pritchett and Neubegaur did not have Parker and Dubberstein's calculations of ancient visible moons. With the even better data, from NASA's Jet Propulsion Laboratory, that Heniautos relies on, is their a better solution that fits the Rule of Aristotle? Here is the Heniautos view of 336/5 BCE
+Pritchett and Neubegaur did not have Parker and Dubberstein's calculations of ancient visible moons. With the even better data, from NASA's Jet Propulsion Laboratory, that Heniautos relies on, is there a better solution that fits the Rule of Aristotle? Here is the Heniautos view of 336/5 BCE
 
     > heniautos -m 336
          Year     |        Month          |      Start      | Days
@@ -526,7 +556,7 @@ Pritchett and Neubegaur did not have Parker and Dubberstein's calculations of an
     BCE 336/335   | Thargēliṓn            | BCE 0335-May-27 |   30
     BCE 336/335   | Skirophoriṓn          | BCE 0335-Jun-26 |   29
     
-This fits one of the `calendar-equations` solutions very well--#155, the same as match Pritchett and Neugebaur's equations. It can fit both becuase the collation of the three equations does not say anything about the length of Skirophoriṓn. Above we made hollow in the schematic representation, below we make it full.
+This fits one of the `calendar-equations` solutions very well--#155, the same as matches Pritchett and Neugebaur's equations. It can fit both becuase the collation of the three equations does not say anything about the length of Skirophoriṓn. Above we made hollow in the schematic representation, below we make it full.
 
 ![324/3 BCE](img/possible-solution-336.png)
 
@@ -545,7 +575,7 @@ It is frequently the case that you have a perfectly clear calendar equation that
     
 This is from the [period of twelve _phulaí_](conciliar-calendar.md#307-224-bce) and is a normal year so we would the prytanies to be 30 or 29 days, following the festival calendar. Ἕκτει μετ’ εἰκάδας, however, is the 24th or 25th of the month and the prytany date is the 26th (ἕκτει καὶ εἰκοστεῖ) so it seems one or two days off. There are mathematically _possible_ solutions but they require odd arrangements of months and prytanies: 
 
-    > calendar_equation.py -p 12 -e Boe 24/25 III 26
+    > calendar_equation -p 12 -e Boe 24/25 III 26
     Boe 24 ( 3-) =  III 26 =  DOY  84 (O) [FF, SS]
     Boe 25 ( 3-) =  III 26 =  DOY  84 (O) [FH, SS]
     Boe 25 ( 3-) =  III 26 =  DOY  85 (O) [FF, LS]
@@ -566,12 +596,12 @@ An even more troublesome scenario is in [IG II³,1 352](http://telota.bbaw.de/ig
     
 There is another inscription from the same year, [IG II³,1 353](http://telota.bbaw.de/ig/digitale-edition/inschrift/IG%20II_III%C2%B3%201,%20353) (=IG II² 352) with equally certain equation **Tha 14 = IX 32**. This equation does have solutions, all for an intercalary year which we expect this year (330/29) to be astronomically:
 
-    > calendar_equation.py -p 10 -e Tha 14 IX 32
+    > calendar_equation -p 10 -e Tha 14 IX 32
     Tha 14 (12+) =   IX 32 =  DOY 338 (I) [FFFFFHHHHHH, LLSSSSSS]
     Tha 14 (12+) =   IX 32 =  DOY 339 (I) [FFFFFFHHHHH, LLLSSSSS]
     Tha 14 (12+) =   IX 32 =  DOY 340 (I) [FFFFFFFHHHH, LLLLSSSS]
     
-The festival dates, Tha 11 and Tha 14, are only three days apart while the prytany dates, IX 11 and IX 32, are 13 days apart. This has led to many hypotheses of errors on the part of the inscriber in IG II³,1 352 (Meritt 1961, 91-94). There is another possibility, though.
+The festival dates Tha 11 and Tha 14 are only three days apart while the prytany dates IX 11 and IX 32 are 13 days apart. This has led to many hypotheses of errors on the part of the inscriber in IG II³,1 352 (Meritt 1961, 91-94). There is another possibility, though.
 
 ### Triple Dating
 
@@ -583,7 +613,7 @@ The festival dates, Tha 11 and Tha 14, are only three days apart while the pryta
     
 Here we have one prytany date III 9, and two festival dates: Βοιηδρομιῶνος ὀγδόῃ ἱσταμένου ἐμβολίμωι κατ’ ἄρχοντα and κατὰ θεὸν δὲ ἐνάτῃ ἱσταμένου, "the intercalary (ἐμβολίμωι) eighth of Boēdromiṓn according to the archon (κατ’ ἄρχοντα), according to the god (κατὰ θεὸν) the ninth." Ὀγδόῃ ἱσταμένου ἐμβολίμωι shows that the Athenians not only intercalated months, but even _days_. For a short time in the second century BCE, they also made a practice of sometimes distinguishing dates that are κατ’ ἄρχοντα from those that are κατὰ θεὸν, as is done here.
 
-Many interpretations of these two terms were offered in the course of the 19th and 20th centuries, but the simplest was finally the one agreed on (see Meritt and Traill 1974, 23-24). Κατὰ θεὸν indicates a "natural" lunar date, the equivalent of κατὰ σελήνην "according to the moon" (or κατὰ Σελήνην, "according the goddess Selene") which is found elsewhere.  κατ’ ἄρχοντα indicates a date that is the result of some adjustment on the part of the archon. We are not sure why this was done, but it is likely that it was to manage the times of festivals. Since certain dates were considered holu, rather than rescheduling a festival, the calendar was adjusted so that the regular date of the festival fell where it was desired. It seems, though, that the prytany dates are never adjusted.
+Many interpretations of these two terms were offered in the course of the 19th and 20th centuries, but the simplest was finally the one agreed on (see Meritt and Traill 1974, 23-24). Κατὰ θεὸν indicates a "natural" lunar date, the equivalent of κατὰ σελήνην "according to the moon" (or κατὰ Σελήνην, "according the goddess Selene") which is found elsewhere.  κατ’ ἄρχοντα indicates a date that is the result of some adjustment on the part of the archon. We are not sure why this was done, but it is likely that it was to manage the times of festivals. Certain dates were considered holy so, rather than rescheduling a festival, the calendar was adjusted so that the regular date of the festival fell where it was desired. It seems, though, that the prytany dates are never adjusted.
 
 We would expect, Boe 9 to correspond to III 9. Instead, this inscription shows us that in September of 122 BCE, this stretch of the Athenian calendar was "adjusted" by adding a repeating Boe 8 (which we will represent as Boe 8₂): 
 
@@ -608,7 +638,7 @@ The Julian dates above are assigned according to the DOY 68 solution, which fits
 **Boe 8₂ κΑ (+1) = Boe 9 κΘ = ✸DOY 68 = ✸Sept. 16, 122 BCE**
 
 
-This would seem to explain IG II³,1 917 and 918 as well. In those inscriptions, wehad Boe 25 = III 26 where whe would expect it to equal II 25 and Pos 11 = VI 12 where we would expect it to equal VI 11. The obvious hypothesis is that an itercalary day anytime before Boe 25 put the κατὰ θεὸν and κατ’ ἄρχοντα calendars out od sync by one day. This further indicates that any impossible or suspicious  calendar equation is possibly the result of an adjustment like this one. 
+This would seem to explain IG II³,1 917 and 918 as well. In those inscriptions, we had Boe 25 = III 26 where whe would expect it to equal II 25 and Pos 11 = VI 12 where we would expect it to equal VI 11. The obvious hypothesis is that an intercalary day anytime before Boe 25 put the κατὰ θεὸν and κατ’ ἄρχοντα calendars out of sync by one day. This further indicates that any impossible or suspicious  calendar equation is possibly the result of an adjustment like this one. 
 
 [Agora XV 238](https://epigraphy.packhum.org/text/231109) (= IG II² 967) is another example with a much greater adjustment:
 
@@ -618,7 +648,7 @@ This would seem to explain IG II³,1 917 and 918 as well. In those inscriptions,
     ἐνάτει μετ’ εἰκάδας κατ’ ἄρχοντα, κατὰ θεὸν [δ]ὲ Μ̣ουνιχιῶνος δωδε[κά]-
     τει, δωδεκάτει τῆς πρυτανείας
     
-The κατὰ θεὸν date equates the festival and prytany days as we wold expect in an ordinary year in this period (145/4 BCE), Mou 12 = X 12. ἐνάτει μετ’ εἰκάδας is probably the 22nd of a full or 21st of a hollow month, so this represent 20 or 21 intercalary days. `calendar-equation` gives us four possibilities for the κατὰ θεὸν date:
+The κατὰ θεὸν date equates the festival and prytany days as we would expect in an ordinary year in this period (145/4 BCE), Mou 12 = X 12. ἐνάτει μετ’ εἰκάδας is probably the 22nd of a full or 21st of a hollow month, so this represent 20 or 21 intercalary days. `calendar-equation` gives us four possibilities for the κατὰ θεὸν date:
 
     > calendar_equation -p 12 -e Mou 12 X 12
     Mou 12 (10-) =    X 12 =  DOY 277 (O) [FFFFHHHHH, LLLLSSSSS]
@@ -630,7 +660,7 @@ and the DOY 279 solution matches the 6 full months that Heniautos calculates bef
 
 **Ela ✸22 κΑ (+20) = Mou 12 κΘ = X 12 = ✸DOY 279 = ✸Apr 27, 144 BCE**
 
-Intercalary years in the 3rd century BCE and later are especially useful for understanding the calendar because the prytanies are all the same length (32 days) and avoid any complications due to accepting or rejecting the rule of Aristotle. Triple dated inscriptions from intercalary years would be that much more useful becuase the contain one date that should be that of a true lunar month. Unfortunately there are no examples free of complications from restoration or uncertainty of the date of the archon.
+Intercalary years in the 3rd century BCE and later are especially useful for understanding the calendar because the prytanies are all the same length (32 days) and avoid any question of to accepting or rejecting the rule of Aristotle. Triple dated inscriptions from intercalary years would be that much more useful because they contain one date that should be that of a true lunar month. Unfortunately there are no examples free of complications from restoration or uncertainty of the date of the archon.
 
 ### Implications
 
@@ -666,7 +696,7 @@ On the negative side any equation must be treated with suspicion. It is possible
 
 These are just misleading about the lengths of months and prytanies.
 
-The Athenian calendar is a fascinating and frustrating puzzle. The clues provided by these calendar equations are open to multiple interpretations and, while the efforts of epigraphers in the last hundred years have done much to clarify the data, their disagreements were many and interpretations changed a great deal as more information became available. In the end, this may have left more smoke than fire for any who comes to this topic now. I ony hope that Heniautos makes it easier for anytone to explore the evidence, to examine it in different ways, and come up with new and better conclusions.
+The Athenian calendar is a fascinating and frustrating puzzle. The clues provided by these calendar equations are open to multiple interpretations and, while the efforts of epigraphers in the last hundred years have done much to clarify the data, their disagreements were many and interpretations changed a great deal as more information became available. In the end, this may have left more smoke than fire for any who come to this topic now. I ony hope that Heniautos makes it easier for anytone to explore the evidence, to examine it in different ways, and come up with new and better conclusions.
 
 [Top: Intro](README.md) | [Previous: `heniautos` Command](heniautos-command.md) | [Next: `calendar-equations` Command](calendar-equations-command.md) 
 
