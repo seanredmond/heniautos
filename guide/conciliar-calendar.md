@@ -203,7 +203,7 @@ In [Festival Calendar Basics](festival-calendar-basics.md) (under
 "Heniautos and Intercalations") we noted that it was a close call,
 astronomically, whether or not the year 320/19 was intercalary but
 that the evidence of inscriptions makes it clear that it was
-intercalary, though Heniautos  calculates it as ordinary by
+intercalary, though Heniautos� calculates it as ordinary by
 default. The year 433/2 is a similar case that `heniautos` probably
 gets wrong.
 
