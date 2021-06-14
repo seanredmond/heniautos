@@ -42,13 +42,31 @@ The Athenian calendar is classified as a [lunisolar calendar](https://en.wikiped
 
 (One brief note: Ancient dates are conventionally calculated according to the [Julian calendar](https://en.wikipedia.org/wiki/Julian_calendar)--that is, a 365 day year with every fourth a leap year of 366 days--projected backwards from Roman times. Our modern, [Gregorian calendar](https://en.wikipedia.org/wiki/Gregorian_calendar) makes the small correction of skipping the leap year every 400 years. This difference between the Julian and Gregorian calendars is why the summer solstice today is usually June 21 while it is calculated as June 28 in the 5th century BCE.)
 
-The time when the year started was another point of difference between the calendars of different Greek cities. Delos, for instance, shared several month names with Athens--Lēnaiṓn, Hierós, Galaksiṓn, Artemisiṓn, Thargēliṓn, Pánēmos, Hekatombaiṓn, Metageitniṓn, Bouphoniṓn, Apatouriṓn, Arēsiṓn, Posideṓn--but in a different order because the year in Delos started after the _winter_ solstice rather than after the summer (Samuel 1972, 99-100).
+The time when the year started was another point of difference between
+the calendars of different Greek cities. The month names used in
+Delos, for instance--Lēnaiṓn, Hierós, Galaksiṓn, Artemisiṓn,
+Thargēliṓn, Pánēmos, Hekatombaiṓn, Metageitniṓn, Bouphoniṓn,
+Apatouriṓn, Arēsiṓn, Posideṓn--shared several with those used in
+Athens, but in a different order because the year in Delos started
+after the _winter_ solstice rather than after the summer (Samuel 1972,
+99-100). 
+
+Aristophanes' _Clouds_ was first performed at the City Dionysia in
+424/423. Since the City Dionysia was held on Elaphēboliṓn 10-16, to
+find a Julian date for this performance from our ideal year, we would
+first add up the lengths of full and hollow months before
+Elaphēboliṓn--4 × 30 + 4 × 29 = 236--and add 10 to find day of the
+year, 246, of the first day of the festival. The summer solstice of
+424 was on June 28, and first new moon after the solstice July 17. Of
+we take this date as the start of the year, the 246th day,
+Elaphēboliṓn 10, is March 19 and the 252nd, Elaphēboliṓn 16, is March
+25th, 423 BCE. It does not matter which version of the ideal we
+choose, since Elaphēboliṓn is preceeded by 4 full and 4 hollow months
+in both.
 
 ### Intercalary Years
 
-If a year started on July 17 and ran for six full and six hollow months making up 354 days, then that year would end on July 5. The next year, beginning on July 6, would end 354 days later on June 24 -- _before_ the solstice which occurs every 365 days.
-
-With a lunisolar calendar that begins after the summer solstice, about every three years the twelfth month will end _before_ the next solstice.. Imagine a year in which the solstice occurs on the first day of the last month, Skirophoriṓn. In our idealized year, Skirophoriṓn is hollow so we reach the end of this year 29 days later. The next year then starts on Hekatombaiṓn 1, 29 days after the solstice which we can call here SOL + 29. Because of the difference in length between the solar year and 12 lunar months, the next solstice will fall not on the next Skirophoriṓn 1 but on Skirophoriṓn 12. The second year will then begin on SOL + 18 (11 days sooner than SOL + 29). The third solstice will fall on Skirophoriṓn 23, and the third year begins only 7 days later on SOL + 7. As we approach the fourth year, Skirophoriṓn ends _before_ the solstice and if Hekatombaiṓn were start right away it would be on SOL _minus_ 4.
+With a lunisolar calendar that begins after the summer solstice, about every three years the twelfth month will end _before_ the next solstice. Imagine a year in which the solstice occurs on the first day of the last month, Skirophoriṓn. In our idealized year, Skirophoriṓn is hollow so we reach the end of this year 29 days later. The next year then starts on Hekatombaiṓn 1, 29 days after the solstice which we can call here SOL + 29. Because of the difference in length between the solar year and 12 lunar months, the next solstice will fall not on the next Skirophoriṓn 1 but on Skirophoriṓn 12. The second year will then begin on SOL + 18 (11 days sooner than SOL + 29). The third solstice will fall on Skirophoriṓn 23, and the third year begins only 7 days later on SOL + 7. As we approach the fourth year, Skirophoriṓn ends _before_ the solstice and if Hekatombaiṓn were start right away it would be on SOL _minus_ 4.
 
 In the diagram below, the top row represents the Athenian years with their months alternating between full (green) and hollow (tan). Each Skirophoriṓn is marked "S". The beginning of each Athenian year is indicated by the arrow and by Hekatombaiṓn marked "H". The bottom row represents the solar year running 365 days from solstice to solstice. The "red zone" at the end shows where the twelfth month ends before the solstice.
 
@@ -67,15 +85,33 @@ or after Skirophoriṓn:
 ![idealized intercalary year](img/ideal-ski2.png)
 
 
-Or anywhere in between. We do not know how this choice was made for any particular intercalary year
+Or anywhere in between. We do not know how this choice was made for any particular intercalary year.
 
 The first year on the Pos₂ chart and the Ski₂ chart above have seven full and six hollow months for a total of 384 days. This is often given as the "normal" length of an intercalary year and if the Athenians had wished they could have made sure to only ever intercalate a full month so that itercalary years would always have 384 days. It is likely, though, that there were intercalary years like the second Pos₂ chart and the Hek₂ year above, with 383 days (six full months and seven hollow). It also seems that it was possible to have a 355-day ordinary year (seven full months and 5 hollow), but it is less certain whether there could be 353 or 385 day years. In any case, an "idealized" year is a fiction. Even with a regular alternation of full and hollow months at some point you will have a year that is 383 days rather than 384, or 355 rather than 354, or has two full or two hollow months in a row. Debate about the nature of the Athenian calendar revolves around how regular or irregular it really was and how the evidence, mostly from inscriptions, should be interpreted to fit one theory or another.
 
 ## Really Lunar Months
 
-The time between one new moon and the next--a ["lunation" or "synodic month"](https://en.wikipedia.org/wiki/Lunar_month#Synodic_month)--is 29.53 days on average, plus or minus about 7 hours in any given lunation. This is what gives us the alternation between 29 and 30 day months in a lunisolar calendar. It has long been a matter of debate how rigid or flexible the Athenians were with their calendar and whether the succession of full and hollow months was based on some system, on calculation, or on direct observation of the crescent of the new moon. Heniautos generates example calendars for ancient dates based on the assumption that all months began on actual, observed new moons. This is both because I believe it is true, and because this is where a computer is most helpful. If you believe this assumption is wrong, Heniautos will still help you to generate counter-examples to show that.
+The time between one new moon and the next--a ["lunation" or "synodic
+month"](https://en.wikipedia.org/wiki/Lunar_month#Synodic_month)--is
+29.53 days on average, plus or minus about 7 hours in any given
+lunation. This is what gives us the alternation between 29 and 30 day
+months in a lunisolar calendar. It has long been a matter of debate
+how rigid or flexible the Athenians were with their calendar and
+whether the succession of full and hollow months was based on some
+system, on calculation, or on direct observation of the crescent of
+the new moon. Heniautos generates example calendars for ancient dates
+based on the assumption that all months began on actual, observed new
+moons. This is both because I believe it is true, and because this is
+where a computer is most helpful. If you believe this assumption is
+wrong, Heniautos will still help you to generate counter-examples to
+show that.
 
-In order to do this, Heniautos uses a simplified approximation of observation, by default, treating the second day after the [conjunction](https://en.wikipedia.org/wiki/Conjunction_(astronomy)) as the day when the first light of the waxing new moon was visible.  Here is the calendar for 424/3 BCE (showing output from the [Heniautos command](heniautos-command.md)):
+In order to do this, Heniautos uses a simplified approximation of
+observation, by default, treating the second day after the
+[conjunction](https://en.wikipedia.org/wiki/Conjunction_(astronomy))
+as the day when the first light of the waxing new moon was visible.
+Here is the calendar for 424/3 BCE (showing output from the [Heniautos
+command](heniautos-command.md)):
 
     > heniautos 424 -m
          Year     |        Month          |      Start      | Days
@@ -93,11 +129,28 @@ In order to do this, Heniautos uses a simplified approximation of observation, b
     BCE 424/423   | Thargēliṓn            | BCE 0423-May-10 |   30
     BCE 424/423   | Skirophoriṓn          | BCE 0423-Jun-09 |   29    
 
-The command `heniautos 424` gives us the year that began in 424 BCE (that is, 424/3) The `-m` option tells Heniautos to output a monthly summary (see [`heniautos` Command](heniautos-command.md) for details). The fields are the Athenian Year, the month, the Julian date of the first day of the month, and the number of days in the month. This year does not start on the day of the new moon (July 17, as we saw above) but on the second day after, July 19. You can see that the actual astronomical lunations _are_ either 29 or 30 days, but they do _not_ alternate regularly. This is perhaps easier to see on a chart: 
+The command `heniautos 424` gives us the year that began in 424 BCE
+(that is, 424/3) The `-m` option tells Heniautos to output a monthly
+summary (see [`heniautos` Command](heniautos-command.md) for
+details). The fields are the Athenian Year, the month, the Julian date
+of the first day of the month, and the number of days in the
+month. This year does not start on the day of the new moon (July 17,
+as we saw above) but on the second day after, July 19. You can see
+that the actual astronomical lunations _are_ either 29 or 30 days, but
+they do _not_ alternate regularly. This is perhaps easier to see on a
+chart:
 
 ![424/3 BCE](img/424.png)
 
-By this reconstruction, for example, the City Dionysia of 424/423  (Elaphēboliṓn 10-16) where Aristophanes' _Clouds_ was first performed took place March 21-27, 423 BC. It worth noting that this is no different from the hypothetical "ideal" calendar, at least so fas as Elaphēboliṓn is concerned. Elaphēboliṓn is preceded by four full and four hollow months in both. The astronomical data simply suggests a different order.
+By this reconstruction, for example, the City Dionysia of 424/423
+(Elaphēboliṓn 10-16) where Aristophanes' _Clouds_ was first performed
+took place March 21-27, 423 BC. It worth noting that in terms of the
+_days of the year_ this is no different from the hypothetical "ideal"
+calendar, at least so fas as Elaphēboliṓn is concerned. Elaphēboliṓn
+is preceded by four full and four hollow months in both, so
+Elaphēboliṓn 10-16 are still the 246th-252nd days of the year. The
+astronomical data simply suggests a different order, and the "second
+day rule" moves the Julian dates two days later.
 
 ### Why Two Days?
 
@@ -151,11 +204,21 @@ You can also use `-r 0` to treat months as starting on the day of the astronomic
     BCE 424/423   | Thargēliṓn            | BCE 0423-May-08 |   30
     BCE 424/423   | Skirophoriṓn          | BCE 0423-Jun-07 |   29
 
-Any of these options is adequate for saying the that the City Dionysia took place and Aristophanes' _Clouds_ was staged for the first time _around_ March 21-27, 423 BCE. The choice of rule can, however, have a large impact on intercalations if the generated calendar when a new moon is very close to the solstice.
+The truth is probably somewhere in between--sometimes `-r 2` will give
+the correct dates, if we can determine what they are and sometimes `-r
+1`. Any of these options is adequate for saying the that the City
+Dionysia took place and Aristophanes' _Clouds_ was staged for the
+first time _around_ March 21-27, 423 BCE. The choice of rule can,
+however, have a large impact on intercalations if the generated
+calendar is for a year when a new moon is very close to the solstice.
 
 ## Heniautos and Intercalations
  
-Heniautos intercalates when it is astronomically necessary. The year 406/5, for instance, begins on July 1 and the twelfth month ends on June 18, too soon for the next month to begin after the summer solstice. Heniautos therefore intercalates a second Posideiṓn (by default):
+Heniautos intercalates when it is astronomically necessary. The year
+406/5, for instance, begins on July 1 and the twelfth month ends on
+June 18, too soon for the next month to begin after the summer
+solstice. Heniautos therefore intercalates a second Posideiṓn (by
+default):
 
     > heniautos 406 -m  
          Year     |        Month          |      Start      | Days
@@ -177,9 +240,21 @@ Heniautos intercalates when it is astronomically necessary. The year 406/5, for 
 The diagram for the year looks like this:
 ![406/5 BCE](img/406.png)
 
-If you require accuracy, for scholary or other reasons, you need to take care with intercalations. These astronomical calculations are a good guide, but in the abscence of historical evidence we cannot be sure that any year was ordinary or intercalary. We are not sure how the Athenians decided when to intercalate not do we know how much they were concerned with astronomical accuracy. 
+If you require accuracy, for scholary or other reasons, you need to
+take care with intercalations. These astronomical calculations are a
+good guide, but in the absence of historical evidence we cannot be
+sure that any year was ordinary or intercalary. We are not sure how
+the Athenians decided when to intercalate not do we know how much they
+were concerned with astronomical accuracy.
 
-When a new moon is very close to the solstice, when and how the moon was observed becomes very important. Take the years 321-319, for instance. If we give `heniautos` two years, a start year and an end year, it will generate the calendar for all years in the range. This is most useful with the `-y` or year summary option but works with others as well. The fields in the year summary are the Athenian year, whether the year is ordinary (O) or intercalary (I), and the Julian date of the first day of the year.
+When a new moon is very close to the solstice, when and how the moon
+was observed becomes very important. Take the years 321-319, for
+instance. If we give `heniautos` two years, a start year and an end
+year, it will generate the calendar for all years in the range. This
+is most useful with the `-y` or year summary option but works with
+others as well. The fields in the year summary are the Athenian year,
+whether the year is ordinary (O) or intercalary (I), and the Julian
+date of the first day of the year.
 
     > heniautos 321 319 -y 
          Year     | Y |      Start      | Days
