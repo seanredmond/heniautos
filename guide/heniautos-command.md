@@ -45,7 +45,8 @@ Adding the `-m` or `--month-summary` option results in a monthly calendar.
     
 ### Yearly
 
-`-y` or `--year-summary` will give you a summary for the year. The "Y" column indicated whether the year is ordinary (O) or intercalary(I):
+`-y` or `--year-summary` will give you a summary for the year. The "Y"
+column indicates whether the year is ordinary (O) or intercalary (I):
 
     > heniautos 424 -y
          Year     | Y |      Start      | Days
@@ -246,7 +247,7 @@ By default, `heniautos` approximates the first visibility of the crescent of the
     --------------|-----------------------|-----------------|-----
     BCE 394/393   | Hekatombaiṓn          | BCE 0394-Jul-17 |   30
     
-The next day after the conjunction isan almost equally good approximation. You can see this with `-r 1` which mostly has the effect of moving the dates up one day:
+The next day after the conjunction is an almost equally good approximation. You can see this with `-r 1` which mostly has the effect of moving the dates up one day:
 
     > heniautos 394 -m --month Hek -r 1
          Year     |        Month          |      Start      | Days
