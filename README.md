@@ -37,6 +37,8 @@ Generate a calendar for 416 BCE
 Solve the calendar equation Metageitniṓn 9 = Prytany I 39:    
 
     ha.equations((ha.Months.MET, 9), (ha.Prytanies.I, 39), ha.Prytany.ALIGNED_10)
+    
+**Note**: Heniautos will automatically download an [ephemeris file](/guide#ephemeris-files-important) rom jpl.nasa.gov the first time you use it (or anytime it cannot find the file). This is normal.
 
 ## The Basics
 
