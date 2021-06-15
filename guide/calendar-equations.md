@@ -151,7 +151,7 @@ The prytany date is V 31. The festival date is in Posideiṓn, and τετράδ�
     Pos 26 ( 6-) =    V 31 =  DOY 175 (O) [FFFFH, LLLL]
     Pos 27 ( 6-) =    V 31 =  DOY 175 (O) [FFFHH, LLLL]
     
-Now we have more potential solutions than we did with the previous equation. They all require an ordinary year, and amount to this day falling somewhere in the range of DOY 171-175. We can dismiss the first and third solutions since they require five hollow months in a row (`calendar-equations` will output combinations that are mathematically possible even if they are astronomically or practically impossible).
+Now we have more potential solutions than we did with the previous equation. They all require an ordinary year, and amount to this day falling somewhere in the range of DOY 171-175. We can dismiss the first and third solutions since they require five hollow months in a row (`calendar-equation` will output combinations that are mathematically possible even if they are astronomically or practically impossible).
 
 Interpretations of this date have revolved around the [Rule of Aristotle](conciliar-calendar.md#the-rule-of-aristotle). Pritchett and Neugebaur (1947, 42) opted for **Pos 27 = V 31 = DOY 175** since "it appears that Prytanies I-IV contained 36 days each" (that is, the Rule). Meritt, who did not believe in the Rule, pointed out  (1961, 73) only that "it is equally legitimate to take Ποσιδειῶνος τετράδι φθίνοντος as the 26th day of a hollow month" and that **Pos 26 = V 31 = DOY 174** was valid and "would require that only three of the first four prytanies have 36 days each."
 
@@ -215,7 +215,7 @@ These solutions all require an ordinary year, which is what `heniautos` calculat
     --------------|---|-----------------|-----
     BCE 324/323   | O | BCE 0324-Jul-23 |  354
     
-As we saw above, `calendar-equations` will output solutions that are mathematically possible but astronomically unlikely or impossible. We can exclude the first and third solutions simply on the grounds that they require all five months before Posideiṓn to be hollow which would never happen (we saw a similar combination for Pos 26/27 = V 31).  The second solution requires four hollow months (FHHHH) but _not_ in a row. It is important to remember that this represents a _count_ of four hollow months. The actual _order_ could be two hollow, full, two hollow (that is `HHFHH`) with the same count.
+As we saw above, `calendar-equation` will output solutions that are mathematically possible but astronomically unlikely or impossible. We can exclude the first and third solutions simply on the grounds that they require all five months before Posideiṓn to be hollow which would never happen (we saw a similar combination for Pos 26/27 = V 31).  The second solution requires four hollow months (FHHHH) but _not_ in a row. It is important to remember that this represents a _count_ of four hollow months. The actual _order_ could be two hollow, full, two hollow (that is `HHFHH`) with the same count.
 
 For the prytany counts the order may be important. If we want to observe the Rule of Aristotle, we need the conciliar year to begin with four "long" prytanies. Since there are only four prytanies preceding this equation they must _all_ be long (or the Rule of Aristotle must not be a rule). Two of the solutions satisfy the rule one implying a hollow Posideiṓn (Pos 27 = V 31 = DOY 175) one a full Posideiṓn (Pos 28 = V 31 = DOY 175). We can show the count requirements graphically
 
@@ -499,7 +499,7 @@ Second those that fit the Rule of Aristotle:
 * **<Mou> 14 = [IX] 2 = DOY 310**
 * **<Ski> 29 = [X] 37 = DOY 383**
  
-Among the `calendar-equations` collations, this is #155, with the counts and partitions: `FFHH FFFFHH HH`, `LLL LSSSS S`. Far from assuming a regular alternation of festival months, it assumes that "the months Mounichion, Thargelion, and Skirophion were each of 29 days duration."
+Among the `calendar-equation` collations, this is #155, with the counts and partitions: `FFHH FFFFHH HH`, `LLL LSSSS S`. Far from assuming a regular alternation of festival months, it assumes that "the months Mounichion, Thargelion, and Skirophion were each of 29 days duration."
 
 ![324/3 BCE](img/pritchett-year-336-2.png)
 
@@ -556,7 +556,7 @@ Pritchett and Neubegaur did not have Parker and Dubberstein's calculations of an
     BCE 336/335   | Thargēliṓn            | BCE 0335-May-27 |   30
     BCE 336/335   | Skirophoriṓn          | BCE 0335-Jun-26 |   29
     
-This fits one of the `calendar-equations` solutions very well--#155, the same as matches Pritchett and Neugebaur's equations. It can fit both becuase the collation of the three equations does not say anything about the length of Skirophoriṓn. Above we made hollow in the schematic representation, below we make it full.
+This fits one of the `calendar-equation` solutions very well--#155, the same as matches Pritchett and Neugebaur's equations. It can fit both becuase the collation of the three equations does not say anything about the length of Skirophoriṓn. Above we made hollow in the schematic representation, below we make it full.
 
 ![324/3 BCE](img/possible-solution-336.png)
 
