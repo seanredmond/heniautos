@@ -707,7 +707,6 @@ The Athenian calendar is a fascinating and frustrating puzzle. The clues provide
 * Dinsmoor, William Bell. 1931. _The Archons of Athens in the Hellenistic Age_. Cambridge: Harvard University Press.
 * Dunn, Francis M. 1998. “Tampering with the Calendar.” Zeitschrift für Papyrologie Und Epigraphik 123: 213–31.
 Meritt, Benjamin D. 1961. _The Athenian Year_. Sather Classical Lectures 32. Berkeley: University of California Press.
-* Meritt, Benjamin D., Margaret Larson Lethen, and George A. Stamires. 1957. “Greek Inscriptions.” _Hesperia_ 26 (1): 24–97.
 * Parker, Richard Anthony, and Waldo H. Dubberstein. 1942. _Babylonian Chronology 626 B. C.-45._ Studies in Ancient Oriental Civilization 24. Chicago: The University of Chicago Press.
 * Pritchett, W. Kendrick. 1970. “The Name of the Game Is Restoration.” _California Studies in Classical Antiquity_ 3: 199–214.
 * Waerden, B. L. van der. 1960. “Greek Astronomical Calendars and Their Relation to the Athenian Civil Calendar.” _Journal of Hellenic Studies_ 80: 168–80.
