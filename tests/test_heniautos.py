@@ -26,6 +26,7 @@ I_13 = 214       # 384 days, 13 prytanies
 
 init_data()
 
+
 def test_version():
     assert version() == "1.0.0"
 
