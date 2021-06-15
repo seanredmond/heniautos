@@ -2,6 +2,42 @@
 
 Naive ancient Attic calendar generator and calendar equation explorer.
 
+## Installation
+
+    pip install heniautos
+    
+### On an M1 Macintosh
+
+Heniautos uses a package named [Skyfield](https://rhodesmill.org/skyfield/) for astronomical calculations which, in turn, requires [NumPy](https://numpy.org/). NumPy cannot yet be installed the normal way on a Macintosh with an M1 processor. These steps should work to install Heniautos on an M1 Mac:
+
+    pip install cython
+    pip install --no-binary :all: --no-use-pep517 numpy
+    pip install heniautos
+    
+## Usage
+
+### Command Line
+
+Generate a calendar for 416 BCE:
+
+    heniautos 416
+    
+Solve the calendar equation Metageitniṓn 9 = Prytany I 39:
+
+    calendar_equation -e Met 9 I 39
+    
+### In a Program
+
+Generate a calendar for 416 BCE
+
+    import heniautos as ha
+    ha.init_data()
+    ha.festival_calendar(ha.bce_as_negative(416))
+
+Solve the calendar equation Metageitniṓn 9 = Prytany I 39:    
+
+    ha.equations((ha.Months.MET, 9), (ha.Prytanies.I, 39), ha.Prytany.ALIGNED_10)
+
 ## The Basics
 
 Heniautos (Greek for ["the span of a
@@ -13,7 +49,7 @@ for:
 
 * Learning about and teaching the ancient Athenian Calendar
 * Following along with often complex discussions of dating of events
-  in ancient Greek hsitory
+  in ancient Greek history
 * Just having fun with questions like "When would the City Dionysia be this year, if it was still being held."
 
 Heniautos comes with two command-line programs--`heniautos` for
