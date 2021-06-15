@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import heniautos as ha
 import argparse
 import matplotlib.pyplot as plt
