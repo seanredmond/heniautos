@@ -233,7 +233,7 @@ def get_writer(tabs):
 
 def main():
     parser = argparse.ArgumentParser(
-        description = "Ancient Athenian calendar generator",
+        description="Ancient Athenian calendar generator",
         epilog="""
 heniautos  Copyright (C) 2021  Sean Redmond
 This program comes with ABSOLUTELY NO WARRANTY.
@@ -283,7 +283,7 @@ under certain conditions."""
                         "automatically be found)", default=None)
     parser.add_argument("--tab", action="store_true",
                         help="Output in tab-delimited format")
-    parser.add_argument("--version",action="version",
+    parser.add_argument("--version", action="version",
                         version=f"heniautos {ha.version()}",
                         help="Print version and exit")
     args = parser.parse_args()
