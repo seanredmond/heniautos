@@ -14,6 +14,8 @@ Heniautos uses a package named [Skyfield](https://rhodesmill.org/skyfield/) for 
     pip install --no-binary :all: --no-use-pep517 numpy
     pip install heniautos
     
+(See this [StackOverflow comment](https://stackoverflow.com/a/66456204/131226))
+    
 ## Usage
 
 ### Command Line
