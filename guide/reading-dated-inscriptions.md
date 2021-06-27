@@ -128,7 +128,7 @@ The days of the prytany are given in basic Greek numbers. Epsilon is often used 
 | 3   | τρίτηι                  | 6       |
 | 4   | τετάρτηι                | 8       |
 | 5   | πέμπτηι                 | 7       |
-| 6   | ἕκτης                   | 5       |
+| 6   | ἕκτηι                   | 5       |
 | 7   | ἑβδόμηι                 | 7       |
 | 8   | ὀγδόηι                  | 6       |
 | 9   | ἐνάτηι                  | 6       |
