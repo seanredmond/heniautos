@@ -201,19 +201,21 @@ Use `--doy` to limit output to a specific day of the festival or conciliar year:
     
 ## Astronomical Information
 
-### Solstices
+### Solstices and Equinoxes
 
-`--solstices` will output the dates and times of the summer solstice in the given year or span of years (BCE unless `--as-ce` is specified):
+`--summer-solstice` will output the dates and times of the summer solstice in the given year or span of years (BCE unless `--as-ce` is specified):
 
-    > heniautos 395 390 --solstices
+    > heniautos 395 390 --summer-solstice
     BCE 0395-Jun-28 14:01:39 EET
     BCE 0394-Jun-28 19:51:26 EET
     BCE 0393-Jun-28 01:34:50 EET
     BCE 0392-Jun-28 07:19:13 EET
     BCE 0391-Jun-28 13:14:16 EET
     BCE 0390-Jun-28 19:01:14 EET
+	
+`--winter-solstice`, `--spring-equinox`, and `--autumn-equinox` work similarly for those solar events.
     
-### New Moons    
+### New Moons
 
 `--new-moons` will output the dates and times of each new moon:
 
@@ -233,9 +235,9 @@ Use `--doy` to limit output to a specific day of the festival or conciliar year:
     
 ### GMT
 
-Use the `--gmt` option to output solstice and new moon times as Greenwich Mean Time (GMT) instead of Athens time (Eastern European Time, EET)
+Use the `--gmt` option to output solar and lunar times as Greenwich Mean Time (GMT) instead of Athens time (Eastern European Time, EET)
 
-    > heniautos 395 --solstices --gmt
+    > heniautos 395 --summer-solstice --gmt
     BCE 0395-Jun-28 12:01:39 GMT
     
 ### Visible New Moon Rules
