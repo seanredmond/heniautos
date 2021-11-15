@@ -268,8 +268,14 @@ under certain conditions."""
                         help="Use Greek names for months")
     parser.add_argument("--new-moons", action="store_true",
                         help="Only list times of astronomical new moons")
-    parser.add_argument("--solstices", action="store_true",
+    parser.add_argument("--summer-solstice", action="store_true",
                         help="Only list dates of solstices")
+    parser.add_argument("--spring-equinox", action="store_true",
+                        help="Only list dates of spring equinox")
+    parser.add_argument("--autumn-equinox", action="store_true",
+                        help="Only list dates of autumn equinox")
+    parser.add_argument("--winter-solstice", action="store_true",
+                        help="Only list dates of winter solstice")
     parser.add_argument("--gmt", action="store_true",
                         help="Format times as GMT (rather than EET)")
     parser.add_argument("-r", "--rule", choices=["0", "1", "2", "d"],
@@ -301,7 +307,7 @@ under certain conditions."""
                     print(ha.as_eet(nm, True))
         exit()
 
-    if args.solstices:
+    if args.summer_solstice:
         for year in years(args.start_year, args.end_year, args.as_ce):
             if args.gmt:
                 print(ha.as_gmt(ha.summer_solstice(year), True))
@@ -309,6 +315,42 @@ under certain conditions."""
                 print(ha.as_eet(ha.summer_solstice(year), True))
         exit()
 
+    if args.spring_equinox:
+        for year in years(args.start_year, args.end_year, args.as_ce):
+            if args.gmt:
+                print(ha.as_gmt(
+                    ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
+                    True))
+            else:
+                print(ha.as_eet(
+                    ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
+                    True))
+        exit()
+
+    if args.autumn_equinox:
+        for year in years(args.start_year, args.end_year, args.as_ce):
+            if args.gmt:
+                print(ha.as_gmt(
+                    ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
+                    True))
+            else:
+                print(ha.as_eet(
+                    ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
+                    True))
+        exit()
+
+    if args.winter_solstice:
+        for year in years(args.start_year, args.end_year, args.as_ce):
+            if args.gmt:
+                print(ha.as_gmt(
+                    ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
+                    True))
+            else:
+                print(ha.as_eet(
+                    ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
+                    True))
+        exit()
+        
     try:
         output_years(args, writer, args.tab)
     except ha.HeniautosError as e:
