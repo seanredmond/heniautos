@@ -224,6 +224,23 @@ def output_years(args, writer, tabs):
                 daily_table(cal, writer, month_key, args)
 
 
+def get_julian_half_year(year1, year2):
+    """ Get the days of (Attic) year1 that are in (Julian) year2. """
+    return [d["date"] for d in [a for b in [m for m in [y["days"] for y in ha.festival_calendar(year1)]] for a in b] if d["date"].ut1_calendar()[0] == year2]
+
+
+def get_julian_year(year):
+    """ Combine two parts of Julian year that span Attic year. """
+    return get_julian_half_year(year - 1, year) + \
+        get_julian_half_year(year, year)
+    
+
+def output_julian(start_year, end_year, as_ce):
+    for year in years(start_year, end_year, as_ce):
+        for x in get_julian_year(year):
+            print(ha.as_eet(x))
+
+
 def get_writer(tabs):
     if tabs:
         return csv.writer(stdout, delimiter="\t", quoting=csv.QUOTE_NONNUMERIC)
@@ -287,6 +304,8 @@ under certain conditions."""
     parser.add_argument("-e", "--ephemeris", metavar="FILE", type=str,
                         help="Use existing ephemeris FILE (if it cannot "
                         "automatically be found)", default=None)
+    parser.add_argument("--julian", action="store_true",
+                        help="Just output Julian calendar dates"),
     parser.add_argument("--tab", action="store_true",
                         help="Output in tab-delimited format")
     parser.add_argument("--version", action="version",
@@ -349,6 +368,11 @@ under certain conditions."""
                 print(ha.as_eet(
                     ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
                     True))
+        exit()
+
+    if args.julian:
+        output_julian(args.start_year, args.end_year, args.as_ce)
+
         exit()
         
     try:
