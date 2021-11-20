@@ -189,14 +189,15 @@ def output_years(args, writer, tabs):
     if not tabs:
         m_or_p = "Prytany" if args.conciliar else "Month  "
         if args.year_summary:
-            print(f"{'Year':^14}| Y |{'Start':^17}| Days")
-            print("|".join(["-"*n for n in (14, 3, 17, 5)]))
+            output_header(("Year", "Y", "Start", "Days"), (14, 3, 17, 6),
+                          writer)
         elif args.month_summary:
-            print(f"{'Year':^14}|{m_or_p:^23}|{'Start':^17}| Days")
-            print("|".join(["-"*n for n in (14, 23, 17, 5)]))
+            output_header(("Year", m_or_p, "Start", "Days"), (14, 23, 17, 6),
+                          writer)
         else:
-            print(f"{'Year':^14}|{m_or_p:^23}| Day |{'Start':^17}| DOY")
-            print("|".join(["-"*n for n in (14, 23, 5, 17, 4)]))
+            output_header(("Year", m_or_p, "Day", "Start", "DOY"),
+                          (14, 23, 5, 17, 5),
+                          writer)
 
     for year in years(args.start_year, args.end_year, args.as_ce):
         if args.conciliar:
@@ -320,6 +321,11 @@ def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
 
 def pad_cell(c, j, w):
     return f"{{:{j}{w}}}".format(c)
+
+
+def output_header(headers, widths, writer):
+    writer.writerow([pad_cell(c, "^", w) for (c, w) in zip(headers, widths)])
+    writer.writerow(["-" * w for w in widths])
 
 
 def get_writer(tabs):
