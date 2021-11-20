@@ -25,6 +25,11 @@ from sys import stdout, stderr, exit
 ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
          "XII", "XIII")
 
+SOLAR = {ha.Seasons.SPRING_EQUINOX: "SpEq",
+         ha.Seasons.SUMMER_SOLSTICE: "SuSo",
+         ha.Seasons.AUTUMN_EQUINOX: "AuEq",
+         ha.Seasons.WINTER_SOLSTICE: "WiSo"}
+
 
 def julian_fmt(d):
     return " ".join((bce_as_bce(tuple(d.utc)[0]), d.utc_strftime("%b %d")))
@@ -235,10 +240,86 @@ def get_julian_year(year):
         get_julian_half_year(year, year)
     
 
-def output_julian(start_year, end_year, as_ce):
-    for year in years(start_year, end_year, as_ce):
+def is_solar(with_solar, day, solar):
+    if not with_solar:
+        return tuple()
+
+    event = tuple([s[1] for s in solar if s[0] == ha.as_eet(day)])
+
+    if event:
+        return event
+
+    return ("",)
+
+
+def solar_events(year, with_solar):
+    if with_solar:
+        return [(ha.as_eet(ha.solar_event(year, s)), SOLAR[s]) \
+                for s in ha.Seasons]
+
+    return []
+
+
+def is_lunar(with_nm, day, lunar):
+    if not with_nm:
+        return tuple()
+
+    event = tuple([s[1] for s in lunar if s[0] == ha.as_eet(day)])
+
+    if event:
+        return event
+
+    return ("",)
+
+def is_astro_event(with_event, day, events):
+    if not with_event:
+        return tuple()
+
+    event = tuple([e[1] for e in events if e[0] == ha.as_eet(day)])
+
+    if event:
+        return event
+
+    return ("",)
+
+
+def lunar_events(year, with_nm):
+    if with_nm:
+        return [(ha.as_eet(m), "NM") for m in ha.new_moons(year)]
+
+    return []
+
+
+def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
+    row_w = [16]  + \
+        ([7] if with_solar else []) + \
+        ([7] if with_nm else [])
+
+    cent_j = ["^"] * len(row_w)
+
+    if not tabs:
+        header = ["Date"] + \
+            (["Solar"] if with_solar else []) + \
+            (["Lunar"] if with_nm else [])
+
+        writer.writerow([pad_cell(*h) for h in zip(header, cent_j, row_w)])
+        writer.writerow(["-" * w for w in row_w])
+
+    for year in years(start_y, end_y, as_ce):
+        solar = solar_events(year, with_solar)
+        lunar = lunar_events(year, with_nm)
         for x in get_julian_year(year):
-            print(ha.as_eet(x))
+            row = (ha.as_eet(x),) + \
+                is_astro_event(with_solar, x, solar) + \
+                is_astro_event(with_nm, x, lunar)
+            if not tabs:
+                writer.writerow(pad_cell(*r) for r in zip(row, cent_j, row_w))
+            else:
+                writer.writerow(row)
+            
+
+def pad_cell(c, j, w):
+    return f"{{:{j}{w}}}".format(c)
 
 
 def get_writer(tabs):
@@ -306,6 +387,11 @@ under certain conditions."""
                         "automatically be found)", default=None)
     parser.add_argument("--julian", action="store_true",
                         help="Just output Julian calendar dates"),
+    parser.add_argument("--julian-solar-events", action="store_true",
+                        help="Include solstices and equinoxes in Julian "
+                        "calendar output"),
+    parser.add_argument("--julian-new-moons", action="store_true",
+                        help="Include new moons in Julian calendar output"),
     parser.add_argument("--tab", action="store_true",
                         help="Output in tab-delimited format")
     parser.add_argument("--version", action="version",
@@ -371,7 +457,9 @@ under certain conditions."""
         exit()
 
     if args.julian:
-        output_julian(args.start_year, args.end_year, args.as_ce)
+        output_julian(args.start_year, args.end_year,
+                      args.julian_solar_events, args.julian_new_moons,
+                      args.as_ce, args.tab, writer)
 
         exit()
         
