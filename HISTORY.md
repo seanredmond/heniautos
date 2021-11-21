@@ -1,5 +1,10 @@
 # Release History
 
+## 1.2.0 (2021-11-21, Maimaktēriṓn 17 2021/2022)
+
+* Add option to `heniautos` command to output Julian year with
+  indications of solar events and new moons
+
 ## 1.1.0 (2021-11-20, Maimaktēriṓn 16 2021/2022)
 
 * Add options for all solar events (solstices, equinoxes) to `heniautos` command
