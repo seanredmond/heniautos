@@ -28,7 +28,7 @@ init_data()
 
 
 def test_version():
-    assert version() == "1.1.0"
+    assert version() == "1.2.0"
 
 
 def test_bce_as_negative():
