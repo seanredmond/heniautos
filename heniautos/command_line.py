@@ -372,6 +372,8 @@ under certain conditions."""
                         help="Use Greek names for months")
     parser.add_argument("--new-moons", action="store_true",
                         help="Only list times of astronomical new moons")
+    parser.add_argument("--full-moons", action="store_true",
+                        help="Only list times of astronomical full moons")
     parser.add_argument("--summer-solstice", action="store_true",
                         help="Only list dates of solstices")
     parser.add_argument("--spring-equinox", action="store_true",
@@ -412,6 +414,15 @@ under certain conditions."""
     if args.new_moons:
         for year in years(args.start_year, args.end_year, args.as_ce):
             for nm in ha.new_moons(year):
+                if args.gmt:
+                    print(ha.as_gmt(nm, True))
+                else:
+                    print(ha.as_eet(nm, True))
+        exit()
+
+    if args.full_moons:
+        for year in years(args.start_year, args.end_year, args.as_ce):
+            for nm in ha.moon_phases(year, ha.Phases.FULL):
                 if args.gmt:
                     print(ha.as_gmt(nm, True))
                 else:
