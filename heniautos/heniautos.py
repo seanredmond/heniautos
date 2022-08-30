@@ -124,12 +124,26 @@ class Prytany(IntEnum):
     ALIGNED_13 = 4
 
 
+def _load_solstices():
+    """Load solstice data"""
+    with open(Path(__file__).parent / "solstices.tsv") as sols:
+        return tuple([tuple(l.strip().split("\t")[0:2]) for l in sols])
+
+
+def _load_new_moons():
+    """Load solstice data"""
+    with open(Path(__file__).parent / "new_moons.tsv") as nm:
+        return tuple([tuple(l.strip().split("\t")[0:2]) for l in nm])
+
+
 __h = {
     "init": False,
     "eph": None,
     "eph_file": "de422.bsp",
     "ts": None,
-    "loc": None
+    "loc": None,
+    "solstices": _load_solstices(),
+    "new_moons": _load_new_moons()
 }
 
 
