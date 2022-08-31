@@ -1364,8 +1364,9 @@ def dinsmoor_months(year, abbrev=False, greek=False):
                                               abbrev, greek),
                  "constant": Months.INT if m["intercalated"]
                  else m["constant"],
-                 "start": date(m["year"], m["month"], m["day"]),
-                 "end": add_days(date(m["year"], m["month"], m["day"]),
+                 # "start": date(m["year"], m["month"], m["day"]),
+                 "start": jd.from_julian(m["year"], m["month"], m["day"], 12),
+                 "end": add_days(jd.from_julian(m["year"], m["month"], m["day"], 12),
                                  m["length"])}
                 for m in __h["dinsmoor"][year]]
     except KeyError:

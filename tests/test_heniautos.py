@@ -78,7 +78,6 @@ def test_as_gmt_eph():
 
 
 def test_as_gmt():
-    
     assert as_gmt(1685074.3287423) == "BCE 0100-Jun-25"
     assert as_gmt(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
 #    assert as_gmt(1685439.56480925) == "BCE 0100-Jun-25"
