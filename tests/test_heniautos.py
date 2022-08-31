@@ -141,7 +141,7 @@ def test_calendar_months():
     assert len(p) == 12
     assert type(p[0]) is tuple
     assert len(p[0]) == 2
-    assert as_gmt(p[0][0], True) == "BCE 0101-Jul-17 11:59:17 GMT"
+    assert as_gmt(p[0][0], True) == "BCE 0101-Jul-17 12:00:00 GMT"
     assert p[0][1] == p[1][0]
 
 

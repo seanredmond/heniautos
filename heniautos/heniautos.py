@@ -204,6 +204,11 @@ def tt_round(t, adv=0):
     return __h["ts"].tt_jd(round(t.tt) + adv)
 
 
+def to_jdn(t):
+    """Converts a Julian date to a Julian Day Number."""
+    return int(t + 0.5)
+
+
 def date(y, m, d, h=9):
     """Return a ut1 date from calendar date.
 
@@ -414,13 +419,13 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY):
 
     """
     if rule == Visible.CONJUNCTION:
-        return [tt_round(m) for m in new_moons(year)]
+        return [to_jdn(n) for n in new_moons(year)]
 
     if rule == Visible.NEXT_DAY:
-        return [tt_round(n, 1) for n in new_moons(year)]
+        return [to_jdn(n) + 1 for n in new_moons(year)]
 
     if rule == Visible.SECOND_DAY:
-        return [tt_round(n, 2) for n in new_moons(year)]
+        return [to_jdn(n) + 2 for n in new_moons(year)]
 
 
 def _make_hour(t, h=9):
@@ -428,9 +433,14 @@ def _make_hour(t, h=9):
     return __h["ts"].ut1(*(t.ut1_calendar()[0:3] + (h, 0, 0)))
 
 
-def _on_after(t1, t2):
+def _on_after_eph(t1, t2):
     """Is time t1 on or after time t2?"""
     return t1.tt > t2.tt
+
+
+def _on_after(t1, t2):
+    """Is time t1 on or after time t2?"""
+    return t1 >= t2
 
 
 def _before(t1, t2):
@@ -460,13 +470,13 @@ def calendar_months(year, rule=Visible.SECOND_DAY):
     meaningful. Only the Julian year, month, and day are relevant.
 
     """
-    sol1 = tt_round(summer_solstice(year))
-    sol2 = tt_round(summer_solstice(year + 1))
+    sol1 = to_jdn(summer_solstice(year))
+    sol2 = to_jdn(summer_solstice(year + 1))
 
-    moons = [v for v in visible_new_moons(year, rule) +
+    moons = [to_jdn(v) for v in visible_new_moons(year, rule) +
              visible_new_moons(year + 1, rule)]
 
-    return tuple([(m) for m in zip(moons, moons[1:])
+    return tuple([m for m in zip(moons, moons[1:])
                   if _on_after(m[0], sol1) and _before(m[0], sol2)])
 
 
@@ -593,7 +603,7 @@ def _month_days(start, finish, doy):
     return tuple([{"day":  d + 1,
                    "date": add_days(start, d),
                    "doy":  next(doy)}
-                  for d in range(0, int(finish.tt) - int(start.tt))])
+                  for d in range(0, int(finish) - int(start))])
 
 
 def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
