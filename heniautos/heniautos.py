@@ -452,7 +452,7 @@ def _on_after_eph(t1, t2):
 
 def _on_after(t1, t2):
     """Is time t1 on or after time t2?"""
-    return t1 >= t2
+    return t1 > t2
 
 
 def _before(t1, t2):
