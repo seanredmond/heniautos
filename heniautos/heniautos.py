@@ -376,12 +376,13 @@ def _all_moon_phases(year):
     
 
 
-def moon_phases(year):
+def moon_phases(year, p=None):
     """Return a list of Time objects for each indicated lunar phase in the
     given year.
 
     Parameters:
         year (int): The year
+        p (Phases): Constant from Phases indicating the lunar phase
 
     """
     return [mp[1] for mp in _all_moon_phases(year)]

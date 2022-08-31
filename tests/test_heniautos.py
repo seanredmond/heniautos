@@ -132,7 +132,7 @@ def test_moon_phases():
 def test_new_moons():
     p = new_moons(-99)
     assert type(p) is list
-    assert as_gmt(p[0], True) == "BCE 0100-Jan-09 12:44:01 GMT"
+    assert as_gmt(p[0], True) == "BCE 0100-Jan-09 12:44:44 GMT"
 
 
 def test_calendar_months():
