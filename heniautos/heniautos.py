@@ -248,10 +248,16 @@ def add_years(t, y):
         *[sum(x) for x in zip(t.ut1_calendar(), (y, 0, 0, 0, 0, 0))])
 
 
-def span(first, second):
+def span_eph(first, second):
     """Return the number of days between two dates."""
     # return int(second.tt) - int(first.tt)
     return int(second.ut1) - int(first.ut1)
+
+
+def span(first, second):
+    """Return the number of days between two dates."""
+    # return int(second.tt) - int(first.tt)
+    return to_jdn(second) - to_jdn(first)
 
 
 def _epoch(t):
