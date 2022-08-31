@@ -14,8 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from datetime import datetime
 from enum import IntEnum
 from itertools import product, zip_longest
+import juliandate as jd
 from pathlib import Path
 from skyfield import api
 from skyfield import almanac
@@ -127,13 +129,13 @@ class Prytany(IntEnum):
 def _load_solstices():
     """Load solstice data"""
     with open(Path(__file__).parent / "solstices.tsv") as sols:
-        return tuple([tuple(l.strip().split("\t")[0:2]) for l in sols])
+        return tuple([[float(i) for i in l.strip().split("\t")] for l in sols])
 
 
 def _load_new_moons():
     """Load solstice data"""
     with open(Path(__file__).parent / "new_moons.tsv") as nm:
-        return tuple([tuple(l.strip().split("\t")[0:2]) for l in nm])
+        return tuple([[float(i) for i in l.strip().split("\t")] for l in nm])
 
 
 __h = {
@@ -180,7 +182,8 @@ def init_data(eph=None, lat=37.983972, lon=23.727806, force=False):
 
 def is_bce(t):
     """Return true if time t represents a BCE date."""
-    return t.ut1_calendar()[0] < 1
+    # return t.ut1_calendar()[0] < 1
+    return jd.to_julian(t)[0] < 1
 
 
 def bce_as_negative(year):
@@ -213,15 +216,25 @@ def date(y, m, d, h=9):
     return __h["ts"].ut1(y, m, d, h, 0, 0)
 
 
-def add_hours(t, h):
+def add_hours_eph(t, h):
     """Return a new Time object with h hours added to Time t."""
     return __h["ts"].ut1(
         *[sum(x) for x in zip(t.ut1_calendar(), (0, 0, 0, h, 0, 0))])
 
 
-def add_days(t, d):
+def add_hours(t, h):
+    """Return a new JDN object with h hours added."""
+    return jd.from_julian(*[sum(x) for x in zip(jd.to_julian(t), (0, 0, 0, h, 0, 0, 0))])
+
+
+def add_days_eph(t, d):
     """Return a new Time object with d days added to Time t."""
     return add_hours(t, d * 24)
+
+
+def add_days(t, d):
+    """Return a new Time object with d days added to Time t."""
+    return t + d
 
 
 def add_years(t, y):
@@ -244,7 +257,7 @@ def _epoch(t):
     return " CE"
 
 
-def as_gmt(t, full=False):
+def as_gmt_t(t, full=False):
     """Return a string representation of Time object in GMT."""
     if full:
         return _epoch(t) + t.utc_jpl()[4:25] + " GMT"
@@ -252,7 +265,39 @@ def as_gmt(t, full=False):
     return _epoch(t) + t.utc_jpl()[4:16]
 
 
-def as_eet(t, full=False):
+def _gmt_fmt_bce(j, full):
+    """Convert negative (BCE) year for formating."""
+    return _gmt_fmt((bce_as_negative(j[0]),) + j[1:], full, "BCE")
+
+
+def _gmt_fmt(j, full, epoch=" CE"):
+    """Return a short or full string representation of a JDN."""
+    if full:
+        return _gmt_fmt_full(j, epoch)
+
+    return datetime(*j).strftime(f"{epoch} %Y-%b-%d")
+
+
+def _gmt_fmt_full(j, epoch):
+    """Return a full string representation of a JDN."""
+    return datetime(*j).strftime(f"{epoch} %Y-%b-%d %H:%M:%S GMT")
+
+
+def as_gmt(t, full=False):
+    """Return a string representation of JDN object in GMT."""
+    if is_bce(t):
+        return _gmt_fmt_bce(jd.to_julian(t), full)
+        
+
+    if full:
+        return _epoch(t) + t.utc_jpl()[4:25] + " GMT"
+
+    # return _epoch(t) + t.utc_jpl()[4:16]
+
+
+
+
+def as_eet_eph(t, full=False):
     """Return a string representation of Time object in EET.
 
     Easter European Time is the local timezone for Athens. This does
@@ -265,6 +310,19 @@ def as_eet(t, full=False):
     return _epoch(t) + add_hours(t, 2).utc_jpl()[4:16]
 
 
+def as_eet(t, full=False):
+    """Return a string representation of Time object in EET.
+
+    Easter European Time is the local timezone for Athens. This does
+    not adjust for daylight savings.
+
+    """
+    if full:
+        return as_gmt(add_hours(t, 2), full)[0:25] + "EET"
+
+    return as_gmt(add_hours(t, 2))
+
+
 def _solar_events(year):
     """Return Time objects for solstices and equinoxes for year y."""
     return tuple(
@@ -274,7 +332,7 @@ def _solar_events(year):
             almanac.seasons(__h["eph"]))))
 
 
-def solar_event(year, e):
+def solar_event_eph(year, e):
     """Return a Time object for the event e in the given year.
 
     Parameters:
@@ -285,12 +343,25 @@ def solar_event(year, e):
     return [se[0] for se in _solar_events(year) if se[1] == e][0]
 
 
+def solar_event(year, e):
+    """Return a Time object for the event e in the given year.
+
+    Parameters:
+        year (int): The year
+        e (Seasons): Constant from Seasons indicating the event
+
+    """
+    d1 = jd.from_julian(year, 1, 1)
+    d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
+    return [s[1] for s in __h["solstices"] if s[2] == e and s[1] >= d1 and s[1] <= d2][0]
+
+
 def summer_solstice(year):
     """Return Time objects for the summer solstice for the given year."""
     return solar_event(year, Seasons.SUMMER_SOLSTICE)
 
 
-def _all_moon_phases(year):
+def _all_moon_phases_eph(year):
     """Return Time objects for all moon phases in year y."""
     return tuple(zip(*almanac.find_discrete(
         __h["ts"].ut1(year, 1, 1),
@@ -298,16 +369,22 @@ def _all_moon_phases(year):
         almanac.moon_phases(__h["eph"]))))
 
 
-def moon_phases(year, p):
+def _all_moon_phases(year):
+    d1 = jd.from_julian(year, 1, 1)
+    d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
+    return [m for m in __h["new_moons"] if m[1] >= d1 and m[1] <= d2]
+    
+
+
+def moon_phases(year):
     """Return a list of Time objects for each indicated lunar phase in the
     given year.
 
     Parameters:
         year (int): The year
-        e (Phases): Constant from Phases indicating the lunar phase
 
     """
-    return [mp[0] for mp in _all_moon_phases(year) if mp[1] == p]
+    return [mp[1] for mp in _all_moon_phases(year)]
 
 
 def new_moons(year):
