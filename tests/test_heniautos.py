@@ -412,42 +412,42 @@ def test_pryt_auto_start():
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(500),
-            Prytany.AUTO), True) == "BCE 0500-Jul-04 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0500-Jul-04 13:59:59 EET"
 
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(425),
-            Prytany.AUTO), True) == "BCE 0425-Jul-04 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0425-Jul-04 13:59:59 EET"
 
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(429),
-            Prytany.AUTO), True) == "BCE 0429-Jul-04 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0429-Jul-04 13:59:59 EET"
 
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(424),
-            Prytany.AUTO), True) == "BCE 0424-Jul-07 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0424-Jul-07 13:59:59 EET"
 
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(421),
-            Prytany.AUTO), True) == "BCE 0421-Jul-07 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0421-Jul-07 13:59:59 EET"
 
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(420),
-            Prytany.AUTO), True) == "BCE 0420-Jul-08 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0420-Jul-08 13:59:59 EET"
 
     assert as_eet(
         heniautos._pryt_auto_start(
             bce_as_negative(419),
-            Prytany.AUTO), True) == "BCE 0419-Jul-09 13:59:17 EET"
+            Prytany.AUTO), True) == "BCE 0419-Jul-09 13:59:59 EET"
 
     # Provide your own start day
     assert as_eet(
         heniautos._pryt_auto_start(
-            bce_as_negative(419), 1), True) == "BCE 0419-Jul-01 13:59:17 EET"
+            bce_as_negative(419), 1), True) == "BCE 0419-Jul-01 13:59:59 EET"
 
 
 def test_pryt_solar_end():

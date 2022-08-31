@@ -242,10 +242,16 @@ def add_days(t, d):
     return t + d
 
 
-def add_years(t, y):
+def add_years_eph(t, y):
     """Return a new Time object with y years added to Time t."""
     return __h["ts"].ut1(
         *[sum(x) for x in zip(t.ut1_calendar(), (y, 0, 0, 0, 0, 0))])
+
+
+def add_years(t, y):
+    """Return a new Time object with y years added to Time t."""
+    return jd.from_julian(
+        *[sum(x) for x in zip(jd.to_julian(t), (y, 0, 0, 0, 0, 0))])
 
 
 def span_eph(first, second):
@@ -726,7 +732,8 @@ def _pryt_gen(start, end, length, num=10, count=1):
                "end": end}
         return
 
-    p_end = tt_round(start, next(length))
+    # p_end = tt_round(start, next(length))
+    p_end = to_jdn(start) + next(length)
 
     yield {"prytany": count,
            "constant": list(Prytanies)[count-1],
@@ -776,21 +783,27 @@ def _pryt_auto_start(year, start):
     """
     if start == Prytany.AUTO:
         if year < -423:
-            return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
+            # return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
+            return jd.from_julian(year, 7, 4, 12, 0, 0)
 
         if year < -419:
-            return tt_round(__h["ts"].ut1(year, 7, 7, 12, 0, 0))
+            # return tt_round(__h["ts"].ut1(year, 7, 7, 12, 0, 0))
+            return jd.from_julian(year, 7, 7, 12, 0, 0)
 
         if year < -418:
-            return tt_round(__h["ts"].ut1(year, 7, 8, 12, 0, 0))
+            # return tt_round(__h["ts"].ut1(year, 7, 8, 12, 0, 0))
+            return jd.from_julian(year, 7, 8, 12, 0, 0)
 
-        return tt_round(__h["ts"].ut1(year, 7, 9, 12, 0, 0))
+        # return tt_round(__h["ts"].ut1(year, 7, 9, 12, 0, 0))
+        return jd.from_julian(year, 7, 9, 12, 0, 0)
 
-    return tt_round(__h["ts"].ut1(year, 7, start, 12, 0, 0))
+    # return tt_round(__h["ts"].ut1(year, 7, start, 12, 0, 0))
+    return jd.from_julian(year, 7, start, 12, 0, 0)
 
 
 def _pryt_solar_end(start):
-    return tt_round(add_years(start, 1))
+    # return tt_round(add_years(start, 1))
+    return to_jdn(add_years(start, 1))
 
 
 def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
