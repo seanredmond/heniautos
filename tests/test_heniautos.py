@@ -80,8 +80,8 @@ def test_as_gmt_eph():
 def test_as_gmt():
     assert as_gmt(1685074.3287423) == "BCE 0100-Jun-25"
     assert as_gmt(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
-#    assert as_gmt(1685439.56480925) == "BCE 0100-Jun-25"
-#    assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:52:41 GMT"
+    assert as_gmt(1685439.56480925) == "BCE 0099-Jun-25"
+    assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:53:23 GMT"
 #    assert as_gmt(summer_solstice(100)) == " CE 0100-Jun-23"
 #    assert as_gmt(summer_solstice(100), True) == " CE 0100-Jun-23 22:19:47 GMT"
 
