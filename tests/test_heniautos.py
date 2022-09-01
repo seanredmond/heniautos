@@ -1,5 +1,4 @@
 from heniautos import *
-#import juliandate as jd
 import pytest
 import skyfield
 
@@ -25,7 +24,7 @@ O_13 = 209       # 354 days, 13 prytanies
 O_13_LONG = 207  # 355 days, 13 prytanies
 I_13 = 214       # 384 days, 13 prytanies
 
-init_data()
+# init_data()
 
 
 def test_version():
@@ -1515,6 +1514,30 @@ def test_prytany_to_julian():
     assert as_eet(
         prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
                           rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+
+
+def test_no_sun_data():
+    with pytest.raises(HeniautosNoDataError) as e1:
+        festival_calendar(100)
+
+    assert "100 CE" in str(e1)
+
+    with pytest.raises(HeniautosNoDataError) as e2:
+        festival_calendar(-999)
+
+    assert "1000 BCE" in str(e2)
+
+
+def test_no_moon_no_data():
+    with pytest.raises(HeniautosNoDataError) as e1:
+        new_moons(100)
+
+    assert "100 CE" in str(e1)
+
+    with pytest.raises(HeniautosNoDataError) as e2:
+        new_moons(-999)
+
+    assert "1000 BCE" in str(e2)
 
 
 def test_320():

@@ -33,6 +33,10 @@ class HeniautosNoMatchError(Exception):
     pass
 
 
+class HeniautosNoDataError(HeniautosError):
+    pass
+
+
 class Seasons(IntEnum):
     """Constants representing the solar year seasons."""
     SPRING_EQUINOX = 0
@@ -368,9 +372,17 @@ def solar_event(year, e):
         e (Seasons): Constant from Seasons indicating the event
 
     """
-    d1 = jd.from_julian(year, 1, 1)
-    d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    return [s[1] for s in __h["solstices"] if s[2] == e and s[1] >= d1 and s[1] <= d2][0]
+    try:
+        d1 = jd.from_julian(year, 1, 1)
+        d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
+        return [s[1] for s in __h["solstices"] if s[2] == e and s[1] >= d1 and s[1] <= d2][0]
+    except IndexError:
+        if year < 1:
+            raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")
+
+        raise HeniautosNoDataError(f"No data for the year {year} CE")
+        
+        
 
 
 def summer_solstice(year):
@@ -389,7 +401,7 @@ def _all_moon_phases_eph(year):
 def _all_moon_phases(year):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    return [m for m in __h["new_moons"] if m[1] >= d1 and m[1] <= d2]
+    return [m for m in __h["new_moons"] if m[1] >= d1 and m[1] <= d2] or None
     
 
 
@@ -402,7 +414,13 @@ def moon_phases(year, p=None):
         p (Phases): Constant from Phases indicating the lunar phase
 
     """
-    return [mp[1] for mp in _all_moon_phases(year)]
+    try:
+        return [mp[1] for mp in _all_moon_phases(year)]
+    except TypeError:
+        if year < 1:
+            raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")
+
+        raise HeniautosNoDataError(f"No data for the year {year} CE")
 
 
 def new_moons(year):
