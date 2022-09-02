@@ -37,6 +37,10 @@ class HeniautosNoDataError(HeniautosError):
     pass
 
 
+class HeniautionNoDayInYearError(HeniautosError):
+    pass
+
+
 class Seasons(IntEnum):
     """Constants representing the solar year seasons."""
     SPRING_EQUINOX = 0
@@ -428,12 +432,12 @@ def moon_phases(year, p=None, data=load_data()):
         raise HeniautosNoDataError(f"No data for the year {year} CE")
 
 
-def new_moons(year):
+def new_moons(year, data=load_data()):
     """Return a list of Time objects for all new moons e in the given year."""
-    return moon_phases(year, Phases.NEW)
+    return moon_phases(year, Phases.NEW, data=data)
 
 
-def visible_new_moons(year, rule=Visible.SECOND_DAY):
+def visible_new_moons(year, rule=Visible.SECOND_DAY, data=load_data()):
     """Return a list of Time objects for all visible new moons according
        to selected rule.
 
@@ -454,13 +458,13 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY):
 
     """
     if rule == Visible.CONJUNCTION:
-        return [to_jdn(n) for n in new_moons(year)]
+        return [to_jdn(n) for n in new_moons(year, data=data)]
 
     if rule == Visible.NEXT_DAY:
-        return [to_jdn(n) + 1 for n in new_moons(year)]
+        return [to_jdn(n) + 1 for n in new_moons(year, data=data)]
 
     if rule == Visible.SECOND_DAY:
-        return [to_jdn(n) + 2 for n in new_moons(year)]
+        return [to_jdn(n) + 2 for n in new_moons(year, data=data)]
 
 
 def _make_hour(t, h=9):
@@ -483,7 +487,7 @@ def _before(t1, t2):
     return not _on_after(t1, t2)
 
 
-def calendar_months(year, rule=Visible.SECOND_DAY):
+def calendar_months(year, rule=Visible.SECOND_DAY, data=load_data()):
     """Return a tuple representing start and end dates of Athenian festival
     calendar months.
 
@@ -505,11 +509,11 @@ def calendar_months(year, rule=Visible.SECOND_DAY):
     meaningful. Only the Julian year, month, and day are relevant.
 
     """
-    sol1 = to_jdn(summer_solstice(year))
-    sol2 = to_jdn(summer_solstice(year + 1))
+    sol1 = to_jdn(summer_solstice(year, data=data))
+    sol2 = to_jdn(summer_solstice(year + 1, data=data))
 
-    moons = [to_jdn(v) for v in visible_new_moons(year, rule) +
-             visible_new_moons(year + 1, rule)]
+    moons = [to_jdn(v) for v in visible_new_moons(year, rule, data=data) +
+             visible_new_moons(year + 1, rule, data=data)]
 
     return tuple([m for m in zip(moons, moons[1:])
                   if _on_after(m[0], sol1) and _before(m[0], sol2)])
@@ -580,7 +584,8 @@ def prytany_label(p):
 
 
 def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
-                    rule=Visible.SECOND_DAY):
+                    rule=Visible.SECOND_DAY,
+                    data=load_data()):
     """Return a tuple representing Athenian festival calendar months.
 
     Parameters:
@@ -609,7 +614,7 @@ def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
     """
     if rule == Visible.DINSMOOR:
         return dinsmoor_months(year, abbrev, greek)
-    months = calendar_months(year, rule)
+    months = calendar_months(year, rule, data=data)
 
     return tuple([{"month": m[0][0],
                    "constant": m[0][1],
@@ -642,7 +647,7 @@ def _month_days(start, finish, doy):
 
 
 def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
-                      rule=Visible.SECOND_DAY):
+                      rule=Visible.SECOND_DAY, data=load_data()):
     """Return a tuple representing Athenian festival calendar.
 
     Parameters:
@@ -682,11 +687,11 @@ necessary (default Months.POS)
                    "constant": m["constant"],
                    "days": _month_days(m["start"], m["end"], doy)}
                   for m
-                  in festival_months(year, intercalate, abbrev, greek, rule)])
+                  in festival_months(year, intercalate, abbrev, greek, rule, data=data)])
 
 
 def find_date(year, month, day, intercalate=Months.POS, abbrev=False,
-              greek=False, rule=Visible.SECOND_DAY):
+              greek=False, rule=Visible.SECOND_DAY, data=load_data()):
     """Find the Athenian date corresponding to a Julian date
 
     Parameters:
@@ -706,7 +711,7 @@ necessary (default Months.POS)
                      for d in f["days"] if d["day"] == day]
                     for f in festival_calendar(year, intercalate=intercalate,
                                                abbrev=abbrev, greek=greek,
-                                               rule=rule)
+                                               rule=rule, data=data)
                     if f["constant"] == month] for a in b][0]
     except IndexError:
         if month == Months.INT:
@@ -830,7 +835,8 @@ def _pryt_solar_end(start):
 
 
 def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
-              rule=Visible.SECOND_DAY, rule_of_aristotle=False):
+              rule=Visible.SECOND_DAY, rule_of_aristotle=False,
+              data=load_data()):
     """Return tuple of prytanies. See prytany_calendar for parameters."""
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
 
@@ -842,8 +848,8 @@ def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
         return tuple([p for p in pryt])
 
     # Get the calendar for the requested year
-    cal = calendar_months(year, rule)
-    y_len = sum([span(*m) for m in calendar_months(year, rule)])
+    cal = calendar_months(year, rule, data=data)
+    y_len = sum([span(*m) for m in calendar_months(year, rule, data=data)])
 
     if auto_type == Prytany.ALIGNED_10:
         # Generate prytanies
@@ -892,7 +898,8 @@ def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
 
 
 def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
-                     rule=Visible.SECOND_DAY, rule_of_aristotle=False):
+                     rule=Visible.SECOND_DAY, rule_of_aristotle=False,
+                     data=load_data()):
     """Return a tuple representing Athenian conciliar calendar.
 
     Parameters:
@@ -925,27 +932,37 @@ Prytany.AUTO it will be calculated.
                   for p
                   in prytanies(year, pryt_type=pryt_type,
                                pryt_start=pryt_start, rule=rule,
-                               rule_of_aristotle=rule_of_aristotle)])
+                               rule_of_aristotle=rule_of_aristotle,
+                               data=data)])
 
 
-def doy_to_julian(doy, year, rule=Visible.SECOND_DAY):
+def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
     """Return the Julian date from DOY in the given year."""
-    return [a for b in
-            [[d["date"] for d in m["days"] if d["doy"] == doy]
-             for m in festival_calendar(year, rule=rule)] for a in b][0]
+
+    try:
+        return [a for b in
+                [[d["date"] for d in m["days"] if d["doy"] == doy]
+                 for m in festival_calendar(year, rule=rule, data=data)] for a in b][0]
+
+    except IndexError:
+        raise HeniautionNoDayInYearError(f"There is no DOY {doy} in the year {year}")
 
 
-def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY):
-    return [a for b in
-            [[d["date"] for d in m["days"] if d["day"] == day]
-             for m in festival_calendar(year, rule=rule)
-             if m["constant"] == month] for a in b][0]
+def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY, data=load_data()):
+    try: 
+        return [a for b in
+                [[d["date"] for d in m["days"] if d["day"] == day]
+                 for m in festival_calendar(year, rule=rule, data=data)
+                 if m["constant"] == month] for a in b][0]
+
+    except IndexError:
+        raise HeniautionNoDayInYearError(f"There is no day matching month {month}, day {day} in the year {year}")
 
 
-def prytany_to_julian(year, prytany, day, rule=Visible.SECOND_DAY):
+def prytany_to_julian(year, prytany, day, rule=Visible.SECOND_DAY, data=load_data()):
     return [a for b in
             [[d["date"] for d in p["days"] if d["day"] == day]
-             for p in prytany_calendar(year, rule=rule)
+             for p in prytany_calendar(year, rule=rule, data=data)
              if p["constant"] == prytany] for a in b][0]
 
 
