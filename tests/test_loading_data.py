@@ -3,16 +3,16 @@ import pytest
 
 CUSTOM_YEAR = {
     "solstices": (
-        (1685074, 1685074.3287422964, 1),
-        (1685439, 1685439.5648092534, 1),
+        (1685074.3287422964, 1),
+        (1685439.5648092534, 1),
     ),
     "new_moons": (
-        (1684907, 1684907.0310656228, 0),
-        (1684936, 1684936.490878384, 0),
-        (1684965, 1684965.8702085295, 0),
-        (1685291, 1685291.0009266976, 0),
-        (1685320, 1685320.5018709311, 1),
-        (1685349, 1685349.9050228074, 0),
+        (1684907.0310656228, 0),
+        (1684936.490878384, 0),
+        (1684965.8702085295, 0),
+        (1685291.0009266976, 0),
+        (1685320.5018709311, 1),
+        (1685349.9050228074, 0),
     ),
 }
 
@@ -23,7 +23,7 @@ def test_solar_event_data_param():
         solar_event(
             -99,
             Seasons.SUMMER_SOLSTICE,
-            data={"solstices": ((1685074, 1685074.12345, 1),)},
+            data={"solstices": ((1685074.12345, 1),)},
         )
         == 1685074.12345
     )
@@ -35,7 +35,7 @@ def test_solar_event_data_param():
 def test_summer_solstice_data_param():
     assert summer_solstice(-99) == 1685074.3287422964
     assert (
-        summer_solstice(-99, data={"solstices": ((1685074, 1685074.12345, 1),)})
+        summer_solstice(-99, data={"solstices": ((1685074.12345, 1),)})
         == 1685074.12345
     )
 
@@ -46,7 +46,7 @@ def test_summer_solstice_data_param():
 def test_moon_phases_data_param():
     assert moon_phases(-99)[0] == 1684907.0310656228
     assert (
-        moon_phases(-99, data={"new_moons": ((1684900, 1684900.12345, 0),)})[0]
+        moon_phases(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
         == 1684900.12345
     )
 
@@ -57,7 +57,7 @@ def test_moon_phases_data_param():
 def test_new_moons_data_param():
     assert new_moons(-99)[0] == 1684907.0310656228
     assert (
-        new_moons(-99, data={"new_moons": ((1684900, 1684900.12345, 0),)})[0]
+        new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
         == 1684900.12345
     )
 
@@ -70,7 +70,7 @@ def test_visible_new_moons_data_param():
 
     assert visible_new_moons(-99)[0] == 1684909
     assert (
-        visible_new_moons(-99, data={"new_moons": ((1684900, 1684900.12345, 0),)})[0]
+        visible_new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
         == 1684902
     )
 

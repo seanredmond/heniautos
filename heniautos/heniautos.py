@@ -134,6 +134,7 @@ class Prytany(IntEnum):
 def _load_solstices():
     """Load solstice data"""
     with open(Path(__file__).parent / "solstices.tsv") as sols:
+        #return tuple([[float(i) for i in l.strip().split("\t")] for l in sols])
         return tuple([[float(i) for i in l.strip().split("\t")] for l in sols])
 
 
@@ -260,7 +261,7 @@ def solar_event(year, e, data=load_data()):
     try:
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-        return [s[1] for s in data["solstices"] if s[2] == e and s[1] >= d1 and s[1] <= d2][0]
+        return [s[0] for s in data["solstices"] if s[1] == e and s[0] >= d1 and s[0] <= d2][0]
     except IndexError:
         if year < 1:
             raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")
@@ -278,7 +279,7 @@ def summer_solstice(year, data=load_data()):
 def _all_moon_phases(year, data):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    return [m for m in data["new_moons"] if m[1] >= d1 and m[1] <= d2] or None
+    return [m for m in data["new_moons"] if m[0] >= d1 and m[0] <= d2] or None
     
 
 
@@ -292,7 +293,7 @@ def moon_phases(year, p=None, data=load_data()):
 
     """
     try:
-        return [mp[1] for mp in _all_moon_phases(year, data=data)]
+        return [mp[0] for mp in _all_moon_phases(year, data=data)]
     except TypeError:
         if year < 1:
             raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")

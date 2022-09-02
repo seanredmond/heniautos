@@ -12,13 +12,13 @@ def test_init_ephemeris():
 @pytest.mark.eph
 def test_get_data():
     data = heph.get_ephemeris_data(-99)
-    assert as_gmt(data["solstices"][0][1], True) == "BCE 0101-Mar-23 13:58:40 GMT"
-    assert data["solstices"][0][2] == 0
-    assert as_gmt(data["solstices"][-1][1], True) == "BCE 0099-Dec-23 02:21:41 GMT"
-    assert data["solstices"][-1][2] == 3
+    assert as_gmt(data["solstices"][0][0], True) == "BCE 0101-Mar-23 13:58:40 GMT"
+    assert data["solstices"][0][1] == 0
+    assert as_gmt(data["solstices"][-1][0], True) == "BCE 0099-Dec-23 02:21:41 GMT"
+    assert data["solstices"][-1][1] == 3
 
-    assert as_gmt(data["new_moons"][0][1], True) == "BCE 0101-Jan-20 22:23:57 GMT"
-    assert as_gmt(data["new_moons"][-1][1], True) == "BCE 0099-Dec-18 22:32:05 GMT"
+    assert as_gmt(data["new_moons"][0][0], True) == "BCE 0101-Jan-20 22:23:57 GMT"
+    assert as_gmt(data["new_moons"][-1][0], True) == "BCE 0099-Dec-18 22:32:05 GMT"
 
 
 @pytest.mark.eph

@@ -38,7 +38,7 @@ def init_ephemeris(cfg={}, eph="de422.bsp", lat=37.983972, lon=23.727806, force=
 def _solar_events(year1, year2, eph):
     return tuple(
         [
-            (int(s[0].tt + 0.5), s[0].tt, s[1])
+            (s[0].tt, s[1])
             for s in zip(
                 *almanac.find_discrete(
                     eph["ts"].ut1(year1, 1, 31),
@@ -61,7 +61,7 @@ def _moon_phases(year1, year2, eph):
     """Return Time objects for all moon phases in year y."""
     return tuple(
         [
-            (int(p[0].tt + 0.5), p[0].tt, p[1])
+            (p[0].tt, p[1])
             for p in zip(
                 *almanac.find_discrete(
                     eph["ts"].ut1(year1, 1, 1),
