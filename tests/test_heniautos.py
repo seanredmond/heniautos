@@ -1728,3 +1728,7 @@ def test_collations():
 
     c = collations(eq1, eq2, eq3, failures=True)
     assert len(c) == 19
+
+
+
+    
