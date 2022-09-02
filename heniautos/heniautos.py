@@ -19,9 +19,6 @@ from enum import IntEnum
 from itertools import product, zip_longest
 import juliandate as jd
 from pathlib import Path
-from skyfield import api
-from skyfield import almanac
-from skyfield.api import GREGORIAN_START
 from heniautos.__version__ import __version__
 
 
@@ -151,48 +148,6 @@ def load_data():
             "new_moons": _load_new_moons()}
 
 
-# __h = {
-#     "init": False,
-#     "eph": None,
-#     "eph_file": "de422.bsp",
-#     "ts": None,
-#     "loc": None,
-#     "solstices": _load_solstices(),
-#     "new_moons": _load_new_moons()
-# }
-
-
-# def init_data(eph=None, lat=37.983972, lon=23.727806, force=False):
-#     """Initialize data required for calculations.
-
-#     Parameters:
-#         eph (str): Path to ephemeris file
-#         lat (float): Latitude for calculations (default 37.983972)
-#         lon (float): Longitude for calculations (default 23.727806)
-#         force (bool): Force reinitialization
-
-#     If an ephemeris file cannot be found in the path and no file is
-#     specified by the eph parameter, de422.bsp will be downloaded.
-
-#     Longitude and latitude are set for Athens by default but can be changed.
-
-#     Initialization will only be done once unless the force parameter is True.
-#     """
-#     if __h["init"] is True and not force:
-#         return
-
-#     if eph is not None:
-#         __h["eph_file"] = eph
-
-#     __h["eph"] = api.load(__h["eph_file"])
-#     __h["ts"] = api.load.timescale()
-#     __h["ts"].julian_calendar_cutoff = GREGORIAN_START
-#     __h["loc"] = api.wgs84.latlon(lat, lon)
-#     __h["init"] = True
-
-#     return api.load.path_to(__h["eph_file"])
-
-
 def is_bce(t):
     """Return true if time t represents a BCE date."""
     # return t.ut1_calendar()[0] < 1
@@ -206,15 +161,6 @@ def bce_as_negative(year):
     are offset by 1 in the positive direction."""
 
     return year * -1 + 1
-
-
-def tt_day(t):
-    # Convert time to noonish of the day
-    return __h["ts"].tt_jd(int(t.tt))
-
-
-def tt_round(t, adv=0):
-    return __h["ts"].tt_jd(round(t.tt) + adv)
 
 
 def to_jdn(t):
@@ -234,20 +180,9 @@ def date(y, m, d, h=9):
     return __h["ts"].ut1(y, m, d, h, 0, 0)
 
 
-def add_hours_eph(t, h):
-    """Return a new Time object with h hours added to Time t."""
-    return __h["ts"].ut1(
-        *[sum(x) for x in zip(t.ut1_calendar(), (0, 0, 0, h, 0, 0))])
-
-
 def add_hours(t, h):
     """Return a new JDN object with h hours added."""
     return jd.from_julian(*[sum(x) for x in zip(jd.to_julian(t), (0, 0, 0, h, 0, 0, 0))])
-
-
-def add_days_eph(t, d):
-    """Return a new Time object with d days added to Time t."""
-    return add_hours(t, d * 24)
 
 
 def add_days(t, d):
@@ -255,22 +190,10 @@ def add_days(t, d):
     return t + d
 
 
-def add_years_eph(t, y):
-    """Return a new Time object with y years added to Time t."""
-    return __h["ts"].ut1(
-        *[sum(x) for x in zip(t.ut1_calendar(), (y, 0, 0, 0, 0, 0))])
-
-
 def add_years(t, y):
     """Return a new Time object with y years added to Time t."""
     return jd.from_julian(
         *[sum(x) for x in zip(jd.to_julian(t), (y, 0, 0, 0, 0, 0))])
-
-
-def span_eph(first, second):
-    """Return the number of days between two dates."""
-    # return int(second.tt) - int(first.tt)
-    return int(second.ut1) - int(first.ut1)
 
 
 def span(first, second):
@@ -285,14 +208,6 @@ def _epoch(t):
         return "BCE"
 
     return " CE"
-
-
-def as_gmt_t(t, full=False):
-    """Return a string representation of Time object in GMT."""
-    if full:
-        return _epoch(t) + t.utc_jpl()[4:25] + " GMT"
-
-    return _epoch(t) + t.utc_jpl()[4:16]
 
 
 def _gmt_fmt_bce(j, full):
@@ -318,26 +233,7 @@ def as_gmt(t, full=False):
     if is_bce(t):
         return _gmt_fmt_bce(jd.to_julian(t), full)
         
-
-    if full:
-        return _epoch(t) + t.utc_jpl()[4:25] + " GMT"
-
-    # return _epoch(t) + t.utc_jpl()[4:16]
-
-
-
-
-def as_eet_eph(t, full=False):
-    """Return a string representation of Time object in EET.
-
-    Easter European Time is the local timezone for Athens. This does
-    not adjust for daylight savings.
-
-    """
-    if full:
-        return _epoch(t) + add_hours(t, 2).utc_jpl()[4:25] + " EET"
-
-    return _epoch(t) + add_hours(t, 2).utc_jpl()[4:16]
+    return _gmt_fmt(jd.to_julian(t), full)
 
 
 def as_eet(t, full=False):
@@ -351,26 +247,6 @@ def as_eet(t, full=False):
         return as_gmt(add_hours(t, 2), full)[0:25] + "EET"
 
     return as_gmt(add_hours(t, 2))
-
-
-def _solar_events(year):
-    """Return Time objects for solstices and equinoxes for year y."""
-    return tuple(
-        zip(*almanac.find_discrete(
-            __h["ts"].ut1(year, 1, 31),
-            __h["ts"].ut1(year, 12, 31),
-            almanac.seasons(__h["eph"]))))
-
-
-def solar_event_eph(year, e):
-    """Return a Time object for the event e in the given year.
-
-    Parameters:
-        year (int): The year
-        e (Seasons): Constant from Seasons indicating the event
-
-    """
-    return [se[0] for se in _solar_events(year) if se[1] == e][0]
 
 
 def solar_event(year, e, data=load_data()):
@@ -397,14 +273,6 @@ def solar_event(year, e, data=load_data()):
 def summer_solstice(year, data=load_data()):
     """Return Time objects for the summer solstice for the given year."""
     return solar_event(year, Seasons.SUMMER_SOLSTICE, data=data)
-
-
-def _all_moon_phases_eph(year):
-    """Return Time objects for all moon phases in year y."""
-    return tuple(zip(*almanac.find_discrete(
-        __h["ts"].ut1(year, 1, 1),
-        __h["ts"].ut1(year, 12, 31, 23, 59, 59),
-        almanac.moon_phases(__h["eph"]))))
 
 
 def _all_moon_phases(year, data):
@@ -470,11 +338,6 @@ def visible_new_moons(year, rule=Visible.SECOND_DAY, data=load_data()):
 def _make_hour(t, h=9):
     """Return Time object for date t set to hour h (default 9)."""
     return __h["ts"].ut1(*(t.ut1_calendar()[0:3] + (h, 0, 0)))
-
-
-def _on_after_eph(t1, t2):
-    """Is time t1 on or after time t2?"""
-    return t1.tt > t2.tt
 
 
 def _on_after(t1, t2):

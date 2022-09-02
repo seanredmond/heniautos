@@ -1,9 +1,9 @@
 from heniautos import *
 import pytest
-import skyfield
+# import skyfield
 
-from skyfield.api import load
-from skyfield.api import GREGORIAN_START
+# from skyfield.api import load
+# from skyfield.api import GREGORIAN_START
 
 
 # TS = api.load.timescale()
@@ -48,32 +48,10 @@ def test_add_hours():
     assert jd.to_julian(add_hours(sol,  1))[3] == jd.to_julian(sol)[3] + 1
 
 
-@pytest.mark.xfail(reason = "Need Time object version")
-def test_add_hours_eph():
-    sol = summer_solstice(-99)
-    assert add_hours(sol,  1).ut1_calendar()[3] == sol.ut1_calendar()[3] + 1
-    assert add_hours(sol, -1).ut1_calendar()[3] == sol.ut1_calendar()[3] - 1
-
-
 def test_add_days():
     sol = summer_solstice(-99)
     assert jd.to_julian(add_days(sol,  1))[2] == jd.to_julian(sol)[2] + 1
     assert jd.to_julian(add_days(sol, -1))[2] == jd.to_julian(sol)[2] - 1
-
-
-@pytest.mark.xfail(reason = "Need Time object version")
-def test_add_days_eph():
-    sol = summer_solstice(-99)
-    assert add_days(sol, 1).ut1_calendar()[2] == sol.ut1_calendar()[2] + 1
-    assert add_days(sol, -1).ut1_calendar()[2] == sol.ut1_calendar()[2] - 1
-
-
-@pytest.mark.xfail(reason = "Need Time object version")
-def test_as_gmt_eph():
-    assert as_gmt(summer_solstice(-99)) == "BCE 0100-Jun-25"
-    assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:52:41 GMT"
-    assert as_gmt(summer_solstice(100)) == " CE 0100-Jun-23"
-    assert as_gmt(summer_solstice(100), True) == " CE 0100-Jun-23 22:19:47 GMT"
 
 
 def test_as_gmt():
@@ -81,16 +59,6 @@ def test_as_gmt():
     assert as_gmt(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
     assert as_gmt(1685439.56480925) == "BCE 0099-Jun-25"
     assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:53:23 GMT"
-#    assert as_gmt(summer_solstice(100)) == " CE 0100-Jun-23"
-#    assert as_gmt(summer_solstice(100), True) == " CE 0100-Jun-23 22:19:47 GMT"
-
-
-@pytest.mark.xfail(reason = "Need Time object version")
-def test_as_eet_eph():
-    assert as_eet(summer_solstice(-99)) == "BCE 0100-Jun-25"
-    assert as_eet(summer_solstice(-99), True) == "BCE 0100-Jun-25 21:52:41 EET"
-    assert as_eet(summer_solstice(100)) == " CE 0100-Jun-24"
-    assert as_eet(summer_solstice(100), True) == " CE 0100-Jun-24 00:19:47 EET"
 
 
 def test_as_eet():
