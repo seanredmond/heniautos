@@ -142,46 +142,51 @@ def _load_new_moons():
         return tuple([[float(i) for i in l.strip().split("\t")] for l in nm])
 
 
-__h = {
-    "init": False,
-    "eph": None,
-    "eph_file": "de422.bsp",
-    "ts": None,
-    "loc": None,
-    "solstices": _load_solstices(),
-    "new_moons": _load_new_moons()
-}
+def load_data():
+    return {"solstices": _load_solstices(),
+            "new_moons": _load_new_moons()}
 
 
-def init_data(eph=None, lat=37.983972, lon=23.727806, force=False):
-    """Initialize data required for calculations.
+# __h = {
+#     "init": False,
+#     "eph": None,
+#     "eph_file": "de422.bsp",
+#     "ts": None,
+#     "loc": None,
+#     "solstices": _load_solstices(),
+#     "new_moons": _load_new_moons()
+# }
 
-    Parameters:
-        eph (str): Path to ephemeris file
-        lat (float): Latitude for calculations (default 37.983972)
-        lon (float): Longitude for calculations (default 23.727806)
-        force (bool): Force reinitialization
 
-    If an ephemeris file cannot be found in the path and no file is
-    specified by the eph parameter, de422.bsp will be downloaded.
+# def init_data(eph=None, lat=37.983972, lon=23.727806, force=False):
+#     """Initialize data required for calculations.
 
-    Longitude and latitude are set for Athens by default but can be changed.
+#     Parameters:
+#         eph (str): Path to ephemeris file
+#         lat (float): Latitude for calculations (default 37.983972)
+#         lon (float): Longitude for calculations (default 23.727806)
+#         force (bool): Force reinitialization
 
-    Initialization will only be done once unless the force parameter is True.
-    """
-    if __h["init"] is True and not force:
-        return
+#     If an ephemeris file cannot be found in the path and no file is
+#     specified by the eph parameter, de422.bsp will be downloaded.
 
-    if eph is not None:
-        __h["eph_file"] = eph
+#     Longitude and latitude are set for Athens by default but can be changed.
 
-    __h["eph"] = api.load(__h["eph_file"])
-    __h["ts"] = api.load.timescale()
-    __h["ts"].julian_calendar_cutoff = GREGORIAN_START
-    __h["loc"] = api.wgs84.latlon(lat, lon)
-    __h["init"] = True
+#     Initialization will only be done once unless the force parameter is True.
+#     """
+#     if __h["init"] is True and not force:
+#         return
 
-    return api.load.path_to(__h["eph_file"])
+#     if eph is not None:
+#         __h["eph_file"] = eph
+
+#     __h["eph"] = api.load(__h["eph_file"])
+#     __h["ts"] = api.load.timescale()
+#     __h["ts"].julian_calendar_cutoff = GREGORIAN_START
+#     __h["loc"] = api.wgs84.latlon(lat, lon)
+#     __h["init"] = True
+
+#     return api.load.path_to(__h["eph_file"])
 
 
 def is_bce(t):
@@ -364,7 +369,7 @@ def solar_event_eph(year, e):
     return [se[0] for se in _solar_events(year) if se[1] == e][0]
 
 
-def solar_event(year, e):
+def solar_event(year, e, data=load_data()):
     """Return a Time object for the event e in the given year.
 
     Parameters:
@@ -375,7 +380,7 @@ def solar_event(year, e):
     try:
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-        return [s[1] for s in __h["solstices"] if s[2] == e and s[1] >= d1 and s[1] <= d2][0]
+        return [s[1] for s in data["solstices"] if s[2] == e and s[1] >= d1 and s[1] <= d2][0]
     except IndexError:
         if year < 1:
             raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")
@@ -385,9 +390,9 @@ def solar_event(year, e):
         
 
 
-def summer_solstice(year):
+def summer_solstice(year, data=load_data()):
     """Return Time objects for the summer solstice for the given year."""
-    return solar_event(year, Seasons.SUMMER_SOLSTICE)
+    return solar_event(year, Seasons.SUMMER_SOLSTICE, data=data)
 
 
 def _all_moon_phases_eph(year):
@@ -398,14 +403,14 @@ def _all_moon_phases_eph(year):
         almanac.moon_phases(__h["eph"]))))
 
 
-def _all_moon_phases(year):
+def _all_moon_phases(year, data):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    return [m for m in __h["new_moons"] if m[1] >= d1 and m[1] <= d2] or None
+    return [m for m in data["new_moons"] if m[1] >= d1 and m[1] <= d2] or None
     
 
 
-def moon_phases(year, p=None):
+def moon_phases(year, p=None, data=load_data()):
     """Return a list of Time objects for each indicated lunar phase in the
     given year.
 
@@ -415,7 +420,7 @@ def moon_phases(year, p=None):
 
     """
     try:
-        return [mp[1] for mp in _all_moon_phases(year)]
+        return [mp[1] for mp in _all_moon_phases(year, data=data)]
     except TypeError:
         if year < 1:
             raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")
