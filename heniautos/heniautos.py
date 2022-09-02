@@ -1379,9 +1379,6 @@ def dinsmoor_month_name(m, intercalated, abbrev, greek):
 
 def dinsmoor_months(year, abbrev=False, greek=False):
     """Return festival calendar according to Dinsmoor (1931)."""
-    if "dinsmoor" not in __h:
-        __h["dinsmoor"] = _load_dinsmoor()
-
     try:
         return [{"month": dinsmoor_month_name(m["constant"], m["intercalated"],
                                               abbrev, greek),
@@ -1391,7 +1388,7 @@ def dinsmoor_months(year, abbrev=False, greek=False):
                  "start": jd.from_julian(m["year"], m["month"], m["day"], 12),
                  "end": add_days(jd.from_julian(m["year"], m["month"], m["day"], 12),
                                  m["length"])}
-                for m in __h["dinsmoor"][year]]
+                for m in _load_dinsmoor()[year]]
     except KeyError:
         raise HeniautosError(f"Year ({year}) outside range of Dinsmoor's "
                              "tables (432-109 BCE)")
