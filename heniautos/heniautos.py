@@ -233,7 +233,16 @@ def _gmt_fmt_full(j, epoch):
 
 
 def as_gmt(t, full=False):
-    """Return a string representation of JDN object in GMT."""
+    """Return a string representation of Julian date object in GMT.
+
+    Parameters:
+    t -- A Julian date (float or int)
+    full -- Boolean. Return a full date if True, short date if False
+
+    The full date representation of 1685074.3287423, for example is
+    'BCE 0100-Jun-25 19:53:23 GMT', the short BCE 'BCE 0100-Jun-25'.
+
+    """
     if is_bce(t):
         return _gmt_fmt_bce(jd.to_julian(t), full)
         
@@ -243,8 +252,16 @@ def as_gmt(t, full=False):
 def as_eet(t, full=False):
     """Return a string representation of Time object in EET.
 
-    Easter European Time is the local timezone for Athens. This does
-    not adjust for daylight savings.
+    Parameters:
+    t -- A Julian date (float or int)
+    full -- Boolean. Return a full date if True, short date if False
+
+    Eastern European Time is the local timezone for Athens. This does
+    not adjust for daylight savings and there may be some loss of
+    precision due to floating point computations.
+
+    The full date representation of 1685074.3287423, for example is
+    'BCE 0100-Jun-25 21:53:23 EET', the short BCE 'BCE 0100-Jun-25'.
 
     """
     if full:
@@ -254,11 +271,13 @@ def as_eet(t, full=False):
 
 
 def solar_event(year, e, data=load_data()):
-    """Return a Time object for the event e in the given year.
+    """Return a Julian date (float) for the event e in the given year.
 
     Parameters:
-        year (int): The year
-        e (Seasons): Constant from Seasons indicating the event
+    year (int) -- The year
+    e (Seasons) -- Constant from Seasons indicating the event
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
 
     """
     try:
@@ -275,7 +294,14 @@ def solar_event(year, e, data=load_data()):
 
 
 def summer_solstice(year, data=load_data()):
-    """Return Time objects for the summer solstice for the given year."""
+    """Return Time objects for the summer solstice for the given year.
+
+    Parameters:
+    year -- The year for which the solstice is requested
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+"""
     return solar_event(year, Seasons.SUMMER_SOLSTICE, data=data)
 
 
@@ -291,9 +317,10 @@ def moon_phases(year, p=None, data=load_data()):
     given year.
 
     Parameters:
-        year (int): The year
-        p (Phases): Constant from Phases indicating the lunar phase
-
+    year -- The year for which the phases are requested
+    p (Phases) -- Constant from Phases indicating the lunar phase
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data() (which only includes data from new moons)
     """
     try:
         return [mp[0] for mp in _all_moon_phases(year, data=data)]
@@ -305,28 +332,40 @@ def moon_phases(year, p=None, data=load_data()):
 
 
 def new_moons(year, data=load_data()):
-    """Return a list of Time objects for all new moons e in the given year."""
+    """Return a list of Julian dates for all new moons e in the given year.
+
+    Parameters:
+    year -- The year for which the new moons are requested
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+    """
     return moon_phases(year, Phases.NEW, data=data)
 
 
 def visible_new_moons(year, rule=Visible.SECOND_DAY, data=load_data()):
-    """Return a list of Time objects for all visible new moons according
+    """Return a list of Julian dates for all visible new moons according
        to selected rule.
 
     Parameters:
-        year (int): The year
-        rule (Visible): Constant from Visible indicating the desired rule
+    year (int) -- The year
+    rule (Visible) -- Constant from Visible indicating the desired rule
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
 
     new_moons() returns the time of new moons according to an
     astronomical calculation, not when the waxing crescent of the new
     moon was first visible to human eyes. The time of first visibility
     is what is needed for calendar calculations but it is complicated
-    so two simplified rules are provided:
+    so three simplified rules are provided:
 
-        SECOND_DAY (the default): The moon is visible the second day
-    after the astronomical new moon.
-        NEXT DAY: The moon is visible the first day after the
+    CONJUNCTION: The new moon is visible on the same day as the
+    astronomical new moon (conjunction).
+
+    NEXT_DAY: The moon is visible the first day after the
     astronomical new moon.
+
+    SECOND_DAY (the default): The moon is visible the second day
+    after the astronomical new moon.
 
     """
     if rule == Visible.CONJUNCTION:
@@ -359,21 +398,21 @@ def calendar_months(year, rule=Visible.SECOND_DAY, data=load_data()):
     calendar months.
 
     Parameters:
-        year (int): The year for the calendar
-        rule (Visible): Constant from Visible indicating the desired rule
+    year (int) -- The year for the calendar
+    rule (Visible) -- Constant from Visible indicating the desired rule
     (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
 
-    Return a tuple with start and end times for each month, in order
-    of Athenian festival calendar months calculated according to the
-    give new moon visibility rule. The length of the tuple will be 12
-    for regular years or 13 for intercalary years. Each member of the
-    tuple is a tuple with two members: (a) the start of the given
-    month and (b) the start of the next month. The extent of the month
-    is therefore inclusive of (a) and exclusive of b (a <= month < b).
 
-    The returned Time objects have hours, minutes, and seconds, but
-    these are just artifacts of the calendar calculates and are not
-    meaningful. Only the Julian year, month, and day are relevant.
+    Return a tuple with start and end times, as Julian Day Numbers for
+    each month, in order of Athenian festival calendar months
+    calculated according to the give new moon visibility rule. The
+    length of the tuple will be 12 for regular years or 13 for
+    intercalary years. Each member of the tuple is a tuple with two
+    members: (a) the start of the given month and (b) the start of the
+    next month. The extent of the month is therefore inclusive of (a)
+    and exclusive of b (a <= month < b).
 
     """
     sol1 = to_jdn(summer_solstice(year, data=data))
@@ -456,13 +495,16 @@ def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
     """Return a tuple representing Athenian festival calendar months.
 
     Parameters:
-        year (int): The year for the calendar
-        intercalate (Months): Constant indicating the month to intercalate if
-        necessary
-        abbrev (bool): Return month names as abbreviations (default False)
-        greek (bool): Return month names in Greek (default False)
-        rule (Visible): Constant from Visible indicating the desired rule
-        (default Visible.SECOND_DAY)
+    year (int) -- The year for the calendar
+    intercalate (Months) -- Constant indicating the month to intercalate if
+    necessary
+    abbrev (bool) -- Return month names as abbreviations (default False)
+    greek (bool) -- Return month names in Greek (default False)
+    rule (Visible) -- Constant from Visible indicating the desired rule
+    (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
 
     See calendar_months for documentation of visibility rules.
 
@@ -518,13 +560,16 @@ def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
     """Return a tuple representing Athenian festival calendar.
 
     Parameters:
-        year (int): The year for the calendar
-        intercalate (Months): Month constant for month to intercalate if
+    year (int) -- The year for the calendar
+    intercalate (Months) -- Month constant for month to intercalate if
 necessary (default Months.POS)
-        abbrev (bool): Return month names as abbreviations (default False)
-        greek (bool): Return month names in Greek (default False)
-        rule (Visible): Constant from Visible indicating the desired rule
+    abbrev (bool) -- Return month names as abbreviations (default False)
+    greek (bool) -- Return month names in Greek (default False)
+    rule (Visible) -- Constant from Visible indicating the desired rule
 (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
 
     See calendar_months for documentation of visibility rules.
 
@@ -545,7 +590,7 @@ necessary (default Months.POS)
 
     Each member of the "days" tuple is a dict containing:
          "day": the day of the month
-         "date": the Julian date of the day
+         "date": the Julian Day Number of the day
          "doy": the day of the year the day represents.
     """
     doy = _doy_gen()
@@ -562,15 +607,18 @@ def find_date(year, month, day, intercalate=Months.POS, abbrev=False,
     """Find the Athenian date corresponding to a Julian date
 
     Parameters:
-        year (int): The Julian year, negative for BCE
-        month (int): The Julian month
-        day (int): The Julian day
-        intercalate (Months): Month constant for month to intercalate if
+    year (int) -- The Julian year, negative for BCE
+    month (int) -- The Julian month
+    day (int) -- The Julian day
+    intercalate (Months) -- Month constant for month to intercalate if
 necessary (default Months.POS)
-        abbrev (bool): Return month names as abbreviations (default False)
-        greek (bool): Return month names in Greek (default False)
-        rule (Visible): Constant from Visible indicating the desired rule
+    abbrev (bool) -- Return month names as abbreviations (default False)
+    greek (bool) -- Return month names in Greek (default False)
+    rule (Visible) -- Constant from Visible indicating the desired rule
 (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
     """
     try:
         return [a for b
@@ -770,13 +818,15 @@ def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
     """Return a tuple representing Athenian conciliar calendar.
 
     Parameters:
-        year (int): The year for the calendar
-        pryt_type (Prytany): Constant representign the type of prytanies
+    year (int) -- The year for the calendar
+    pryt_type (Prytany) -- Constant representign the type of prytanies
 (default Prytany,AUTO)
-        pryt_start: start day (in June) for quasi-solar prytanies. If
+    pryt_start -- start day (in June) for quasi-solar prytanies. If
 Prytany.AUTO it will be calculated.
-        rule (Visible): Constant from Visible indicating the desired rule
+    rule (Visible) -- Constant from Visible indicating the desired rule
 (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
 
     See calendar_months for documentation of visibility rules.
 
@@ -804,8 +854,16 @@ Prytany.AUTO it will be calculated.
 
 
 def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
-    """Return the Julian date from DOY in the given year."""
+    """Return the Julian Day Number for the Day-of-Year in the given year.
 
+    Parameters:
+    doy (int) --  The Doy-of-Year
+    year (int) -- The year
+    rule (Visible) -- Constant from Visible indicating the desired rule
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+"""
     try:
         return [a for b in
                 [[d["date"] for d in m["days"] if d["doy"] == doy]
@@ -816,6 +874,17 @@ def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
 
 
 def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY, data=load_data()):
+    """Return the Julian Day Number for a festival date.
+
+    Parameters:
+    year (int) -- The year
+    month (Months) -- Constant from Months indicating the desired month
+    day (int) -- The day
+    rule (Visible) -- Constant from Visible indicating the desired rule
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+"""
     try: 
         return [a for b in
                 [[d["date"] for d in m["days"] if d["day"] == day]
@@ -827,6 +896,17 @@ def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY, data=load_data
 
 
 def prytany_to_julian(year, prytany, day, rule=Visible.SECOND_DAY, data=load_data()):
+    """Return the Julian Day Number for a prytany date.
+
+    Parameters:
+    year (int) -- The year
+    prytany (Prytanies) -- Constant from Prytanies indicating the desired prytany
+    day (int) -- The day
+    rule (Visible) -- Constant from Visible indicating the desired rule
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+"""
     return [a for b in
             [[d["date"] for d in p["days"] if d["day"] == day]
              for p in prytany_calendar(year, rule=rule, data=data)

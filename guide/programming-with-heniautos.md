@@ -4,14 +4,14 @@
 
 ## Overview
 
-The most important functions in Heniautos, if you are lookig to generate calendars, are:
+The most important functions in Heniautos, if you are looking to generate calendars, are:
 
 * `festival_calendar()`
 * `prytany_calendar()`
 
 To understand the difference between the two, see [Festival Calendar Basics](festival-calendar-basics.md) and [The Conciliar Calendar](conciliar-calendar.md). 
 
-To use these functions you will need to know about some constants, initializing data, and working with BCE years
+To use these functions you will need to know about some constants and working with BCE years
 
 And if you are working with calendar equations, the important functions are:
 
@@ -746,37 +746,43 @@ These partitions are all astronomically possible, and it follows the Rule of Ari
 
 There are a few functions for getting raw astronomical data.
 
-### `new_moons()`
+### `new_moons(year [, data])`
 
-Returns the dates and times for the new moons of any year.
+Returns a list Julian dates for the new moons of any year.
 
-    >>> [ha.as_eet(m, full=True) for m in ha.new_moons(ha.bce_as_negative(350))]
-    ['BCE 0350-Jan-13 12:23:41 EET', 'BCE 0350-Feb-11 22:44:46 EET', 'BCE 0350-Mar-13 09:37:18 EET', 'BCE 0350-Apr-11 21:29:12 EET', 'BCE 0350-May-11 10:31:11 EET', 'BCE 0350-Jun-10 00:39:07 EET', 'BCE 0350-Jul-09 15:41:32 EET', 'BCE 0350-Aug-08 07:21:39 EET', 'BCE 0350-Sep-06 23:11:49 EET', 'BCE 0350-Oct-06 14:31:10 EET', 'BCE 0350-Nov-05 04:37:42 EET', 'BCE 0350-Dec-04 17:08:44 EET']
+    >>> ha.new_moons(-349)
+    [1593597.933602722, 1593627.3649196504, ...]
     
-### `visible_new_moons()`
+### `visible_new_moons(year, [rule=Visible.SECOND_DAY] [, data])`
 
-Return the dates and times of the visible new moons (according to the `rule` parameter, `Visibility.SECOND_DAY` by default).
+Returns a list of Julian Day Numbers for the times of the visible new moons (according to the `rule` parameter, `Visibility.SECOND_DAY` by default).
 
-    >>> [ha.as_eet(m, full=True) for m in ha.visible_new_moons(ha.bce_as_negative(350))]
-    ['BCE 0350-Jan-15 13:59:17 EET', 'BCE 0350-Feb-13 13:59:17 EET', 'BCE 0350-Mar-15 13:59:17 EET', 'BCE 0350-Apr-13 13:59:17 EET', 'BCE 0350-May-13 13:59:17 EET', 'BCE 0350-Jun-11 13:59:17 EET', 'BCE 0350-Jul-11 13:59:17 EET', 'BCE 0350-Aug-10 13:59:17 EET', 'BCE 0350-Sep-08 13:59:17 EET', 'BCE 0350-Oct-08 13:59:17 EET', 'BCE 0350-Nov-07 13:59:17 EET', 'BCE 0350-Dec-06 13:59:17 EET']
+    >>> ha.visible_new_moons(-349)
+    [1593600, 1593629, ...]
+    >>> ha.visible_new_moons(-349, ha.Visible.NEXT_DAY)
+    [1593599, 1593628, ...]
+    >>> ha.visible_new_moons(-349, ha.Visible.CONJUNCTION)
+    [1593598, 1593627, ...]
     
-### `moon_phases()`
+### `moon_phases(year, phase [, data])`
 
 For any phase of the moon, use `moon_phases()` with one of the `Phases` constants.
 
     >>> [ha.as_eet(m, full=True) for m in ha.moon_phases(ha.bce_as_negative(350), ha.Phases.FULL)]
     ['BCE 0350-Jan-28 18:40:12 EET', 'BCE 0350-Feb-27 10:16:15 EET', 'BCE 0350-Mar-28 23:00:26 EET', 'BCE 0350-Apr-27 09:02:32 EET', 'BCE 0350-May-26 16:58:35 EET', 'BCE 0350-Jun-24 23:46:34 EET', 'BCE 0350-Jul-24 06:37:59 EET', 'BCE 0350-Aug-22 14:45:41 EET', 'BCE 0350-Sep-21 01:08:42 EET', 'BCE 0350-Oct-20 14:16:55 EET', 'BCE 0350-Nov-19 06:03:23 EET', 'BCE 0350-Dec-18 23:49:21 EET']
     
-### `summer_solstice()`
+### `summer_solstice(year [, data])`
 
 Returns the date and time of the summer solstice.
 
     >>> ha.as_eet(ha.summer_solstice(ha.bce_as_negative(350)), full=True)
     'BCE 0350-Jun-28 11:09:27 EET'
     
-### `solar_event()`
+`ha.summer_solstice(-349)` is the equivalent of `ha.solar_event(-349, ha.Seasons.SUMMER_SOLSTICE)`
+    
+### `solar_event(year, event [, data])`
 
-Returns the date and time of any solstice or equinox, specified as one of the `Seasons` constants .
+Returns the date and time of any solstice or equinox, specified as one of the `Seasons` constants.
 
     >>> ha.as_eet(ha.solar_event(ha.bce_as_negative(350), ha.Seasons.AUTUMN_EQUINOX), full=True)
     'BCE 0350-Sep-28 15:23:10 EET'
