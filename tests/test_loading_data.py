@@ -17,6 +17,27 @@ CUSTOM_YEAR = {
 }
 
 
+def test_load_default_data():
+    d = load_data()
+    assert type(d) is dict
+
+    assert "solstices" in d
+    assert type(d["solstices"]) is tuple
+    assert type(d["solstices"][0]) is tuple
+    assert type(d["solstices"][0][0]) is float
+    assert type(d["solstices"][0][1]) is int
+    assert d["solstices"][0] == (1500533.0682705436, 0)
+    assert d["solstices"][-1] == (1721414.3908799929, 3)
+
+    assert "new_moons" in d
+    assert type(d["new_moons"]) is tuple
+    assert type(d["new_moons"][0]) is tuple
+    assert type(d["new_moons"][0][0]) is float
+    assert type(d["new_moons"][0][1]) is int
+    assert d["new_moons"][0] == (1500458.8964768478, 0)
+    assert d["new_moons"][-1] == (1721406.2574824847, 0)
+
+
 def test_solar_event_data_param():
     assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287422964
     assert (

@@ -134,14 +134,13 @@ class Prytany(IntEnum):
 def _load_solstices():
     """Load solstice data"""
     with open(Path(__file__).parent / "solstices.tsv") as sols:
-        #return tuple([[float(i) for i in l.strip().split("\t")] for l in sols])
-        return tuple([[float(i) for i in l.strip().split("\t")] for l in sols])
+        return tuple([tuple([i[0](i[1]) for i in zip((float, int), l.strip().split("\t"))]) for l in sols])
 
 
 def _load_new_moons():
-    """Load solstice data"""
+    """Load new moon data"""
     with open(Path(__file__).parent / "new_moons.tsv") as nm:
-        return tuple([[float(i) for i in l.strip().split("\t")] for l in nm])
+        return tuple([tuple([i[0](i[1]) for i in zip((float, int), l.strip().split("\t"))]) for l in nm])
 
 
 def load_data():
