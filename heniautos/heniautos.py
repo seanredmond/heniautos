@@ -131,21 +131,25 @@ class Prytany(IntEnum):
     ALIGNED_13 = 4
 
 
-def _load_solstices():
-    """Load solstice data"""
-    with open(Path(__file__).parent / "solstices.tsv") as sols:
-        return tuple([tuple([i[0](i[1]) for i in zip((float, int), l.strip().split("\t"))]) for l in sols])
+def _load_data_file(fn):
+    """Load astronomical data from file fn
+
+    File should be tab-delimited lines containing a julian date (float) and an event/phase id (int):
+
+    Event ids for solar events are: 0 = Spring Equinox, 1 = Summer Solstice,
+    2 = Autumn Equinox, 3 = Winter Solstice
+
+    Lunar phase ids are:  0 = New Moon, 1 = First Quarter, 2 = Full Moon, 4 = Last Quarter
+"""
+    with open(fn) as data:
+        return tuple([tuple([i[0](i[1]) for i in zip((float, int), l.strip().split("\t"))]) for l in data])
 
 
-def _load_new_moons():
-    """Load new moon data"""
-    with open(Path(__file__).parent / "new_moons.tsv") as nm:
-        return tuple([tuple([i[0](i[1]) for i in zip((float, int), l.strip().split("\t"))]) for l in nm])
-
-
-def load_data():
-    return {"solstices": _load_solstices(),
-            "new_moons": _load_new_moons()}
+def load_data(solstices=Path(__file__).parent / "solstices.tsv",
+              new_moons=Path(__file__).parent / "new_moons.tsv"):
+    """Load solstice/equinox and moon phase data from files."""
+    return {"solstices": _load_data_file(solstices),
+            "new_moons": _load_data_file(new_moons)}
 
 
 def is_bce(t):
