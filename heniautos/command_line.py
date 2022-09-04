@@ -88,101 +88,135 @@ def arkhon_year(y):
 
 def day_filter(day, args):
     if args.day:
-        return day["day"] == args.day
+        return day.day == args.day
 
     return True
 
 
 def doy_filter(day, doy):
     if doy:
-        return day["doy"] == doy
+        return day.doy == doy
 
     return True
 
 
 def month_filter(month, args):
-    if args.conciliar:
-        if args.prytany:
-            return ROMAN.index(args.prytany) + 1 == month["prytany"]
+    if type(month) == ha.Prytanies and args.prytany:
+        return ROMAN.index(args.prytany) + 1 == month
 
-    if (not args.conciliar) and args.month:
-        return ha.MONTH_ABBREVS.index(args.month) + 1 == month["constant"]
+    if type(month) == ha.Months and args.month:
+        return ha.MONTH_ABBREVS.index(args.month) + 1 == month
 
     return True
 
 
 def display_month(month, args):
-    if args.conciliar:
+    if type(month) is ha.PrytanyDay:
         if not args.arabic:
-            return ROMAN[month-1]
+            return ROMAN[month.prytany-1]
 
-    return month
+    return month.month_name
 
 
 def yearly_table(year, writer, args):
     writer.writerow((
-        f"{arkhon_year(year[0]['days'][0]['date']):13} ",
-        " I " if year[-1]["days"][-1]["doy"] > 355 else " O ",
-        f" {ha.as_eet(year[0]['days'][0]['date'])} ",
-        f"{sum(len(m['days']) for m in year):>5}"))
+        f"{arkhon_year(year[0].jdn):13} ",
+        " I " if len(year) > 355 else " O ",
+        f" {ha.as_eet(year[0].jdn)} ",
+        f"{len(year):>5}"))
 
 
 def yearly_tsv(year, writer, args):
     writer.writerow((
-        arkhon_year(year[0]["days"][0]["date"]),
-        "I" if year[-1]["days"][-1]["doy"] > 355 else "O",
-        ha.as_eet(year[0]["days"][0]["date"]),
-        sum(len(m["days"]) for m in year)))
+        arkhon_year(year[0].jdn),
+        "I" if len(year) > 355 else "O",
+        ha.as_eet(year[0].jdn),
+        len(year)))
 
 
-def monthly_table(year, writer, month_key, args):
-    ay = arkhon_year(year[0]["days"][0]["date"])
+def monthly_table(year, writer, args):
+    ay = arkhon_year(year[0][0].jdn)
     for month in year:
-        if month_filter(month, args):
-            writer.writerow((
-                f"{ay:13} ",
-                f" {display_month(month[month_key], args):22}",
-                f" {ha.as_eet(month['days'][0]['date'])} ",
-                f"{len(month['days']):>5}"))
+        writer.writerow((
+            f"{ay:13} ",
+            f" {display_month(month[0], args):22}",
+            f" {ha.as_eet(month[0].jdn)} ",
+            f"{len(month):>5}"))
 
 
-def monthly_tsv(year, writer, month_key, args):
-    ay = arkhon_year(year[0]["days"][0]["date"])
+def monthly_tsv(year, writer, args):
+    ay = arkhon_year(year[0][0].jdn)
     for month in year:
-        if month_filter(month, args):
-            writer.writerow((
-                ay,
-                display_month(month[month_key], args),
-                ha.as_eet(month["days"][0]["date"]),
-                len(month["days"])))
+        writer.writerow((
+            ay,
+            display_month(month[0], args),
+            ha.as_eet(month[0].jdn),
+            len(month)))
 
 
-def daily_table(year, writer, month_key, args):
-    ay = arkhon_year(year[0]["days"][0]["date"])
-    for month in year:
-        if month_filter(month, args):
-            for day in month["days"]:
-                if day_filter(day, args) and doy_filter(day, args.doy):
-                    writer.writerow((
-                        f"{ay:13} ",
-                        f" {display_month(month[month_key], args):22}",
-                        f"{day['day']:>4} ",
-                        f" {ha.as_eet(day['date'])} ",
-                        f"{day['doy']:>4}"))
+def daily_table(year, writer, args):
+    ay = arkhon_year(year[0].jdn)
+    for day in year:
+        writer.writerow((
+            f"{ay:13} ",
+            f" {display_month(day, args):22}",
+            f"{day.day:>4} ",
+            f" {ha.as_eet(day.jdn)} ",
+            f"{day.doy:>4}"))
 
 
-def daily_tsv(year, writer, month_key, args):
-    ay = arkhon_year(year[0]["days"][0]["date"])
-    for month in year:
-        if month_filter(month, args):
-            for day in month["days"]:
-                if day_filter(day, args) and doy_filter(day, args.doy):
-                    writer.writerow((
-                        ay,
-                        display_month(month[month_key], args),
-                        day["day"],
-                        ha.as_eet(day["date"]),
-                        day["doy"]))
+def daily_tsv(year, writer, args):
+    ay = arkhon_year(year[0].jdn)
+    for day in year:
+        writer.writerow((
+            ay,
+            display_month(day, args),
+            day.day,
+            ha.as_eet(day.jdn),
+            day.doy))
+
+
+def festival_filters(cal, args):
+    """Apply festival filters."""
+    return [d for d in cal if month_filter(d.month, args) and day_filter(d, args) and doy_filter(d, args.doy)]
+
+
+def prytany_filters(cal, args):
+    """Apply prytany filters."""
+    return [d for d in cal if month_filter(d.prytany, args) and day_filter(d, args) and doy_filter(d, args.doy)]
+
+    
+def filtered_festival_calendar(year, args):
+    """Filter festival calendar to requested scope."""
+    return festival_filters(
+        ha.festival_calendar(year,
+                             abbrev=args.abbreviations,
+                             greek=args.greek_names,
+                             intercalate=ha.MONTH_ABBREVS.index(
+                                 args.intercalate) + 1,
+                             rule=get_rule(args.rule)),
+        args)
+        
+
+def filtered_prytany_calendar(year, args):
+    """Filter prytany calendar to requested scope."""
+    return prytany_filters(ha.prytany_calendar(year, rule=get_rule(args.rule)), args)
+
+
+def filtered_calendar(year, args):
+    """Return a calendar with requested filters."""
+    if args.conciliar:
+        return filtered_prytany_calendar(year, args)
+
+    return filtered_festival_calendar(year, args)         
+
+
+def by_group(year):
+    """Group by months or prytanies depending on type of calendar."""
+    if type(year[0]) is ha.PrytanyDay:
+        return ha.by_prytanies(year)
+
+    return ha.by_months(year)
 
 
 def output_years(args, writer, tabs):
@@ -200,18 +234,7 @@ def output_years(args, writer, tabs):
                           writer)
 
     for year in years(args.start_year, args.end_year, args.as_ce):
-        if args.conciliar:
-            cal = ha.prytany_calendar(year, rule=get_rule(args.rule))
-            month_key = "prytany"
-
-        else:
-            cal = ha.festival_calendar(year,
-                                       abbrev=args.abbreviations,
-                                       greek=args.greek_names,
-                                       intercalate=ha.MONTH_ABBREVS.index(
-                                           args.intercalate) + 1,
-                                       rule=get_rule(args.rule))
-            month_key = "month"
+        cal = filtered_calendar(year, args)
 
         if args.year_summary:
             if tabs:
@@ -220,14 +243,14 @@ def output_years(args, writer, tabs):
                 yearly_table(cal, writer, args)
         elif args.month_summary:
             if tabs:
-                monthly_tsv(cal, writer, month_key, args)
+                monthly_tsv(by_group(cal), writer, args)
             else:
-                monthly_table(cal, writer, month_key, args)
+                monthly_table(by_group(cal), writer, args)
         else:
             if tabs:
-                daily_tsv(cal, writer, month_key, args)
+                daily_tsv(cal, writer, args)
             else:
-                daily_table(cal, writer, month_key, args)
+                daily_table(cal, writer, args)
 
 
 def get_julian_half_year(year1, year2):
@@ -407,7 +430,7 @@ under certain conditions."""
                         help="Print version and exit")
     args = parser.parse_args()
 
-    ha.init_data(args.ephemeris)
+    # ha.init_data(args.ephemeris)
 
     writer = get_writer(args.tab)
 
