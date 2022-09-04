@@ -14,9 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import namedtuple
 from datetime import datetime
 from enum import IntEnum
-from itertools import product, zip_longest
+from itertools import groupby, product, zip_longest
 import juliandate as jd
 from pathlib import Path
 from heniautos.__version__ import __version__
@@ -129,6 +130,16 @@ class Prytany(IntEnum):
     ALIGNED_10 = 2
     ALIGNED_12 = 3
     ALIGNED_13 = 4
+
+
+FestivalDay = namedtuple(
+    "FestivalDay", ("jdn", "month_name", "month_index", "month", "day", "doy")
+    )
+
+PrytanyDay = namedtuple(
+    "PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy")
+    )
+
 
 
 def _load_data_file(fn):
@@ -555,6 +566,10 @@ def _month_days(start, finish, doy):
                   for d in range(0, int(finish) - int(start))])
 
 
+def _make_month(month, month_index, doy):
+    return [FestivalDay(month["start"] + d - 1, month["month"], month_index, month["constant"], d, next(doy)) for d in range(1, month["end"] - month["start"] + 1, 1)]
+
+
 def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
                       rule=Visible.SECOND_DAY, data=load_data()):
     """Return a tuple representing Athenian festival calendar.
@@ -595,11 +610,11 @@ necessary (default Months.POS)
     """
     doy = _doy_gen()
 
-    return tuple([{"month": m["month"],
-                   "constant": m["constant"],
-                   "days": _month_days(m["start"], m["end"], doy)}
-                  for m
-                  in festival_months(year, intercalate, abbrev, greek, rule, data=data)])
+    return tuple([a for b in
+                  [_make_month(m, i, doy) for i, m in
+                   enumerate(festival_months(year, intercalate, abbrev, greek,
+                                             rule, data=data), 1)]
+                  for a in b])
 
 
 def find_date(year, month, day, intercalate=Months.POS, abbrev=False,
@@ -620,14 +635,13 @@ necessary (default Months.POS)
     returned from load_data()
 
     """
+
     try:
-        return [a for b
-                in [[{**{"month": f["month"], "constant": f["constant"]}, **d}
-                     for d in f["days"] if d["day"] == day]
-                    for f in festival_calendar(year, intercalate=intercalate,
-                                               abbrev=abbrev, greek=greek,
-                                               rule=rule, data=data)
-                    if f["constant"] == month] for a in b][0]
+        return [d for d in
+                festival_calendar(year, intercalate=intercalate,
+                                  abbrev=abbrev, greek=greek,
+                                  rule=rule, data=data)
+                if d.month == month and d.day == day][0]
     except IndexError:
         if month == Months.INT:
             raise HeniautosError(f"No date found or no intercalated month "
@@ -671,8 +685,8 @@ def _pryt_gen(start, end, length, num=10, count=1):
         # less than the expected length. Then stop
         yield {"prytany": count,
                "constant": list(Prytanies)[count-1],
-               "start": start,
-               "end": end}
+               "start": int(start),
+               "end": int(end)}
         return
 
     # p_end = tt_round(start, next(length))
@@ -680,8 +694,8 @@ def _pryt_gen(start, end, length, num=10, count=1):
 
     yield {"prytany": count,
            "constant": list(Prytanies)[count-1],
-           "start": start,
-           "end": p_end}
+           "start": int(start),
+           "end": int(p_end)}
     yield from _pryt_gen(p_end, end, length, num, count + 1)
 
 
@@ -812,6 +826,10 @@ def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
     raise HeniautosError("Not Handled")
 
 
+def _make_prytany(prytany, prytany_index, doy):
+    return [PrytanyDay(prytany["start"] + d - 1, prytany_index, prytany["constant"], d, next(doy)) for d in range(1, prytany["end"] - prytany["start"] + 1, 1)]
+
+
 def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
                      rule=Visible.SECOND_DAY, rule_of_aristotle=False,
                      data=load_data()):
@@ -843,14 +861,38 @@ Prytany.AUTO it will be calculated.
 
     doy = _doy_gen()
 
-    return tuple([{"prytany": p["prytany"],
-                   "constant": p["constant"],
-                   "days": _month_days(p["start"], p["end"], doy)}
-                  for p
-                  in prytanies(year, pryt_type=pryt_type,
-                               pryt_start=pryt_start, rule=rule,
-                               rule_of_aristotle=rule_of_aristotle,
-                               data=data)])
+    return tuple([a for b in
+                  [_make_prytany(p, i, doy) for i, p in
+                   enumerate(prytanies(year, pryt_type=pryt_type,
+                                       pryt_start=pryt_start, rule=rule,
+                                       rule_of_aristotle=rule_of_aristotle,
+                                       data=data), 1)]
+                  for a in b])
+    
+
+    # return tuple([{"prytany": p["prytany"],
+    #                "constant": p["constant"],
+    #                "days": _month_days(p["start"], p["end"], doy)}
+    #               for p
+    #               in prytanies(year, pryt_type=pryt_type,
+    #                            pryt_start=pryt_start, rule=rule,
+    #                            rule_of_aristotle=rule_of_aristotle,
+    #                            data=data)])
+
+
+def _calendar_groups(c, func):
+    """Group calendar by func."""
+    return [tuple(g[1]) for g in groupby(c, key=func)]
+
+
+def by_months(p):
+    """ Return festival calendar grouped into a tuple of tuples by months."""
+    return _calendar_groups(p, lambda x: x.month)
+
+
+def by_prytanies(p):
+    """ Return prytany calendar grouped into a tuple of tuples by prytany."""
+    return _calendar_groups(p, lambda x: x.prytany)
 
 
 def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
@@ -865,10 +907,7 @@ def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
 
 """
     try:
-        return [a for b in
-                [[d["date"] for d in m["days"] if d["doy"] == doy]
-                 for m in festival_calendar(year, rule=rule, data=data)] for a in b][0]
-
+        return [d.jdn for d in festival_calendar(year, rule=rule, data=data) if d.doy == doy][0]
     except IndexError:
         raise HeniautionNoDayInYearError(f"There is no DOY {doy} in the year {year}")
 
@@ -885,12 +924,9 @@ def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY, data=load_data
     returned from load_data()
 
 """
-    try: 
-        return [a for b in
-                [[d["date"] for d in m["days"] if d["day"] == day]
-                 for m in festival_calendar(year, rule=rule, data=data)
-                 if m["constant"] == month] for a in b][0]
+    try:
 
+        return [d.jdn for d in festival_calendar(year, rule=rule, data=data) if d.month == month and d.day == day][0]
     except IndexError:
         raise HeniautionNoDayInYearError(f"There is no day matching month {month}, day {day} in the year {year}")
 
@@ -907,10 +943,10 @@ def prytany_to_julian(year, prytany, day, rule=Visible.SECOND_DAY, data=load_dat
     returned from load_data()
 
 """
-    return [a for b in
-            [[d["date"] for d in p["days"] if d["day"] == day]
-             for p in prytany_calendar(year, rule=rule, data=data)
-             if p["constant"] == prytany] for a in b][0]
+    try:
+        return [p for p in prytany_calendar(year, rule=rule, data=data) if p.prytany == prytany and p.day == day][0]
+    except IndexError:
+        raise HeniautionNoDayInYearError(f"There is no day matching prytany {prytany}, day {day} in the year {year}")
 
 
 def _fest_long_count(n, intercalated):
@@ -1349,9 +1385,8 @@ def dinsmoor_months(year, abbrev=False, greek=False):
                  "constant": Months.INT if m["intercalated"]
                  else m["constant"],
                  # "start": date(m["year"], m["month"], m["day"]),
-                 "start": jd.from_julian(m["year"], m["month"], m["day"], 12),
-                 "end": add_days(jd.from_julian(m["year"], m["month"], m["day"], 12),
-                                 m["length"])}
+                 "start": int(jd.from_julian(m["year"], m["month"], m["day"], 12)),
+                 "end": int(jd.from_julian(m["year"], m["month"], m["day"], 12)) + m["length"]}
                 for m in _load_dinsmoor()[year]]
     except KeyError:
         raise HeniautosError(f"Year ({year}) outside range of Dinsmoor's "

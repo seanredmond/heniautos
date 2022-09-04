@@ -210,29 +210,33 @@ def test_festival_months():
 
 def test_festival_calendar():
     p = festival_calendar(-100)
-    assert type(p) is tuple
-    assert type(p[0]) is dict
-    assert p[0]["month"] == "Hekatombaiṓn"
-    assert p[0]["constant"] == Months.HEK
-    assert type(p[0]["days"]) is tuple
-    assert type(p[0]["days"][0]) is dict
-    assert p[0]["days"][0]["day"] == 1
-    assert as_gmt(p[0]["days"][0]["date"]) == "BCE 0101-Jul-17"
-    assert p[0]["days"][0]["doy"] == 1
 
-    assert p[1]["month"] == "Metageitniṓn"
-    assert p[1]["days"][0]["day"] == 1
-    assert as_gmt(p[1]["days"][0]["date"]) == "BCE 0101-Aug-16"
-    assert p[1]["days"][0]["doy"] == 31
+    assert type(p) is tuple
+
+    assert type(p[0]) is FestivalDay
+    assert p[0].month_name == "Hekatombaiṓn"
+    assert p[0].month == Months.HEK
+    # assert type(p[0]["days"]) is tuple
+    #assert type(p[0]["days"][0]) is dict
+    assert p[0].day == 1
+    assert as_gmt(p[0].jdn) == "BCE 0101-Jul-17"
+    assert p[0].doy == 1
+
+    met = [d for d in p if d.month == Months.MET]
+
+    assert met[0].month_name == "Metageitniṓn"
+    assert met[0].day == 1
+    assert as_gmt(met[0].jdn) == "BCE 0101-Aug-16"
+    assert met[0].doy == 31
 
 
 def test_find_date():
     d = find_date(-100, Months.MET, 1)
-    assert d["month"] == "Metageitniṓn"
-    assert d["constant"] == Months.MET
-    assert d["day"] == 1
-    assert as_gmt(d["date"]) == "BCE 0101-Aug-16"
-    assert d["doy"] == 31
+    assert d.month_name == "Metageitniṓn"
+    assert d.month == Months.MET
+    assert d.day == 1
+    assert as_gmt(d.jdn) == "BCE 0101-Aug-16"
+    assert d.doy == 31
 
     with pytest.raises(HeniautosError):
         find_date(-99, Months.MET, 31)
@@ -281,6 +285,22 @@ def test_pryt_len():
     assert next(e) == 32
     assert next(e) == 32
     assert next(e) == 32
+
+
+def test_by_months():
+    p = by_months(festival_calendar(-421))
+    assert len(p) == 12
+
+    # make sure the prytany groups are in the right order
+    assert [list(set([pi.month_index for pi in pr])) for pr in p] == [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12]]
+
+
+def test_by_prytanies():
+    p = by_prytanies(prytany_calendar(-420))
+    assert len(p) == 10
+
+    # make sure the prytany groups are in the right order
+    assert [list(set([pi.prytany_index for pi in pr])) for pr in p] == [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]
 
 
 def test_pryt_len_festival():
@@ -427,36 +447,35 @@ def test_pryt_solar_end():
 
 
 def test_prytany_calendar_solar():
-    year = bce_as_negative(421)
-    p = prytany_calendar(year)
+    p = by_prytanies(prytany_calendar(-420))
 
     assert len(p) == 10
-    assert p[0]["prytany"] == 1
-    assert as_eet(p[0]["days"][0]["date"]) == "BCE 0421-Jul-07"
-    assert len(p[0]["days"]) == 37
+    assert p[0][0].prytany_index == 1
+    assert as_gmt(p[0][0].jdn) == "BCE 0421-Jul-07"
+    assert len(p[0]) == 37
 
-    assert p[-1]["prytany"] == 10
-    assert as_eet(p[-1]["days"][-1]["date"]) == "BCE 0420-Jul-06"
-    assert len(p[-1]["days"]) == 36
-    assert p[-1]["days"][-1]["doy"] == 365
-
+    assert p[-1][-1].prytany_index == 10
+    assert as_gmt(p[-1][-1].jdn) == "BCE 0420-Jul-06"
+    assert len(p[-1]) == 36
+    assert p[-1][-1].doy == 365
+    
     p2 = prytany_calendar(bce_as_negative(429))
-    assert as_eet(p2[0]["days"][0]["date"]) == "BCE 0429-Jul-04"
+    assert as_gmt(p2[0].jdn) == "BCE 0429-Jul-04"
 
 
 def test_prytany_calendar_solar_leap():
-    p = prytany_calendar(-417)
+    p = by_prytanies(prytany_calendar(-417))
 
     assert len(p) == 10
-    assert p[0]["prytany"] == 1
-    assert as_eet(p[0]["days"][0]["date"]) == "BCE 0418-Jul-09"
-    assert len(p[0]["days"]) == 37
+    assert p[0][0].prytany_index == 1
+    assert as_gmt(p[0][0].jdn) == "BCE 0418-Jul-09"
+    assert len(p[0]) == 37
 
-    assert p[-1]["prytany"] == 10
-    assert as_eet(p[-1]["days"][-1]["date"]) == "BCE 0417-Jul-08"
-    assert len(p[-1]["days"]) == 37
-    assert p[-1]["days"][-1]["doy"] == 366
-
+    assert p[-1][-1].prytany_index == 10
+    assert as_gmt(p[-1][-1].jdn) == "BCE 0417-Jul-08"
+    assert len(p[-1]) == 37
+    assert p[-1][-1].doy == 366
+    
 
 # Ten prytanies: 409-308 BCE
 
@@ -742,227 +761,208 @@ def test_prytanies_13_intercalated_aristotle():
 
 def test_prytany_calendar_10_ordinary():
     year = bce_as_negative(O_10)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
 
     assert len(p3) == 10
-    assert c3[-1]['days'][-1]['doy'] == 354
-    assert p3[-1]['days'][-1]['doy'] == 354
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    # Make sure the calendars are the same number of days
+    assert c3[-1][-1].doy == 354
+    assert p3[-1][-1].doy == 354
 
-    assert len(p3[0]["days"]) == 36
-    assert len(p3[4]["days"]) == 35
-    assert len(p3[-1]["days"]) == 35
+    assert p3[0][0].prytany_index == 1
 
+    # Make sure the calendars end on the same day
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
+
+    # Specific prytany lengths
+    assert len(p3[0]) == 36
+    assert len(p3[4]) == 35
+    assert len(p3[-1]) == 35
+    
 
 def test_prytany_calendar_10_ordinary_long():
     year = bce_as_negative(O_10_LONG)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 10
-    assert p3[-1]['days'][-1]['doy'] == 355
+    assert p3[-1][-1].doy == 355
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 36
-    assert len(p3[4]["days"]) == 35
-    assert len(p3[-1]["days"]) == 36
+    assert len(p3[0]) == 36
+    assert len(p3[4]) == 35
+    assert len(p3[-1]) == 36
 
 
 def test_prytany_calendar_10_intercalated():
     year = bce_as_negative(I_10)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 10
-    assert p3[-1]['days'][-1]['doy'] == 384
+    assert p3[-1][-1].doy == 384
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 39
-    assert len(p3[4]["days"]) == 38
-    assert len(p3[-1]["days"]) == 38
+    assert len(p3[0]) == 39
+    assert len(p3[4]) == 38
+    assert len(p3[-1]) == 38
 
 
 def test_prytany_calendar_12_ordinary():
     year = bce_as_negative(O_12)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 12
-    assert p3[-1]['days'][-1]['doy'] == 354
+    assert p3[-1][-1].doy == 354
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 29
-    assert len(p3[1]["days"]) == 29
-    assert len(p3[2]["days"]) == 30
-    assert len(p3[-2]["days"]) == 30
-    assert len(p3[-1]["days"]) == 29
+    assert len(p3[0]) == 29
+    assert len(p3[1]) == 29
+    assert len(p3[2]) == 30
+    assert len(p3[-2]) == 30
+    assert len(p3[-1]) == 29
 
 
 def test_prytany_calendar_12_ordinary_aristotle():
     year = bce_as_negative(O_12)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year, rule_of_aristotle=True)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year, rule_of_aristotle=True))
     assert len(p3) == 12
-    assert p3[-1]['days'][-1]['doy'] == 354
+    assert p3[-1][-1].doy == 354
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 30
-    assert len(p3[1]["days"]) == 30
-    assert len(p3[2]["days"]) == 30
-    assert len(p3[-2]["days"]) == 29
-    assert len(p3[-1]["days"]) == 29
+    assert len(p3[0]) == 30
+    assert len(p3[1]) == 30
+    assert len(p3[2]) == 30
+    assert len(p3[-2]) == 29
+    assert len(p3[-1]) == 29
 
 
 def test_prytany_calendar_12_long():
     year = bce_as_negative(O_12_LONG)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 12
-    assert p3[-1]['days'][-1]['doy'] == 355
+    assert p3[-1][-1].doy == 355
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
     # Like the festival calendar, prytanies are 29 or 30 days
     # Festival months:
     #
     #    H F H F F F H F F H H F
     #
-    assert len(p3[0]["days"]) == 29
-    assert len(p3[1]["days"]) == 30
-    assert len(p3[-2]["days"]) == 29
-    assert len(p3[-1]["days"]) == 30
+    assert len(p3[0]) == 29
+    assert len(p3[1]) == 30
+    assert len(p3[-2]) == 29
+    assert len(p3[-1]) == 30
 
 
 def test_prytany_calendar_12_long_aristotle():
     year = bce_as_negative(O_12_LONG)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year, rule_of_aristotle=True)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year, rule_of_aristotle=True))
     assert len(p3) == 12
-    assert p3[-1]['days'][-1]['doy'] == 355
+    assert p3[-1][-1].doy == 355
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 30
-    assert len(p3[1]["days"]) == 30
-    assert len(p3[-2]["days"]) == 29
-    assert len(p3[-1]["days"]) == 30
+    assert len(p3[0]) == 30
+    assert len(p3[1]) == 30
+    assert len(p3[-2]) == 29
+    assert len(p3[-1]) == 30
 
 
 def test_prytany_calendar_12_intercalated():
     year = bce_as_negative(I_12)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 12
-    assert p3[-1]['days'][-1]['doy'] == 384
+    assert p3[-1][-1].doy == 384
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 32
-    assert len(p3[6]["days"]) == 32
-    assert len(p3[-1]["days"]) == 32
+    assert len(p3[0]) == 32
+    assert len(p3[6]) == 32
+    assert len(p3[-1]) == 32
 
 
 def test_prytany_calendar_13_ordinary():
     year = bce_as_negative(O_13)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 13
-    assert p3[-1]['days'][-1]['doy'] == 354
+    assert p3[-1][-1].doy == 354
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 28
-    assert len(p3[3]["days"]) == 27
-    assert len(p3[-1]["days"]) == 27
+    assert len(p3[0]) == 28
+    assert len(p3[3]) == 27
+    assert len(p3[-1]) == 27
 
 
 def test_prytany_calendar_13_long():
     year = bce_as_negative(O_13_LONG)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 13
-    assert p3[-1]['days'][-1]['doy'] == 355
+    assert p3[-1][-1].doy == 355
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 28
-    assert len(p3[3]["days"]) == 27
-    assert len(p3[-1]["days"]) == 28
+    assert len(p3[0]) == 28
+    assert len(p3[3]) == 27
+    assert len(p3[-1]) == 28
 
 
 def test_prytany_calendar_13_intercalated():
     year = bce_as_negative(I_13)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 13
-    assert p3[-1]['days'][-1]['doy'] == 384
+    assert p3[-1][-1].doy == 384
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
     # Prytanies follow the festival calendar
     # The festival months of 214 are:
     #
     #     F H F H F F F H F H F H H
     #
-    assert len(p3[0]["days"]) == 30
-    assert len(p3[1]["days"]) == 29
-    assert len(p3[-3]["days"]) == 30
-    assert len(p3[-2]["days"]) == 29
-    assert len(p3[-1]["days"]) == 29
+    assert len(p3[0]) == 30
+    assert len(p3[1]) == 29
+    assert len(p3[-3]) == 30
+    assert len(p3[-2]) == 29
+    assert len(p3[-1]) == 29
 
 
 def test_prytany_calendar_13_intercalated_aristotle():
     year = bce_as_negative(I_13)
-    c3 = festival_calendar(year)
-    p3 = prytany_calendar(year, rule_of_aristotle=True)
+    c3 = by_months(festival_calendar(year))
+    p3 = by_prytanies(prytany_calendar(year, rule_of_aristotle=True))
     assert len(p3) == 13
-    assert p3[-1]['days'][-1]['doy'] == 384
+    assert p3[-1][-1].doy == 384
 
-    assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["days"][0]["date"]) == as_gmt(p3[0]["days"][0]["date"])
-    assert as_gmt(p3[-1]["days"][-1]["date"]) == \
-        as_gmt(c3[-1]["days"][-1]["date"])
+    assert p3[0][0].prytany == 1
+    assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
-    assert len(p3[0]["days"]) == 30
-    assert len(p3[1]["days"]) == 30
-    assert len(p3[-2]["days"]) == 29
-    assert len(p3[-1]["days"]) == 29
+    assert len(p3[0]) == 30
+    assert len(p3[1]) == 30
+    assert len(p3[-2]) == 29
+    assert len(p3[-1]) == 29
 
 
 def test_fest_doy_ranges():
@@ -1413,20 +1413,22 @@ def test_0_prytanies():
 
 def test_dinsmoor():
     c = festival_calendar(-430, rule=Visible.DINSMOOR)
-    assert c[5]["month"] == "Posideiṓn"
-    assert (as_eet(c[5]["days"][0]["date"])) == "BCE 0431-Nov-29"
-    assert c[5]["days"][0]["doy"] == 148
-    assert c[5]["days"][-1]["doy"] == 177
+    pos = [d for d in c if d.month_index == 6]
+    
+    assert pos[0].month_name == "Posideiṓn"
+    assert as_eet(pos[0].jdn) == "BCE 0431-Nov-29"
+    assert pos[0].doy == 148
+    assert pos[-1].doy == 177
 
-    d = festival_calendar(-430, rule=Visible.DINSMOOR)
-    assert d[6]["month"] == "Posideiṓn hústeros"
-    assert (as_eet(d[6]["days"][0]["date"])) == "BCE 0431-Dec-29"
-    assert d[6]["days"][0]["doy"] == 178
-    assert d[6]["days"][-1]["doy"] == 206
-
+    pos2 = [d for d in c if d.month_index == 7]
+    assert pos2[0].month_name == "Posideiṓn hústeros"
+    assert as_eet(pos2[0].jdn) == "BCE 0431-Dec-29"
+    assert pos2[0].doy == 178
+    assert pos2[-1].doy == 206
+    
     e = festival_calendar(-310, rule=Visible.DINSMOOR)
-    assert e[0]["month"] == "Uncertain"
-    assert (as_eet(e[0]["days"][0]["date"])) == "BCE 0311-Jun-29"
+    assert e[0].month_name == "Uncertain"
+    assert as_eet(e[0].jdn) == "BCE 0311-Jun-29"
 
 
 def test_dinsmoor_months():
@@ -1471,18 +1473,24 @@ def test_festival_to_julian():
 
 
 def test_prytany_to_julian():
-    assert as_eet(
+    assert as_gmt(
         prytany_to_julian(
-            bce_as_negative(332), Prytanies.VIII, 7)) == "BCE 0331-Apr-02"
+            bce_as_negative(332), Prytanies.VIII, 7).jdn) == "BCE 0331-Apr-02"
 
-    assert as_eet(
+    assert as_gmt(
         prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
-                          rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
+                          rule=Visible.NEXT_DAY).jdn) == "BCE 0331-Apr-01"
 
-    assert as_eet(
+    assert as_gmt(
         prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
-                          rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+                          rule=Visible.CONJUNCTION).jdn) == "BCE 0331-Mar-31"
 
+    with pytest.raises(HeniautionNoDayInYearError):
+        assert as_gmt(
+            prytany_to_julian(
+                bce_as_negative(332), Prytanies.VIII, 39,
+                rule=Visible.CONJUNCTION).jdn) == "BCE 0331-Mar-31"
+    
 
 def test_no_sun_data():
     with pytest.raises(HeniautosNoDataError) as e1:
@@ -1533,62 +1541,26 @@ def test_320():
     cal_320 = festival_calendar(bce_as_negative(320))
 
     # With the two day rule, 320 is ordinary
-    assert cal_320[-1]["days"][-1]["doy"] == 354
+    assert cal_320[-1].doy == 354
 
     # It starts on Jul 9
-    assert as_eet(cal_320[0]["days"][0]["date"]) == "BCE 0320-Jul-09"
+    assert as_eet(cal_320[0].jdn) == "BCE 0320-Jul-09"
     # and ends on Jun 27
-    assert as_eet(cal_320[-1]["days"][-1]["date"]) == "BCE 0319-Jun-27"
+    assert as_eet(cal_320[-1].jdn) == "BCE 0319-Jun-27"
 
-    # Last day of Hek
-    assert as_eet(cal_320[0]["days"][-1]["date"]) == "BCE 0320-Aug-06"
-    # First day of Met
-    assert as_eet(cal_320[1]["days"][0]["date"]) == "BCE 0320-Aug-07"
+    months = dict(zip(Months, [[d.jdn for d in cal_320 if d.month == m] for m in Months]))
 
-    # Last day of Met
-    assert as_eet(cal_320[1]["days"][-1]["date"]) == "BCE 0320-Sep-04"
-    # First day of Boe
-    assert as_eet(cal_320[2]["days"][0]["date"]) == "BCE 0320-Sep-05"
-
-    # Last day of Boe
-    assert as_eet(cal_320[2]["days"][-1]["date"]) == "BCE 0320-Oct-04"
-    # First day of Pua
-    assert as_eet(cal_320[3]["days"][0]["date"]) == "BCE 0320-Oct-05"
-
-    # Last day of Pua
-    assert as_eet(cal_320[3]["days"][-1]["date"]) == "BCE 0320-Nov-03"
-    # First day of Mai
-    assert as_eet(cal_320[4]["days"][0]["date"]) == "BCE 0320-Nov-04"
-
-    # Last day of Pos
-    assert as_eet(cal_320[5]["days"][-1]["date"]) == "BCE 0319-Jan-01"
-    # First day of Gam
-    assert as_eet(cal_320[6]["days"][0]["date"]) == "BCE 0319-Jan-02"
-
-    # Last day of Ela
-    assert as_eet(cal_320[8]["days"][-1]["date"]) == "BCE 0319-Mar-31"
-    # First day of Mou
-    assert as_eet(cal_320[9]["days"][0]["date"]) == "BCE 0319-Apr-01"
-
-    # Last day of Mou
-    assert as_eet(cal_320[9]["days"][-1]["date"]) == "BCE 0319-Apr-30"
-    # First day of Tha
-    assert as_eet(cal_320[10]["days"][0]["date"]) == "BCE 0319-May-01"
-
-    # Last day of Tha
-    assert as_eet(cal_320[10]["days"][-1]["date"]) == "BCE 0319-May-29"
-    # First day of Ski
-    assert as_eet(cal_320[11]["days"][0]["date"]) == "BCE 0319-May-30"
+    assert [as_gmt(d.jdn) for d in cal_320 if d.day == 1] == ['BCE 0320-Jul-09', 'BCE 0320-Aug-07', 'BCE 0320-Sep-05', 'BCE 0320-Oct-05', 'BCE 0320-Nov-04', 'BCE 0320-Dec-04', 'BCE 0319-Jan-02', 'BCE 0319-Feb-01', 'BCE 0319-Mar-03', 'BCE 0319-Apr-01', 'BCE 0319-May-01', 'BCE 0319-May-30']
 
     # With the 1-day rule it is intercalary
     assert festival_calendar(
         bce_as_negative(320),
-        rule=Visible.NEXT_DAY)[-1]["days"][-1]["doy"] == 384
+        rule=Visible.NEXT_DAY)[-1].doy == 384
 
     # Likewise with the 0-day rule it is intercalary
     assert festival_calendar(
         bce_as_negative(320),
-        rule=Visible.CONJUNCTION)[-1]["days"][-1]["doy"] == 384
+        rule=Visible.CONJUNCTION)[-1].doy == 384
 
 
 def test_is_contained_in():

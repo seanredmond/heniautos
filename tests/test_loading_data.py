@@ -121,8 +121,8 @@ def test_festival_months_data_param():
 def test_festival_calendar_data_param():
     # print(festival_calendar(-99))
 
-    assert len(festival_calendar(-99)) == 13
-    assert len(festival_calendar(-99, data=CUSTOM_YEAR)) == 2
+    assert len(festival_calendar(-99)) == 384
+    assert len(festival_calendar(-99, data=CUSTOM_YEAR)) == 59
 
     with pytest.raises(HeniautosNoDataError):
         festival_calendar(-99, data={"solstices": (), "new_moons": ()})
