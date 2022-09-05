@@ -19,8 +19,8 @@ def test_get_data():
     assert as_gmt(data["solstices"][-1][0], True) == "BCE 0099-Dec-23 02:21:41 GMT"
     assert data["solstices"][-1][1] == 3
 
-    assert as_gmt(data["new_moons"][0][0], True) == "BCE 0101-Jan-20 22:23:57 GMT"
-    assert as_gmt(data["new_moons"][-1][0], True) == "BCE 0099-Dec-18 22:32:05 GMT"
+    assert as_gmt(data["new_moons"][0][0], True) == "BCE 0101-Jan-05 19:44:48 GMT"
+    assert as_gmt(data["new_moons"][-1][0], True) == "BCE 0099-Dec-26 20:10:25 GMT"
 
 
 @pytest.mark.eph
@@ -42,3 +42,40 @@ def test_festival_calendar():
     p = festival_calendar(100, data=heph.get_ephemeris_data(100, eph=e))
     assert as_gmt(p[0].jdn) == " CE 0100-Jun-27"
     assert as_gmt(p[-1].jdn) == " CE 0101-Jul-15"
+
+
+@pytest.mark.eph
+def test_moon_phases():
+    e = heph.init_ephemeris()
+
+    p = moon_phases(100, data=heph.get_ephemeris_data(100, eph=e))
+    assert type(p) is list
+    assert as_gmt(p[0], True) == " CE 0100-Jan-28 04:26:03 GMT"
+
+    assert (
+        as_gmt(
+            moon_phases(100, Phases.FIRST_Q, data=heph.get_ephemeris_data(100, eph=e))[
+                0
+            ],
+            True,
+        )
+        == " CE 0100-Jan-07 13:59:48 GMT"
+    )
+
+    assert (
+        as_gmt(
+            moon_phases(100, Phases.FULL, data=heph.get_ephemeris_data(100, eph=e))[0],
+            True,
+        )
+        == " CE 0100-Jan-14 00:33:16 GMT"
+    )
+
+    assert (
+        as_gmt(
+            moon_phases(100, Phases.LAST_Q, data=heph.get_ephemeris_data(100, eph=e))[
+                0
+            ],
+            True,
+        )
+        == " CE 0100-Jan-21 17:24:36 GMT"
+    )
