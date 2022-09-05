@@ -323,7 +323,7 @@ def _all_moon_phases(year, data):
     
 
 
-def moon_phases(year, p=None, data=load_data()):
+def moon_phases(year, p=Phases.NEW, data=load_data()):
     """Return a list of Time objects for each indicated lunar phase in the
     given year.
 
@@ -334,7 +334,11 @@ def moon_phases(year, p=None, data=load_data()):
     returned from load_data() (which only includes data from new moons)
     """
     try:
-        return [mp[0] for mp in _all_moon_phases(year, data=data)]
+        phases = [mp[0] for mp in _all_moon_phases(year, data=data) if mp[1] == p]
+        if phases:
+            return phases
+
+        raise HeniautosNoDataError("No data for requested lunar phase in requested year")
     except TypeError:
         if year < 1:
             raise HeniautosNoDataError(f"No data for the year {bce_as_negative(year)} BCE")

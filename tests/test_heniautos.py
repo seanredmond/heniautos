@@ -85,12 +85,18 @@ def test_moon_phases():
     p = moon_phases(-99)
     assert type(p) is list
     assert as_gmt(p[0], True) == "BCE 0100-Jan-09 12:44:44 GMT"
-    # assert as_gmt(moon_phases(-99, Phases.FIRST_Q)[0], True) == \
-    #     "BCE 0100-Jan-16 05:57:05 GMT"
-    # assert as_gmt(moon_phases(-99, Phases.FULL)[0], True) == \
-    #     "BCE 0100-Jan-23 15:05:00 GMT"
-    # assert as_gmt(moon_phases(-99, Phases.LAST_Q)[0], True) == \
-    #     "BCE 0100-Jan-01 22:41:55 GMT"
+
+    with pytest.raises(HeniautosNoDataError):
+        assert as_gmt(moon_phases(-99, Phases.FIRST_Q)[0], True) == \
+            "BCE 0100-Jan-16 05:57:05 GMT"
+    
+    with pytest.raises(HeniautosNoDataError):
+        assert as_gmt(moon_phases(-99, Phases.FULL)[0], True) == \
+            "BCE 0100-Jan-23 15:05:00 GMT"
+        
+    with pytest.raises(HeniautosNoDataError):
+        assert as_gmt(moon_phases(-99, Phases.LAST_Q)[0], True) == \
+            "BCE 0100-Jan-01 22:41:55 GMT"
 
 
 
