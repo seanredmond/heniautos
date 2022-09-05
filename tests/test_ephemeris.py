@@ -2,6 +2,7 @@ from heniautos import *
 import heniautos.ephemeris as heph
 import pytest
 
+
 @pytest.mark.eph
 def test_init_ephemeris():
     e = heph.init_ephemeris()
@@ -25,9 +26,15 @@ def test_get_data():
 @pytest.mark.eph
 def test_summer_solstice():
     e = heph.init_ephemeris()
-    assert as_gmt(summer_solstice(100, data=heph.get_ephemeris_data(100, eph=e))) == " CE 0100-Jun-24"
-    assert as_gmt(summer_solstice(100, data=heph.get_ephemeris_data(100, eph=e)), True) == " CE 0100-Jun-24 22:20:29 GMT"
-    
+    assert (
+        as_gmt(summer_solstice(100, data=heph.get_ephemeris_data(100, eph=e)))
+        == " CE 0100-Jun-24"
+    )
+    assert (
+        as_gmt(summer_solstice(100, data=heph.get_ephemeris_data(100, eph=e)), True)
+        == " CE 0100-Jun-24 22:20:29 GMT"
+    )
+
 
 @pytest.mark.eph
 def test_festival_calendar():
@@ -35,5 +42,3 @@ def test_festival_calendar():
     p = festival_calendar(100, data=heph.get_ephemeris_data(100, eph=e))
     assert as_gmt(p[0].jdn) == " CE 0100-Jun-27"
     assert as_gmt(p[-1].jdn) == " CE 0101-Jul-15"
-
-        
