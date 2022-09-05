@@ -50,14 +50,14 @@ def _solar_events(year1, year2, eph):
     )
 
 
-def _get_solar_events(year1, year2=None, eph=init_ephemeris()):
+def _get_solar_events(year1, year2=None, eph={}):
     if year2 is not None:
         return _solar_events(year1 - 1, year2 + 1, eph)
 
     return _solar_events(year1 - 1, year1 + 1, eph)
 
 
-def _moon_phases(year1, year2, eph):
+def _moon_phases(year1, year2, eph={}):
     """Return Time objects for all moon phases in year y."""
     return tuple(
         [
@@ -74,14 +74,14 @@ def _moon_phases(year1, year2, eph):
     )
 
 
-def _get_new_moons(year1, year2=None, eph=init_ephemeris()):
+def _get_new_moons(year1, year2=None, eph={}):
     if year2 is not None:
         return _moon_phases(year1 - 1, year2 + 1, eph)
 
     return _moon_phases(year1 - 1, year1 + 1, eph)
 
 
-def get_ephemeris_data(year1, year2=None, eph=init_ephemeris()):
+def get_ephemeris_data(year1, year2=None, eph=None):
     return {
         "solstices": _get_solar_events(year1, year2, eph),
         "new_moons": _get_new_moons(year1, year2, eph),

@@ -186,7 +186,7 @@ def prytany_filters(cal, args):
     return [d for d in cal if month_filter(d.prytany, args) and day_filter(d, args) and doy_filter(d, args.doy)]
 
     
-def filtered_festival_calendar(year, args):
+def filtered_festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
     return festival_filters(
         ha.festival_calendar(year,
@@ -194,21 +194,25 @@ def filtered_festival_calendar(year, args):
                              greek=args.greek_names,
                              intercalate=ha.MONTH_ABBREVS.index(
                                  args.intercalate) + 1,
-                             rule=get_rule(args.rule)),
+                             rule=get_rule(args.rule),
+                             data=astro_data()
+                             ),
         args)
         
 
 def filtered_prytany_calendar(year, args):
     """Filter prytany calendar to requested scope."""
-    return prytany_filters(ha.prytany_calendar(year, rule=get_rule(args.rule)), args)
+    return prytany_filters(
+        ha.prytany_calendar(year, rule=get_rule(args.rule, data=astro_data()))
+        , args)
 
 
-def filtered_calendar(year, args):
+def filtered_calendar(year, args, astro_data):
     """Return a calendar with requested filters."""
     if args.conciliar:
-        return filtered_prytany_calendar(year, args)
+        return filtered_prytany_calendar(year, args, astro_data)
 
-    return filtered_festival_calendar(year, args)         
+    return filtered_festival_calendar(year, args, astro_data)         
 
 
 def by_group(year):
@@ -219,7 +223,7 @@ def by_group(year):
     return ha.by_months(year)
 
 
-def output_years(args, writer, tabs):
+def output_years(args, writer, tabs, astro_data):
     if not tabs:
         m_or_p = "Prytany" if args.conciliar else "Month  "
         if args.year_summary:
@@ -234,7 +238,7 @@ def output_years(args, writer, tabs):
                           writer)
 
     for year in years(args.start_year, args.end_year, args.as_ce):
-        cal = filtered_calendar(year, args)
+        cal = filtered_calendar(year, args, astro_data)
 
         if args.year_summary:
             if tabs:
@@ -358,6 +362,20 @@ def get_writer(tabs):
     return csv.writer(stdout, delimiter="|", quoting=csv.QUOTE_NONE)
 
 
+def maybe_load_from_ephemeris(args):
+    """Return a function to be used to load astronomical data."""
+    if args.use_ephemeris:
+        import heniautos.ephemeris as heph
+
+        eph_cfg = heph.init_ephemeris(eph=args.ephemeris) if args.ephemeris else heph.init_ephemeris()
+        cal_years = list(years(args.start_year, args.end_year, args.as_ce))
+
+        return lambda: heph.get_ephemeris_data(cal_years[0], cal_years[-1], eph_cfg)
+
+    
+    return ha.load_data
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Ancient Athenian calendar generator",
@@ -413,6 +431,8 @@ under certain conditions."""
                         "0, 1, 2 days after astronomical conjunction, or "
                         "d for Dinsmoor"
                         "(default: 2)")
+    parser.add_argument("-E", "--use-ephemeris", action="store_true",
+                        help="Use ephemeris for data")
     parser.add_argument("-e", "--ephemeris", metavar="FILE", type=str,
                         help="Use existing ephemeris FILE (if it cannot "
                         "automatically be found)", default=None)
@@ -430,7 +450,7 @@ under certain conditions."""
                         help="Print version and exit")
     args = parser.parse_args()
 
-    # ha.init_data(args.ephemeris)
+    astro_data = maybe_load_from_ephemeris(args)
 
     writer = get_writer(args.tab)
 
@@ -504,7 +524,7 @@ under certain conditions."""
         exit()
         
     try:
-        output_years(args, writer, args.tab)
+        output_years(args, writer, args.tab, astro_data)
     except ha.HeniautosError as e:
         print(e, file=stderr)
         exit(1)
