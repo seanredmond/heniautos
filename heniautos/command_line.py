@@ -454,77 +454,78 @@ under certain conditions."""
 
     writer = get_writer(args.tab)
 
-    if args.new_moons:
-        for year in years(args.start_year, args.end_year, args.as_ce):
-            for nm in ha.new_moons(year):
-                if args.gmt:
-                    print(ha.as_gmt(nm, True))
-                else:
-                    print(ha.as_eet(nm, True))
-        exit()
-
-    if args.full_moons:
-        for year in years(args.start_year, args.end_year, args.as_ce):
-            for nm in ha.moon_phases(year, ha.Phases.FULL):
-                if args.gmt:
-                    print(ha.as_gmt(nm, True))
-                else:
-                    print(ha.as_eet(nm, True))
-        exit()
-
-    if args.summer_solstice:
-        for year in years(args.start_year, args.end_year, args.as_ce):
-            if args.gmt:
-                print(ha.as_gmt(ha.summer_solstice(year), True))
-            else:
-                print(ha.as_eet(ha.summer_solstice(year), True))
-        exit()
-
-    if args.spring_equinox:
-        for year in years(args.start_year, args.end_year, args.as_ce):
-            if args.gmt:
-                print(ha.as_gmt(
-                    ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
-                    True))
-            else:
-                print(ha.as_eet(
-                    ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
-                    True))
-        exit()
-
-    if args.autumn_equinox:
-        for year in years(args.start_year, args.end_year, args.as_ce):
-            if args.gmt:
-                print(ha.as_gmt(
-                    ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
-                    True))
-            else:
-                print(ha.as_eet(
-                    ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
-                    True))
-        exit()
-
-    if args.winter_solstice:
-        for year in years(args.start_year, args.end_year, args.as_ce):
-            if args.gmt:
-                print(ha.as_gmt(
-                    ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
-                    True))
-            else:
-                print(ha.as_eet(
-                    ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
-                    True))
-        exit()
-
-    if args.julian:
-        output_julian(args.start_year, args.end_year,
-                      args.julian_solar_events, args.julian_new_moons,
-                      args.as_ce, args.tab, writer)
-
-        exit()
-        
     try:
+        if args.new_moons:
+            for year in years(args.start_year, args.end_year, args.as_ce):
+                for nm in ha.new_moons(year, data=astro_data()):
+                    if args.gmt:
+                        print(ha.as_gmt(nm, True))
+                    else:
+                        print(ha.as_eet(nm, True))
+            exit()
+
+        if args.full_moons:
+            for year in years(args.start_year, args.end_year, args.as_ce):
+                for nm in ha.moon_phases(year, ha.Phases.FULL, data=astro_data()):
+                    if args.gmt:
+                        print(ha.as_gmt(nm, True))
+                    else:
+                        print(ha.as_eet(nm, True))
+            exit()
+
+        if args.summer_solstice:
+            for year in years(args.start_year, args.end_year, args.as_ce):
+                if args.gmt:
+                    print(ha.as_gmt(ha.summer_solstice(year), True))
+                else:
+                    print(ha.as_eet(ha.summer_solstice(year), True))
+            exit()
+
+        if args.spring_equinox:
+            for year in years(args.start_year, args.end_year, args.as_ce):
+                if args.gmt:
+                    print(ha.as_gmt(
+                        ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
+                        True))
+                else:
+                    print(ha.as_eet(
+                        ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
+                        True))
+            exit()
+
+        if args.autumn_equinox:
+            for year in years(args.start_year, args.end_year, args.as_ce):
+                if args.gmt:
+                    print(ha.as_gmt(
+                        ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
+                        True))
+                else:
+                    print(ha.as_eet(
+                        ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
+                        True))
+            exit()
+
+        if args.winter_solstice:
+            for year in years(args.start_year, args.end_year, args.as_ce):
+                if args.gmt:
+                    print(ha.as_gmt(
+                        ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
+                        True))
+                else:
+                    print(ha.as_eet(
+                        ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
+                        True))
+            exit()
+
+        if args.julian:
+            output_julian(args.start_year, args.end_year,
+                          args.julian_solar_events, args.julian_new_moons,
+                          args.as_ce, args.tab, writer)
+
+            exit()
+        
         output_years(args, writer, args.tab, astro_data)
+
     except ha.HeniautosError as e:
         print(e, file=stderr)
         exit(1)
