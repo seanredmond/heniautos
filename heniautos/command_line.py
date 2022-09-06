@@ -473,49 +473,21 @@ under certain conditions."""
                         print(ha.as_eet(nm, True))
             exit()
 
-        if args.summer_solstice:
-            for year in years(args.start_year, args.end_year, args.as_ce):
-                if args.gmt:
-                    print(ha.as_gmt(ha.summer_solstice(year), True))
-                else:
-                    print(ha.as_eet(ha.summer_solstice(year), True))
-            exit()
+        # Check for one of the solar events (and take the first one)
+        solar = next((s for s in zip((args.spring_equinox, args.summer_solstice, args.autumn_equinox, args.winter_solstice), ha.Seasons) if s[0]), None)
 
-        if args.spring_equinox:
+        if solar is not None:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 if args.gmt:
                     print(ha.as_gmt(
-                        ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
+                        ha.solar_event(year, solar[1], data=astro_data()),
                         True))
                 else:
                     print(ha.as_eet(
-                        ha.solar_event(year, ha.Seasons.SPRING_EQUINOX),
+                        ha.solar_event(year, solar[1], data=astro_data()),
                         True))
             exit()
-
-        if args.autumn_equinox:
-            for year in years(args.start_year, args.end_year, args.as_ce):
-                if args.gmt:
-                    print(ha.as_gmt(
-                        ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
-                        True))
-                else:
-                    print(ha.as_eet(
-                        ha.solar_event(year, ha.Seasons.AUTUMN_EQUINOX),
-                        True))
-            exit()
-
-        if args.winter_solstice:
-            for year in years(args.start_year, args.end_year, args.as_ce):
-                if args.gmt:
-                    print(ha.as_gmt(
-                        ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
-                        True))
-                else:
-                    print(ha.as_eet(
-                        ha.solar_event(year, ha.Seasons.WINTER_SOLSTICE),
-                        True))
-            exit()
+            
 
         if args.julian:
             output_julian(args.start_year, args.end_year,
