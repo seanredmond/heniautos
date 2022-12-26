@@ -89,10 +89,10 @@ def test_new_moons_data_param():
 def test_visible_new_moons_data_param():
     print(visible_new_moons(-99))
 
-    assert visible_new_moons(-99)[0] == 1684909
+    assert visible_new_moons(-99)[0] == 1684908
     assert (
         visible_new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
-        == 1684902
+        == 1684901
     )
 
     with pytest.raises(HeniautosNoDataError):
@@ -100,10 +100,10 @@ def test_visible_new_moons_data_param():
 
 
 def test_calendar_months_data_param():
-    assert calendar_months(-99)[0] == (1685085, 1685115)
+    assert calendar_months(-99)[0] == (1685084, 1685114)
     assert calendar_months(-99, data=CUSTOM_YEAR) == (
-        (1685293, 1685323),
-        (1685323, 1685352),
+        (1685292, 1685322),
+        (1685322, 1685351),
     )
 
     with pytest.raises(HeniautosNoDataError):
@@ -129,10 +129,10 @@ def test_festival_calendar_data_param():
 
 
 def test_doy_to_julian_data_param():
-    assert doy_to_julian(10, -99) == 1685094
-    assert doy_to_julian(100, -99) == 1685184
+    assert doy_to_julian(10, -99) == 1685093
+    assert doy_to_julian(100, -99) == 1685183
 
-    assert doy_to_julian(10, -99, data=CUSTOM_YEAR) == 1685302
+    assert doy_to_julian(10, -99, data=CUSTOM_YEAR) == 1685301
 
     with pytest.raises(HeniautionNoDayInYearError):
         doy_to_julian(100, -99, data=CUSTOM_YEAR)
@@ -142,10 +142,10 @@ def test_doy_to_julian_data_param():
 
 
 def test_festival_to_julian_data_param():
-    assert festival_to_julian(-99, 1, 10) == 1685094
-    assert festival_to_julian(-99, 6, 10) == 1685243
+    assert festival_to_julian(-99, 1, 10) == 1685093
+    assert festival_to_julian(-99, 6, 10) == 1685242
 
-    assert festival_to_julian(-99, 1, 10, data=CUSTOM_YEAR) == 1685302
+    assert festival_to_julian(-99, 1, 10, data=CUSTOM_YEAR) == 1685301
     with pytest.raises(HeniautionNoDayInYearError):
         festival_to_julian(-99, 6, 10, data=CUSTOM_YEAR)
 

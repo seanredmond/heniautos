@@ -19,7 +19,7 @@ O_10_LONG = 399  # 355 days, 10 prytanies
 I_10 = 401       # 384 days, 10 prytanies
 O_12 = 291       # 354 days, 12 prytanies
 O_12_LONG = 293  # 355 days, 12 prytanies
-I_12 = 300       # 384 days, 12 prytanies
+I_12 = 301       # 384 days, 12 prytanies
 O_13 = 209       # 354 days, 13 prytanies
 O_13_LONG = 207  # 355 days, 13 prytanies
 I_13 = 214       # 384 days, 13 prytanies
@@ -113,7 +113,7 @@ def test_calendar_months():
     assert len(p) == 12
     assert type(p[0]) is tuple
     assert len(p[0]) == 2
-    assert as_gmt(p[0][0], True) == "BCE 0101-Jul-17 12:00:00 GMT"
+    assert as_gmt(p[0][0], True) == "BCE 0101-Jul-16 12:00:00 GMT"
     assert p[0][1] == p[1][0]
 
 
@@ -170,7 +170,7 @@ def test_festival_months():
     assert type(p[0]) is dict
     assert p[0]["month"] == "Hekatombaiṓn"
     assert p[0]["constant"] == Months.HEK
-    assert as_gmt(p[0]["start"]) == "BCE 0100-Jul-06"
+    assert as_gmt(p[0]["start"]) == "BCE 0100-Jul-05"
     assert p[0]["end"] == p[1]["start"]
 
     # With abbreviations
@@ -202,12 +202,12 @@ def test_festival_months():
 
     # With different visibility rules
     # SECOND_DAY is the default
-    u = festival_months(-99, rule=Visible.SECOND_DAY)
+    u = festival_months(-99, rule=Visible.NEXT_DAY)
     assert as_gmt(u[0]["start"]) == as_gmt(p[0]["start"])
 
     # with NEXT_DAY
-    v = festival_months(-99, rule=Visible.NEXT_DAY)
-    assert as_gmt(v[0]["start"]) == "BCE 0100-Jul-05"
+    v = festival_months(-99, rule=Visible.SECOND_DAY)
+    assert as_gmt(v[0]["start"]) == "BCE 0100-Jul-06"
 
     # with CONJUNCTION
     v = festival_months(-99, rule=Visible.CONJUNCTION)
@@ -225,14 +225,14 @@ def test_festival_calendar():
     # assert type(p[0]["days"]) is tuple
     #assert type(p[0]["days"][0]) is dict
     assert p[0].day == 1
-    assert as_gmt(p[0].jdn) == "BCE 0101-Jul-17"
+    assert as_gmt(p[0].jdn) == "BCE 0101-Jul-16"
     assert p[0].doy == 1
 
     met = [d for d in p if d.month == Months.MET]
 
     assert met[0].month_name == "Metageitniṓn"
     assert met[0].day == 1
-    assert as_gmt(met[0].jdn) == "BCE 0101-Aug-16"
+    assert as_gmt(met[0].jdn) == "BCE 0101-Aug-15"
     assert met[0].doy == 31
 
 
@@ -241,7 +241,7 @@ def test_find_date():
     assert d.month_name == "Metageitniṓn"
     assert d.month == Months.MET
     assert d.day == 1
-    assert as_gmt(d.jdn) == "BCE 0101-Aug-16"
+    assert as_gmt(d.jdn) == "BCE 0101-Aug-15"
     assert d.doy == 31
 
     with pytest.raises(HeniautosError):
@@ -1454,11 +1454,11 @@ def test_dinsmoor_months():
 
 def test_doy_to_julian():
     assert as_eet(
-        doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-02"
+        doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
 
     assert as_eet(
         doy_to_julian(256, bce_as_negative(332),
-                      rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
+                      rule=Visible.SECOND_DAY)) == "BCE 0331-Apr-02"
     assert as_eet(
         doy_to_julian(256, bce_as_negative(332),
                       rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
@@ -1467,11 +1467,11 @@ def test_doy_to_julian():
 def test_festival_to_julian():
     assert as_eet(
         festival_to_julian(
-            bce_as_negative(332), Months.ELA, 19)) == "BCE 0331-Apr-02"
+            bce_as_negative(332), Months.ELA, 19)) == "BCE 0331-Apr-01"
 
     assert as_eet(
         festival_to_julian(bce_as_negative(332), Months.ELA, 19,
-                           rule=Visible.NEXT_DAY)) == "BCE 0331-Apr-01"
+                           rule=Visible.SECOND_DAY)) == "BCE 0331-Apr-02"
 
     assert as_eet(
         festival_to_julian(bce_as_negative(332), Months.ELA, 19,
@@ -1481,11 +1481,11 @@ def test_festival_to_julian():
 def test_prytany_to_julian():
     assert as_gmt(
         prytany_to_julian(
-            bce_as_negative(332), Prytanies.VIII, 7).jdn) == "BCE 0331-Apr-02"
+            bce_as_negative(332), Prytanies.VIII, 7).jdn) == "BCE 0331-Apr-01"
 
     assert as_gmt(
         prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
-                          rule=Visible.NEXT_DAY).jdn) == "BCE 0331-Apr-01"
+                          rule=Visible.SECOND_DAY).jdn) == "BCE 0331-Apr-02"
 
     assert as_gmt(
         prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
@@ -1523,7 +1523,7 @@ def test_no_moon_no_data():
 
 
 def test_320():
-    # Bug: For the year 320 (2-day rule), the boundaries betweem many
+    # Bug: For the year 320 (2-day rule), the boundaries betwee many
     # months had problems.
     #
     # Some days were doubled:
@@ -1544,7 +1544,7 @@ def test_320():
     # round()) Julian days rather than using just the integer part
     # (with int())
 
-    cal_320 = festival_calendar(bce_as_negative(320))
+    cal_320 = festival_calendar(bce_as_negative(320), rule=Visible.SECOND_DAY)
 
     # With the two day rule, 320 is ordinary
     assert cal_320[-1].doy == 354

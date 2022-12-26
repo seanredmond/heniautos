@@ -40,8 +40,8 @@ def test_summer_solstice():
 def test_festival_calendar():
     e = heph.init_ephemeris()
     p = festival_calendar(100, data=heph.get_ephemeris_data(100, eph=e))
-    assert as_gmt(p[0].jdn) == " CE 0100-Jun-27"
-    assert as_gmt(p[-1].jdn) == " CE 0101-Jul-15"
+    assert as_gmt(p[0].jdn) == " CE 0100-Jun-26"
+    assert as_gmt(p[-1].jdn) == " CE 0101-Jul-14"
 
 
 @pytest.mark.eph

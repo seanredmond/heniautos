@@ -357,7 +357,7 @@ def new_moons(year, data=load_data()):
     return moon_phases(year, Phases.NEW, data=data)
 
 
-def visible_new_moons(year, rule=Visible.SECOND_DAY, data=load_data()):
+def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):
     """Return a list of Julian dates for all visible new moons according
        to selected rule.
 
@@ -408,7 +408,7 @@ def _before(t1, t2):
     return not _on_after(t1, t2)
 
 
-def calendar_months(year, rule=Visible.SECOND_DAY, data=load_data()):
+def calendar_months(year, rule=Visible.NEXT_DAY, data=load_data()):
     """Return a tuple representing start and end dates of Athenian festival
     calendar months.
 
@@ -505,7 +505,7 @@ def prytany_label(p):
 
 
 def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
-                    rule=Visible.SECOND_DAY,
+                    rule=Visible.NEXT_DAY,
                     data=load_data()):
     """Return a tuple representing Athenian festival calendar months.
 
@@ -575,7 +575,7 @@ def _make_month(month, month_index, doy):
 
 
 def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
-                      rule=Visible.SECOND_DAY, data=load_data()):
+                      rule=Visible.NEXT_DAY, data=load_data()):
     """Return a tuple representing Athenian festival calendar.
 
     Parameters:
@@ -622,7 +622,7 @@ necessary (default Months.POS)
 
 
 def find_date(year, month, day, intercalate=Months.POS, abbrev=False,
-              greek=False, rule=Visible.SECOND_DAY, data=load_data()):
+              greek=False, rule=Visible.NEXT_DAY, data=load_data()):
     """Find the Athenian date corresponding to a Julian date
 
     Parameters:
@@ -768,7 +768,7 @@ def _pryt_solar_end(start):
 
 
 def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
-              rule=Visible.SECOND_DAY, rule_of_aristotle=False,
+              rule=Visible.NEXT_DAY, rule_of_aristotle=False,
               data=load_data()):
     """Return tuple of prytanies. See prytany_calendar for parameters."""
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
@@ -835,7 +835,7 @@ def _make_prytany(prytany, prytany_index, doy):
 
 
 def prytany_calendar(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
-                     rule=Visible.SECOND_DAY, rule_of_aristotle=False,
+                     rule=Visible.NEXT_DAY, rule_of_aristotle=False,
                      data=load_data()):
     """Return a tuple representing Athenian conciliar calendar.
 
@@ -899,7 +899,7 @@ def by_prytanies(p):
     return _calendar_groups(p, lambda x: x.prytany)
 
 
-def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
+def doy_to_julian(doy, year, rule=Visible.NEXT_DAY, data=load_data()):
     """Return the Julian Day Number for the Day-of-Year in the given year.
 
     Parameters:
@@ -916,7 +916,7 @@ def doy_to_julian(doy, year, rule=Visible.SECOND_DAY, data=load_data()):
         raise HeniautionNoDayInYearError(f"There is no DOY {doy} in the year {year}")
 
 
-def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY, data=load_data()):
+def festival_to_julian(year, month, day, rule=Visible.NEXT_DAY, data=load_data()):
     """Return the Julian Day Number for a festival date.
 
     Parameters:
@@ -935,7 +935,7 @@ def festival_to_julian(year, month, day, rule=Visible.SECOND_DAY, data=load_data
         raise HeniautionNoDayInYearError(f"There is no day matching month {month}, day {day} in the year {year}")
 
 
-def prytany_to_julian(year, prytany, day, rule=Visible.SECOND_DAY, data=load_data()):
+def prytany_to_julian(year, prytany, day, rule=Visible.NEXT_DAY, data=load_data()):
     """Return the Julian Day Number for a prytany date.
 
     Parameters:
