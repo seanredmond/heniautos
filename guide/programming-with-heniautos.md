@@ -151,7 +151,7 @@ Calendar calculations require a year, and if since you are working with _ancient
     >>> ha.negative_as_bce(-299)
     300
 
-### `festival_calendar()`
+### `festival_calendar()`, `by_months()`
 
 This generates a full Athenian calendar for a given year. For instance, to get the calendar for 350 BCE:
 
@@ -161,42 +161,45 @@ Or, using `bce_as_negative()`:
     
     >>> ha.festival_calendar(ha.bce_as_negative(350))
 
-The return value is a nested data structure (this is what you will probably be looping over to output data from you programs):
+The return value is a list of `FestivalDay` objects. `FestivalDay` is a `namedtuple` with the following members:
 
-| Level | Object   | Type    | Contains |
-|-------|----------|---------|-----------------------|
-| 0     | Year     | `tuple` | one `dict` per month  |
-| 1     | Month    | `dict`  | "month": `str`, "constant": `ha.Months` constant, "days": `tuple` |
-| 2     | Days     | `tuple` | one `dict` per day    |
-| 3     | Day      | `dict`  | "day": `int`, the day of the month, "date": `Time` object, "doy": `int`, the day of the year     |
+| name         | Type             | Description                   |
+|--------------|------------------|-------------------------------|
+| jdn          | `int`            | Julian Day Number             |
+| `month_name` | `str`            | Name of month                 |
+| month_index  | `int`            | Order (1-13) of month in year |
+| month        | heniautos.Months | Identifer of the month        |
+| day          | `int`            | Day of the month (1-30)       |
+| doy          | `doy`            | Day of the year (1-385)       |
+
+The function `by_months` will convert this this is into a tuple of tuples, containing one tuple for each month;
 
     >>> # Get the calendar for 350 BCE
     >>> c = ha.festival_calendar(ha.bce_as_negative(350))
+	>>> c_months = ha.by_months(c)
     >>> # How many months?
-    >>> len(c)
+    >>> len(c_months)
     12
 
     >>> # Get the 3rd month
-    >>> m = c[2]
-    >>> m["month"]
-    'Boēdromiṓn'
-    >>> m["constant"]
-    <Months.BOE: 3>
+    >>> m = c_months[2]
     >>> # How many days?
-    >>> len(m["days"])
+    >>> len(m)
     30
+	>>> # Every FestivalDay in the month has the same month details
+    >>> m[0].month_name
+    'Boēdromiṓn'
+    >>> m[0].month
+    <Months.BOE: 3>
     
     >>> # Get the 15th day (Boēdromiṓn 15)
-    >>> d = m["days"][14]
-    >>> d["day"]
+    >>> d = m[14]
+    >>> d.day
     15
-    >>> d["date"]
-    <Time tt=1593849.9999935674>
-    >>> # What day of the year is it?
-    >>> d["doy"]
+    >>> d.doy
     74
-    
-The `Time` object in the "date" member of the "days" `dict` is not very useful by itself (it is a Julian time, a type provided by Skyview), but see below for its use in `as_eet()` and `as_gmt()`
+
+For conversions to modern (Julian or Gregorian) calendar dates, see "Working with Julian Day Numbers".
 
 #### Intercalations
 
