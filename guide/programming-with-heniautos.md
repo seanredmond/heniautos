@@ -611,9 +611,9 @@ As with the festival year, the possibilites multiply the later you get into the 
 For convenience, if you simply want to know the Julian date of a DOY, use `doy_to_julian()`
 
     >>> ha.as_eet(ha.doy_to_julian(311, ha.bce_as_negative(324)))
-    'BCE 0323-May-29'
-    >>> ha.as_eet(ha.doy_to_julian(311, ha.bce_as_negative(324), rule=ha.Visible.NEXT_DAY))
     'BCE 0323-May-28'
+    >>> ha.as_eet(ha.doy_to_julian(311, ha.bce_as_negative(324), rule=ha.Visible.SECOND_DAY))
+    'BCE 0323-May-29'
 
 ### `equations()`
 
