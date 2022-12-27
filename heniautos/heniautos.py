@@ -256,7 +256,11 @@ def as_gmt(t, full=False):
     """
     if is_bce(t):
         return _gmt_fmt_bce(jd.to_julian(t), full)
-        
+
+    if t >= 2299161: # Start of Gregorian Calendar
+        return _gmt_fmt(jd.to_gregorian(t), full)
+    
+    
     return _gmt_fmt(jd.to_julian(t), full)
 
 

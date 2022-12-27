@@ -79,3 +79,10 @@ def test_moon_phases():
         )
         == " CE 0100-Jan-21 17:24:36 GMT"
     )
+
+@pytest.mark.eph
+def test_moon_phases_gregorian():
+    e = heph.init_ephemeris()
+
+    p = moon_phases(2023, data=heph.get_ephemeris_data(2023, eph=e))
+    assert as_gmt(p[0], True) == " CE 2023-Jan-21 20:54:24 GMT"
