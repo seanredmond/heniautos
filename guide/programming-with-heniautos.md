@@ -203,7 +203,7 @@ For conversions to modern (Julian or Gregorian) calendar dates, see "Working wit
 
 #### Intercalations
 
-Intercalations are made when astronomically necessary--then the twelfth month would end before the summer soltice. By default, this is handled by adding an intercalary Posideiṓn.
+Intercalations are made when astronomically necessary--when the twelfth month would end before the summer solstice. By default, this is handled by adding an intercalary Posideiṓn.
 
     >>> c = ha.festival_calendar(ha.bce_as_negative(300))
     >>> # If there are 13 months, it is intercalary
