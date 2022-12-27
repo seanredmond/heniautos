@@ -89,13 +89,13 @@ The concilar calendar consisted of a different number of prytanies (10, 12, or 1
     
 ### Visibility Rules
 
-Heniautos approximates the observation of the new moon by counting a certain number of days after the astronomical conjunction. The default is two days after--that is, if the new moon conjunction is June 10, Heniautos calculates it as visible June 12 and therefore starts a month on that date. For functions that calculate lunar months you can set this to 1 or 0 days using these constants:
+Heniautos approximates the observation of the new moon by counting a certain number of days after the astronomical conjunction. The default is one day after--that is, if the new moon conjunction is June 10, Heniautos calculates it as visible June 11 and therefore starts a month on that date. For functions that calculate lunar months you can set this to 0, 1, or 2 days using these constants:
 
 | Value                    | Meaning  |
 |--------------------------|----------|
 | `ha.Visible.CONJUNCTION` | New moon observed day of astronomical conjunction |
-| `ha.Visible.NEXT_DAY`    | New moon observed 1 day after conjunction |
-| `ha.Visible.SECOND_DAY`  | (Default) New moon observed 2 days after conjunction |
+| `ha.Visible.NEXT_DAY`    | (Default) New moon observed 1 day after conjunction |
+| `ha.Visible.SECOND_DAY`  | New moon observed 2 days after conjunction |
 | `ha.Visible.DINSMOOR`    | Use dates calculated by Dinsmoor (see below) 
 
 ### Other Constants
@@ -248,18 +248,22 @@ This has no effect if the year is not intercalary:
     
 #### Changing the Visibility Rule
 
-As described above, Heniautos has different rules for approximating the day when the new moon becomes visible, and a new month starts. A specific rule can be selected by supplying a `Visibility` constant as the `rule` parameter. The effect is mostly to move the corresponding Julian dates earlier that the default.
+As described above, Heniautos has different rules for approximating the day when the new moon becomes visible, and a new month starts. A specific rule can be selected by supplying a `Visibility` constant as the `rule` parameter. The effect is mostly to move the corresponding Julian dates, though in some cases this can change which years are intercalary.
 
     >>> c = ha.festival_calendar(ha.bce_as_negative(350))
     >>> # Julian date of the first day of the first month
-    >>> ha.as_eet(c[0]["days"][0]["date"])
-    'BCE 0350-Jul-11'    
-    >>> c = ha.festival_calendar(ha.bce_as_negative(350), rule=ha.Visible.NEXT_DAY)
-    >>> ha.as_eet(c[0]["days"][0]["date"])
+    >>> ha.as_eet(c[0].jdn)
     'BCE 0350-Jul-10'
-    >>> c = ha.festival_calendar(ha.bce_as_negative(350),  rule=ha.Visible.CONJUNCTION)
-    >>> ha.as_eet(c[0]["days"][0]["date"])
-    'BCE 0350-Jul-09' 
+	>>> # The default is Visible.NEXT_DAY
+    >>> c = ha.festival_calendar(ha.bce_as_negative(350), rule=ha.Visible.NEXT_DAY)
+    >>> ha.as_eet(c[0].jdn)
+    'BCE 0350-Jul-10'
+    >>> c = ha.festival_calendar(ha.bce_as_negative(350), rule=ha.Visible.SECOND_DAY)
+    >>> ha.as_eet(c[0].jdn)
+    'BCE 0350-Jul-11'
+    >>> c = ha.festival_calendar(ha.bce_as_negative(350), rule=ha.Visible.CONJUNCTION)
+    >>> ha.as_eet(c[0].jdn)
+    'BCE 0350-Jul-09'
 
 (see below for the as `as_eet()` function)
 
@@ -268,14 +272,14 @@ As described above, Heniautos has different rules for approximating the day when
 There is one more rule, `Visible.DINSMOOR`. This uses dates as calculated by William Dinsmoor in Dinsmoor (1931) Tables IX-XXV (pp. 424-440).
 
     >>> c = ha.festival_calendar(ha.bce_as_negative(350), rule=ha.Visible.DINSMOOR)
-    >>> ha.as_eet(c[0]["days"][0]["date"])
+    >>> ha.as_eet(c[0].jdn)
     'BCE 0350-Jul-11'
     
-In this example, Dinmoor's calculation is the same as as Heniautos' default but this is not always the case. There are some years for which Dinsmoor leaves the specific months undetermined. They are identified by the constant `Months.UNC` (for "uncertain"):
+In this example, Dinmoor's calculation is the same as as Heniautos' for `Visbile.SECOND_DAY`. There are some years for which Dinsmoor leaves the specific months undetermined. They are identified by the constant `Months.UNC` (for "uncertain"):
 
     >>> c = ha.festival_calendar(ha.bce_as_negative(311), rule=ha.Visible.DINSMOOR)
-    >>> c[0]["constant"]
-    <Months.UNC: 14>
+    >>> c[0].month
+    <Months.UNC: 14>	
     
 These dates are provided for their historical interest. Many discussions of the Athenian calendar began with Dinsmoor's dates in the decades after the publication of _The Archons of Athens in the Hellenistic Age_. However, a great number of the inscriptions Dinsmoor relied on as evidence of the character of specific years have since been redated, and can no longer serve the purposes for which Dinmoor used them,
 
