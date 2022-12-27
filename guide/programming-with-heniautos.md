@@ -512,21 +512,21 @@ Rather than generating an entire calendar, you may only want find the Athenian d
 `find_date()` will lookup the Athenan calendar date and return the same data structure you would from the innermost nesting of `festival_calendar()`:
 
     >>> ha.find_date(ha.bce_as_negative(350), ha.Months.BOE, 15)
-    {'month': 'Boēdromiṓn', 'constant': <Months.BOE: 3>, 'day': 15, 'date': <Time tt=1593849.9999935674>, 'doy': 74}
+    FestivalDay(jdn=1593849, month_name='Boēdromiṓn', month_index=3, month=<Months.BOE: 3>, day=15, doy=74)
     
 Use `Months.INT` to get the data for a date in an intercalary month, whichever that is:
 
-    >>> ha.find_date(ha.bce_as_negative(300), ha.Months.INT, 15)
-    {'month': 'Posideiṓn hústeros', 'constant': <Months.INT: 13>, 'day': 15, 'date': <Time tt=1612217.9999942768>, 'doy': 192}
+    >>> ha.find_date(ha.bce_as_negative(301), ha.Months.INT, 15)
+    FestivalDay(jdn=1611863, month_name='Posideiṓn hústeros', month_index=7, month=<Months.INT: 13>, day=15, doy=192)
 
 #### `festival_to_julian()`
 
-If you just want the get straight to the Julian day, use `festival_to_julian()`. It returns a Skyfield `Time` object, so you will probably want to use `as_eet()` or `as_gmt()` to make it human readable.
+If you just want the get straight to the Julian day, use `festival_to_julian()`. It returns a Julian Day Number, so you will probably want to use `as_eet()` or `as_gmt()` to make it human readable.
 
     >>> ha.festival_to_julian(ha.bce_as_negative(350), ha.Months.BOE, 15)
-    <Time tt=1593849.9999935674>
+    1593849
     >>> ha.as_eet(ha.festival_to_julian(ha.bce_as_negative(350), ha.Months.BOE, 15))
-    'BCE 0350-Sep-22'
+    'BCE 0350-Sep-21'
     
 #### `prytany_to_julian()`
 
