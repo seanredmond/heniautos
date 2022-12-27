@@ -166,7 +166,7 @@ The return value is a list of `FestivalDay` objects. `FestivalDay` is a `namedtu
 | name         | Type             | Description                   |
 |--------------|------------------|-------------------------------|
 | jdn          | `int`            | Julian Day Number             |
-| month_name   | `str`            | Name of month                 |
+| month_name   | `str`            | Name of month. This is affected by `abbrev` and `greek` parameters |
 | month_index  | `int`            | Order (1-13) of month in year |
 | month        | heniautos.Months | Identifer of the month        |
 | day          | `int`            | Day of the month (1-30)       |
@@ -283,37 +283,35 @@ In this example, Dinmoor's calculation is the same as as Heniautos' for `Visbile
     
 These dates are provided for their historical interest. Many discussions of the Athenian calendar began with Dinsmoor's dates in the decades after the publication of _The Archons of Athens in the Hellenistic Age_. However, a great number of the inscriptions Dinsmoor relied on as evidence of the character of specific years have since been redated, and can no longer serve the purposes for which Dinmoor used them,
 
-#### Other Parameters
+#### Month Names as Abbreviations or in Greek
 
 To get the month names as abbreviations use `abbrev=True`. To get them in Greek, use `greek=True`
 
-    >>> c = ha.festival_calendar(ha.bce_as_negative(350))
-    >>> c[0]["month"]
+
+    >>> ha.festival_calendar(ha.bce_as_negative(350))[0].month_name
     'Hekatombaiṓn'
-    >>> c = ha.festival_calendar(ha.bce_as_negative(350), abbrev=True)
-    >>> c[0]["month"]
+    >>> ha.festival_calendar(ha.bce_as_negative(350), abbrev=True)[0].month_name
     'Hek'
-    >>> c = ha.festival_calendar(ha.bce_as_negative(350), greek=True)
-    >>> c[0]["month"]
+    >>> ha.festival_calendar(ha.bce_as_negative(350), greek=True)[0].month_name
     'Ἑκατομβαιών'
     
 `greek` overrides `abbrev`. See `month_label()` below for using the `Month` constant to get the transliteration, abbreviation, or Greek name.
 
-### Formatting Dates
+### Formatting Dates: `as_gmt`, `as_eet`
 
-Every day returned by `festival_calendar()` has a Julian date equivalent. This is a Skyview `Time` object, as noted above. Use `as_eet()` to get a string representation of the date in Athens time (Eastern European Time) or `as_gmt()` to get Greenwich Mean Time.
+Every day returned by `festival_calendar()` has a Julian Day Number. For convenience use `as_eet()` to get a string representation of the date in Athens time (Eastern European Time) or `as_gmt()` to get Greenwich Mean Time.
 
-    >>> ha.as_eet(c[0]["days"][0]["date"])
-    'BCE 0350-Jul-11'
-    >>> ha.as_gmt(c[0]["days"][0]["date"])
-    'BCE 0350-Jul-11' 
-    
+    >>> ha.as_eet(c[0].jdn)
+    'BCE 0350-Jul-10'
+    >>> ha.as_gmt(c[0].jdn)
+    'BCE 0350-Jul-10'
+
 Add `full=True` to get the date _and_ time (this will make the time zone difference apparent)
 
-    >>> ha.as_eet(c[0]["days"][0]["date"], full=True)
-    'BCE 0350-Jul-11 13:59:17 EET'
-    >>> ha.as_gmt(c[0]["days"][0]["date"], full=True)
-    'BCE 0350-Jul-11 11:59:17 GMT'
+    >>> ha.as_eet(c[0].jdn, full=True)
+    'BCE 0350-Jul-10 13:59:59 EET'
+    >>> ha.as_gmt(c[0].jdn, full=True)
+    'BCE 0350-Jul-10 12:00:00 GMT'
     
 Neither makes any adjustments for Daylight Savings Time.
 
