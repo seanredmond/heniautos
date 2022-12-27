@@ -219,6 +219,9 @@ Intercalations are made when astronomically necessary--when the twelfth month wo
     >>> # The intercalary month is always identified by Months.INT
     >>> c_months[6][0].month
     <Months.INT: 13>
+	>>> # Gamēliṓn is now the 8th month
+	>>> c_months[7][0].month_name
+    'Gamēliṓn'
 	
 Note the the `month_index` and integer value of `Months` will be equal for months preceding the intercalary month, but not those following
 
