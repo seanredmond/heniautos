@@ -166,7 +166,7 @@ The return value is a list of `FestivalDay` objects. `FestivalDay` is a `namedtu
 | name         | Type             | Description                   |
 |--------------|------------------|-------------------------------|
 | jdn          | `int`            | Julian Day Number             |
-| `month_name` | `str`            | Name of month                 |
+| month_name   | `str`            | Name of month                 |
 | month_index  | `int`            | Order (1-13) of month in year |
 | month        | heniautos.Months | Identifer of the month        |
 | day          | `int`            | Day of the month (1-30)       |
