@@ -146,6 +146,11 @@ Calendar calculations require a year, and if since you are working with _ancient
     >>> ha.bce_as_negative(300)
     -299
 
+`bce_as_negative` works in reverse, but if you want to be more explicit in your code, you can use the alias `negative_as_bce`:
+
+    >>> ha.negative_as_bce(-299)
+    300
+
 ### `festival_calendar()`
 
 This generates a full Athenian calendar for a given year. For instance, to get the calendar for 350 BCE:

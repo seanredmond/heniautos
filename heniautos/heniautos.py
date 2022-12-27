@@ -177,6 +177,9 @@ def bce_as_negative(year):
 
     return year * -1 + 1
 
+# bce as_negative works in reverse, but this alias makes things cleaner
+negative_as_bce = bce_as_negative
+
 
 def to_jdn(t):
     """Converts a Julian date to a Julian Day Number."""

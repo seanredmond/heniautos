@@ -35,6 +35,10 @@ def test_bce_as_negative():
     assert bce_as_negative(100) == -99
 
 
+def test_negative_as_bce():
+    assert negative_as_bce(-99) == 100
+
+
 def test_is_bce():
     assert is_bce(summer_solstice(-99))
     #assert not is_bce(summer_solstice(99))
