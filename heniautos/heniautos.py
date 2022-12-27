@@ -898,7 +898,7 @@ def _calendar_groups(c, func):
 
 def by_months(p):
     """ Return festival calendar grouped into a tuple of tuples by months."""
-    return _calendar_groups(p, lambda x: x.month)
+    return tuple(_calendar_groups(p, lambda x: x.month))
 
 
 def by_prytanies(p):
