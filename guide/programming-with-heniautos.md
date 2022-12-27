@@ -205,34 +205,43 @@ For conversions to modern (Julian or Gregorian) calendar dates, see "Working wit
 
 Intercalations are made when astronomically necessary--when the twelfth month would end before the summer solstice. By default, this is handled by adding an intercalary Posideiṓn.
 
-    >>> c = ha.festival_calendar(ha.bce_as_negative(300))
+    >>> c = ha.festival_calendar(ha.bce_as_negative(301))
+	>>> c_months = ha.by_months(c)
     >>> # If there are 13 months, it is intercalary
-    >>> len(c)
+    >>> len(c_months)
     13
     >>> # 6th month should be Posideiṓn
-    >>> c[5]["month"]
+    >>> c_months[5][0].month_name
     'Posideiṓn'
     >>> # 7th month would normally be Gamēliṓn but...
-    >>> c[6]["month"]
+    >>> c_months[6][0].month_name
     'Posideiṓn hústeros'
     >>> # The intercalary month is always identified by Months.INT
-    >>> c[6]["constant"]
+    >>> c_months[6][0].month
     <Months.INT: 13>
-    
-Any month could be intercalated. To generate a calendar with a specific intercalation, use the `intercalate` parameter with a `Months` constant:
+	
+Note the the `month_index` and integer value of `Months` will be equal for months preceding the intercalary month, but not those following
 
-    >>> c = ha.festival_calendar(ha.bce_as_negative(300), intercalate=ha.Months.GAM)
-    >>> len(c)
-    13
-    >>> c[5]["month"]
-    'Posideiṓn'
-    >>> c[6]["month"]
-    'Gamēliṓn'
-    >>> c[7]["month"]
-    'Gamēliṓn hústeros'
-    >>> # The intercalary month is always identified by Months.INT
-    >>> c[7]["constant"]
-    <Months.INT: 13>
+    >>> f"{c_months[0][0].month} == {c_months[0][0].month_index}"
+    '1 == 1'
+    >>> f"{c_months[-1][0].month} == {c_months[-1][0].month_index}"
+    '12 == 13'
+
+In this case, the last month of the year `<Months.SKI: 12>` is _normally_ the twelfth month, but is the thirteenth in this year, following the intercalary _Posideiṓn hústeros_.
+
+Any month could be intercalated. To generate a calendar with a specific intercalation, use the `intercalate` parameter with a `Months` constant. For intstance, if we pass `Months.HEK` this will generate a calendar with an intercalary _Hekatombaiṓn hústeros_ as the second month rather than _Posideiṓn hústeros_ as the seventh:
+
+    >>> c = ha.festival_calendar(ha.bce_as_negative(301), intercalate=ha.Months.HEK)
+    >>> [d[0].month_name for d in ha.by_months(c)]
+    ['Hekatombaiṓn', 'Hekatombaiṓn hústeros', 'Metageitniṓn', 'Boēdromiṓn', 'Puanopsiṓn', 'Maimaktēriṓn', 'Posideiṓn', 'Gamēliṓn', 'Anthestēriṓn', 'Elaphēboliṓn', 'Mounuchiṓn', 'Thargēliṓn', 'Skirophoriṓn']	
+	
+	
+This has no effect if the year is not intercalary:
+
+    >>> c = ha.festival_calendar(ha.bce_as_negative(300), intercalate=ha.Months.HEK)
+    >>> [d[0].month_name for d in ha.by_months(c)]
+    ['Hekatombaiṓn', 'Metageitniṓn', 'Boēdromiṓn', 'Puanopsiṓn', 'Maimaktēriṓn', 'Posideiṓn', 'Gamēliṓn', 'Anthestēriṓn', 'Elaphēboliṓn', 'Mounuchiṓn', 'Thargēliṓn', 'Skirophoriṓn']
+
     
 #### Changing the Visibility Rule
 
