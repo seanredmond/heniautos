@@ -58,7 +58,7 @@ These constants represent months in the Athenian calendar:
     <Months.THA: 11>, <Months.SKI: 12>, <Months.INT: 13>, 
     <Months.UNC: 14>]
     
-You can always use integer values like 1 for Hekatombaiṓn or 9 for Elaphēboliṓn, but it is safer (and easier) to use `ha.Months.HEK` and `ha.Months.ELA`. An intercalated month is always represented by `INT`. `UNK` is explained under `ha.Visible.DINSMOOR`.
+You can always use integer values like 1 for Hekatombaiṓn or 9 for Elaphēboliṓn, but it is safer (and easier) to use `ha.Months.HEK` and `ha.Months.ELA`. An intercalated month is always represented by `INT`. `UNC` is explained under `ha.Visible.DINSMOOR`.
 
 ### `ha.Prytanies`
 
