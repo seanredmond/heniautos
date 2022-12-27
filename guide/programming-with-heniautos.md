@@ -232,7 +232,7 @@ Note the the `month_index` and integer value of `Months` will be equal for month
 
 In this case, the last month of the year `<Months.SKI: 12>` is _normally_ the twelfth month, but is the thirteenth in this year, following the intercalary _Posideiṓn hústeros_.
 
-Any month could be intercalated. To generate a calendar with a specific intercalation, use the `intercalate` parameter with a `Months` constant. For intstance, if we pass `Months.HEK` this will generate a calendar with an intercalary _Hekatombaiṓn hústeros_ as the second month rather than _Posideiṓn hústeros_ as the seventh:
+Any month could be intercalated. To generate a calendar with a specific intercalation, use the `intercalate` parameter with a `Months` constant. For instance, if we pass `Months.HEK` this will generate a calendar with an intercalary _Hekatombaiṓn hústeros_ as the second month rather than _Posideiṓn hústeros_ as the seventh:
 
     >>> c = ha.festival_calendar(ha.bce_as_negative(301), intercalate=ha.Months.HEK)
     >>> [d[0].month_name for d in ha.by_months(c)]
