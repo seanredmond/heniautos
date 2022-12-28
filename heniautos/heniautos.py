@@ -323,13 +323,14 @@ def summer_solstice(year, data=load_data()):
     return solar_event(year, Seasons.SUMMER_SOLSTICE, data=data)
 
 
+# MAYBE REMOVE
 def _all_moon_phases(year, data):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
     return [m for m in data["new_moons"] if m[0] >= d1 and m[0] <= d2] or None
     
 
-
+# MAYBE REMOVE
 def moon_phases(year, p=Phases.NEW, data=load_data()):
     """Return a list of Time objects for each indicated lunar phase in the
     given year.

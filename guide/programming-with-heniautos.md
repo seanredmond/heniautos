@@ -780,18 +780,11 @@ Returns a list Julian dates for the new moons of any year.
 Returns a list of Julian Day Numbers for the times of the visible new moons (according to the `rule` parameter, `Visibility.SECOND_DAY` by default).
 
     >>> ha.visible_new_moons(-349)
-    [1593600, 1593629, ...]
-    >>> ha.visible_new_moons(-349, ha.Visible.NEXT_DAY)
-    [1593599, 1593628, ...]
+    [1593599, 1593628, 1593658, 1593687, 1593717, 1593746, 1593776, 1593806, 1593835, 1593865, 1593895, 1593924]
+    >>> ha.visible_new_moons(-349, ha.Visible.SECOND_DAY)
+    [1593600, 1593629, 1593659, 1593688, 1593718, 1593747, 1593777, 1593807, 1593836, 1593866, 1593896, 1593925]
     >>> ha.visible_new_moons(-349, ha.Visible.CONJUNCTION)
-    [1593598, 1593627, ...]
-    
-### `moon_phases(year, phase [, data])`
-
-For any phase of the moon, use `moon_phases()` with one of the `Phases` constants.
-
-    >>> [ha.as_eet(m, full=True) for m in ha.moon_phases(ha.bce_as_negative(350), ha.Phases.FULL)]
-    ['BCE 0350-Jan-28 18:40:12 EET', 'BCE 0350-Feb-27 10:16:15 EET', 'BCE 0350-Mar-28 23:00:26 EET', 'BCE 0350-Apr-27 09:02:32 EET', 'BCE 0350-May-26 16:58:35 EET', 'BCE 0350-Jun-24 23:46:34 EET', 'BCE 0350-Jul-24 06:37:59 EET', 'BCE 0350-Aug-22 14:45:41 EET', 'BCE 0350-Sep-21 01:08:42 EET', 'BCE 0350-Oct-20 14:16:55 EET', 'BCE 0350-Nov-19 06:03:23 EET', 'BCE 0350-Dec-18 23:49:21 EET']
+    [1593598, 1593627, 1593657, 1593686, 1593716, 1593745, 1593775, 1593805, 1593834, 1593864, 1593894, 1593923]
     
 ### `summer_solstice(year [, data])`
 
