@@ -486,7 +486,8 @@ def calendar_months(year, event=Seasons.SUMMER_SOLSTICE, rule=Visible.NEXT_DAY,
     sol2 = to_jdn(solar_event(year + 1, event, data=data))
 
     moons = [to_jdn(v) for v in visible_new_moons(year, rule, data=data) +
-             visible_new_moons(year + 1, rule, data=data)]
+             visible_new_moons(year + 1, rule, data=data) +
+             visible_new_moons(year + 2, rule, data=data)]
 
     first, last = _bounding_moons(moons, sol1, sol2, before_event)
 
@@ -556,6 +557,17 @@ def month_label(m, abbrev=False, greek=False):
 def prytany_label(p):
     return ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
             "XI", "XII", "XIII")[int(p)-1]
+
+
+def generic_festival_months(year, event=Seasons.SUMMER_SOLSTICE,
+                            before_event=False,
+                            rule=Visible.NEXT_DAY,
+                            data=load_data()):
+
+    return tuple([{"month_index": m[0], "start": m[1][0], "end": m[1][1]}
+                  for m in enumerate(calendar_months(year, event=event,
+                                                     before_event=before_event,
+                                                     rule=rule, data=data), 1)])
 
 
 def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
@@ -629,8 +641,20 @@ def _make_month(month, month_index, doy):
     return [FestivalDay(month["start"] + d - 1, month["month"], month_index, month["constant"], d, next(doy)) for d in range(1, month["end"] - month["start"] + 1, 1)]
 
 
+def generic_festival_calendar(year, rule=Visible.NEXT_DAY,
+                              event=Seasons.SUMMER_SOLSTICE, data=load_data()):
+
+    doy = _doy_gen()
+
+    return tuple([a for b in
+                  [_make_month(m, i, doy) for i, m in
+                   enumerate(festival_months(year, intercalate=intercalate, abbrev=abbrev, greek=greek, rule=rule, event=event, data=data), 1)]
+                  for a in b])
+
+
 def festival_calendar(year, intercalate=Months.POS, abbrev=False, greek=False,
-                      rule=Visible.NEXT_DAY, data=load_data()):
+                      rule=Visible.NEXT_DAY, event=Seasons.SUMMER_SOLSTICE,
+                      data=load_data()):
     """Return a tuple representing Athenian festival calendar.
 
     Parameters:
@@ -671,7 +695,7 @@ necessary (default Months.POS)
 
     return tuple([a for b in
                   [_make_month(m, i, doy) for i, m in
-                   enumerate(festival_months(year, intercalate=intercalate, abbrev=abbrev, greek=greek, rule=rule, data=data), 1)]
+                   enumerate(festival_months(year, intercalate=intercalate, abbrev=abbrev, greek=greek, rule=rule, event=event, data=data), 1)]
                   for a in b])
 
 

@@ -155,6 +155,118 @@ def test_calendar_months_delian_424():
     assert as_gmt(p[-1][0]) == "BCE 0423-Dec-01"
 
 
+def test_generic_festival_months_athenian_434():
+    """Athenian 434/433 should be intercalary, starting on July 9, 434
+and ending before Jul 27, 433
+
+    """
+    m = generic_festival_months(-433)
+    assert len(m) == 13
+    assert m[0]["month_index"] == 1
+    assert m[-1]["month_index"] == 13
+    assert as_eet(m[0]["start"]) == "BCE 0434-Jul-09"
+    assert as_eet(m[-1]["end"]) == "BCE 0433-Jul-27"
+
+
+def test_generic_festival_months_athenian_433():
+    """Athenian 433/432 should be ordinary, starting on July 27, 433
+and ending before Jul 16, 432
+
+    """
+    m = generic_festival_months(-432)
+    assert len(m) == 12
+    assert as_eet(m[0]["start"]) == "BCE 0433-Jul-27"
+    assert as_eet(m[-1]["end"]) == "BCE 0432-Jul-16"
+
+
+def test_generic_festival_months_athenian_424():
+    """Athenian 424/423 should be ordinary, starting on July 18, 424
+and ending before Jul 7, 423
+
+    """
+    m = generic_festival_months(-423)
+    assert len(m) == 12
+    assert as_eet(m[0]["start"]) == "BCE 0424-Jul-18"
+    assert as_eet(m[-1]["end"]) == "BCE 0423-Jul-07"
+
+
+def test_generic_festival_months_athenian_423():
+    """Athenian 424/423 should be intercalary, starting on July 7, 423
+and ending before Jul 26, 422
+
+    """
+    m = generic_festival_months(-422)
+    assert len(m) == 13
+    assert as_eet(m[0]["start"]) == "BCE 0423-Jul-07"
+    assert as_eet(m[-1]["end"]) == "BCE 0422-Jul-26"
+
+
+def test_generic_festival_months_athenian_422():
+    """Athenian 422/421 should be ordinary, starting on Jul 26, 422
+and ending before July 14, 421
+
+    """
+    m = generic_festival_months(-421)
+    assert len(m) == 12
+    assert as_eet(m[0]["start"]) == "BCE 0422-Jul-26"
+    assert as_eet(m[-1]["end"]) == "BCE 0421-Jul-14"
+
+
+def test_generic_festival_months_delian_435():
+    """Delian 435 (= 434/433) should be ordinary, starting on Jan 13, 434
+and ending before Jan 2, 433
+
+    """
+    m = generic_festival_months(-434, event=Seasons.WINTER_SOLSTICE)
+    assert len(m) == 12
+    assert as_eet(m[0]["start"]) == "BCE 0434-Jan-13"
+    assert as_eet(m[-1]["end"]) == "BCE 0433-Jan-02"
+
+
+def test_generic_festival_months_delian_434():
+    """Delian 434 (= 433/432) should be interclary, starting on Jan 2, 433
+and ending before Jan 20, 432
+
+    """
+    m = generic_festival_months(-433, event=Seasons.WINTER_SOLSTICE)
+    assert len(m) == 13
+    assert as_eet(m[0]["start"]) == "BCE 0433-Jan-02"
+    assert as_eet(m[-1]["end"]) == "BCE 0432-Jan-20"
+
+
+def test_generic_festival_months_spartan_424():
+    """Spartan 424/423 should be ordinary, starting on Sep 15, 424
+and ending before Sep 4, 423
+
+    """
+    m = generic_festival_months(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    assert len(m) == 12
+    assert as_eet(m[0]["start"]) == "BCE 0424-Sep-15"
+    assert as_eet(m[-1]["end"]) == "BCE 0423-Sep-04"
+
+
+def test_generic_festival_months_spartan_423():
+    """Spartan 424/423 should be intercalary, starting on Sep 4, 423
+and ending before Sep 23, 422
+
+    """
+    m = generic_festival_months(-422, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    assert len(m) == 13
+    assert as_eet(m[0]["start"]) == "BCE 0423-Sep-04"
+    assert as_eet(m[-1]["end"]) == "BCE 0422-Sep-23"
+
+
+def test_generic_festival_months_spartan_422():
+    """Spartan 422/421 should be ordinary, starting on Sep 23, 422
+and ending before Sep 12, 421
+
+    """
+    m = generic_festival_months(-421, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    assert len(m) == 12
+    assert as_eet(m[0]["start"]) == "BCE 0422-Sep-23"
+    assert as_eet(m[-1]["end"]) == "BCE 0421-Sep-12"
+
+
 def test_month_label():
     assert month_label(Months.HEK) == "Hekatombaiṓn"
     assert month_label(Months.HEK, abbrev=True) == "Hek"
@@ -275,6 +387,23 @@ def test_festival_calendar():
     assert met[0].doy == 31
 
 
+
+def test_delian_festival_calendar():
+    c = festival_calendar(-434, event=Seasons.WINTER_SOLSTICE)
+    assert len(c) == 354
+    c_months = by_months(c)
+    assert len(c_months) == 12
+    assert as_eet(c_months[0][0].jdn) == "BCE 0434-Jan-13"
+    assert as_eet(c_months[-1][0].jdn) == "BCE 0434-Dec-03"
+    
+    c = festival_calendar(-433, event=Seasons.WINTER_SOLSTICE)
+    assert len(c) == 384
+    c_months = by_months(c)
+    assert len(c_months) == 13
+    assert as_eet(c_months[0][0].jdn) == "BCE 0433-Jan-02"
+    assert as_eet(c_months[-1][0].jdn) == "BCE 0433-Dec-21"
+
+
 def test_find_date():
     d = find_date(-100, Months.MET, 1)
     assert d.month_name == "Metageitniṓn"
@@ -377,7 +506,6 @@ def test_prytanies_solar_leap():
     assert span(p[-1]["start"], p[-1]["end"]) == 37
 
 
-@pytest.mark.xfail
 def test_prytanies_10_ordinary_long():
     c2 = festival_months(O_10_LONG)
     p2 = prytanies(O_10_LONG)
