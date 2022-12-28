@@ -1,5 +1,6 @@
 from heniautos import *
 import pytest
+
 # import skyfield
 
 # from skyfield.api import load
@@ -11,18 +12,18 @@ import pytest
 # EPH = api.load('de422.bsp')
 
 # Year to test prytany lengths
-O_SO = 424       # 354 days, quasi-solar prytanies
+O_SO = 424  # 354 days, quasi-solar prytanies
 O_SO_LONG = 426  # 355 days, quasi-solar prytanies
-I_SO = 425       # 384 days, quasi-solar prytanies
-O_10 = 400       # 354 days, 10 prytanies
+I_SO = 425  # 384 days, quasi-solar prytanies
+O_10 = 400  # 354 days, 10 prytanies
 O_10_LONG = 399  # 355 days, 10 prytanies
-I_10 = 401       # 384 days, 10 prytanies
-O_12 = 291       # 354 days, 12 prytanies
+I_10 = 401  # 384 days, 10 prytanies
+O_12 = 291  # 354 days, 12 prytanies
 O_12_LONG = 293  # 355 days, 12 prytanies
-I_12 = 301       # 384 days, 12 prytanies
-O_13 = 209       # 354 days, 13 prytanies
+I_12 = 301  # 384 days, 12 prytanies
+O_13 = 209  # 354 days, 13 prytanies
 O_13_LONG = 207  # 355 days, 13 prytanies
-I_13 = 214       # 384 days, 13 prytanies
+I_13 = 214  # 384 days, 13 prytanies
 
 # init_data()
 
@@ -41,20 +42,20 @@ def test_negative_as_bce():
 
 def test_is_bce():
     assert is_bce(summer_solstice(-99))
-    #assert not is_bce(summer_solstice(99))
+    # assert not is_bce(summer_solstice(99))
 
 
 def test_add_hours():
     sol = summer_solstice(-99)
     print(sol)
-    print(add_hours(sol,  1))
-    print(add_hours(sol,  1) - sol)
-    assert jd.to_julian(add_hours(sol,  1))[3] == jd.to_julian(sol)[3] + 1
+    print(add_hours(sol, 1))
+    print(add_hours(sol, 1) - sol)
+    assert jd.to_julian(add_hours(sol, 1))[3] == jd.to_julian(sol)[3] + 1
 
 
 def test_add_days():
     sol = summer_solstice(-99)
-    assert jd.to_julian(add_days(sol,  1))[2] == jd.to_julian(sol)[2] + 1
+    assert jd.to_julian(add_days(sol, 1))[2] == jd.to_julian(sol)[2] + 1
     assert jd.to_julian(add_days(sol, -1))[2] == jd.to_julian(sol)[2] - 1
 
 
@@ -75,14 +76,22 @@ def test_summer_solstice():
 
 
 def test_solar_event():
-    assert as_gmt(solar_event(-99, Seasons.SPRING_EQUINOX), True) == \
-        "BCE 0100-Mar-23 19:48:34 GMT"
-    assert as_gmt(solar_event(-99, Seasons.SUMMER_SOLSTICE), True) == \
-        "BCE 0100-Jun-25 19:53:23 GMT"
-    assert as_gmt(solar_event(-99, Seasons.AUTUMN_EQUINOX), True) == \
-        "BCE 0100-Sep-26 04:52:22 GMT"
-    assert as_gmt(solar_event(-99, Seasons.WINTER_SOLSTICE), True) == \
-        "BCE 0100-Dec-23 20:37:06 GMT"
+    assert (
+        as_gmt(solar_event(-99, Seasons.SPRING_EQUINOX), True)
+        == "BCE 0100-Mar-23 19:48:34 GMT"
+    )
+    assert (
+        as_gmt(solar_event(-99, Seasons.SUMMER_SOLSTICE), True)
+        == "BCE 0100-Jun-25 19:53:23 GMT"
+    )
+    assert (
+        as_gmt(solar_event(-99, Seasons.AUTUMN_EQUINOX), True)
+        == "BCE 0100-Sep-26 04:52:22 GMT"
+    )
+    assert (
+        as_gmt(solar_event(-99, Seasons.WINTER_SOLSTICE), True)
+        == "BCE 0100-Dec-23 20:37:06 GMT"
+    )
 
 
 def test_moon_phases():
@@ -91,18 +100,22 @@ def test_moon_phases():
     assert as_gmt(p[0], True) == "BCE 0100-Jan-09 12:44:44 GMT"
 
     with pytest.raises(HeniautosNoDataError):
-        assert as_gmt(moon_phases(-99, Phases.FIRST_Q)[0], True) == \
-            "BCE 0100-Jan-16 05:57:05 GMT"
-    
-    with pytest.raises(HeniautosNoDataError):
-        assert as_gmt(moon_phases(-99, Phases.FULL)[0], True) == \
-            "BCE 0100-Jan-23 15:05:00 GMT"
-        
-    with pytest.raises(HeniautosNoDataError):
-        assert as_gmt(moon_phases(-99, Phases.LAST_Q)[0], True) == \
-            "BCE 0100-Jan-01 22:41:55 GMT"
+        assert (
+            as_gmt(moon_phases(-99, Phases.FIRST_Q)[0], True)
+            == "BCE 0100-Jan-16 05:57:05 GMT"
+        )
 
+    with pytest.raises(HeniautosNoDataError):
+        assert (
+            as_gmt(moon_phases(-99, Phases.FULL)[0], True)
+            == "BCE 0100-Jan-23 15:05:00 GMT"
+        )
 
+    with pytest.raises(HeniautosNoDataError):
+        assert (
+            as_gmt(moon_phases(-99, Phases.LAST_Q)[0], True)
+            == "BCE 0100-Jan-01 22:41:55 GMT"
+        )
 
 
 def test_new_moons():
@@ -157,7 +170,7 @@ def test_calendar_months_delian_424():
 
 def test_generic_festival_months_athenian_434():
     """Athenian 434/433 should be intercalary, starting on July 9, 434
-and ending before Jul 27, 433
+    and ending before Jul 27, 433
 
     """
     m = generic_festival_months(-433)
@@ -170,7 +183,7 @@ and ending before Jul 27, 433
 
 def test_generic_festival_months_athenian_433():
     """Athenian 433/432 should be ordinary, starting on July 27, 433
-and ending before Jul 16, 432
+    and ending before Jul 16, 432
 
     """
     m = generic_festival_months(-432)
@@ -181,7 +194,7 @@ and ending before Jul 16, 432
 
 def test_generic_festival_months_athenian_424():
     """Athenian 424/423 should be ordinary, starting on July 18, 424
-and ending before Jul 7, 423
+    and ending before Jul 7, 423
 
     """
     m = generic_festival_months(-423)
@@ -192,7 +205,7 @@ and ending before Jul 7, 423
 
 def test_generic_festival_months_athenian_423():
     """Athenian 424/423 should be intercalary, starting on July 7, 423
-and ending before Jul 26, 422
+    and ending before Jul 26, 422
 
     """
     m = generic_festival_months(-422)
@@ -203,7 +216,7 @@ and ending before Jul 26, 422
 
 def test_generic_festival_months_athenian_422():
     """Athenian 422/421 should be ordinary, starting on Jul 26, 422
-and ending before July 14, 421
+    and ending before July 14, 421
 
     """
     m = generic_festival_months(-421)
@@ -214,7 +227,7 @@ and ending before July 14, 421
 
 def test_generic_festival_months_delian_435():
     """Delian 435 (= 434/433) should be ordinary, starting on Jan 13, 434
-and ending before Jan 2, 433
+    and ending before Jan 2, 433
 
     """
     m = generic_festival_months(-434, event=Seasons.WINTER_SOLSTICE)
@@ -225,7 +238,7 @@ and ending before Jan 2, 433
 
 def test_generic_festival_months_delian_434():
     """Delian 434 (= 433/432) should be interclary, starting on Jan 2, 433
-and ending before Jan 20, 432
+    and ending before Jan 20, 432
 
     """
     m = generic_festival_months(-433, event=Seasons.WINTER_SOLSTICE)
@@ -236,7 +249,7 @@ and ending before Jan 20, 432
 
 def test_generic_festival_months_spartan_424():
     """Spartan 424/423 should be ordinary, starting on Sep 15, 424
-and ending before Sep 4, 423
+    and ending before Sep 4, 423
 
     """
     m = generic_festival_months(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True)
@@ -247,7 +260,7 @@ and ending before Sep 4, 423
 
 def test_generic_festival_months_spartan_423():
     """Spartan 424/423 should be intercalary, starting on Sep 4, 423
-and ending before Sep 23, 422
+    and ending before Sep 23, 422
 
     """
     m = generic_festival_months(-422, event=Seasons.AUTUMN_EQUINOX, before_event=True)
@@ -258,7 +271,7 @@ and ending before Sep 23, 422
 
 def test_generic_festival_months_spartan_422():
     """Spartan 422/421 should be ordinary, starting on Sep 23, 422
-and ending before Sep 12, 421
+    and ending before Sep 12, 421
 
     """
     m = generic_festival_months(-421, event=Seasons.AUTUMN_EQUINOX, before_event=True)
@@ -287,31 +300,49 @@ def test_suffix():
 
 def test_maybe_intercalate():
     # No intercalations, just the list of ordinary months
-    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == \
-        ("Hekatombaiṓn", Months.HEK)
-    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == \
-        ("Puanopsiṓn", Months.PUA)
-    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == \
-        ("Gamēliṓn", Months.GAM)
+    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == (
+        "Hekatombaiṓn",
+        Months.HEK,
+    )
+    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == (
+        "Puanopsiṓn",
+        Months.PUA,
+    )
+    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == (
+        "Gamēliṓn",
+        Months.GAM,
+    )
 
     # Intercalates Pos
     # Month before Pos unchanged
-    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == \
-        ("Puanopsiṓn", Months.PUA)
+    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == (
+        "Puanopsiṓn",
+        Months.PUA,
+    )
     # The intercalated month
-    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == \
-        ("Posideiṓn hústeros", Months.INT)
+    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == (
+        "Posideiṓn hústeros",
+        Months.INT,
+    )
     # Indexes of months after the intercalation 1 more than usual
-    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == \
-        ("Gamēliṓn", Months.GAM)
+    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == (
+        "Gamēliṓn",
+        Months.GAM,
+    )
 
     # Intercalated Boe
-    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == \
-        ("Boēdromiṓn hústeros", Months.INT)
-    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == \
-        ("Posideiṓn", Months.POS)
-    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == \
-        ("Gamēliṓn", Months.GAM)
+    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == (
+        "Boēdromiṓn hústeros",
+        Months.INT,
+    )
+    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == (
+        "Posideiṓn",
+        Months.POS,
+    )
+    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == (
+        "Gamēliṓn",
+        Months.GAM,
+    )
 
 
 def test_festival_months():
@@ -332,8 +363,7 @@ def test_festival_months():
     assert r[0]["month"] == "Ἑκατομβαιών"
 
     # greek overrides abbrev
-    assert festival_months(-99, abbrev=True, greek=True)[0]["month"] \
-        == "Ἑκατομβαιών"
+    assert festival_months(-99, abbrev=True, greek=True)[0]["month"] == "Ἑκατομβαιών"
 
     # with intercalations
     s = festival_months(-101)
@@ -374,7 +404,7 @@ def test_festival_calendar():
     assert p[0].month_name == "Hekatombaiṓn"
     assert p[0].month == Months.HEK
     # assert type(p[0]["days"]) is tuple
-    #assert type(p[0]["days"][0]) is dict
+    # assert type(p[0]["days"][0]) is dict
     assert p[0].day == 1
     assert as_gmt(p[0].jdn) == "BCE 0101-Jul-16"
     assert p[0].doy == 1
@@ -387,7 +417,6 @@ def test_festival_calendar():
     assert met[0].doy == 31
 
 
-
 def test_delian_festival_calendar():
     c = festival_calendar(-434, event=Seasons.WINTER_SOLSTICE)
     assert len(c) == 354
@@ -395,7 +424,7 @@ def test_delian_festival_calendar():
     assert len(c_months) == 12
     assert as_eet(c_months[0][0].jdn) == "BCE 0434-Jan-13"
     assert as_eet(c_months[-1][0].jdn) == "BCE 0434-Dec-03"
-    
+
     c = festival_calendar(-433, event=Seasons.WINTER_SOLSTICE)
     assert len(c) == 384
     c_months = by_months(c)
@@ -466,7 +495,20 @@ def test_by_months():
     assert len(p) == 12
 
     # make sure the prytany groups are in the right order
-    assert [list(set([pi.month_index for pi in pr])) for pr in p] == [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10], [11], [12]]
+    assert [list(set([pi.month_index for pi in pr])) for pr in p] == [
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
+        [6],
+        [7],
+        [8],
+        [9],
+        [10],
+        [11],
+        [12],
+    ]
 
 
 def test_by_prytanies():
@@ -474,7 +516,18 @@ def test_by_prytanies():
     assert len(p) == 10
 
     # make sure the prytany groups are in the right order
-    assert [list(set([pi.prytany_index for pi in pr])) for pr in p] == [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]]
+    assert [list(set([pi.prytany_index for pi in pr])) for pr in p] == [
+        [1],
+        [2],
+        [3],
+        [4],
+        [5],
+        [6],
+        [7],
+        [8],
+        [9],
+        [10],
+    ]
 
 
 def test_pryt_len_festival():
@@ -545,77 +598,72 @@ def test_prytany_auto():
 
     # Confirm constants for other tests
     assert heniautos._pryt_auto(bce_as_negative(O_SO)) == Prytany.QUASI_SOLAR
-    assert heniautos._pryt_auto(
-        bce_as_negative(O_SO_LONG)) == Prytany.QUASI_SOLAR
+    assert heniautos._pryt_auto(bce_as_negative(O_SO_LONG)) == Prytany.QUASI_SOLAR
     assert heniautos._pryt_auto(bce_as_negative(I_SO)) == Prytany.QUASI_SOLAR
 
     assert heniautos._pryt_auto(bce_as_negative(O_10)) == Prytany.ALIGNED_10
-    assert heniautos._pryt_auto(
-        bce_as_negative(O_10_LONG)) == Prytany.ALIGNED_10
+    assert heniautos._pryt_auto(bce_as_negative(O_10_LONG)) == Prytany.ALIGNED_10
     assert heniautos._pryt_auto(bce_as_negative(I_10)) == Prytany.ALIGNED_10
 
     assert heniautos._pryt_auto(bce_as_negative(O_12)) == Prytany.ALIGNED_12
-    assert heniautos._pryt_auto(
-        bce_as_negative(O_12_LONG)) == Prytany.ALIGNED_12
+    assert heniautos._pryt_auto(bce_as_negative(O_12_LONG)) == Prytany.ALIGNED_12
     assert heniautos._pryt_auto(bce_as_negative(I_12)) == Prytany.ALIGNED_12
 
     assert heniautos._pryt_auto(bce_as_negative(O_13)) == Prytany.ALIGNED_13
-    assert heniautos._pryt_auto(
-        bce_as_negative(O_13_LONG)) == Prytany.ALIGNED_13
+    assert heniautos._pryt_auto(bce_as_negative(O_13_LONG)) == Prytany.ALIGNED_13
     assert heniautos._pryt_auto(bce_as_negative(I_13)) == Prytany.ALIGNED_13
 
 
 def test_pryt_auto_start():
     # Should return Julian dates from rounded Terrestrial Time
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(500),
-            Prytany.AUTO), True) == "BCE 0500-Jul-04 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(500), Prytany.AUTO), True)
+        == "BCE 0500-Jul-04 13:59:59 EET"
+    )
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(425),
-            Prytany.AUTO), True) == "BCE 0425-Jul-04 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(425), Prytany.AUTO), True)
+        == "BCE 0425-Jul-04 13:59:59 EET"
+    )
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(429),
-            Prytany.AUTO), True) == "BCE 0429-Jul-04 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(429), Prytany.AUTO), True)
+        == "BCE 0429-Jul-04 13:59:59 EET"
+    )
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(424),
-            Prytany.AUTO), True) == "BCE 0424-Jul-07 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(424), Prytany.AUTO), True)
+        == "BCE 0424-Jul-07 13:59:59 EET"
+    )
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(421),
-            Prytany.AUTO), True) == "BCE 0421-Jul-07 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(421), Prytany.AUTO), True)
+        == "BCE 0421-Jul-07 13:59:59 EET"
+    )
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(420),
-            Prytany.AUTO), True) == "BCE 0420-Jul-08 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(420), Prytany.AUTO), True)
+        == "BCE 0420-Jul-08 13:59:59 EET"
+    )
 
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(419),
-            Prytany.AUTO), True) == "BCE 0419-Jul-09 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(419), Prytany.AUTO), True)
+        == "BCE 0419-Jul-09 13:59:59 EET"
+    )
 
     # Provide your own start day
-    assert as_eet(
-        heniautos._pryt_auto_start(
-            bce_as_negative(419), 1), True) == "BCE 0419-Jul-01 13:59:59 EET"
+    assert (
+        as_eet(heniautos._pryt_auto_start(bce_as_negative(419), 1), True)
+        == "BCE 0419-Jul-01 13:59:59 EET"
+    )
 
 
 def test_pryt_solar_end():
     # One quasi-solar year should end at the next quasi solar year
-    year_start = heniautos._pryt_auto_start(bce_as_negative(426),
-                                            Prytany.AUTO)
+    year_start = heniautos._pryt_auto_start(bce_as_negative(426), Prytany.AUTO)
     year_end = heniautos._pryt_solar_end(year_start)
-    next_year = heniautos._pryt_auto_start(bce_as_negative(425),
-                                           Prytany.AUTO)
+    next_year = heniautos._pryt_auto_start(bce_as_negative(425), Prytany.AUTO)
     assert year_end == next_year
 
 
@@ -631,7 +679,7 @@ def test_prytany_calendar_solar():
     assert as_gmt(p[-1][-1].jdn) == "BCE 0420-Jul-06"
     assert len(p[-1]) == 36
     assert p[-1][-1].doy == 365
-    
+
     p2 = prytany_calendar(bce_as_negative(429))
     assert as_gmt(p2[0].jdn) == "BCE 0429-Jul-04"
 
@@ -648,9 +696,10 @@ def test_prytany_calendar_solar_leap():
     assert as_gmt(p[-1][-1].jdn) == "BCE 0417-Jul-08"
     assert len(p[-1]) == 37
     assert p[-1][-1].doy == 366
-    
+
 
 # Ten prytanies: 409-308 BCE
+
 
 def test_prytanies_10_ordinary():
     year = bce_as_negative(O_10)
@@ -713,6 +762,7 @@ def test_prytanies_10_intercalated():
 
 # Twelve prytanies: 307-224 BCE & 200-101 BCE
 
+
 def test_prytanies_12_ordinary():
     year = bce_as_negative(O_12)
     c3 = festival_months(year)
@@ -757,8 +807,8 @@ def test_prytanies_12_ordinary_aristotle():
     #
     #     F F F F F F H H H H H H
     #
-    assert span(p3[0]["start"], p3[0]["end"]) == 30    # not 29
-    assert span(p3[2]["start"], p3[2]["end"]) == 30    # not 29
+    assert span(p3[0]["start"], p3[0]["end"]) == 30  # not 29
+    assert span(p3[2]["start"], p3[2]["end"]) == 30  # not 29
     assert span(p3[-3]["start"], p3[-3]["end"]) == 29  # not 30
     assert span(p3[-2]["start"], p3[-2]["end"]) == 29  # not 30
     assert span(p3[-1]["start"], p3[-1]["end"]) == 29  # this one the same
@@ -811,7 +861,7 @@ def test_prytanies_12_long_aristotle():
     #
     #     F F F F F F H H H H H F
     #
-    assert span(p3[0]["start"], p3[0]["end"]) == 30   # not 29
+    assert span(p3[0]["start"], p3[0]["end"]) == 30  # not 29
     assert span(p3[1]["start"], p3[1]["end"]) == 30
     assert span(p3[-4]["start"], p3[-4]["end"]) == 29  # not 30
     assert span(p3[-2]["start"], p3[-2]["end"]) == 29
@@ -838,6 +888,7 @@ def test_prytanies_12_intercalated():
 
 
 # Thirteen prytanies: 223-201 BCE
+
 
 def test_prytanies_13_ordinary():
     year = bce_as_negative(O_13)
@@ -926,7 +977,7 @@ def test_prytanies_13_intercalated_aristotle():
     #     F F F F F F F H H H H H H
     #
     assert span(p3[0]["start"], p3[0]["end"]) == 30
-    assert span(p3[1]["start"], p3[1]["end"]) == 30   # not 29
+    assert span(p3[1]["start"], p3[1]["end"]) == 30  # not 29
     assert span(p3[-3]["start"], p3[-3]["end"]) == 29  # not 30
     assert span(p3[-2]["start"], p3[-2]["end"]) == 29
     assert span(p3[-1]["start"], p3[-1]["end"]) == 29
@@ -952,7 +1003,7 @@ def test_prytany_calendar_10_ordinary():
     assert len(p3[0]) == 36
     assert len(p3[4]) == 35
     assert len(p3[-1]) == 35
-    
+
 
 def test_prytany_calendar_10_ordinary_long():
     year = bce_as_negative(O_10_LONG)
@@ -1263,8 +1314,7 @@ def test_prytany_doy_quasi_solar():
     assert all([d["intercalation"] is None for d in doy])
 
     # All prytanies are 36 or 37 days
-    assert (all([all([m in (36, 37) for m in d["preceding"]])
-                 for d in doy]))
+    assert all([all([m in (36, 37) for m in d["preceding"]]) for d in doy])
 
 
 def test_prytany_doy_aligned_10():
@@ -1309,12 +1359,22 @@ def test_prytany_doy_aligned_10():
     assert all([d["intercalation"] for d in doy if d["doy"] > 294])
 
     # All ordinary prytanies are 35 or 36 days
-    assert (all([all([m in (35, 36) for m in d["preceding"]])
-                 for d in doy if not d["intercalation"]]))
+    assert all(
+        [
+            all([m in (35, 36) for m in d["preceding"]])
+            for d in doy
+            if not d["intercalation"]
+        ]
+    )
 
     # All intercalary prytanies are 38 or 39 days
-    assert (all([all([m in (38, 39) for m in d["preceding"]])
-                 for d in doy if d["intercalation"]]))
+    assert all(
+        [
+            all([m in (38, 39) for m in d["preceding"]])
+            for d in doy
+            if d["intercalation"]
+        ]
+    )
 
     doy = prytany_doy(Prytanies.I, 39, pryt_type=Prytany.ALIGNED_10)
     print(doy)
@@ -1366,12 +1426,18 @@ def test_prytany_doy_aligned_12():
     assert all([d["intercalation"] for d in doy if d["doy"] > 249])
 
     # All ordinary prytanies are 29 or 30 days
-    assert (all([all([m in (29, 30) for m in d["preceding"]])
-                 for d in doy if not d["intercalation"]]))
+    assert all(
+        [
+            all([m in (29, 30) for m in d["preceding"]])
+            for d in doy
+            if not d["intercalation"]
+        ]
+    )
 
     # All intercalary prytanies are 32 days
-    assert (all([all([m in (32,) for m in d["preceding"]])
-                 for d in doy if d["intercalation"]]))
+    assert all(
+        [all([m in (32,) for m in d["preceding"]]) for d in doy if d["intercalation"]]
+    )
 
 
 def test_prytany_doy_aligned_13():
@@ -1418,34 +1484,56 @@ def test_prytany_doy_aligned_13():
     assert all([d["intercalation"] for d in doy if d["doy"] > 229])
 
     # All ordinary prytanies are 27 or 28 days
-    assert (all([all([m in (27, 28) for m in d["preceding"]])
-                 for d in doy if not d["intercalation"]]))
+    assert all(
+        [
+            all([m in (27, 28) for m in d["preceding"]])
+            for d in doy
+            if not d["intercalation"]
+        ]
+    )
 
     # All intercalary prytanies are 29 or 30 days
-    assert (all([all([m in (29, 30) for m in d["preceding"]])
-                 for d in doy if d["intercalation"]]))
+    assert all(
+        [
+            all([m in (29, 30) for m in d["preceding"]])
+            for d in doy
+            if d["intercalation"]
+        ]
+    )
 
 
 def test_prytany_doy_auto():
     # QUASI_SOLAR, all prytanies 36 or 37 days
-    assert all([all([p in (36, 37) for p in d["preceding"]])
-                for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO,
-                                     bce_as_negative(O_SO))])
+    assert all(
+        [
+            all([p in (36, 37) for p in d["preceding"]])
+            for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_SO))
+        ]
+    )
 
     # ALIGNED_10, all prytanies 35, 36, 38, or 39 days
-    assert all([all([p in (35, 36, 38, 39) for p in d["preceding"]])
-                for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO,
-                                     bce_as_negative(O_10))])
+    assert all(
+        [
+            all([p in (35, 36, 38, 39) for p in d["preceding"]])
+            for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_10))
+        ]
+    )
 
     # ALIGNED_12, all prytanies 29, 30, or 32 days
-    assert all([all([p in (29, 30, 32) for p in d["preceding"]])
-                for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO,
-                                     bce_as_negative(O_12))])
+    assert all(
+        [
+            all([p in (29, 30, 32) for p in d["preceding"]])
+            for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_12))
+        ]
+    )
 
     # ALIGNED_13, all prytanies 27, 28, 29, or 30 days
-    assert all([all([p in (27, 28, 29, 30) for p in d["preceding"]])
-                for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO,
-                                     bce_as_negative(O_13))])
+    assert all(
+        [
+            all([p in (27, 28, 29, 30) for p in d["preceding"]])
+            for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_13))
+        ]
+    )
 
     # Error if you choose Prytany.AUTO and forget to give a year
     with pytest.raises(HeniautosError):
@@ -1460,8 +1548,9 @@ def test_fest_eq_tuple():
     assert eq[-1]["doy"] == 70
     assert eq[-1]["intercalation"] is True
 
-    assert heniautos._fest_eq((Months.MET, 10)) == \
-        heniautos._fest_eq(((Months.MET, 10),))
+    assert heniautos._fest_eq((Months.MET, 10)) == heniautos._fest_eq(
+        ((Months.MET, 10),)
+    )
 
 
 def test_fest_eq_nested():
@@ -1490,13 +1579,14 @@ def test_pryt_eq_tuple():
     assert eq[-1]["intercalation"] is True
 
     assert heniautos._pryt_eq(
-        (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10) == \
-        heniautos._pryt_eq(((Prytanies.II, 4),), pryt_type=Prytany.ALIGNED_10)
+        (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
+    ) == heniautos._pryt_eq(((Prytanies.II, 4),), pryt_type=Prytany.ALIGNED_10)
 
 
 def test_pryt_eq_nested():
-    eq = heniautos._pryt_eq(((Prytanies.II, 4), (Prytanies.II, 5)),
-                            pryt_type=Prytany.ALIGNED_10)
+    eq = heniautos._pryt_eq(
+        ((Prytanies.II, 4), (Prytanies.II, 5)), pryt_type=Prytany.ALIGNED_10
+    )
     assert len(eq) == 8
     assert eq[0]["date"] == (Prytanies.II, 4)
     assert eq[0]["doy"] == 39
@@ -1510,8 +1600,7 @@ def test_pryt_eq_nested():
 
 
 def test_equations_tuples():
-    eq = equations((Months.MET, 10), (Prytanies.II, 4),
-                   pryt_type=Prytany.ALIGNED_10)
+    eq = equations((Months.MET, 10), (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10)
 
     # Two solutions to this equation:
     assert len(eq) == 2
@@ -1541,8 +1630,7 @@ def test_equations_tuples():
     assert f["intercalation"] is False
     assert c["intercalation"] is False
 
-    eq = equations((Months.POS, 14), (Prytanies.V, 36),
-                   pryt_type=Prytany.ALIGNED_10)
+    eq = equations((Months.POS, 14), (Prytanies.V, 36), pryt_type=Prytany.ALIGNED_10)
 
     assert len(eq) == 5
     assert [f[0]["doy"] for f in eq] == [188, 189, 190, 191, 192]
@@ -1550,10 +1638,8 @@ def test_equations_tuples():
 
 
 def test_equations_must_be_intercalary():
-    eq1 = equations((Months.MET, 9), (Prytanies.I, 39),
-                    pryt_type=Prytany.ALIGNED_10)
-    eq2 = equations((Months.MET, 6), (Prytanies.I, 36),
-                    pryt_type=Prytany.ALIGNED_10)
+    eq1 = equations((Months.MET, 9), (Prytanies.I, 39), pryt_type=Prytany.ALIGNED_10)
+    eq2 = equations((Months.MET, 6), (Prytanies.I, 36), pryt_type=Prytany.ALIGNED_10)
 
     # There should be only one possibility with I.39 because a 39-day
     # prytany requires an intercalary year
@@ -1566,9 +1652,11 @@ def test_equations_must_be_intercalary():
 
 
 def test_equations_nested():
-    eq = equations(((Months.HEK, 30), (Months.MET, 1)),
-                   ((Prytanies.I, 30), (Prytanies.I, 31)),
-                   pryt_type=Prytany.ALIGNED_10)
+    eq = equations(
+        ((Months.HEK, 30), (Months.MET, 1)),
+        ((Prytanies.I, 30), (Prytanies.I, 31)),
+        pryt_type=Prytany.ALIGNED_10,
+    )
 
     assert all([e[0]["date"] == (Months.HEK, 30) for e in eq[0:2]])
     assert all([e[0]["date"] == (Months.MET, 1) for e in eq[2:]])
@@ -1577,8 +1665,7 @@ def test_equations_nested():
 
 
 def test_0_prytanies():
-    eq = equations((Months.MET, 9), (Prytanies.I, 39),
-                   pryt_type=Prytany.ALIGNED_10)
+    eq = equations((Months.MET, 9), (Prytanies.I, 39), pryt_type=Prytany.ALIGNED_10)
 
     assert len(eq) == 1
     assert len(eq[0][1]["preceding"]) == 0
@@ -1587,7 +1674,7 @@ def test_0_prytanies():
 def test_dinsmoor():
     c = festival_calendar(-430, rule=Visible.DINSMOOR)
     pos = [d for d in c if d.month_index == 6]
-    
+
     assert pos[0].month_name == "Posideiṓn"
     assert as_eet(pos[0].jdn) == "BCE 0431-Nov-29"
     assert pos[0].doy == 148
@@ -1598,7 +1685,7 @@ def test_dinsmoor():
     assert as_eet(pos2[0].jdn) == "BCE 0431-Dec-29"
     assert pos2[0].doy == 178
     assert pos2[-1].doy == 206
-    
+
     e = festival_calendar(-310, rule=Visible.DINSMOOR)
     assert e[0].month_name == "Uncertain"
     assert as_eet(e[0].jdn) == "BCE 0311-Jun-29"
@@ -1609,10 +1696,8 @@ def test_dinsmoor_months():
     assert as_eet(dinsmoor_months(-430)[5]["start"]) == "BCE 0431-Nov-29"
     assert as_eet(dinsmoor_months(-430)[5]["end"]) == "BCE 0431-Dec-29"
     assert dinsmoor_months(-430)[6]["month"] == "Posideiṓn hústeros"
-    assert dinsmoor_months(-430, abbrev=True)[6]["month"] == \
-        "Pos₂"
-    assert dinsmoor_months(-430, greek=True)[6]["month"] == \
-        "Ποσιδειών ὕστερος"
+    assert dinsmoor_months(-430, abbrev=True)[6]["month"] == "Pos₂"
+    assert dinsmoor_months(-430, greek=True)[6]["month"] == "Ποσιδειών ὕστερος"
 
     assert dinsmoor_months(-310)[0]["month"] == "Uncertain"
     assert dinsmoor_months(-310, abbrev=True)[0]["month"] == "Unc"
@@ -1620,49 +1705,76 @@ def test_dinsmoor_months():
 
 
 def test_doy_to_julian():
-    assert as_eet(
-        doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
+    assert as_eet(doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
 
-    assert as_eet(
-        doy_to_julian(256, bce_as_negative(332),
-                      rule=Visible.SECOND_DAY)) == "BCE 0331-Apr-02"
-    assert as_eet(
-        doy_to_julian(256, bce_as_negative(332),
-                      rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+    assert (
+        as_eet(doy_to_julian(256, bce_as_negative(332), rule=Visible.SECOND_DAY))
+        == "BCE 0331-Apr-02"
+    )
+    assert (
+        as_eet(doy_to_julian(256, bce_as_negative(332), rule=Visible.CONJUNCTION))
+        == "BCE 0331-Mar-31"
+    )
 
 
 def test_festival_to_julian():
-    assert as_eet(
-        festival_to_julian(
-            bce_as_negative(332), Months.ELA, 19)) == "BCE 0331-Apr-01"
+    assert (
+        as_eet(festival_to_julian(bce_as_negative(332), Months.ELA, 19))
+        == "BCE 0331-Apr-01"
+    )
 
-    assert as_eet(
-        festival_to_julian(bce_as_negative(332), Months.ELA, 19,
-                           rule=Visible.SECOND_DAY)) == "BCE 0331-Apr-02"
+    assert (
+        as_eet(
+            festival_to_julian(
+                bce_as_negative(332), Months.ELA, 19, rule=Visible.SECOND_DAY
+            )
+        )
+        == "BCE 0331-Apr-02"
+    )
 
-    assert as_eet(
-        festival_to_julian(bce_as_negative(332), Months.ELA, 19,
-                           rule=Visible.CONJUNCTION)) == "BCE 0331-Mar-31"
+    assert (
+        as_eet(
+            festival_to_julian(
+                bce_as_negative(332), Months.ELA, 19, rule=Visible.CONJUNCTION
+            )
+        )
+        == "BCE 0331-Mar-31"
+    )
 
 
 def test_prytany_to_julian():
-    assert as_gmt(
-        prytany_to_julian(
-            bce_as_negative(332), Prytanies.VIII, 7).jdn) == "BCE 0331-Apr-01"
+    assert (
+        as_gmt(prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7).jdn)
+        == "BCE 0331-Apr-01"
+    )
 
-    assert as_gmt(
-        prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
-                          rule=Visible.SECOND_DAY).jdn) == "BCE 0331-Apr-02"
+    assert (
+        as_gmt(
+            prytany_to_julian(
+                bce_as_negative(332), Prytanies.VIII, 7, rule=Visible.SECOND_DAY
+            ).jdn
+        )
+        == "BCE 0331-Apr-02"
+    )
 
-    assert as_gmt(
-        prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7,
-                          rule=Visible.CONJUNCTION).jdn) == "BCE 0331-Mar-31"
+    assert (
+        as_gmt(
+            prytany_to_julian(
+                bce_as_negative(332), Prytanies.VIII, 7, rule=Visible.CONJUNCTION
+            ).jdn
+        )
+        == "BCE 0331-Mar-31"
+    )
 
     with pytest.raises(HeniautionNoDayInYearError):
-        assert as_gmt(
-            prytany_to_julian(
-                bce_as_negative(332), Prytanies.VIII, 39,
-                rule=Visible.CONJUNCTION).jdn) == "BCE 0331-Mar-31"
+        assert (
+            as_gmt(
+                prytany_to_julian(
+                    bce_as_negative(332), Prytanies.VIII, 39, rule=Visible.CONJUNCTION
+                ).jdn
+            )
+            == "BCE 0331-Mar-31"
+        )
 
 
 def test_no_sun_data():
@@ -1721,50 +1833,65 @@ def test_320():
     # and ends on Jun 27
     assert as_eet(cal_320[-1].jdn) == "BCE 0319-Jun-27"
 
-    months = dict(zip(Months, [[d.jdn for d in cal_320 if d.month == m] for m in Months]))
+    months = dict(
+        zip(Months, [[d.jdn for d in cal_320 if d.month == m] for m in Months])
+    )
 
-    assert [as_gmt(d.jdn) for d in cal_320 if d.day == 1] == ['BCE 0320-Jul-09', 'BCE 0320-Aug-07', 'BCE 0320-Sep-05', 'BCE 0320-Oct-05', 'BCE 0320-Nov-04', 'BCE 0320-Dec-04', 'BCE 0319-Jan-02', 'BCE 0319-Feb-01', 'BCE 0319-Mar-03', 'BCE 0319-Apr-01', 'BCE 0319-May-01', 'BCE 0319-May-30']
+    assert [as_gmt(d.jdn) for d in cal_320 if d.day == 1] == [
+        "BCE 0320-Jul-09",
+        "BCE 0320-Aug-07",
+        "BCE 0320-Sep-05",
+        "BCE 0320-Oct-05",
+        "BCE 0320-Nov-04",
+        "BCE 0320-Dec-04",
+        "BCE 0319-Jan-02",
+        "BCE 0319-Feb-01",
+        "BCE 0319-Mar-03",
+        "BCE 0319-Apr-01",
+        "BCE 0319-May-01",
+        "BCE 0319-May-30",
+    ]
 
     # With the 1-day rule it is intercalary
-    assert festival_calendar(
-        bce_as_negative(320),
-        rule=Visible.NEXT_DAY)[-1].doy == 384
+    assert festival_calendar(bce_as_negative(320), rule=Visible.NEXT_DAY)[-1].doy == 384
 
     # Likewise with the 0-day rule it is intercalary
-    assert festival_calendar(
-        bce_as_negative(320),
-        rule=Visible.CONJUNCTION)[-1].doy == 384
+    assert (
+        festival_calendar(bce_as_negative(320), rule=Visible.CONJUNCTION)[-1].doy == 384
+    )
 
 
 def test_is_contained_in():
     assert heniautos._is_contained_in(
-        (29, 29, 29, 29),
-        (30, 30, 30, 29, 29, 29, 29, 29)) == (30, 30, 30, 29)
+        (29, 29, 29, 29), (30, 30, 30, 29, 29, 29, 29, 29)
+    ) == (30, 30, 30, 29)
 
     with pytest.raises(HeniautosNoMatchError):
         heniautos._is_contained_in(
-            (29, 29, 29, 29),
-            (30, 30, 30, 30, 30, 29, 29, 29)) == (30, 30, 30, 29)
+            (29, 29, 29, 29), (30, 30, 30, 30, 30, 29, 29, 29)
+        ) == (30, 30, 30, 29)
 
     with pytest.raises(HeniautosNoMatchError):
         heniautos._is_contained_in((29, 29, 29, 29), (29, 29, 29))
 
 
 def test_each_overlaps():
-    s = [(29, 29, 29, 29),
-         (30, 30, 30, 29, 29, 29, 29, 29),
-         (30, 30, 30, 30, 29, 29, 29, 29, 29)]
+    s = [
+        (29, 29, 29, 29),
+        (30, 30, 30, 29, 29, 29, 29, 29),
+        (30, 30, 30, 30, 29, 29, 29, 29, 29),
+    ]
 
-    assert heniautos._each_overlaps(s) == \
-        ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
+    assert heniautos._each_overlaps(s) == ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
 
-    s = [(29, 29, 29, 29),
-         (30, 30, 30, 29, 29, 29, 29, 29),
-         (30, 30, 30, 30, 30, 29, 29, 29, 29)]
+    s = [
+        (29, 29, 29, 29),
+        (30, 30, 30, 29, 29, 29, 29, 29),
+        (30, 30, 30, 30, 30, 29, 29, 29, 29),
+    ]
 
     with pytest.raises(HeniautosNoMatchError):
-        heniautos._each_overlaps(s) == \
-            ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
+        heniautos._each_overlaps(s) == ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
 
 
 def test_no_deintercalations():
@@ -1778,51 +1905,50 @@ def test_no_deintercalations():
 
 
 def test_no_misaligned_intercalations():
-    eq = equations([(m, 14) for m in Months],
-                   [(p, 2) for p in Prytanies],
-                   year=bce_as_negative(336))
+    eq = equations(
+        [(m, 14) for m in Months],
+        [(p, 2) for p in Prytanies],
+        year=bce_as_negative(336),
+    )
 
     assert len(eq) == 19
 
     # Okay for festival intercalation to be False when conciliar
     # intercaltion is True
-    assert [(f["intercalation"], p["intercalation"])
-            for f, p in eq].count((False, True)) == 6
+    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
+        (False, True)
+    ) == 6
 
     # Okay for both to be the same
-    assert [(f["intercalation"], p["intercalation"])
-            for f, p in eq].count((True, True)) == 6
-    assert [(f["intercalation"], p["intercalation"])
-            for f, p in eq].count((False, False)) == 7
+    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
+        (True, True)
+    ) == 6
+    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
+        (False, False)
+    ) == 7
 
     # This must be 0. There cannot be festival intercalations
     # alongside an ordinary conciliar year
-    assert [(f["intercalation"], p["intercalation"])
-            for f, p in eq].count((True, False)) == 0
+    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
+        (True, False)
+    ) == 0
 
 
 def test_collations():
     # Equation 1: Boe 11 = II 31
-    eq1 = equations((Months.MAI, 11), (Prytanies.IV, 21),
-                    year=bce_as_negative(319))
+    eq1 = equations((Months.MAI, 11), (Prytanies.IV, 21), year=bce_as_negative(319))
 
-    eq2 = equations((Months.ELA, 12), (Prytanies.VII, 34),
-                    year=bce_as_negative(319))
+    eq2 = equations((Months.ELA, 12), (Prytanies.VII, 34), year=bce_as_negative(319))
 
-    eq3 = equations((Months.MOU, 12), (Prytanies.VIII, 29),
-                    year=bce_as_negative(319))
+    eq3 = equations((Months.MOU, 12), (Prytanies.VIII, 29), year=bce_as_negative(319))
 
     c = collations(eq1, eq2, eq3)
     assert len(c) == 8
 
     # Festival year partitions
-    assert c[0]["partitions"]["festival"] == ((29, 29, 29, 29),
-                                              (30, 30, 29, 29),
-                                              (30,))
+    assert c[0]["partitions"]["festival"] == ((29, 29, 29, 29), (30, 30, 29, 29), (30,))
 
-    assert c[0]["partitions"]["conciliar"] == ((36, 35, 35),
-                                               (36, 35, 35),
-                                               (35,))
+    assert c[0]["partitions"]["conciliar"] == ((36, 35, 35), (36, 35, 35), (35,))
 
     # Festival DOYs
     assert [e[0]["doy"] for e in c[0]["equations"]] == [127, 246, 276]
@@ -1831,17 +1957,9 @@ def test_collations():
     assert [e[1]["doy"] for e in c[0]["equations"]] == [127, 246, 276]
 
     # Festival Intercalations
-    assert [e[0]["intercalation"] for e in c[0]["equations"]] == [False,
-                                                                  False,
-                                                                  False]
+    assert [e[0]["intercalation"] for e in c[0]["equations"]] == [False, False, False]
     # Conciliar Intercalations
-    assert [e[1]["intercalation"] for e in c[0]["equations"]] == [False,
-                                                                  False,
-                                                                  False]
+    assert [e[1]["intercalation"] for e in c[0]["equations"]] == [False, False, False]
 
     c = collations(eq1, eq2, eq3, failures=True)
     assert len(c) == 19
-
-
-
-    
