@@ -16,8 +16,8 @@
 
 from collections import namedtuple
 from datetime import datetime
-from enum import IntEnum
-from itertools import groupby, product, zip_longest
+from enum import IntEnum, Enum  # , auto
+from itertools import groupby, product  # , zip_longest
 import juliandate as jd
 from pathlib import Path
 from heniautos.__version__ import __version__
@@ -27,7 +27,7 @@ class HeniautosError(Exception):
     pass
 
 
-class HeniautosNoMatchError(Exception):
+class HeniautosNoMatchError(HeniautosError):
     pass
 
 
@@ -55,6 +55,21 @@ class Phases(IntEnum):
     LAST_Q = 3
 
 
+class MonthNameOptions(IntEnum):
+    TRANSLITERATION = 0
+    ABBREV = 1
+    GREEK = 2
+
+
+class Cal(Enum):
+    ATHENIAN = object()
+    SPARTAN = object()
+    DELIAN = object()
+
+    def __repr__(self):
+        return "<%s.%s>" % (self.__class__.__name__, self._name_)
+
+
 class Visible(IntEnum):
     CONJUNCTION = 0
     NEXT_DAY = 1
@@ -63,6 +78,25 @@ class Visible(IntEnum):
 
 
 class Months(IntEnum):
+    #     HEK = 1
+    #     MET = 2
+    #     BOE = 3
+    #     PUA = 4
+    #     MAI = 5
+    #     POS = 6
+    #     GAM = 7
+    #     ANT = 8
+    #     ELA = 9
+    #     MOU = 10
+    #     THA = 11
+    #     SKI = 12
+    INT = 13
+
+
+#     UNC = 14
+
+
+class AthenianMonths(IntEnum):
     HEK = 1
     MET = 2
     BOE = 3
@@ -75,8 +109,85 @@ class Months(IntEnum):
     MOU = 10
     THA = 11
     SKI = 12
-    INT = 13
-    UNC = 14
+
+
+class DelianMonths(IntEnum):
+    LEN = 1
+    IER = 2
+    GAL = 3
+    ART = 4
+    THA = 5
+    PAN = 6
+    HEK = 7
+    MET = 8
+    BOU = 9
+    APA = 10
+    ARE = 11
+    POS = 12
+
+
+class SpartanMonths(IntEnum):
+    UN1 = 1
+    UN2 = 2
+    UN3 = 3
+    UN4 = 4
+    UN5 = 5
+    UN6 = 6
+    UN7 = 7
+    UN8 = 8
+    UN9 = 9
+    U10 = 10
+    U11 = 11
+    U12 = 12
+
+
+CALENDAR_MAP = {
+    Cal.ATHENIAN: AthenianMonths,
+    Cal.DELIAN: DelianMonths,
+    Cal.SPARTAN: SpartanMonths,
+}
+
+# Since the values of Enums like AthenianMonths.HEK and
+# DelianMonths.LEN are integers (both of these == 1), we need to use
+# something more specific as this dict key
+MONTH_NAME_MAP = {
+    (Cal.ATHENIAN, AthenianMonths.HEK): ("Hekatombaiṓn", "Hek", "Ἑκατομβαιών"),
+    (Cal.ATHENIAN, AthenianMonths.MET): ("Metageitniṓn", "Met", "Μεταγειτνιών"),
+    (Cal.ATHENIAN, AthenianMonths.BOE): ("Boēdromiṓn", "Boe", "Βοηδρομιών"),
+    (Cal.ATHENIAN, AthenianMonths.PUA): ("Puanopsiṓn", "Pua", "Πυανοψιών"),
+    (Cal.ATHENIAN, AthenianMonths.MAI): ("Maimaktēriṓn", "Mai", "Μαιμακτηριών"),
+    (Cal.ATHENIAN, AthenianMonths.POS): ("Posideiṓn", "Pos", "Ποσιδειών"),
+    (Cal.ATHENIAN, AthenianMonths.GAM): ("Gamēliṓn", "Gam", "Γαμηλιών"),
+    (Cal.ATHENIAN, AthenianMonths.ANT): ("Anthestēriṓn", "Ant", "Ἀνθεστηριών"),
+    (Cal.ATHENIAN, AthenianMonths.ELA): ("Elaphēboliṓn", "Ela", "Ἑλαφηβολιών"),
+    (Cal.ATHENIAN, AthenianMonths.MOU): ("Mounuchiṓn", "Mou", "Μουνυχιών"),
+    (Cal.ATHENIAN, AthenianMonths.THA): ("Thargēliṓn", "Tha", "Θαργηλιών"),
+    (Cal.ATHENIAN, AthenianMonths.SKI): ("Skirophoriṓn", "Ski", "Σκιροφοριών"),
+    (Cal.DELIAN, DelianMonths.LEN): ("Lēnaiṓn", "Len", "Ληναιών"),
+    (Cal.DELIAN, DelianMonths.IER): ("Hierós", "Hie", "Ἱερός"),
+    (Cal.DELIAN, DelianMonths.GAL): ("Galaxiṓn", "Gal", "Γαλαξιών"),
+    (Cal.DELIAN, DelianMonths.ART): ("Artemisiṓn", "Art", "Αρτεμισιών"),
+    (Cal.DELIAN, DelianMonths.THA): ("Thargēliṓn", "Tha", "Θαργηλιών"),
+    (Cal.DELIAN, DelianMonths.PAN): ("Pánēmos", "Pan", "Πάνημος"),
+    (Cal.DELIAN, DelianMonths.HEK): ("Hekatombaiṓn", "Hek", "Ἑκατομβαιών"),
+    (Cal.DELIAN, DelianMonths.MET): ("Metageitniṓn", "Met", "Μεταγειτνιών"),
+    (Cal.DELIAN, DelianMonths.BOU): ("Bouphoniṓn", "Bou", "Βουφονιών"),
+    (Cal.DELIAN, DelianMonths.APA): ("Apatouriṓn", "Apa", "Ἀπατουριών"),
+    (Cal.DELIAN, DelianMonths.ARE): ("Arēsiṓn", "Are", "Ἀρησιών"),
+    (Cal.DELIAN, DelianMonths.POS): ("Posideiṓn", "Pos", "Ποσιδειών"),
+    (Cal.SPARTAN, SpartanMonths.UN1): ("Unknown 1", "? 1", "Unknown 1"),
+    (Cal.SPARTAN, SpartanMonths.UN2): ("Unknown 2", "? 2", "Unknown 2"),
+    (Cal.SPARTAN, SpartanMonths.UN3): ("Unknown 3", "? 3", "Unknown 3"),
+    (Cal.SPARTAN, SpartanMonths.UN4): ("Unknown 4", "? 4", "Unknown 4"),
+    (Cal.SPARTAN, SpartanMonths.UN5): ("Unknown 5", "? 5", "Unknown 5"),
+    (Cal.SPARTAN, SpartanMonths.UN6): ("Unknown 6", "? 6", "Unknown 6"),
+    (Cal.SPARTAN, SpartanMonths.UN7): ("Unknown 7", "? 7", "Unknown 7"),
+    (Cal.SPARTAN, SpartanMonths.UN8): ("Unknown 8", "? 8", "Unknown 8"),
+    (Cal.SPARTAN, SpartanMonths.UN9): ("Unknown 9", "? 9", "Unknown 9"),
+    (Cal.SPARTAN, SpartanMonths.U10): ("Unknown 10", "? 10", "Unknown 10"),
+    (Cal.SPARTAN, SpartanMonths.U11): ("Unknown 11", "? 11", "Unknown 11"),
+    (Cal.SPARTAN, SpartanMonths.U12): ("Unknown 12", "? 12", "Unknown 12"),
+}
 
 
 class Prytanies(IntEnum):
@@ -95,50 +206,50 @@ class Prytanies(IntEnum):
     XIII = 13
 
 
-MONTH_NAMES = (
-    "Hekatombaiṓn",
-    "Metageitniṓn",
-    "Boēdromiṓn",
-    "Puanopsiṓn",
-    "Maimaktēriṓn",
-    "Posideiṓn",
-    "Gamēliṓn",
-    "Anthestēriṓn",
-    "Elaphēboliṓn",
-    "Mounuchiṓn",
-    "Thargēliṓn",
-    "Skirophoriṓn",
-)
+# MONTH_NAMES = (
+#     "Hekatombaiṓn",
+#     "Metageitniṓn",
+#     "Boēdromiṓn",
+#     "Puanopsiṓn",
+#     "Maimaktēriṓn",
+#     "Posideiṓn",
+#     "Gamēliṓn",
+#     "Anthestēriṓn",
+#     "Elaphēboliṓn",
+#     "Mounuchiṓn",
+#     "Thargēliṓn",
+#     "Skirophoriṓn",
+# )
 
-MONTH_ABBREVS = (
-    "Hek",
-    "Met",
-    "Boe",
-    "Pua",
-    "Mai",
-    "Pos",
-    "Gam",
-    "Ant",
-    "Ela",
-    "Mou",
-    "Tha",
-    "Ski",
-)
+# MONTH_ABBREVS = (
+#     "Hek",
+#     "Met",
+#     "Boe",
+#     "Pua",
+#     "Mai",
+#     "Pos",
+#     "Gam",
+#     "Ant",
+#     "Ela",
+#     "Mou",
+#     "Tha",
+#     "Ski",
+# )
 
-MONTH_NAMES_GK = (
-    "Ἑκατομβαιών",
-    "Μεταγειτνιών",
-    "Βοηδρομιών",
-    "Πυανοψιών",
-    "Μαιμακτηριών",
-    "Ποσιδειών",
-    "Γαμηλιών",
-    "Ἀνθεστηριών",
-    "Ἑλαφηβολιών",
-    "Μουνυχιών",
-    "Θαργηλιών",
-    "Σκιροφοριών",
-)
+# MONTH_NAMES_GK = (
+#     "Ἑκατομβαιών",
+#     "Μεταγειτνιών",
+#     "Βοηδρομιών",
+#     "Πυανοψιών",
+#     "Μαιμακτηριών",
+#     "Ποσιδειών",
+#     "Γαμηλιών",
+#     "Ἀνθεστηριών",
+#     "Ἑλαφηβολιών",
+#     "Μουνυχιών",
+#     "Θαργηλιών",
+#     "Σκιροφοριών",
+# )
 
 
 class Prytany(IntEnum):
@@ -154,6 +265,10 @@ FestivalDay = namedtuple(
 )
 
 PrytanyDay = namedtuple("PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy"))
+
+# CalendarDay = namedtuple(
+#     "CalendarDay", ("jdn", "month_index", "day", "doy")
+# )
 
 
 def _load_data_file(fn):
@@ -187,7 +302,6 @@ def load_data(
 
 def is_bce(t):
     """Return true if time t represents a BCE date."""
-    # return t.ut1_calendar()[0] < 1
     return jd.to_julian(t)[0] < 1
 
 
@@ -200,7 +314,7 @@ def bce_as_negative(year):
     return year * -1 + 1
 
 
-# bce as_negative works in reverse, but this alias makes things cleaner
+# # bce as_negative works in reverse, but this alias makes things cleaner
 negative_as_bce = bce_as_negative
 
 
@@ -209,47 +323,48 @@ def to_jdn(t):
     return int(t + 0.5)
 
 
-def date(y, m, d, h=9):
-    """Return a ut1 date from calendar date.
+# def date(y, m, d, h=9):
+#     """Return a ut1 date from calendar date.
 
-    Parameters:
-        y (int): The year, negative for BCE
-        m (int): The month
-        d (int): The day
-        h (int): The hour (default 9)
-    """
-    return __h["ts"].ut1(y, m, d, h, 0, 0)
+#     Parameters:
+#         y (int): The year, negative for BCE
+#         m (int): The month
+#         d (int): The day
+#         h (int): The hour (default 9)
+#     """
+#     return __h["ts"].ut1(y, m, d, h, 0, 0)
 
 
-def add_hours(t, h):
+def __add_hours(t, h):
     """Return a new JDN object with h hours added."""
     return jd.from_julian(
         *[sum(x) for x in zip(jd.to_julian(t), (0, 0, 0, h, 0, 0, 0))]
     )
 
 
-def add_days(t, d):
-    """Return a new Time object with d days added to Time t."""
-    return t + d
+# def add_days(t, d):
+#     """Return a new Time object with d days added to Time t."""
+#     return t + d
 
 
-def add_years(t, y):
+# Maybe remove
+def __add_years(t, y):
     """Return a new Time object with y years added to Time t."""
     return jd.from_julian(*[sum(x) for x in zip(jd.to_julian(t), (y, 0, 0, 0, 0, 0))])
 
 
-def span(first, second):
+def __span(first, second):
     """Return the number of days between two dates."""
     # return int(second.tt) - int(first.tt)
     return to_jdn(second) - to_jdn(first)
 
 
-def _epoch(t):
-    """Return a string (BCE/CE) indicating the epoch of date t."""
-    if is_bce(t):
-        return "BCE"
+# def _epoch(t):
+#     """Return a string (BCE/CE) indicating the epoch of date t."""
+#     if is_bce(t):
+#         return "BCE"
 
-    return " CE"
+#     return " CE"
 
 
 def _gmt_fmt_bce(j, full):
@@ -306,9 +421,9 @@ def as_eet(t, full=False):
 
     """
     if full:
-        return as_gmt(add_hours(t, 2), full)[0:25] + "EET"
+        return as_gmt(__add_hours(t, 2), full)[0:25] + "EET"
 
-    return as_gmt(add_hours(t, 2))
+    return as_gmt(__add_hours(t, 2))
 
 
 def solar_event(year, e, data=load_data()):
@@ -336,25 +451,25 @@ def solar_event(year, e, data=load_data()):
         raise HeniautosNoDataError(f"No data for the year {year} CE")
 
 
-def summer_solstice(year, data=load_data()):
-    """Return Time objects for the summer solstice for the given year.
+# def summer_solstice(year, data=load_data()):
+#     """Return Time objects for the summer solstice for the given year.
 
-    Parameters:
-    year -- The year for which the solstice is requested
-    data -- Astronomical data for calculations. By default this is
-    returned from load_data()
-    """
-    return solar_event(year, Seasons.SUMMER_SOLSTICE, data=data)
+#     Parameters:
+#     year -- The year for which the solstice is requested
+#     data -- Astronomical data for calculations. By default this is
+#     returned from load_data()
+#     """
+#     return solar_event(year, Seasons.SUMMER_SOLSTICE, data=data)
 
 
-# MAYBE REMOVE
+# # MAYBE REMOVE
 def _all_moon_phases(year, data):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
     return [m for m in data["new_moons"] if m[0] >= d1 and m[0] <= d2] or None
 
 
-# MAYBE REMOVE
+# # MAYBE REMOVE
 def moon_phases(year, p=Phases.NEW, data=load_data()):
     """Return a list of Time objects for each indicated lunar phase in the
     given year.
@@ -412,10 +527,10 @@ def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):
     CONJUNCTION: The new moon is visible on the same day as the
     astronomical new moon (conjunction).
 
-    NEXT_DAY: The moon is visible the first day after the
+    NEXT_DAY (Default): The moon is visible the first day after the
     astronomical new moon.
 
-    SECOND_DAY (the default): The moon is visible the second day
+    SECOND_DAY: The moon is visible the second day
     after the astronomical new moon.
 
     """
@@ -429,19 +544,19 @@ def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):
         return [to_jdn(n) + 2 for n in new_moons(year, data=data)]
 
 
-def _make_hour(t, h=9):
-    """Return Time object for date t set to hour h (default 9)."""
-    return __h["ts"].ut1(*(t.ut1_calendar()[0:3] + (h, 0, 0)))
+# def _make_hour(t, h=9):
+#     """Return Time object for date t set to hour h (default 9)."""
+#     return __h["ts"].ut1(*(t.ut1_calendar()[0:3] + (h, 0, 0)))
 
 
-def _on_after(t1, t2):
-    """Is time t1 on or after time t2?"""
-    return t1 > t2
+# def _on_after(t1, t2):
+#     """Is time t1 on or after time t2?"""
+#     return t1 > t2
 
 
-def _before(t1, t2):
-    """Is time t1 before t2?"""
-    return not _on_after(t1, t2)
+# def _before(t1, t2):
+#     """Is time t1 before t2?"""
+#     return not _on_after(t1, t2)
 
 
 def _bounding_before(moons, sol1, sol2):
@@ -527,64 +642,64 @@ def calendar_months(
     return tuple([m for m in zip(moons, moons[1:]) if m[0] >= first and m[0] <= last])
 
 
-def _insert_interc(names, i, suffix):
-    """Insert intercalated month name i with suffix suffix into list of
-    month names names."""
-    return names[:i] + ((names[i - 1][0] + suffix, Months.INT),) + names[i:]
+# def _insert_interc(names, i, suffix):
+#     """Insert intercalated month name i with suffix suffix into list of
+#     month names names."""
+#     return names[:i] + ((names[i - 1][0] + suffix, Months.INT),) + names[i:]
 
 
-def _suffix(abbrev=False, greek=False):
-    """Return suffix (if required) indicating an intercalated month.
+# def _suffix(abbrev=False, greek=False):
+#     """Return suffix (if required) indicating an intercalated month.
 
-    Parameters:
-        abbrev (bool): Return abbreviated version
-        greek (bool): Return Greek version (overrides abbrev)
-    """
-    if greek:
-        return " ὕστερος"
+#     Parameters:
+#         abbrev (bool): Return abbreviated version
+#         greek (bool): Return Greek version (overrides abbrev)
+#     """
+#     if greek:
+#         return " ὕστερος"
 
-    if abbrev:
-        return "₂"
+#     if abbrev:
+#         return "₂"
 
-    return " hústeros"
-
-
-def _maybe_intercalate(m, i, abbrev, greek):
-    """Return a list of month names, with an intercalation if necessary
-
-    Parameters:
-        m (int): The number of months required
-        i (Month): The month to intercalate (if required)
-        abbrev (bool): Return names as abbreviations
-        greek (bool): Return names in Greek
-
-    """
-    if m == 12:
-        return tuple(zip(_month_names(abbrev, greek), Months))
-
-    return _insert_interc(
-        _maybe_intercalate(12, i, abbrev, greek), i, _suffix(abbrev, greek)
-    )
+#     return " hústeros"
 
 
-def _month_names(abbrev, greek):
-    """Return list of English, abbreviated, or Greek month names."""
-    if greek:
-        return MONTH_NAMES_GK
+# def _maybe_intercalate(m, i, abbrev, greek):
+#     """Return a list of month names, with an intercalation if necessary
 
-    if abbrev:
-        return MONTH_ABBREVS
+#     Parameters:
+#         m (int): The number of months required
+#         i (Month): The month to intercalate (if required)
+#         abbrev (bool): Return names as abbreviations
+#         greek (bool): Return names in Greek
 
-    return MONTH_NAMES
+#     """
+#     if m == 12:
+#         return tuple(zip(_month_names(abbrev, greek), Months))
+
+#     return _insert_interc(
+#         _maybe_intercalate(12, i, abbrev, greek), i, _suffix(abbrev, greek)
+#     )
 
 
-def month_label(m, abbrev=False, greek=False):
-    if m == Months.INT:
-        if abbrev:
-            return "Int"
-        return "Intercalated"
+# def _month_names(abbrev, greek):
+#     """Return list of English, abbreviated, or Greek month names."""
+#     if greek:
+#         return MONTH_NAMES_GK
 
-    return _month_names(abbrev, greek)[int(m) - 1]
+#     if abbrev:
+#         return MONTH_ABBREVS
+
+#     return MONTH_NAMES
+
+
+# def month_label(m, abbrev=False, greek=False):
+#     if m == Months.INT:
+#         if abbrev:
+#             return "Int"
+#         return "Intercalated"
+
+#     return _month_names(abbrev, greek)[int(m) - 1]
 
 
 def prytany_label(p):
@@ -605,7 +720,7 @@ def prytany_label(p):
     )[int(p) - 1]
 
 
-def generic_festival_months(
+def festival_months(
     year,
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
@@ -626,56 +741,56 @@ def generic_festival_months(
     )
 
 
-def festival_months(
-    year,
-    intercalate=Months.POS,
-    abbrev=False,
-    greek=False,
-    event=Seasons.SUMMER_SOLSTICE,
-    rule=Visible.NEXT_DAY,
-    data=load_data(),
-):
-    """Return a tuple representing Athenian festival calendar months.
+# def zz_festival_months(
+#     year,
+#     intercalate=Months.POS,
+#     abbrev=False,
+#     greek=False,
+#     event=Seasons.SUMMER_SOLSTICE,
+#     rule=Visible.NEXT_DAY,
+#     data=load_data(),
+# ):
+#     """Return a tuple representing Athenian festival calendar months.
 
-    Parameters:
-    year (int) -- The year for the calendar
-    intercalate (Months) -- Constant indicating the month to intercalate if
-    necessary
-    abbrev (bool) -- Return month names as abbreviations (default False)
-    greek (bool) -- Return month names in Greek (default False)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
-    data -- Astronomical data for calculations. By default this is
-    returned from load_data()
+#     Parameters:
+#     year (int) -- The year for the calendar
+#     intercalate (Months) -- Constant indicating the month to intercalate if
+#     necessary
+#     abbrev (bool) -- Return month names as abbreviations (default False)
+#     greek (bool) -- Return month names in Greek (default False)
+#     rule (Visible) -- Constant from Visible indicating the desired rule
+#     (default Visible.SECOND_DAY)
+#     data -- Astronomical data for calculations. By default this is
+#     returned from load_data()
 
 
-    See calendar_months for documentation of visibility rules.
+#     See calendar_months for documentation of visibility rules.
 
-    Returns a tuple with one member for each month. Each tuple contains:
-        - The name of the calendar month (str)
-        - A constant indicating the calendar (Months). This is Month.INT if the
-          month is the intercalated month
-        - A tuple of start and end dates of the month. See calendar_month
-          for details on the start and end times.
+#     Returns a tuple with one member for each month. Each tuple contains:
+#         - The name of the calendar month (str)
+#         - A constant indicating the calendar (Months). This is Month.INT if the
+#           month is the intercalated month
+#         - A tuple of start and end dates of the month. See calendar_month
+#           for details on the start and end times.
 
-    If intercalation is necessary, the intercalated month will be
-    calculated according the the intercalate parameter.
+#     If intercalation is necessary, the intercalated month will be
+#     calculated according the the intercalate parameter.
 
-    greek=True will override abbrev=True
+#     greek=True will override abbrev=True
 
-    """
-    if rule == Visible.DINSMOOR:
-        return dinsmoor_months(year, abbrev, greek)
-    months = calendar_months(year, event=event, rule=rule, data=data)
+#     """
+#     if rule == Visible.DINSMOOR:
+#         return dinsmoor_months(year, abbrev, greek)
+#     months = calendar_months(year, event=event, rule=rule, data=data)
 
-    return tuple(
-        [
-            {"month": m[0][0], "constant": m[0][1], "start": m[1][0], "end": m[1][1]}
-            for m in zip(
-                _maybe_intercalate(len(months), intercalate, abbrev, greek), months
-            )
-        ]
-    )
+#     return tuple(
+#         [
+#             {"month": m[0][0], "constant": m[0][1], "start": m[1][0], "end": m[1][1]}
+#             for m in zip(
+#                 _maybe_intercalate(len(months), intercalate, abbrev, greek), months
+#             )
+#         ]
+#     )
 
 
 def _doy_gen(n=1):
@@ -684,29 +799,43 @@ def _doy_gen(n=1):
     yield from _doy_gen(n + 1)
 
 
-def _month_days(start, finish, doy):
-    """Return tuple of dicts representing days of a month.
+# def _month_days(start, finish, doy):
+#     """Return tuple of dicts representing days of a month.
 
-    Parameters:
-        start: Start time of the month
-        finish: Start time of next month
-        doy: generator function to get the next day of the year
-    """
-    return tuple(
-        [
-            {"day": d + 1, "date": add_days(start, d), "doy": next(doy)}
-            for d in range(0, int(finish) - int(start))
-        ]
-    )
+#     Parameters:
+#         start: Start time of the month
+#         finish: Start time of next month
+#         doy: generator function to get the next day of the year
+#     """
+#     return tuple(
+#         [
+#             {"day": d + 1, "date": add_days(start, d), "doy": next(doy)}
+#             for d in range(0, int(finish) - int(start))
+#         ]
+#     )
 
 
-def _make_month(month, month_index, doy):
+# def _make_month(month, month_index, doy):
+#     return [
+#         FestivalDay(
+#             month["start"] + d - 1,
+#             month["month"],
+#             month_index,
+#             month["constant"],
+#             d,
+#             next(doy),
+#         )
+#         for d in range(1, month["end"] - month["start"] + 1, 1)
+#     ]
+
+
+def __make_generic_month(month, month_index, doy):
     return [
         FestivalDay(
             month["start"] + d - 1,
-            month["month"],
+            None,
             month_index,
-            month["constant"],
+            None,
             d,
             next(doy),
         )
@@ -714,112 +843,270 @@ def _make_month(month, month_index, doy):
     ]
 
 
-def generic_festival_calendar(
-    year, rule=Visible.NEXT_DAY, event=Seasons.SUMMER_SOLSTICE, data=load_data()
+def _base_festival_calendar(
+    year,
+    event=Seasons.SUMMER_SOLSTICE,
+    before_event=False,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
 ):
 
     doy = _doy_gen()
 
+    months = festival_months(
+        year, event=event, before_event=before_event, rule=rule, data=data
+    )
+
     return tuple(
         [
             a
-            for b in [
-                _make_month(m, i, doy)
-                for i, m in enumerate(
-                    festival_months(
-                        year,
-                        intercalate=intercalate,
-                        abbrev=abbrev,
-                        greek=greek,
-                        rule=rule,
-                        event=event,
-                        data=data,
-                    ),
-                    1,
-                )
-            ]
+            for b in [__make_generic_month(m, i, doy) for i, m in enumerate(months, 1)]
             for a in b
         ]
+    )
+
+
+def __intercalary_order(months, intercalate=6):
+    return months[:intercalate] + (Months.INT,) + months[intercalate:]
+
+
+def __month_order(calendar, intercalate, intercalary):
+    if intercalary:
+        return __intercalary_order(tuple(CALENDAR_MAP[calendar]), intercalate)
+
+    return tuple(CALENDAR_MAP[calendar])
+
+
+def __intercalated_names(month):
+    return tuple(["".join(n) for n in zip(month, (" hústeros", "₂", " ὕστερος"))])
+
+
+def __intercalated_month_name_map(calendar, months):
+    if Months.INT in months:
+        return {
+            **MONTH_NAME_MAP,
+            **{
+                (calendar, Months.INT): __intercalated_names(
+                    MONTH_NAME_MAP[(calendar, months[months.index(Months.INT) - 1])]
+                )
+            },
+        }
+
+    return MONTH_NAME_MAP
+
+
+def __make_festival_day(cal_day, name_as, calendar=None, months=None, month_names=None):
+    if months is None:
+        return cal_day
+        # return FestivalDay(
+        #     cal_day.jdn,
+        #     None,
+        #     cal_day.month_index,
+        #     None,
+        #     cal_day.day,
+        #     cal_day.doy,
+        # )
+
+    return FestivalDay(
+        cal_day.jdn,
+        month_names[(calendar, months[cal_day.month_index - 1])][name_as],
+        cal_day.month_index,
+        months[cal_day.month_index - 1],
+        cal_day.day,
+        cal_day.doy,
     )
 
 
 def festival_calendar(
     year,
-    intercalate=Months.POS,
-    abbrev=False,
-    greek=False,
-    rule=Visible.NEXT_DAY,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
     event=Seasons.SUMMER_SOLSTICE,
+    before_event=False,
+    rule=Visible.NEXT_DAY,
     data=load_data(),
 ):
-    """Return a tuple representing Athenian festival calendar.
+    """Return a tuple representing festival calendar.
 
         Parameters:
         year (int) -- The year for the calendar
-        intercalate (Months) -- Month constant for month to intercalate if
-    necessary (default Months.POS)
-        abbrev (bool) -- Return month names as abbreviations (default False)
-        greek (bool) -- Return month names in Greek (default False)
+        calendar (Cal) --
+        intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
+        name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+        event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
+        before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
         rule (Visible) -- Constant from Visible indicating the desired rule
     (default Visible.SECOND_DAY)
         data -- Astronomical data for calculations. By default this is
         returned from load_data()
 
-
         See calendar_months for documentation of visibility rules.
 
-        Returns a tuple with one member for each month. Each member is a
-        tuple of the month name and tuple of start and end dates of the
-        month. See calendar_month for details on the start and end times.
+        Returns a tuple of FestivalDay objected with one member for
+        each month. Each member is a tuple of the month name and tuple
+        of start and end dates of the month. See calendar_month for
+        details on the start and end times.
 
         If intercalation is necessary, the intercalated month will be
-        calculated according the the intercalate parameter. This begins
-        with 1 = Hekatombaiṓn, with a default of 6 = Poseidēiṓn.
+        calculated according the the intercalate parameter.
 
-        greek=True will override abbrev=True
+        If the calendar parameter is None, a generic calendar will be
+        returned with the month and month_name members of each
+        FestivalDay being None.
 
-        Each member of the tuple is a dict containing:
-            "month": the name or abbreviation of the month.
-            "constant": The constant of class Months of the month
-            "days": a tuple with one member for day of the month.
-
-        Each member of the "days" tuple is a dict containing:
-             "day": the day of the month
-             "date": the Julian Day Number of the day
-             "doy": the day of the year the day represents.
     """
-    doy = _doy_gen()
 
+    base_cal = _base_festival_calendar(
+        year, event=event, before_event=before_event, rule=rule, data=data
+    )
+
+    if calendar is None:
+        return tuple([__make_festival_day(d, name_as) for d in base_cal])
+
+    months = __month_order(calendar, intercalate, len(by_months(base_cal)) > 12)
+    month_names = __intercalated_month_name_map(calendar, months)
     return tuple(
         [
-            a
-            for b in [
-                _make_month(m, i, doy)
-                for i, m in enumerate(
-                    festival_months(
-                        year,
-                        intercalate=intercalate,
-                        abbrev=abbrev,
-                        greek=greek,
-                        rule=rule,
-                        event=event,
-                        data=data,
-                    ),
-                    1,
-                )
-            ]
-            for a in b
+            __make_festival_day(d, name_as, calendar, months, month_names)
+            for d in base_cal
         ]
     )
+
+
+def athenian_festival_calendar(
+    year,
+    intercalate=AthenianMonths.POS,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    return festival_calendar(
+        year,
+        calendar=Cal.ATHENIAN,
+        intercalate=intercalate,
+        event=Seasons.SUMMER_SOLSTICE,
+        before_event=False,
+        rule=rule,
+        data=data,
+    )
+
+
+def delian_festival_calendar(
+    year,
+    intercalate=DelianMonths.PAN,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    return festival_calendar(
+        year,
+        calendar=Cal.DELIAN,
+        intercalate=intercalate,
+        event=Seasons.WINTER_SOLSTICE,
+        before_event=False,
+        rule=rule,
+        data=data,
+    )
+
+
+def spartan_festival_calendar(
+    year,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    return festival_calendar(
+        year,
+        calendar=Cal.SPARTAN,
+        intercalate=intercalate,
+        event=Seasons.AUTUMN_EQUINOX,
+        before_event=True,
+        rule=rule,
+        data=data,
+    )
+
+
+# # def zzfestival_calendar(
+# #     year,
+# #     intercalate=Months.POS,
+# #     abbrev=False,
+# #     greek=False,
+# #     rule=Visible.NEXT_DAY,
+# #     event=Seasons.SUMMER_SOLSTICE,
+# #     data=load_data(),
+# # ):
+# #     """Return a tuple representing Athenian festival calendar.
+
+# #         Parameters:
+# #         year (int) -- The year for the calendar
+# #         intercalate (Months) -- Month constant for month to intercalate if
+# #     necessary (default Months.POS)
+# #         abbrev (bool) -- Return month names as abbreviations (default False)
+# #         greek (bool) -- Return month names in Greek (default False)
+# #         rule (Visible) -- Constant from Visible indicating the desired rule
+# #     (default Visible.SECOND_DAY)
+# #         data -- Astronomical data for calculations. By default this is
+# #         returned from load_data()
+
+
+# #         See calendar_months for documentation of visibility rules.
+
+# #         Returns a tuple with one member for each month. Each member is a
+# #         tuple of the month name and tuple of start and end dates of the
+# #         month. See calendar_month for details on the start and end times.
+
+# #         If intercalation is necessary, the intercalated month will be
+# #         calculated according the the intercalate parameter. This begins
+# #         with 1 = Hekatombaiṓn, with a default of 6 = Poseidēiṓn.
+
+# #         greek=True will override abbrev=True
+
+# #         Each member of the tuple is a dict containing:
+# #             "month": the name or abbreviation of the month.
+# #             "constant": The constant of class Months of the month
+# #             "days": a tuple with one member for day of the month.
+
+# #         Each member of the "days" tuple is a dict containing:
+# #              "day": the day of the month
+# #              "date": the Julian Day Number of the day
+# #              "doy": the day of the year the day represents.
+# #     """
+# #     doy = _doy_gen()
+
+# #     return tuple(
+# #         [
+# #             a
+# #             for b in [
+# #                 _make_month(m, i, doy)
+# #                 for i, m in enumerate(
+# #                     festival_months(
+# #                         year,
+# #                         intercalate=intercalate,
+# #                         abbrev=abbrev,
+# #                         greek=greek,
+# #                         rule=rule,
+# #                         event=event,
+# #                         data=data,
+# #                     ),
+# #                     1,
+# #                 )
+# #             ]
+# #             for a in b
+# #         ]
+# #     )
 
 
 def find_date(
     year,
     month,
     day,
-    intercalate=Months.POS,
-    abbrev=False,
-    greek=False,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    # abbrev=False,
+    # greek=False,
     rule=Visible.NEXT_DAY,
     data=load_data(),
 ):
@@ -845,9 +1132,11 @@ def find_date(
             d
             for d in festival_calendar(
                 year,
+                calendar=calendar,
                 intercalate=intercalate,
-                abbrev=abbrev,
-                greek=greek,
+                name_as=name_as,
+                # abbrev=abbrev,
+                # greek=greek,
                 rule=rule,
                 data=data,
             )
@@ -859,7 +1148,9 @@ def find_date(
                 f"No date found or no intercalated month " f"in year {year}"
             )
 
-        raise HeniautosError(f"No date found for {MONTH_NAMES[month]} " f"{day} {year}")
+        raise HeniautosError(
+            f"No date found for {MONTH_NAME_MAP[(calendar, month)][0]} " f"{day} {year}"
+        )
 
 
 def _pryt_len(days, count=4):
@@ -879,13 +1170,13 @@ def _pryt_len(days, count=4):
     yield from _pryt_len(days, count)
 
 
-def _pryt_len_festival(cal):
+def __pryt_len_festival(cal):
     """Recursivly generate prytanies that match the festival calendar."""
     if len(cal) == 0:
         return
 
-    yield span(*cal[0])
-    yield from _pryt_len_festival(cal[1:])
+    yield cal[0][1] - cal[0][0]
+    yield from __pryt_len_festival(cal[1:])
 
 
 def _pryt_gen(start, end, length, num=10, count=1):
@@ -937,17 +1228,17 @@ def _pryt_auto(year):
     return Prytany.ALIGNED_10
 
 
-def phulai_count(year):
-    """Return the number of phulaí in a given year."""
-    pryt_t = _pryt_auto(year)
+# def phulai_count(year):
+#     """Return the number of phulaí in a given year."""
+#     pryt_t = _pryt_auto(year)
 
-    if pryt_t == Prytany.ALIGNED_12:
-        return 12
+#     if pryt_t == Prytany.ALIGNED_12:
+#         return 12
 
-    if pryt_t == Prytany.ALIGNED_13:
-        return 13
+#     if pryt_t == Prytany.ALIGNED_13:
+#         return 13
 
-    return 10
+#     return 10
 
 
 def _pryt_auto_start(year, start):
@@ -976,8 +1267,7 @@ def _pryt_auto_start(year, start):
 
 
 def _pryt_solar_end(start):
-    # return tt_round(add_years(start, 1))
-    return to_jdn(add_years(start, 1))
+    return to_jdn(__add_years(start, 1))
 
 
 def prytanies(
@@ -1000,7 +1290,7 @@ def prytanies(
 
     # Get the calendar for the requested year
     cal = calendar_months(year, rule=rule, data=data)
-    y_len = sum([span(*m) for m in calendar_months(year, rule=rule, data=data)])
+    y_len = sum([__span(*m) for m in calendar_months(year, rule=rule, data=data)])
 
     if auto_type == Prytany.ALIGNED_10:
         # Generate prytanies
@@ -1033,7 +1323,7 @@ def prytanies(
         # Normal year prytanies follow festival months unless rule of
         # Aristotle is forced
         return tuple(
-            [p for p in _pryt_gen(cal[0][0], cal[-1][1], _pryt_len_festival(cal), 12)]
+            [p for p in _pryt_gen(cal[0][0], cal[-1][1], __pryt_len_festival(cal), 12)]
         )
 
     if auto_type == Prytany.ALIGNED_13:
@@ -1045,7 +1335,7 @@ def prytanies(
                 [
                     p
                     for p in _pryt_gen(
-                        cal[0][0], cal[-1][1], _pryt_len_festival(cal), 13
+                        cal[0][0], cal[-1][1], __pryt_len_festival(cal), 13
                     )
                 ]
             )
@@ -1133,14 +1423,15 @@ def prytany_calendar(
         ]
     )
 
-    # return tuple([{"prytany": p["prytany"],
-    #                "constant": p["constant"],
-    #                "days": _month_days(p["start"], p["end"], doy)}
-    #               for p
-    #               in prytanies(year, pryt_type=pryt_type,
-    #                            pryt_start=pryt_start, rule=rule,
-    #                            rule_of_aristotle=rule_of_aristotle,
-    #                            data=data)])
+
+#     # return tuple([{"prytany": p["prytany"],
+#     #                "constant": p["constant"],
+#     #                "days": _month_days(p["start"], p["end"], doy)}
+#     #               for p
+#     #               in prytanies(year, pryt_type=pryt_type,
+#     #                            pryt_start=pryt_start, rule=rule,
+#     #                            rule_of_aristotle=rule_of_aristotle,
+#     #                            data=data)])
 
 
 def _calendar_groups(c, func):
@@ -1150,7 +1441,7 @@ def _calendar_groups(c, func):
 
 def by_months(p):
     """Return festival calendar grouped into a tuple of tuples by months."""
-    return tuple(_calendar_groups(p, lambda x: x.month))
+    return tuple(_calendar_groups(p, lambda x: x.month_index))
 
 
 def by_prytanies(p):
@@ -1223,18 +1514,18 @@ def prytany_to_julian(year, prytany, day, rule=Visible.NEXT_DAY, data=load_data(
         )
 
 
-def _fest_long_count(n, intercalated):
-    if not intercalated:
-        return _max_or_fewer(n - 1, 7)
+# def _fest_long_count(n, intercalated):
+#     if not intercalated:
+#         return _max_or_fewer(n - 1, 7)
 
-    return _max_or_fewer(n, 7)
+#     return _max_or_fewer(n, 7)
 
 
-def _fest_short_count(n, intercalated):
-    if not intercalated:
-        return _max_or_fewer(n - 1, 5)
+# def _fest_short_count(n, intercalated):
+#     if not intercalated:
+#         return _max_or_fewer(n - 1, 5)
 
-    return _max_or_fewer(n, 6)
+#     return _max_or_fewer(n, 6)
 
 
 def _fest_doy_ranges(month, day, intercalation):
@@ -1280,7 +1571,7 @@ def festival_doy(month, day):
                        months preceding the given date. False otherwise
 
     """
-    if month == Months.HEK:
+    if month == AthenianMonths.HEK:
         return _fest_doy_ranges(month, day, False)
 
     return tuple(
@@ -1699,144 +1990,144 @@ def collations(*args, failures=False):
     return successes
 
 
-def dinsmoor_month_name(m, intercalated, abbrev, greek):
+# def dinsmoor_month_name(m, intercalated, abbrev, greek):
 
-    """Accomodate uncertain months in Dinsmoor data"""
-    if m == Months.UNC:
-        if abbrev:
-            return "Unc"
-        return "Uncertain"
+#     """Accomodate uncertain months in Dinsmoor data"""
+#     if m == Months.UNC:
+#         if abbrev:
+#             return "Unc"
+#         return "Uncertain"
 
-    return (
-        (_month_names(abbrev, greek)[m - 1] + _suffix(abbrev, greek))
-        if intercalated
-        else _month_names(abbrev, greek)[m - 1]
-    )
-
-
-def dinsmoor_months(year, abbrev=False, greek=False):
-    """Return festival calendar according to Dinsmoor (1931)."""
-    try:
-        return [
-            {
-                "month": dinsmoor_month_name(
-                    m["constant"], m["intercalated"], abbrev, greek
-                ),
-                "constant": Months.INT if m["intercalated"] else m["constant"],
-                # "start": date(m["year"], m["month"], m["day"]),
-                "start": int(jd.from_julian(m["year"], m["month"], m["day"], 12)),
-                "end": int(jd.from_julian(m["year"], m["month"], m["day"], 12))
-                + m["length"],
-            }
-            for m in _load_dinsmoor()[year]
-        ]
-    except KeyError:
-        raise HeniautosError(
-            f"Year ({year}) outside range of Dinsmoor's " "tables (432-109 BCE)"
-        )
+#     return (
+#         (_month_names(abbrev, greek)[m - 1] + _suffix(abbrev, greek))
+#         if intercalated
+#         else _month_names(abbrev, greek)[m - 1]
+#     )
 
 
-def _dinsmoor_line(df, year, prev_month):
-    """Parse a line of Dinsmoor data."""
-    while True:
-        line = df.readline()
-        if line == "":
-            raise StopIteration()
-
-        if line.startswith("#"):
-            continue
-
-        parts = line[0:-1].split()
-        if parts[0].isnumeric():
-            year = bce_as_negative(int(parts[0]))
-            m = 1
-        else:
-            m = 0
-
-        month = [
-            "Jan.",
-            "Feb.",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "Aug.",
-            "Sept.",
-            "Oct.",
-            "Nov.",
-            "Dec.",
-        ].index(parts[m]) + 1
-        day = int(parts[m + 1])
-        mtype = {"+": 30, "-": 29}[parts[m + 2]]
-        intercalated = False
-        try:
-            if parts[m + 3].endswith("*"):
-                intercalated = True
-                gm = parts[m + 3][0:-1]
-            else:
-                gm = parts[m + 3]
-
-            gi = [
-                "He",
-                "Me",
-                "Bo",
-                "Py",
-                "Ma",
-                "Po",
-                "Ga",
-                "An",
-                "El",
-                "Mo",
-                "Th",
-                "Sk",
-            ].index(gm)
-            gmonth = list(Months)[gi]
-            intercalated = intercalated or gmonth == prev_month
-        except IndexError:
-            intercalary = False
-            gmonth = Months.UNC
-        except KeyError as e:
-            print(line)
-            raise e
-
-        return {
-            "year": year,
-            "month": month,
-            "day": day,
-            "constant": gmonth,
-            "length": mtype,
-            "intercalated": intercalated,
-            "parts": parts,
-        }
+# def dinsmoor_months(year, abbrev=False, greek=False):
+#     """Return festival calendar according to Dinsmoor (1931)."""
+#     try:
+#         return [
+#             {
+#                 "month": dinsmoor_month_name(
+#                     m["constant"], m["intercalated"], abbrev, greek
+#                 ),
+#                 "constant": Months.INT if m["intercalated"] else m["constant"],
+#                 # "start": date(m["year"], m["month"], m["day"]),
+#                 "start": int(jd.from_julian(m["year"], m["month"], m["day"], 12)),
+#                 "end": int(jd.from_julian(m["year"], m["month"], m["day"], 12))
+#                 + m["length"],
+#             }
+#             for m in _load_dinsmoor()[year]
+#         ]
+#     except KeyError:
+#         raise HeniautosError(
+#             f"Year ({year}) outside range of Dinsmoor's " "tables (432-109 BCE)"
+#         )
 
 
-def _load_dinsmoor():
-    """Load Dinsmoor data."""
-    d_years = {}
-    with open(Path(__file__).parent / "dinsmoor.txt") as dinsmoor:
-        this_year = None
-        these_months = []
-        last_year = None
-        last_month = None
-        been_read = 0
-        while True:
-            try:
-                line = _dinsmoor_line(dinsmoor, last_year, last_month)
-                if line["constant"] in (Months.HEK, Months.UNC) and been_read >= 12:
-                    d_years = d_years | {these_months[0]["year"]: these_months}
-                    these_months = []
-                    been_read = 0
+# def _dinsmoor_line(df, year, prev_month):
+#     """Parse a line of Dinsmoor data."""
+#     while True:
+#         line = df.readline()
+#         if line == "":
+#             raise StopIteration()
 
-                these_months = these_months + [line]
-                last_year = line["year"]
-                last_month = line["constant"]
-                been_read += 1
+#         if line.startswith("#"):
+#             continue
 
-            except StopIteration:
-                break
+#         parts = line[0:-1].split()
+#         if parts[0].isnumeric():
+#             year = bce_as_negative(int(parts[0]))
+#             m = 1
+#         else:
+#             m = 0
 
-        return d_years
+#         month = [
+#             "Jan.",
+#             "Feb.",
+#             "March",
+#             "April",
+#             "May",
+#             "June",
+#             "July",
+#             "Aug.",
+#             "Sept.",
+#             "Oct.",
+#             "Nov.",
+#             "Dec.",
+#         ].index(parts[m]) + 1
+#         day = int(parts[m + 1])
+#         mtype = {"+": 30, "-": 29}[parts[m + 2]]
+#         intercalated = False
+#         try:
+#             if parts[m + 3].endswith("*"):
+#                 intercalated = True
+#                 gm = parts[m + 3][0:-1]
+#             else:
+#                 gm = parts[m + 3]
+
+#             gi = [
+#                 "He",
+#                 "Me",
+#                 "Bo",
+#                 "Py",
+#                 "Ma",
+#                 "Po",
+#                 "Ga",
+#                 "An",
+#                 "El",
+#                 "Mo",
+#                 "Th",
+#                 "Sk",
+#             ].index(gm)
+#             gmonth = list(Months)[gi]
+#             intercalated = intercalated or gmonth == prev_month
+#         except IndexError:
+#             intercalary = False
+#             gmonth = Months.UNC
+#         except KeyError as e:
+#             print(line)
+#             raise e
+
+#         return {
+#             "year": year,
+#             "month": month,
+#             "day": day,
+#             "constant": gmonth,
+#             "length": mtype,
+#             "intercalated": intercalated,
+#             "parts": parts,
+#         }
+
+
+# def _load_dinsmoor():
+#     """Load Dinsmoor data."""
+#     d_years = {}
+#     with open(Path(__file__).parent / "dinsmoor.txt") as dinsmoor:
+#         this_year = None
+#         these_months = []
+#         last_year = None
+#         last_month = None
+#         been_read = 0
+#         while True:
+#             try:
+#                 line = _dinsmoor_line(dinsmoor, last_year, last_month)
+#                 if line["constant"] in (Months.HEK, Months.UNC) and been_read >= 12:
+#                     d_years = d_years | {these_months[0]["year"]: these_months}
+#                     these_months = []
+#                     been_read = 0
+
+#                 these_months = these_months + [line]
+#                 last_year = line["year"]
+#                 last_month = line["constant"]
+#                 been_read += 1
+
+#             except StopIteration:
+#                 break
+
+#         return d_years
 
 
 def version():

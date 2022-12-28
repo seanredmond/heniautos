@@ -14,7 +14,7 @@ CUSTOM_YEAR = {
         (1685320.5018709311, 0),
         (1685349.9050228074, 0),
         (1685704.4562648418, 0),
-        (1685733.8966757061, 0)
+        (1685733.8966757061, 0),
     ),
 }
 
@@ -56,21 +56,22 @@ def test_solar_event_data_param():
 
 
 def test_summer_solstice_data_param():
-    assert summer_solstice(-99) == 1685074.3287422964
+    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287422964
     assert (
-        summer_solstice(-99, data={"solstices": ((1685074.12345, 1),)})
+        solar_event(
+            -99, Seasons.SUMMER_SOLSTICE, data={"solstices": ((1685074.12345, 1),)}
+        )
         == 1685074.12345
     )
 
     with pytest.raises(HeniautosNoDataError):
-        summer_solstice(-99, data={"solstices": ()})
+        solar_event(-99, Seasons.SUMMER_SOLSTICE, data={"solstices": ()})
 
 
 def test_moon_phases_data_param():
     assert moon_phases(-99)[0] == 1684907.0310656228
     assert (
-        moon_phases(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
-        == 1684900.12345
+        moon_phases(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684900.12345
     )
 
     with pytest.raises(HeniautosNoDataError):
@@ -79,10 +80,7 @@ def test_moon_phases_data_param():
 
 def test_new_moons_data_param():
     assert new_moons(-99)[0] == 1684907.0310656228
-    assert (
-        new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
-        == 1684900.12345
-    )
+    assert new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684900.12345
 
     with pytest.raises(HeniautosNoDataError):
         new_moons(-99, data={"new_moons": ()})
@@ -93,8 +91,7 @@ def test_visible_new_moons_data_param():
 
     assert visible_new_moons(-99)[0] == 1684908
     assert (
-        visible_new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0]
-        == 1684901
+        visible_new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684901
     )
 
     with pytest.raises(HeniautosNoDataError):

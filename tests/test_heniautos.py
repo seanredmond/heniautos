@@ -28,6 +28,10 @@ I_13 = 214  # 384 days, 13 prytanies
 # init_data()
 
 
+def span(a, b):
+    return b - a
+
+
 def test_version():
     assert version() == "1.3.0"
 
@@ -41,38 +45,37 @@ def test_negative_as_bce():
 
 
 def test_is_bce():
-    assert is_bce(summer_solstice(-99))
-    # assert not is_bce(summer_solstice(99))
+    assert is_bce(1685074.3287422964)  # Summer Solstice 100 BCE
 
 
-def test_add_hours():
-    sol = summer_solstice(-99)
-    print(sol)
-    print(add_hours(sol, 1))
-    print(add_hours(sol, 1) - sol)
-    assert jd.to_julian(add_hours(sol, 1))[3] == jd.to_julian(sol)[3] + 1
+# def test_add_hours():
+#     sol = summer_solstice(-99)
+#     print(sol)
+#     print(add_hours(sol, 1))
+#     print(add_hours(sol, 1) - sol)
+#     assert jd.to_julian(add_hours(sol, 1))[3] == jd.to_julian(sol)[3] + 1
 
 
-def test_add_days():
-    sol = summer_solstice(-99)
-    assert jd.to_julian(add_days(sol, 1))[2] == jd.to_julian(sol)[2] + 1
-    assert jd.to_julian(add_days(sol, -1))[2] == jd.to_julian(sol)[2] - 1
+# def test_add_days():
+#     sol = summer_solstice(-99)
+#     assert jd.to_julian(add_days(sol, 1))[2] == jd.to_julian(sol)[2] + 1
+#     assert jd.to_julian(add_days(sol, -1))[2] == jd.to_julian(sol)[2] - 1
 
 
 def test_as_gmt():
     assert as_gmt(1685074.3287423) == "BCE 0100-Jun-25"
     assert as_gmt(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
     assert as_gmt(1685439.56480925) == "BCE 0099-Jun-25"
-    assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:53:23 GMT"
+    assert as_gmt(1685074.3287422964, True) == "BCE 0100-Jun-25 19:53:23 GMT"
 
 
 def test_as_eet():
-    assert as_eet(summer_solstice(-99)) == "BCE 0100-Jun-25"
-    assert as_eet(summer_solstice(-99), True) == "BCE 0100-Jun-25 21:53:23 EET"
+    assert as_eet(1685074.3287422964) == "BCE 0100-Jun-25"
+    assert as_eet(1685074.3287422964, True) == "BCE 0100-Jun-25 21:53:23 EET"
 
 
-def test_summer_solstice():
-    assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:53:23 GMT"
+# def test_summer_solstice():
+#     assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:53:23 GMT"
 
 
 def test_solar_event():
@@ -173,7 +176,7 @@ def test_generic_festival_months_athenian_434():
     and ending before Jul 27, 433
 
     """
-    m = generic_festival_months(-433)
+    m = festival_months(-433)
     assert len(m) == 13
     assert m[0]["month_index"] == 1
     assert m[-1]["month_index"] == 13
@@ -186,7 +189,7 @@ def test_generic_festival_months_athenian_433():
     and ending before Jul 16, 432
 
     """
-    m = generic_festival_months(-432)
+    m = festival_months(-432)
     assert len(m) == 12
     assert as_eet(m[0]["start"]) == "BCE 0433-Jul-27"
     assert as_eet(m[-1]["end"]) == "BCE 0432-Jul-16"
@@ -197,7 +200,7 @@ def test_generic_festival_months_athenian_424():
     and ending before Jul 7, 423
 
     """
-    m = generic_festival_months(-423)
+    m = festival_months(-423)
     assert len(m) == 12
     assert as_eet(m[0]["start"]) == "BCE 0424-Jul-18"
     assert as_eet(m[-1]["end"]) == "BCE 0423-Jul-07"
@@ -208,7 +211,7 @@ def test_generic_festival_months_athenian_423():
     and ending before Jul 26, 422
 
     """
-    m = generic_festival_months(-422)
+    m = festival_months(-422)
     assert len(m) == 13
     assert as_eet(m[0]["start"]) == "BCE 0423-Jul-07"
     assert as_eet(m[-1]["end"]) == "BCE 0422-Jul-26"
@@ -219,7 +222,7 @@ def test_generic_festival_months_athenian_422():
     and ending before July 14, 421
 
     """
-    m = generic_festival_months(-421)
+    m = festival_months(-421)
     assert len(m) == 12
     assert as_eet(m[0]["start"]) == "BCE 0422-Jul-26"
     assert as_eet(m[-1]["end"]) == "BCE 0421-Jul-14"
@@ -230,7 +233,7 @@ def test_generic_festival_months_delian_435():
     and ending before Jan 2, 433
 
     """
-    m = generic_festival_months(-434, event=Seasons.WINTER_SOLSTICE)
+    m = festival_months(-434, event=Seasons.WINTER_SOLSTICE)
     assert len(m) == 12
     assert as_eet(m[0]["start"]) == "BCE 0434-Jan-13"
     assert as_eet(m[-1]["end"]) == "BCE 0433-Jan-02"
@@ -241,7 +244,7 @@ def test_generic_festival_months_delian_434():
     and ending before Jan 20, 432
 
     """
-    m = generic_festival_months(-433, event=Seasons.WINTER_SOLSTICE)
+    m = festival_months(-433, event=Seasons.WINTER_SOLSTICE)
     assert len(m) == 13
     assert as_eet(m[0]["start"]) == "BCE 0433-Jan-02"
     assert as_eet(m[-1]["end"]) == "BCE 0432-Jan-20"
@@ -252,7 +255,7 @@ def test_generic_festival_months_spartan_424():
     and ending before Sep 4, 423
 
     """
-    m = generic_festival_months(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    m = festival_months(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True)
     assert len(m) == 12
     assert as_eet(m[0]["start"]) == "BCE 0424-Sep-15"
     assert as_eet(m[-1]["end"]) == "BCE 0423-Sep-04"
@@ -263,7 +266,7 @@ def test_generic_festival_months_spartan_423():
     and ending before Sep 23, 422
 
     """
-    m = generic_festival_months(-422, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    m = festival_months(-422, event=Seasons.AUTUMN_EQUINOX, before_event=True)
     assert len(m) == 13
     assert as_eet(m[0]["start"]) == "BCE 0423-Sep-04"
     assert as_eet(m[-1]["end"]) == "BCE 0422-Sep-23"
@@ -274,16 +277,16 @@ def test_generic_festival_months_spartan_422():
     and ending before Sep 12, 421
 
     """
-    m = generic_festival_months(-421, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    m = festival_months(-421, event=Seasons.AUTUMN_EQUINOX, before_event=True)
     assert len(m) == 12
     assert as_eet(m[0]["start"]) == "BCE 0422-Sep-23"
     assert as_eet(m[-1]["end"]) == "BCE 0421-Sep-12"
 
 
-def test_month_label():
-    assert month_label(Months.HEK) == "Hekatombaiṓn"
-    assert month_label(Months.HEK, abbrev=True) == "Hek"
-    assert month_label(Months.HEK, greek=True) == "Ἑκατομβαιών"
+# def test_month_label():
+#     assert month_label(Months.HEK) == "Hekatombaiṓn"
+#     assert month_label(Months.HEK, abbrev=True) == "Hek"
+#     assert month_label(Months.HEK, greek=True) == "Ἑκατομβαιών"
 
 
 def test_prytany_label():
@@ -291,94 +294,95 @@ def test_prytany_label():
     assert prytany_label(Prytanies.X) == "X"
 
 
-def test_suffix():
-    assert heniautos._suffix() == " hústeros"
-    assert heniautos._suffix(abbrev=True) == "₂"
-    assert heniautos._suffix(greek=True) == " ὕστερος"
-    assert heniautos._suffix(abbrev=True, greek=True) == " ὕστερος"
+# def test_suffix():
+#     assert heniautos._suffix() == " hústeros"
+#     assert heniautos._suffix(abbrev=True) == "₂"
+#     assert heniautos._suffix(greek=True) == " ὕστερος"
+#     assert heniautos._suffix(abbrev=True, greek=True) == " ὕστερος"
 
 
-def test_maybe_intercalate():
-    # No intercalations, just the list of ordinary months
-    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == (
-        "Hekatombaiṓn",
-        Months.HEK,
-    )
-    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == (
-        "Puanopsiṓn",
-        Months.PUA,
-    )
-    assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == (
-        "Gamēliṓn",
-        Months.GAM,
-    )
+# def test_maybe_intercalate():
+#     # No intercalations, just the list of ordinary months
+#     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == (
+#         "Hekatombaiṓn",
+#         Months.HEK,
+#     )
+#     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == (
+#         "Puanopsiṓn",
+#         Months.PUA,
+#     )
+#     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == (
+#         "Gamēliṓn",
+#         Months.GAM,
+#     )
 
-    # Intercalates Pos
-    # Month before Pos unchanged
-    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == (
-        "Puanopsiṓn",
-        Months.PUA,
-    )
-    # The intercalated month
-    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == (
-        "Posideiṓn hústeros",
-        Months.INT,
-    )
-    # Indexes of months after the intercalation 1 more than usual
-    assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == (
-        "Gamēliṓn",
-        Months.GAM,
-    )
+#     # Intercalates Pos
+#     # Month before Pos unchanged
+#     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == (
+#         "Puanopsiṓn",
+#         Months.PUA,
+#     )
+#     # The intercalated month
+#     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == (
+#         "Posideiṓn hústeros",
+#         Months.INT,
+#     )
+#     # Indexes of months after the intercalation 1 more than usual
+#     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == (
+#         "Gamēliṓn",
+#         Months.GAM,
+#     )
 
-    # Intercalated Boe
-    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == (
-        "Boēdromiṓn hústeros",
-        Months.INT,
-    )
-    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == (
-        "Posideiṓn",
-        Months.POS,
-    )
-    assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == (
-        "Gamēliṓn",
-        Months.GAM,
-    )
+#     # Intercalated Boe
+#     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == (
+#         "Boēdromiṓn hústeros",
+#         Months.INT,
+#     )
+#     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == (
+#         "Posideiṓn",
+#         Months.POS,
+#     )
+#     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == (
+#         "Gamēliṓn",
+#         Months.GAM,
+#     )
 
 
 def test_festival_months():
     p = festival_months(-99)
     assert type(p) is tuple
     assert type(p[0]) is dict
-    assert p[0]["month"] == "Hekatombaiṓn"
-    assert p[0]["constant"] == Months.HEK
+    # assert p[0]["month"] == "Hekatombaiṓn"
+    assert p[0]["month_index"] == 1
+    # assert p[0]["constant"] == Months.HEK
     assert as_gmt(p[0]["start"]) == "BCE 0100-Jul-05"
     assert p[0]["end"] == p[1]["start"]
 
     # With abbreviations
-    q = festival_months(-99, abbrev=True)
-    assert q[0]["month"] == "Hek"
+    # q = festival_months(-99, abbrev=True)
+    # assert q[0]["month"] == "Hek"
 
-    # With Greek names
-    r = festival_months(-99, greek=True)
-    assert r[0]["month"] == "Ἑκατομβαιών"
+    # # With Greek names
+    # r = festival_months(-99, greek=True)
+    # assert r[0]["month"] == "Ἑκατομβαιών"
 
-    # greek overrides abbrev
-    assert festival_months(-99, abbrev=True, greek=True)[0]["month"] == "Ἑκατομβαιών"
+    # # greek overrides abbrev
+    # assert festival_months(-99, abbrev=True, greek=True)[0]["month"] == "Ἑκατομβαιών"
 
-    # with intercalations
-    s = festival_months(-101)
-    assert len(s) == 13
-    # Default intercalation of Poseidēiṓn hústeros
-    assert s[6]["month"] == "Posideiṓn hústeros"
-    assert s[6]["constant"] == Months.INT
+    # # with intercalations
+    # s = festival_months(-101)
+    # assert len(s) == 13
+    # # Default intercalation of Poseidēiṓn hústeros
+    # assert s[6]["month"] == "Posideiṓn hústeros"
+    # assert s[6]["constant"] == Months.INT
 
-    t = festival_months(-101, intercalate=Months.BOE)
-    assert t[3]["month"] == "Boēdromiṓn hústeros"
-    assert t[6]["month"] == "Posideiṓn"
+    # t = festival_months(-101, intercalate=Months.BOE)
+    # assert t[3]["month"] == "Boēdromiṓn hústeros"
+    # assert t[6]["month"] == "Posideiṓn"
 
-    # intercalation with abbreviation
-    s1 = festival_months(-101, abbrev=True)
-    assert s1[6]["month"] == "Pos₂"
+    # # intercalation with abbreviation
+    # s1 = festival_months(-101, abbrev=True)
+    # assert s1[6]["month"] == "Pos₂"
 
     # With different visibility rules
     # NEXT_DAY is the default
@@ -395,6 +399,101 @@ def test_festival_months():
     assert as_gmt(v[0]["start"]) == "BCE 0100-Jul-04"
 
 
+def test_generic_festival_calendar():
+    p = festival_calendar(-100, calendar=None)
+    assert len(p) == 354
+    assert len(by_months(p)) == 12
+    assert isinstance(p[0], FestivalDay)
+    assert p[0].month is None
+    assert p[0].month_name is None
+    assert as_eet(p[0].jdn) == "BCE 0101-Jul-16"
+    assert as_eet(p[-1].jdn) == "BCE 0100-Jul-04"
+
+
+def test_generic_festival_calendar_athenian():
+    # Athenian should be the default value
+    p = festival_calendar(-100)
+    assert len(by_months(p)) == 12
+    assert p[0].month is AthenianMonths.HEK
+    assert p[0].month_name == "Hekatombaiṓn"
+    assert as_eet(p[0].jdn) == "BCE 0101-Jul-16"
+
+    # Intercalary year
+    p = festival_calendar(-101)
+    p_months = by_months(p)
+    assert len(p_months) == 13
+    # By default, the 7th month should be intercalated
+    assert p_months[6][0].month is Months.INT
+    assert p_months[6][0].month_name == "Posideiṓn hústeros"
+
+    # Intercalate Hek instead
+    p = festival_calendar(-101, intercalate=1)
+    p_months = by_months(p)
+    assert p_months[1][0].month is Months.INT
+    assert p_months[1][0].month_name == "Hekatombaiṓn hústeros"
+    assert p_months[6][0].month is AthenianMonths.POS
+    assert p_months[6][0].month_name == "Posideiṓn"
+
+
+def test_athenian_festival_calendar():
+    p = athenian_festival_calendar(-100)
+    assert len(by_months(p)) == 12
+    assert p[0].month is AthenianMonths.HEK
+    assert p[0].month_name == "Hekatombaiṓn"
+    assert as_eet(p[0].jdn) == "BCE 0101-Jul-16"
+
+
+def test_generic_festival_calendar_delian():
+    p = festival_calendar(-100, calendar=Cal.DELIAN, event=Seasons.WINTER_SOLSTICE)
+    assert as_eet(p[0].jdn) == "BCE 0100-Jan-10"
+    assert len(by_months(p)) == 12
+    assert p[0].month is DelianMonths.LEN
+    assert p[0].month_name == "Lēnaiṓn"
+
+    # Intercalary year
+    p = festival_calendar(-102, calendar=Cal.DELIAN, event=Seasons.WINTER_SOLSTICE)
+    assert as_eet(p[0].jdn) == "BCE 0102-Jan-02"
+    p_months = by_months(p)
+    assert len(p_months) == 13
+    # By default, the 7th month should be intercalated
+    assert p_months[6][0].month is Months.INT
+    assert p_months[6][0].month_name == "Pánēmos hústeros"
+
+    # Intercalate Hek instead
+    p = festival_calendar(
+        -102, intercalate=1, calendar=Cal.DELIAN, event=Seasons.WINTER_SOLSTICE
+    )
+    assert as_eet(p[0].jdn) == "BCE 0102-Jan-02"
+    p_months = by_months(p)
+    assert p_months[1][0].month is Months.INT
+    assert p_months[1][0].month_name == "Lēnaiṓn hústeros"
+    assert p_months[6][0].month is DelianMonths.PAN
+    assert p_months[6][0].month_name == "Pánēmos"
+
+
+def test_delian_festival_calendar():
+    p = delian_festival_calendar(-100)
+    assert len(by_months(p)) == 12
+    assert p[0].month is DelianMonths.LEN
+    assert p[0].month_name == "Lēnaiṓn"
+    assert as_eet(p[0].jdn) == "BCE 0100-Jan-10"
+
+
+def test_spartan_festival_calendar():
+    p = spartan_festival_calendar(-100)
+    assert len(by_months(p)) == 12
+    assert p[0].month is SpartanMonths.UN1
+    assert p[0].month_name == "Unknown 1"
+    assert as_eet(p[0].jdn) == "BCE 0101-Sep-13"
+
+    p = spartan_festival_calendar(-102)
+    assert len(by_months(p)) == 13
+    assert as_eet(p[0].jdn) == "BCE 0103-Sep-06"
+    p_months = by_months(p)
+    assert p_months[6][0].month is Months.INT
+    assert p_months[6][0].month_name == "Unknown 6 hústeros"
+
+
 def test_festival_calendar():
     p = festival_calendar(-100)
 
@@ -402,14 +501,14 @@ def test_festival_calendar():
 
     assert type(p[0]) is FestivalDay
     assert p[0].month_name == "Hekatombaiṓn"
-    assert p[0].month == Months.HEK
+    assert p[0].month == AthenianMonths.HEK
     # assert type(p[0]["days"]) is tuple
     # assert type(p[0]["days"][0]) is dict
     assert p[0].day == 1
     assert as_gmt(p[0].jdn) == "BCE 0101-Jul-16"
     assert p[0].doy == 1
 
-    met = [d for d in p if d.month == Months.MET]
+    met = [d for d in p if d.month == AthenianMonths.MET]
 
     assert met[0].month_name == "Metageitniṓn"
     assert met[0].day == 1
@@ -417,7 +516,7 @@ def test_festival_calendar():
     assert met[0].doy == 31
 
 
-def test_delian_festival_calendar():
+def test_delian_festival_calendar_434_433():
     c = festival_calendar(-434, event=Seasons.WINTER_SOLSTICE)
     assert len(c) == 354
     c_months = by_months(c)
@@ -434,15 +533,15 @@ def test_delian_festival_calendar():
 
 
 def test_find_date():
-    d = find_date(-100, Months.MET, 1)
+    d = find_date(-100, AthenianMonths.MET, 1)
     assert d.month_name == "Metageitniṓn"
-    assert d.month == Months.MET
+    assert d.month == AthenianMonths.MET
     assert d.day == 1
     assert as_gmt(d.jdn) == "BCE 0101-Aug-15"
     assert d.doy == 31
 
     with pytest.raises(HeniautosError):
-        find_date(-99, Months.MET, 31)
+        find_date(-99, AthenianMonths.MET, 31)
 
 
 def test_pryt_len():
@@ -530,33 +629,33 @@ def test_by_prytanies():
     ]
 
 
-def test_pryt_len_festival():
-    cal = calendar_months(-100)
-    e = [c for c in heniautos._pryt_len_festival(cal)]
-    assert len(e) == 12
-    assert e[0] == 30
-    assert e[1] == 29
-    assert e[-1] == 29
+# def test_pryt_len_festival():
+#     cal = calendar_months(-100)
+#     e = [c for c in heniautos._pryt_len_festival(cal)]
+#     assert len(e) == 12
+#     assert e[0] == 30
+#     assert e[1] == 29
+#     assert e[-1] == 29
 
 
 def test_prytanies_solar():
     p = prytanies(-420)
     assert len(p) == 10
-    assert sum([span(q["start"], q["end"]) for q in p]) == 365
-    assert span(p[0]["start"], p[0]["end"]) == 37
-    assert span(p[4]["start"], p[4]["end"]) == 37
-    assert span(p[6]["start"], p[6]["end"]) == 36
-    assert span(p[-1]["start"], p[-1]["end"]) == 36
+    assert sum([q["end"] - q["start"] for q in p]) == 365
+    assert p[0]["end"] - p[0]["start"] == 37
+    assert p[4]["end"] - p[4]["start"] == 37
+    assert p[6]["end"] - p[6]["start"] == 36
+    assert p[-1]["end"] - p[-1]["start"] == 36
 
 
 def test_prytanies_solar_leap():
     p = prytanies(-417)
     assert len(p) == 10
-    assert sum([span(q["start"], q["end"]) for q in p]) == 366
-    assert span(p[0]["start"], p[0]["end"]) == 37
-    assert span(p[4]["start"], p[4]["end"]) == 37
-    assert span(p[6]["start"], p[6]["end"]) == 36
-    assert span(p[-1]["start"], p[-1]["end"]) == 37
+    assert sum([q["end"] - q["start"] for q in p]) == 366
+    assert p[0]["end"] - p[0]["start"] == 37
+    assert p[4]["end"] - p[4]["start"] == 37
+    assert p[6]["end"] - p[6]["start"] == 36
+    assert p[-1]["end"] - p[-1]["start"] == 37
 
 
 def test_prytanies_10_ordinary_long():
@@ -708,17 +807,17 @@ def test_prytanies_10_ordinary():
 
     # 10 prytanies in 354 days
     assert len(p3) == 10
-    assert sum([span(q["start"], q["end"]) for q in c3]) == 354
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 354
+    assert sum([q["end"] - q["start"] for q in c3]) == 354
+    assert sum([q["end"] - q["start"] for q in p3]) == 354
 
     assert p3[0]["prytany"] == 1
     assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
     assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
 
     # 354 day year. I-IV should be 36 days, the rest 35
-    assert span(p3[0]["start"], p3[0]["end"]) == 36
-    assert span(p3[4]["start"], p3[4]["end"]) == 35
-    assert span(p3[-1]["start"], p3[-1]["end"]) == 35
+    assert p3[0]["end"] - p3[0]["start"] == 36
+    assert p3[4]["end"] - p3[4]["start"] == 35
+    assert p3[-1]["end"] - p3[-1]["start"] == 35
 
 
 def test_prytanies_10_ordinary_long():
@@ -1190,32 +1289,32 @@ def test_prytany_calendar_13_intercalated_aristotle():
 
 
 def test_fest_doy_ranges():
-    r = heniautos._fest_doy_ranges(Months.ELA, 19, False)
+    r = heniautos._fest_doy_ranges(AthenianMonths.ELA, 19, False)
     assert len(r) == 6
     assert min([m["doy"] for m in r]) == 253
     assert max([m["doy"] for m in r]) == 258
 
-    r = heniautos._fest_doy_ranges(Months.ELA, 19, True)
+    r = heniautos._fest_doy_ranges(AthenianMonths.ELA, 19, True)
     assert len(r) == 6
     assert min([m["doy"] for m in r]) == 282
     assert max([m["doy"] for m in r]) == 287
 
-    r = heniautos._fest_doy_ranges(Months.MAI, 19, False)
+    r = heniautos._fest_doy_ranges(AthenianMonths.MAI, 19, False)
     assert len(r) == 5
     assert min([m["doy"] for m in r]) == 135
     assert max([m["doy"] for m in r]) == 139
 
-    r = heniautos._fest_doy_ranges(Months.MAI, 19, True)
+    r = heniautos._fest_doy_ranges(AthenianMonths.MAI, 19, True)
     assert len(r) == 6
     assert min([m["doy"] for m in r]) == 164
     assert max([m["doy"] for m in r]) == 169
 
-    r = heniautos._fest_doy_ranges(Months.MOU, 27, False)
+    r = heniautos._fest_doy_ranges(AthenianMonths.MOU, 27, False)
     assert len(r) == 5
     assert min([m["doy"] for m in r]) == 291
     assert max([m["doy"] for m in r]) == 295
 
-    r = heniautos._fest_doy_ranges(Months.MOU, 27, True)
+    r = heniautos._fest_doy_ranges(AthenianMonths.MOU, 27, True)
     assert len(r) == 5
     assert min([m["doy"] for m in r]) == 320
     assert max([m["doy"] for m in r]) == 324
@@ -1223,7 +1322,7 @@ def test_fest_doy_ranges():
 
 def test_festival_doy():
     # 1st month, no intercalation possible
-    doy = festival_doy(Months.HEK, 5)
+    doy = festival_doy(AthenianMonths.HEK, 5)
     assert len(doy) == 1
     assert doy[0]["doy"] == 5
     assert len(doy[0]["preceding"]) == 0
@@ -1232,7 +1331,7 @@ def test_festival_doy():
     assert not any([d["intercalation"] for d in doy])
 
     # 2nd month
-    doy = festival_doy(Months.MET, 5)
+    doy = festival_doy(AthenianMonths.MET, 5)
     print(doy)
     assert len(doy) == 5
     assert doy[0]["doy"] == 34
@@ -1247,7 +1346,7 @@ def test_festival_doy():
     assert all([d["intercalation"] for d in doy if d["doy"] > 35])
 
     # 5th month
-    doy = festival_doy(Months.MAI, 27)
+    doy = festival_doy(AthenianMonths.MAI, 27)
     assert len(doy) == 11
     assert doy[0]["doy"] == 143
     assert len(doy[0]["preceding"]) == 4
@@ -1259,7 +1358,7 @@ def test_festival_doy():
     assert not any([d["intercalation"] for d in doy if d["doy"] < 172])
     assert all([d["intercalation"] for d in doy if d["doy"] > 147])
 
-    doy = festival_doy(Months.MOU, 27)
+    doy = festival_doy(AthenianMonths.MOU, 27)
     assert len(doy) == 10
     assert doy[0]["doy"] == 291
     assert len(doy[0]["preceding"]) == 9
@@ -1541,31 +1640,31 @@ def test_prytany_doy_auto():
 
 
 def test_fest_eq_tuple():
-    eq = heniautos._fest_eq((Months.MET, 10))
+    eq = heniautos._fest_eq((AthenianMonths.MET, 10))
     assert len(eq) == 5
     assert eq[0]["doy"] == 39
     assert eq[0]["intercalation"] is False
     assert eq[-1]["doy"] == 70
     assert eq[-1]["intercalation"] is True
 
-    assert heniautos._fest_eq((Months.MET, 10)) == heniautos._fest_eq(
-        ((Months.MET, 10),)
+    assert heniautos._fest_eq((AthenianMonths.MET, 10)) == heniautos._fest_eq(
+        ((AthenianMonths.MET, 10),)
     )
 
 
 def test_fest_eq_nested():
-    eq = heniautos._fest_eq(((Months.MET, 10), (Months.MET, 11)))
+    eq = heniautos._fest_eq(((AthenianMonths.MET, 10), (AthenianMonths.MET, 11)))
     assert len(eq) == 10
-    assert eq[0]["date"] == (Months.MET, 10)
+    assert eq[0]["date"] == (AthenianMonths.MET, 10)
     assert eq[0]["doy"] == 39
     assert eq[0]["intercalation"] is False
-    assert eq[4]["date"] == (Months.MET, 10)
+    assert eq[4]["date"] == (AthenianMonths.MET, 10)
     assert eq[4]["doy"] == 70
     assert eq[4]["intercalation"] is True
-    assert eq[5]["date"] == (Months.MET, 11)
+    assert eq[5]["date"] == (AthenianMonths.MET, 11)
     assert eq[5]["doy"] == 40
     assert eq[5]["intercalation"] is False
-    assert eq[-1]["date"] == (Months.MET, 11)
+    assert eq[-1]["date"] == (AthenianMonths.MET, 11)
     assert eq[-1]["doy"] == 71
     assert eq[-1]["intercalation"] is True
 
@@ -1600,7 +1699,9 @@ def test_pryt_eq_nested():
 
 
 def test_equations_tuples():
-    eq = equations((Months.MET, 10), (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10)
+    eq = equations(
+        (AthenianMonths.MET, 10), (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
+    )
 
     # Two solutions to this equation:
     assert len(eq) == 2
@@ -1630,7 +1731,9 @@ def test_equations_tuples():
     assert f["intercalation"] is False
     assert c["intercalation"] is False
 
-    eq = equations((Months.POS, 14), (Prytanies.V, 36), pryt_type=Prytany.ALIGNED_10)
+    eq = equations(
+        (AthenianMonths.POS, 14), (Prytanies.V, 36), pryt_type=Prytany.ALIGNED_10
+    )
 
     assert len(eq) == 5
     assert [f[0]["doy"] for f in eq] == [188, 189, 190, 191, 192]
@@ -1638,8 +1741,12 @@ def test_equations_tuples():
 
 
 def test_equations_must_be_intercalary():
-    eq1 = equations((Months.MET, 9), (Prytanies.I, 39), pryt_type=Prytany.ALIGNED_10)
-    eq2 = equations((Months.MET, 6), (Prytanies.I, 36), pryt_type=Prytany.ALIGNED_10)
+    eq1 = equations(
+        (AthenianMonths.MET, 9), (Prytanies.I, 39), pryt_type=Prytany.ALIGNED_10
+    )
+    eq2 = equations(
+        (AthenianMonths.MET, 6), (Prytanies.I, 36), pryt_type=Prytany.ALIGNED_10
+    )
 
     # There should be only one possibility with I.39 because a 39-day
     # prytany requires an intercalary year
@@ -1653,24 +1760,27 @@ def test_equations_must_be_intercalary():
 
 def test_equations_nested():
     eq = equations(
-        ((Months.HEK, 30), (Months.MET, 1)),
+        ((AthenianMonths.HEK, 30), (AthenianMonths.MET, 1)),
         ((Prytanies.I, 30), (Prytanies.I, 31)),
         pryt_type=Prytany.ALIGNED_10,
     )
 
-    assert all([e[0]["date"] == (Months.HEK, 30) for e in eq[0:2]])
-    assert all([e[0]["date"] == (Months.MET, 1) for e in eq[2:]])
+    assert all([e[0]["date"] == (AthenianMonths.HEK, 30) for e in eq[0:2]])
+    assert all([e[0]["date"] == (AthenianMonths.MET, 1) for e in eq[2:]])
 
     assert len(eq) == 6
 
 
 def test_0_prytanies():
-    eq = equations((Months.MET, 9), (Prytanies.I, 39), pryt_type=Prytany.ALIGNED_10)
+    eq = equations(
+        (AthenianMonths.MET, 9), (Prytanies.I, 39), pryt_type=Prytany.ALIGNED_10
+    )
 
     assert len(eq) == 1
     assert len(eq[0][1]["preceding"]) == 0
 
 
+@pytest.mark.skip(reason="probably going to remove")
 def test_dinsmoor():
     c = festival_calendar(-430, rule=Visible.DINSMOOR)
     pos = [d for d in c if d.month_index == 6]
@@ -1691,6 +1801,7 @@ def test_dinsmoor():
     assert as_eet(e[0].jdn) == "BCE 0311-Jun-29"
 
 
+@pytest.mark.skip(reason="probably going to remove")
 def test_dinsmoor_months():
     assert dinsmoor_months(-430)[5]["month"] == "Posideiṓn"
     assert as_eet(dinsmoor_months(-430)[5]["start"]) == "BCE 0431-Nov-29"
@@ -1719,14 +1830,14 @@ def test_doy_to_julian():
 
 def test_festival_to_julian():
     assert (
-        as_eet(festival_to_julian(bce_as_negative(332), Months.ELA, 19))
+        as_eet(festival_to_julian(bce_as_negative(332), AthenianMonths.ELA, 19))
         == "BCE 0331-Apr-01"
     )
 
     assert (
         as_eet(
             festival_to_julian(
-                bce_as_negative(332), Months.ELA, 19, rule=Visible.SECOND_DAY
+                bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.SECOND_DAY
             )
         )
         == "BCE 0331-Apr-02"
@@ -1735,7 +1846,7 @@ def test_festival_to_julian():
     assert (
         as_eet(
             festival_to_julian(
-                bce_as_negative(332), Months.ELA, 19, rule=Visible.CONJUNCTION
+                bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.CONJUNCTION
             )
         )
         == "BCE 0331-Mar-31"
@@ -1861,6 +1972,7 @@ def test_320():
     )
 
 
+@pytest.mark.skip(reason="probably remove this test")
 def test_is_contained_in():
     assert heniautos._is_contained_in(
         (29, 29, 29, 29), (30, 30, 30, 29, 29, 29, 29, 29)
@@ -1875,6 +1987,7 @@ def test_is_contained_in():
         heniautos._is_contained_in((29, 29, 29, 29), (29, 29, 29))
 
 
+@pytest.mark.skip(reason="probably remove this test")
 def test_each_overlaps():
     s = [
         (29, 29, 29, 29),
@@ -1894,6 +2007,7 @@ def test_each_overlaps():
         heniautos._each_overlaps(s) == ((29, 29, 29, 29), (30, 30, 30, 29), (30,))
 
 
+@pytest.mark.skip(reason="probably remove this test")
 def test_no_deintercalations():
     assert heniautos._no_deintercalations((False, False, False))
     assert heniautos._no_deintercalations((True, True, True))
@@ -1904,6 +2018,7 @@ def test_no_deintercalations():
     assert heniautos._no_deintercalations((True, False, False)) is False
 
 
+@pytest.mark.xfail
 def test_no_misaligned_intercalations():
     eq = equations(
         [(m, 14) for m in Months],
@@ -1936,11 +2051,17 @@ def test_no_misaligned_intercalations():
 
 def test_collations():
     # Equation 1: Boe 11 = II 31
-    eq1 = equations((Months.MAI, 11), (Prytanies.IV, 21), year=bce_as_negative(319))
+    eq1 = equations(
+        (AthenianMonths.MAI, 11), (Prytanies.IV, 21), year=bce_as_negative(319)
+    )
 
-    eq2 = equations((Months.ELA, 12), (Prytanies.VII, 34), year=bce_as_negative(319))
+    eq2 = equations(
+        (AthenianMonths.ELA, 12), (Prytanies.VII, 34), year=bce_as_negative(319)
+    )
 
-    eq3 = equations((Months.MOU, 12), (Prytanies.VIII, 29), year=bce_as_negative(319))
+    eq3 = equations(
+        (AthenianMonths.MOU, 12), (Prytanies.VIII, 29), year=bce_as_negative(319)
+    )
 
     c = collations(eq1, eq2, eq3)
     assert len(c) == 8
