@@ -791,7 +791,7 @@ Returns a list of Julian Day Numbers for the times of the visible new moons (acc
 Returns the date and time of the summer solstice.
 
     >>> ha.as_eet(ha.summer_solstice(ha.bce_as_negative(350)), full=True)
-    'BCE 0350-Jun-28 11:09:27 EET'
+    'BCE 0350-Jun-26 11:10:09 EET'
     
 `ha.summer_solstice(-349)` is the equivalent of `ha.solar_event(-349, ha.Seasons.SUMMER_SOLSTICE)`
     
@@ -800,7 +800,7 @@ Returns the date and time of the summer solstice.
 Returns the date and time of any solstice or equinox, specified as one of the `Seasons` constants.
 
     >>> ha.as_eet(ha.solar_event(ha.bce_as_negative(350), ha.Seasons.AUTUMN_EQUINOX), full=True)
-    'BCE 0350-Sep-28 15:23:10 EET'
+    'BCE 0350-Sep-28 15:23:52 EET'
 
 ## Works Cited
 
