@@ -111,7 +111,7 @@ def test_new_moons():
     assert as_gmt(p[0], True) == "BCE 0100-Jan-09 12:44:44 GMT"
 
 
-def test_calendar_months():
+def test_calendar_months_after():
     p = calendar_months(-100)
     assert type(p) is tuple
     assert len(p) == 12
@@ -119,6 +119,40 @@ def test_calendar_months():
     assert len(p[0]) == 2
     assert as_gmt(p[0][0], True) == "BCE 0101-Jul-16 12:00:00 GMT"
     assert p[0][1] == p[1][0]
+
+
+def test_calendar_months_before():
+    p = calendar_months(-100, before_event=True)
+    assert type(p) is tuple
+    assert len(p) == 12
+    assert type(p[0]) is tuple
+    assert len(p[0]) == 2
+    assert as_gmt(p[0][0], True) == "BCE 0101-Jun-16 12:00:00 GMT"
+    assert p[0][1] == p[1][0]
+
+
+def test_calendar_months_athenian_424():
+    """Make sure calendar_months generates the correct new moons for Athenian 424/423"""
+    p = calendar_months(-423)
+    assert len(p) == 12
+    assert as_gmt(p[0][0]) == "BCE 0424-Jul-18"
+    assert as_gmt(p[-1][0]) == "BCE 0423-Jun-08"
+
+
+def test_calendar_months_spartan_424():
+    """Make sure calendar_months generates the correct new moons for Spartan 424/423"""
+    p = calendar_months(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    assert len(p) == 12
+    assert as_gmt(p[0][0]) == "BCE 0424-Sep-15"
+    assert as_gmt(p[-1][0]) == "BCE 0423-Aug-06"
+
+
+def test_calendar_months_delian_424():
+    """Make sure calendar_months generates the correct new moons for Delian 424/423"""
+    p = calendar_months(-423, event=Seasons.WINTER_SOLSTICE)
+    assert len(p) == 12
+    assert as_gmt(p[0][0]) == "BCE 0423-Jan-11"
+    assert as_gmt(p[-1][0]) == "BCE 0423-Dec-01"
 
 
 def test_month_label():
@@ -205,12 +239,13 @@ def test_festival_months():
     assert s1[6]["month"] == "Pos₂"
 
     # With different visibility rules
-    # SECOND_DAY is the default
+    # NEXT_DAY is the default
     u = festival_months(-99, rule=Visible.NEXT_DAY)
     assert as_gmt(u[0]["start"]) == as_gmt(p[0]["start"])
 
-    # with NEXT_DAY
+    # with SECOND_DAY
     v = festival_months(-99, rule=Visible.SECOND_DAY)
+    print(v)
     assert as_gmt(v[0]["start"]) == "BCE 0100-Jul-06"
 
     # with CONJUNCTION
@@ -1500,7 +1535,7 @@ def test_prytany_to_julian():
             prytany_to_julian(
                 bce_as_negative(332), Prytanies.VIII, 39,
                 rule=Visible.CONJUNCTION).jdn) == "BCE 0331-Mar-31"
-    
+
 
 def test_no_sun_data():
     with pytest.raises(HeniautosNoDataError) as e1:

@@ -416,14 +416,58 @@ def _before(t1, t2):
     return not _on_after(t1, t2)
 
 
-def calendar_months(year, rule=Visible.NEXT_DAY, data=load_data()):
+def _bounding_before(moons, sol1, sol2):
+    """Return the first and last new moons for year if the beginning precedes sol1"""
+    return ([m for m in moons if m < sol1][-1],
+            [m for m in moons if m <= sol2][-2])
+    
+
+def _bounding_after(moons, sol1, sol2):
+    """Return the first and last new moons for year if the beginning follows sol1"""
+    return([m for m in moons if m > sol1][0],
+           [m for m in moons if m <= sol2][-1])    
+    
+
+def _bounding_moons(moons, sol1, sol2, before_event):
+    """Get the JDNs of the first and last new moons of a year depending on two solar events
+
+    Paramters:
+    moons: A tuple of JDNs extending before and after the expected bounds
+    sol1: The solar event marking the beginning of the year
+    sol2: The solar event marking the end of the year
+    before_event: True if new moons should preceded the solar event, false if they should follow
+
+    A Greek festival year either begins with the first new moon
+    following a solar event (e.g. the Athenian year began at the first
+    full moon following the summer solstice) or with the first new
+    moon preceding a solar event (e.g. the Spartan year probably began
+    at the first new moon preceding the autumn equinox.
+
+    Return a tuple containing the JDNs of the first and last new moons
+    of a year running from one solar event (sol1) to the next (sol2),
+    depending on whether the beginning of the year precedes or follows
+    the event as specified by the before_event parameter.
+    """
+
+    if before_event:
+        return _bounding_before(moons, sol1, sol2)
+
+    return _bounding_after(moons, sol1, sol2)
+
+
+
+def calendar_months(year, event=Seasons.SUMMER_SOLSTICE, rule=Visible.NEXT_DAY,
+                    before_event=False, data=load_data()):
+
     """Return a tuple representing start and end dates of Athenian festival
     calendar months.
 
     Parameters:
     year (int) -- The year for the calendar
+    event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
     rule (Visible) -- Constant from Visible indicating the desired rule
     (default Visible.SECOND_DAY)
+    before_event: True if new moons should preceded the solar event, false if they should follow
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -438,14 +482,16 @@ def calendar_months(year, rule=Visible.NEXT_DAY, data=load_data()):
     and exclusive of b (a <= month < b).
 
     """
-    sol1 = to_jdn(summer_solstice(year, data=data))
-    sol2 = to_jdn(summer_solstice(year + 1, data=data))
+    sol1 = to_jdn(solar_event(year, event, data=data))
+    sol2 = to_jdn(solar_event(year + 1, event, data=data))
 
     moons = [to_jdn(v) for v in visible_new_moons(year, rule, data=data) +
              visible_new_moons(year + 1, rule, data=data)]
 
+    first, last = _bounding_moons(moons, sol1, sol2, before_event)
+
     return tuple([m for m in zip(moons, moons[1:])
-                  if _on_after(m[0], sol1) and _before(m[0], sol2)])
+                  if m[0] >= first and m[0] <= last])
 
 
 def _insert_interc(names, i, suffix):
@@ -513,6 +559,7 @@ def prytany_label(p):
 
 
 def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
+                    event=Seasons.SUMMER_SOLSTICE,
                     rule=Visible.NEXT_DAY,
                     data=load_data()):
     """Return a tuple representing Athenian festival calendar months.
@@ -546,7 +593,7 @@ def festival_months(year, intercalate=Months.POS, abbrev=False, greek=False,
     """
     if rule == Visible.DINSMOOR:
         return dinsmoor_months(year, abbrev, greek)
-    months = calendar_months(year, rule, data=data)
+    months = calendar_months(year, event=event, rule=rule, data=data)
 
     return tuple([{"month": m[0][0],
                    "constant": m[0][1],
@@ -624,8 +671,7 @@ necessary (default Months.POS)
 
     return tuple([a for b in
                   [_make_month(m, i, doy) for i, m in
-                   enumerate(festival_months(year, intercalate, abbrev, greek,
-                                             rule, data=data), 1)]
+                   enumerate(festival_months(year, intercalate=intercalate, abbrev=abbrev, greek=greek, rule=rule, data=data), 1)]
                   for a in b])
 
 
@@ -789,8 +835,8 @@ def prytanies(year, pryt_type=Prytany.AUTO, pryt_start=Prytany.AUTO,
         return tuple([p for p in pryt])
 
     # Get the calendar for the requested year
-    cal = calendar_months(year, rule, data=data)
-    y_len = sum([span(*m) for m in calendar_months(year, rule, data=data)])
+    cal = calendar_months(year, rule=rule, data=data)
+    y_len = sum([span(*m) for m in calendar_months(year, rule=rule, data=data)])
 
     if auto_type == Prytany.ALIGNED_10:
         # Generate prytanies
