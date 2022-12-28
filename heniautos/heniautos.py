@@ -221,20 +221,21 @@ class Prytanies(IntEnum):
 #     "Skirophoriṓn",
 # )
 
-# MONTH_ABBREVS = (
-#     "Hek",
-#     "Met",
-#     "Boe",
-#     "Pua",
-#     "Mai",
-#     "Pos",
-#     "Gam",
-#     "Ant",
-#     "Ela",
-#     "Mou",
-#     "Tha",
-#     "Ski",
-# )
+# REMOVE
+MONTH_ABBREVS = (
+    "Hek",
+    "Met",
+    "Boe",
+    "Pua",
+    "Mai",
+    "Pos",
+    "Gam",
+    "Ant",
+    "Ela",
+    "Mou",
+    "Tha",
+    "Ski",
+)
 
 # MONTH_NAMES_GK = (
 #     "Ἑκατομβαιών",

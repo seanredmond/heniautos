@@ -101,11 +101,11 @@ def doy_filter(day, doy):
 
 
 def month_filter(month, args):
-    if type(month) == ha.Prytanies and args.prytany:
-        return ROMAN.index(args.prytany) + 1 == month
+    # if type(month) == ha.Prytanies and args.prytany:
+    #     return ROMAN.index(args.prytany) + 1 == month
 
-    if type(month) == ha.Months and args.month:
-        return ha.MONTH_ABBREVS.index(args.month) + 1 == month
+    # if type(month) == ha.Months and args.month:
+    #     return ha.MONTH_ABBREVS.index(args.month) + 1 == month
 
     return True
 
@@ -190,8 +190,8 @@ def filtered_festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
     return festival_filters(
         ha.festival_calendar(year,
-                             abbrev=args.abbreviations,
-                             greek=args.greek_names,
+                             #abbrev=args.abbreviations,
+                             #greek=args.greek_names,
                              intercalate=ha.MONTH_ABBREVS.index(
                                  args.intercalate) + 1,
                              rule=get_rule(args.rule),
@@ -200,10 +200,10 @@ def filtered_festival_calendar(year, args, astro_data):
         args)
         
 
-def filtered_prytany_calendar(year, args):
+def filtered_prytany_calendar(year, args, astro_data):
     """Filter prytany calendar to requested scope."""
     return prytany_filters(
-        ha.prytany_calendar(year, rule=get_rule(args.rule, data=astro_data()))
+        ha.prytany_calendar(year, rule=get_rule(args.rule), data=astro_data())
         , args)
 
 
