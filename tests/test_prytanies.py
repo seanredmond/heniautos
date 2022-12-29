@@ -119,7 +119,7 @@ def test_prytanies_solar_leap():
 
 
 def test_prytanies_10_ordinary_long():
-    c2 = festival_months(O_10_LONG)
+    c2 = festival_calendar(O_10_LONG)
     p2 = prytanies(O_10_LONG)
     assert len(p2) == 10
     assert sum([span(q["start"], q["end"]) for q in p2]) == 355
@@ -262,17 +262,17 @@ def test_prytany_calendar_solar_leap():
 
 def test_prytanies_10_ordinary():
     year = bce_as_negative(O_10)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 10 prytanies in 354 days
     assert len(p3) == 10
-    assert sum([q["end"] - q["start"] for q in c3]) == 354
+    assert len(c3) == 354
     assert sum([q["end"] - q["start"] for q in p3]) == 354
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"]-1 == c3[-1].jdn
 
     # 354 day year. I-IV should be 36 days, the rest 35
     assert p3[0]["end"] - p3[0]["start"] == 36
@@ -282,16 +282,16 @@ def test_prytanies_10_ordinary():
 
 def test_prytanies_10_ordinary_long():
     year = bce_as_negative(O_10_LONG)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 10 prytanies in 355 days
     assert len(p3) == 10
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 355
+    assert sum([q["end"] - q["start"] for q in p3]) == 355
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"]-1 == c3[-1].jdn
 
     # 355 day year. I-IV should be 36 days, the rest 35
     # except the last has the 355th day added, so it is 36 days
@@ -302,16 +302,16 @@ def test_prytanies_10_ordinary_long():
 
 def test_prytanies_10_intercalated():
     year = bce_as_negative(I_10)
-    c = festival_months(year)
+    c = festival_calendar(year)
     p = prytanies(year)
 
     # 10 prytanies in 384 days
     assert len(p) == 10
-    assert sum([span(q["start"], q["end"]) for q in p]) == 384
+    assert sum([q["end"] - q["start"] for q in p]) == 384
 
     assert p[0]["prytany"] == 1
-    assert as_gmt(p[0]["start"]) == as_gmt(c[0]["start"])
-    assert as_gmt(p[-1]["end"]) == as_gmt(c[-1]["end"])
+    assert p[0]["start"] == c[0].jdn
+    assert p[-1]["end"] - 1 == c[-1].jdn
 
     # 384 day year. I-IV should by 39 days, the rest 38
     assert span(p[0]["start"], p[0]["end"]) == 39
@@ -324,16 +324,16 @@ def test_prytanies_10_intercalated():
 
 def test_prytanies_12_ordinary():
     year = bce_as_negative(O_12)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 12 prytanies in 354 days
     assert len(p3) == 12
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 354
+    assert sum([q["end"] - q["start"] for q in p3]) == 354
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # Like the festival calendar, prytanies are 29 or 30 days
     assert span(p3[0]["start"], p3[0]["end"]) == 29
@@ -345,16 +345,16 @@ def test_prytanies_12_ordinary():
 
 def test_prytanies_12_ordinary_aristotle():
     year = bce_as_negative(O_12)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year, rule_of_aristotle=True)
 
     # 12 prytanies in 354 days
     assert len(p3) == 12
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 354
+    assert sum([q["end"] - q["start"] for q in p3]) == 354
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # All the 30 day prytanies are at the beginning of the year,
     # all the 29-day prytanies are at the end
@@ -375,16 +375,16 @@ def test_prytanies_12_ordinary_aristotle():
 
 def test_prytanies_12_long():
     year = bce_as_negative(O_12_LONG)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 12 prtyanies in 355 days
     assert len(p3) == 12
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 355
+    assert sum([q["end"] - q["start"] for q in p3]) == 355
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # Like the festival calendar, prytanies are 29 or 30 days
     # Festival months:
@@ -399,14 +399,14 @@ def test_prytanies_12_long():
 
 def test_prytanies_12_long_aristotle():
     year = bce_as_negative(O_12_LONG)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year, rule_of_aristotle=True)
     assert len(p3) == 12
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 355
+    assert sum([q["end"] - q["start"] for q in p3]) == 355
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # All the 30 day prytanies are at the beginning of the year,
     # all the 29-day prytanies are at the end
@@ -429,21 +429,19 @@ def test_prytanies_12_long_aristotle():
 
 def test_prytanies_12_intercalated():
     year = bce_as_negative(I_12)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # Twelve prytanies in 385 days
     assert len(p3) == 12
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 384
+    assert sum([q["end"] - q["start"] for q in p3]) == 384
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # All prytanies are 32 days long
-    assert span(p3[0]["start"], p3[0]["end"]) == 32
-    assert span(p3[6]["start"], p3[6]["end"]) == 32
-    assert span(p3[-1]["start"], p3[-1]["end"]) == 32
+    all([(q["end"] - q["start"]) == 32 for q in p3])
 
 
 # Thirteen prytanies: 223-201 BCE
@@ -451,16 +449,16 @@ def test_prytanies_12_intercalated():
 
 def test_prytanies_13_ordinary():
     year = bce_as_negative(O_13)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 13 prytanies in 354 days
     assert len(p3) == 13
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 354
+    assert sum([q["end"] - q["start"] for q in p3]) == 354
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # Prytanies I-III 28 days long, the rest 27 days
     assert span(p3[0]["start"], p3[0]["end"]) == 28
@@ -470,16 +468,16 @@ def test_prytanies_13_ordinary():
 
 def test_prytanies_13_long():
     year = bce_as_negative(O_13_LONG)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 13 prytanies in 355 days
     assert len(p3) == 13
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 355
+    assert sum([q["end"] - q["start"] for q in p3]) == 355
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # Prytanies I-III 28 days long, the rest 27 days except for the last
     # prytany which as 29 days long since it has the extra 355th day added
@@ -490,16 +488,16 @@ def test_prytanies_13_long():
 
 def test_prytanies_13_intercalated():
     year = bce_as_negative(I_13)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year)
 
     # 13 prytanies in 384 days
     assert len(p3) == 13
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 384
+    assert sum([q["end"] - q["start"] for q in p3]) == 384
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # Prytanies follow the festival calendar
     # The festival months of 214 are:
@@ -514,16 +512,16 @@ def test_prytanies_13_intercalated():
 
 def test_prytanies_13_intercalated_aristotle():
     year = bce_as_negative(214)
-    c3 = festival_months(year)
+    c3 = festival_calendar(year)
     p3 = prytanies(year, rule_of_aristotle=True)
 
     # 13 prytanies in 384 days
     assert len(p3) == 13
-    assert sum([span(q["start"], q["end"]) for q in p3]) == 384
+    assert sum([q["end"] - q["start"] for q in p3]) == 384
 
     assert p3[0]["prytany"] == 1
-    assert as_gmt(p3[0]["start"]) == as_gmt(c3[0]["start"])
-    assert as_gmt(p3[-1]["end"]) == as_gmt(c3[-1]["end"])
+    assert p3[0]["start"] == c3[0].jdn
+    assert p3[-1]["end"] - 1 == c3[-1].jdn
 
     # All the 30 day prytanies are at the beginning of the year,
     # all the 29-day prytanies are at the end
