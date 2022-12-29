@@ -65,6 +65,7 @@ class Cal(Enum):
     ATHENIAN = object()
     SPARTAN = object()
     DELIAN = object()
+    CORINTHIAN = object()
 
     def __repr__(self):
         return "<%s.%s>" % (self.__class__.__name__, self._name_)
@@ -141,10 +142,26 @@ class SpartanMonths(IntEnum):
     U12 = 12
 
 
+class CorinthianMonths(IntEnum):
+    PHO = 1
+    KRA = 2
+    LAN = 3
+    MAK = 4
+    DOD = 5
+    EUK = 6
+    ART = 7
+    PSU = 8
+    GAM = 9
+    AGR = 10
+    PAN = 11
+    APE = 12
+
+
 CALENDAR_MAP = {
     Cal.ATHENIAN: AthenianMonths,
     Cal.DELIAN: DelianMonths,
     Cal.SPARTAN: SpartanMonths,
+    Cal.CORINTHIAN: CorinthianMonths
 }
 
 # Since the values of Enums like AthenianMonths.HEK and
@@ -187,6 +204,18 @@ MONTH_NAME_MAP = {
     (Cal.SPARTAN, SpartanMonths.U10): ("Unknown 10", "? 10", "Unknown 10"),
     (Cal.SPARTAN, SpartanMonths.U11): ("Unknown 11", "? 11", "Unknown 11"),
     (Cal.SPARTAN, SpartanMonths.U12): ("Unknown 12", "? 12", "Unknown 12"),
+    (Cal.CORINTHIAN, CorinthianMonths.PHO): ("Phoinikaîos", "Pho", "Φοινικαῖος"),
+    (Cal.CORINTHIAN, CorinthianMonths.KRA): ("Kráneios", "Kra", "Κράνειος"),
+    (Cal.CORINTHIAN, CorinthianMonths.LAN): ("Lanotropíos", "Lan", "Λανοτροπίος"),
+    (Cal.CORINTHIAN, CorinthianMonths.MAK): ("Makhaneús", "Mak", "Μαχανεύς"),
+    (Cal.CORINTHIAN, CorinthianMonths.DOD): ("Dōdekateús", "Dod", "Δωδεκατεύς"),
+    (Cal.CORINTHIAN, CorinthianMonths.EUK): ("Εúkleios", "Euk", "Εὔκλειος"),
+    (Cal.CORINTHIAN, CorinthianMonths.ART): ("Artemísios", "Art", "Ἀρτεμίσιος"),
+    (Cal.CORINTHIAN, CorinthianMonths.PSU): ("Psudreús", "Psu", "Ψυδρεύς"),
+    (Cal.CORINTHIAN, CorinthianMonths.GAM): ("Gameílios", "Gam", "Γαμείλιος"),
+    (Cal.CORINTHIAN, CorinthianMonths.AGR): ("Agriánios", "Agr", "Αγριάνιος"),
+    (Cal.CORINTHIAN, CorinthianMonths.PAN): ("Pánamos", "Pan", "Πάναμος"),
+    (Cal.CORINTHIAN, CorinthianMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
 }
 
 
@@ -373,12 +402,17 @@ def _gmt_fmt_bce(j, full):
     return _gmt_fmt((bce_as_negative(j[0]),) + j[1:], full, "BCE")
 
 
+def __jul_month(m):
+    return ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[m-1]
+
+
 def _gmt_fmt(j, full, epoch=" CE"):
     """Return a short or full string representation of a JDN."""
     if full:
         return _gmt_fmt_full(j, epoch)
 
-    return datetime(*j).strftime(f"{epoch} %Y-%b-%d")
+    return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
+    # return datetime(*j).strftime(f"{epoch} %Y-%b-%d")
 
 
 def _gmt_fmt_full(j, epoch):
@@ -562,7 +596,7 @@ def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):
 
 def _bounding_before(moons, sol1, sol2):
     """Return the first and last new moons for year if the beginning precedes sol1"""
-    return ([m for m in moons if m < sol1][-1], [m for m in moons if m <= sol2][-2])
+    return ([m for m in moons if m <= sol1][-1], [m for m in moons if m <= sol2][-2])
 
 
 def _bounding_after(moons, sol1, sol2):
@@ -1021,6 +1055,24 @@ def spartan_festival_calendar(
     return festival_calendar(
         year,
         calendar=Cal.SPARTAN,
+        intercalate=intercalate,
+        event=Seasons.AUTUMN_EQUINOX,
+        before_event=True,
+        rule=rule,
+        data=data,
+    )
+
+
+def corinthian_festival_calendar(
+    year,
+    intercalate=CorinthianMonths.MAK,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    return festival_calendar(
+        year,
+        calendar=Cal.CORINTHIAN,
         intercalate=intercalate,
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
