@@ -197,6 +197,10 @@ def get_calendar(cal):
     if cal == "delian":
         return ha.Cal.DELIAN
 
+    if cal == "delphian":
+        return ha.Cal.DELPHIAN
+    
+
     if cal == "spartan":
         return ha.Cal.SPARTAN
 
@@ -204,7 +208,7 @@ def get_calendar(cal):
 
 
 def get_solar_event(cal):
-    if cal == "athenian":
+    if cal in ("athenian", "delphian"):
         return ha.Seasons.SUMMER_SOLSTICE
 
     if cal in ("corinthian", "spartan"):
@@ -440,7 +444,7 @@ under certain conditions."""
     parser.add_argument("start_year", type=int)
     parser.add_argument("end_year", type=int, nargs='?', default=None)
     parser.add_argument("-c", "--calendar",
-                        choices=("athenian", "delian", "spartan", "corinthian", "none"),
+                        choices=("athenian", "delian", "delphian", "spartan", "corinthian", "none"),
                         default="athenian",
                         help="Festival calendar to display"),
     parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,
