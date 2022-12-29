@@ -185,15 +185,48 @@ def prytany_filters(cal, args):
     """Apply prytany filters."""
     return [d for d in cal if month_filter(d.prytany, args) and day_filter(d, args) and doy_filter(d, args.doy)]
 
-    
+
+def get_calendar(cal):
+    if cal == "athenian":
+        return ha.Cal.ATHENIAN
+
+    if cal == "delian":
+        return ha.Cal.DELIAN
+
+    if cal == "spartan":
+        return ha.Cal.SPARTAN
+
+    return None
+
+
+def get_solar_event(cal):
+    if cal == "athenian":
+        return ha.Seasons.SUMMER_SOLSTICE
+
+    if cal == "delian":
+        return ha.Seasons.WINTER_SOLSTICE
+
+    if cal == "spartan":
+        return ha.Seasons.AUTUMN_EQUINOX
+
+
+def needs_before(cal):
+    if cal == "spartan":
+        return True
+
+    return False
+
+
 def filtered_festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
     return festival_filters(
         ha.festival_calendar(year,
                              #abbrev=args.abbreviations,
                              #greek=args.greek_names,
-                             intercalate=ha.MONTH_ABBREVS.index(
-                                 args.intercalate) + 1,
+                             calendar=get_calendar(args.calendar),
+                             event=get_solar_event(args.calendar),
+                             before_event=needs_before(args.calendar),
+                             intercalate=6,
                              rule=get_rule(args.rule),
                              data=astro_data()
                              ),
@@ -387,6 +420,10 @@ under certain conditions."""
     )
     parser.add_argument("start_year", type=int)
     parser.add_argument("end_year", type=int, nargs='?', default=None)
+    parser.add_argument("-c", "--calendar",
+                        choices=("athenian", "delian", "spartan", "none"),
+                        default="athenian",
+                        help="Festival calendar to display"),
     parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,
                         help="Only show selected month")
     parser.add_argument("--day", type=int,
@@ -398,7 +435,7 @@ under certain conditions."""
     parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
                         type=str, default="Pos",
                         help="Month after which to intercalate")
-    parser.add_argument("-c", "--conciliar", action="store_true",
+    parser.add_argument("-b", "--conciliar", action="store_true",
                         help="Output conciliar calendar (prytanies)")
     parser.add_argument("--arabic", action="store_true",
                         help="Display prytany numbers as Arabic rather than "
