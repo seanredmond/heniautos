@@ -19,6 +19,7 @@
 import argparse
 import csv
 from datetime import datetime
+import juliandate as jd
 import heniautos as ha
 from sys import stdout, stderr, exit
 
@@ -190,6 +191,9 @@ def get_calendar(cal):
     if cal == "athenian":
         return ha.Cal.ATHENIAN
 
+    if cal == "corinthian":
+        return ha.Cal.CORINTHIAN
+
     if cal == "delian":
         return ha.Cal.DELIAN
 
@@ -203,15 +207,15 @@ def get_solar_event(cal):
     if cal == "athenian":
         return ha.Seasons.SUMMER_SOLSTICE
 
+    if cal in ("corinthian", "spartan"):
+        return ha.Seasons.AUTUMN_EQUINOX
+
     if cal == "delian":
         return ha.Seasons.WINTER_SOLSTICE
 
-    if cal == "spartan":
-        return ha.Seasons.AUTUMN_EQUINOX
-
 
 def needs_before(cal):
-    if cal == "spartan":
+    if cal in ("corinthian", "spartan"):
         return True
 
     return False
@@ -297,8 +301,13 @@ def get_julian_half_year(year1, year2):
 
 def get_julian_year(year):
     """ Combine two parts of Julian year that span Attic year. """
-    return get_julian_half_year(year - 1, year) + \
-        get_julian_half_year(year, year)
+    jan1 = int(jd.from_julian(year, 1, 1) + 0.5)
+    dec31 = int(jd.from_julian(year, 12, 31) + 0.5)
+    return range(jan1, dec31+1)
+    # print(jan1)
+    # print(dec31)
+    # return get_julian_half_year(year - 1, year) + \
+    #     get_julian_half_year(year, year)
     
 
 def is_solar(with_solar, day, solar):
@@ -315,8 +324,7 @@ def is_solar(with_solar, day, solar):
 
 def solar_events(year, with_solar):
     if with_solar:
-        return [(ha.as_eet(ha.solar_event(year, s)), SOLAR[s]) \
-                for s in ha.Seasons]
+        return [(ha.to_jdn(ha.solar_event(year, s)), SOLAR[s]) for s in ha.Seasons]
 
     return []
 
@@ -336,7 +344,7 @@ def is_astro_event(with_event, day, events):
     if not with_event:
         return tuple()
 
-    event = tuple([e[1] for e in events if e[0] == ha.as_eet(day)])
+    event = tuple([e[1] for e in events if e[0] == day])
 
     if event:
         return event
@@ -346,12 +354,22 @@ def is_astro_event(with_event, day, events):
 
 def lunar_events(year, with_nm):
     if with_nm:
-        return [(ha.as_eet(m), "NM") for m in ha.new_moons(year)]
+        return [(ha.to_jdn(d), "NM") for d in ha.new_moons(year)]
 
     return []
 
 
 def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
+    for year in years(start_y, end_y, as_ce):
+        solar = dict(solar_events(year, with_solar))
+        lunar = dict(lunar_events(year, with_nm))
+        for day in get_julian_year(year):
+            row = (day, ha.as_gmt(day), solar.get(day, ""), lunar.get(day, ""))
+            
+            writer.writerow(row)
+
+
+def zz_output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
     row_w = [16]  + \
         ([7] if with_solar else []) + \
         ([7] if with_nm else [])
@@ -370,9 +388,10 @@ def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
         solar = solar_events(year, with_solar)
         lunar = lunar_events(year, with_nm)
         for x in get_julian_year(year):
-            row = (ha.as_eet(x),) + \
+            row = (x, ha.as_eet(x),) + \
                 is_astro_event(with_solar, x, solar) + \
                 is_astro_event(with_nm, x, lunar)
+
             if not tabs:
                 writer.writerow(pad_cell(*r) for r in zip(row, cent_j, row_w))
             else:
@@ -421,7 +440,7 @@ under certain conditions."""
     parser.add_argument("start_year", type=int)
     parser.add_argument("end_year", type=int, nargs='?', default=None)
     parser.add_argument("-c", "--calendar",
-                        choices=("athenian", "delian", "spartan", "none"),
+                        choices=("athenian", "delian", "spartan", "corinthian", "none"),
                         default="athenian",
                         help="Festival calendar to display"),
     parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,
