@@ -278,12 +278,6 @@ def _make_prytany(prytany, prytany_index, doy):
     ]
 
 
-def _doy_gen(n=1):
-    """Recursivly return natural numbers starting with n."""
-    yield n
-    yield from _doy_gen(n + 1)
-
-
 def prytany_calendar(
     year,
     pryt_type=Prytany.AUTO,
@@ -318,7 +312,7 @@ def prytany_calendar(
              "doy": the day of the year the day represents.
     """
 
-    doy = _doy_gen()
+    doy = heniautos.heniautos._doy_gen()
 
     return tuple(
         [

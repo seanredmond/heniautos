@@ -259,7 +259,7 @@ FestivalDay = namedtuple(
     "FestivalDay", ("jdn", "month_name", "month_index", "month", "day", "doy")
 )
 
-def _load_data_file(fn):
+def __load_data_file(fn):
     """Load astronomical data from file fn
 
     File should be tab-delimited lines containing a julian date (float) and an event/phase id (int):
@@ -283,8 +283,8 @@ def load_data(
 ):
     """Load solstice/equinox and moon phase data from files."""
     return {
-        "solstices": _load_data_file(solstices),
-        "new_moons": _load_data_file(new_moons),
+        "solstices": __load_data_file(solstices),
+        "new_moons": __load_data_file(new_moons),
     }
 
 
