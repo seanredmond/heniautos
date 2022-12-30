@@ -1,5 +1,70 @@
-from heniautos import *
 import pytest
+from heniautos import *
+from heniautos.prytanies import *
+from heniautos.equations import *
+
+
+def test_fest_eq_tuple():
+    eq = heniautos.equations._fest_eq((AthenianMonths.MET, 10))
+    assert len(eq) == 5
+    assert eq[0]["doy"] == 39
+    assert eq[0]["intercalation"] is False
+    assert eq[-1]["doy"] == 70
+    assert eq[-1]["intercalation"] is True
+
+    assert heniautos.equations._fest_eq(
+        (AthenianMonths.MET, 10)
+    ) == heniautos.equations._fest_eq(((AthenianMonths.MET, 10),))
+
+
+def test_fest_eq_nested():
+    eq = heniautos.equations._fest_eq(
+        ((AthenianMonths.MET, 10), (AthenianMonths.MET, 11))
+    )
+    assert len(eq) == 10
+    assert eq[0]["date"] == (AthenianMonths.MET, 10)
+    assert eq[0]["doy"] == 39
+    assert eq[0]["intercalation"] is False
+    assert eq[4]["date"] == (AthenianMonths.MET, 10)
+    assert eq[4]["doy"] == 70
+    assert eq[4]["intercalation"] is True
+    assert eq[5]["date"] == (AthenianMonths.MET, 11)
+    assert eq[5]["doy"] == 40
+    assert eq[5]["intercalation"] is False
+    assert eq[-1]["date"] == (AthenianMonths.MET, 11)
+    assert eq[-1]["doy"] == 71
+    assert eq[-1]["intercalation"] is True
+
+
+def test_pryt_eq_tuple():
+    eq = heniautos.equations._pryt_eq((Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10)
+    assert len(eq) == 4
+    assert eq[0]["doy"] == 39
+    assert eq[0]["intercalation"] is False
+    assert eq[-1]["doy"] == 43
+    assert eq[-1]["intercalation"] is True
+
+    assert heniautos.equations._pryt_eq(
+        (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
+    ) == heniautos.equations._pryt_eq(
+        ((Prytanies.II, 4),), pryt_type=Prytany.ALIGNED_10
+    )
+
+
+def test_pryt_eq_nested():
+    eq = heniautos.equations._pryt_eq(
+        ((Prytanies.II, 4), (Prytanies.II, 5)), pryt_type=Prytany.ALIGNED_10
+    )
+    assert len(eq) == 8
+    assert eq[0]["date"] == (Prytanies.II, 4)
+    assert eq[0]["doy"] == 39
+    assert eq[0]["intercalation"] is False
+    assert eq[3]["date"] == (Prytanies.II, 4)
+    assert eq[3]["doy"] == 43
+    assert eq[3]["intercalation"] is True
+    assert eq[-1]["date"] == (Prytanies.II, 5)
+    assert eq[-1]["doy"] == 44
+    assert eq[-1]["intercalation"] is True
 
 
 def test_equations_tuples():

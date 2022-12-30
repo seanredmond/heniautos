@@ -463,36 +463,6 @@ def test_festival_doy():
     assert all([d["intercalation"] for d in doy if d["doy"] > 295])
 
 
-def test_fest_eq_tuple():
-    eq = heniautos._fest_eq((AthenianMonths.MET, 10))
-    assert len(eq) == 5
-    assert eq[0]["doy"] == 39
-    assert eq[0]["intercalation"] is False
-    assert eq[-1]["doy"] == 70
-    assert eq[-1]["intercalation"] is True
-
-    assert heniautos._fest_eq((AthenianMonths.MET, 10)) == heniautos._fest_eq(
-        ((AthenianMonths.MET, 10),)
-    )
-
-
-def test_fest_eq_nested():
-    eq = heniautos._fest_eq(((AthenianMonths.MET, 10), (AthenianMonths.MET, 11)))
-    assert len(eq) == 10
-    assert eq[0]["date"] == (AthenianMonths.MET, 10)
-    assert eq[0]["doy"] == 39
-    assert eq[0]["intercalation"] is False
-    assert eq[4]["date"] == (AthenianMonths.MET, 10)
-    assert eq[4]["doy"] == 70
-    assert eq[4]["intercalation"] is True
-    assert eq[5]["date"] == (AthenianMonths.MET, 11)
-    assert eq[5]["doy"] == 40
-    assert eq[5]["intercalation"] is False
-    assert eq[-1]["date"] == (AthenianMonths.MET, 11)
-    assert eq[-1]["doy"] == 71
-    assert eq[-1]["intercalation"] is True
-
-
 @pytest.mark.skip(reason="probably going to remove")
 def test_dinsmoor():
     c = festival_calendar(-430, rule=Visible.DINSMOOR)
