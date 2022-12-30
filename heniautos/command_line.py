@@ -21,6 +21,7 @@ import csv
 from datetime import datetime
 import juliandate as jd
 import heniautos as ha
+import heniautos.prytanies
 from sys import stdout, stderr, exit
 
 ROMAN = ("I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI",
@@ -112,7 +113,7 @@ def month_filter(month, args):
 
 
 def display_month(month, args):
-    if type(month) is ha.PrytanyDay:
+    if type(month) is ha.prytanies.PrytanyDay:
         if not args.arabic:
             return ROMAN[month.prytany-1]
 
@@ -258,7 +259,7 @@ def filtered_calendar(year, args, astro_data):
 
 def by_group(year):
     """Group by months or prytanies depending on type of calendar."""
-    if type(year[0]) is ha.PrytanyDay:
+    if type(year[0]) is ha.prytanies.PrytanyDay:
         return ha.by_prytanies(year)
 
     return ha.by_months(year)
