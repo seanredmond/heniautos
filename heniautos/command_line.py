@@ -189,6 +189,9 @@ def prytany_filters(cal, args):
 
 
 def get_calendar(cal):
+    if cal == "argive":
+        return ha.Cal.ARGIVE
+
     if cal == "athenian":
         return ha.Cal.ATHENIAN
 
@@ -201,7 +204,6 @@ def get_calendar(cal):
     if cal == "delphian":
         return ha.Cal.DELPHIAN
     
-
     if cal == "spartan":
         return ha.Cal.SPARTAN
 
@@ -212,7 +214,7 @@ def get_solar_event(cal):
     if cal in ("athenian", "delphian"):
         return ha.Seasons.SUMMER_SOLSTICE
 
-    if cal in ("corinthian", "spartan"):
+    if cal in ("argive", "corinthian", "spartan"):
         return ha.Seasons.AUTUMN_EQUINOX
 
     if cal == "delian":
@@ -220,7 +222,7 @@ def get_solar_event(cal):
 
 
 def needs_before(cal):
-    if cal in ("corinthian", "spartan"):
+    if cal in ("argive", "corinthian", "spartan"):
         return True
 
     return False
@@ -445,7 +447,7 @@ under certain conditions."""
     parser.add_argument("start_year", type=int)
     parser.add_argument("end_year", type=int, nargs='?', default=None)
     parser.add_argument("-c", "--calendar",
-                        choices=("athenian", "delian", "delphian", "spartan", "corinthian", "none"),
+                        choices=("argive", "athenian", "delian", "delphian", "spartan", "corinthian", "none"),
                         default="athenian",
                         help="Festival calendar to display"),
     parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,

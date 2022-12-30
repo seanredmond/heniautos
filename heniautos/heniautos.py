@@ -65,6 +65,7 @@ class MonthNameOptions(IntEnum):
 
 class Cal(Enum):
     """Constants representing available calendars."""
+    ARGIVE = object()
     ATHENIAN = object()
     CORINTHIAN = object()
     DELIAN = object()
@@ -88,6 +89,20 @@ class Months(IntEnum):
     UNC = 14
 
 
+class ArgiveMonths(IntEnum):
+    AGU = 1
+    KAR = 2
+    ERI = 3
+    HER = 4
+    GAM = 5
+    TEL = 6
+    ARN = 7
+    ART = 8
+    AGR = 9
+    AMU = 10
+    PAN = 11
+    APE = 12
+    
 class AthenianMonths(IntEnum):
     HEK = 1
     MET = 2
@@ -164,6 +179,7 @@ class CorinthianMonths(IntEnum):
 
 
 CALENDAR_MAP = {
+    Cal.ARGIVE: ArgiveMonths,
     Cal.ATHENIAN: AthenianMonths,
     Cal.CORINTHIAN: CorinthianMonths,
     Cal.DELPHIAN: DelphianMonths,
@@ -235,6 +251,18 @@ MONTH_NAME_MAP = {
     (Cal.DELPHIAN, DelphianMonths.END): ("Enduspoitrópios", "End", "Ἐνδυσποιτρόπιος"),
     (Cal.DELPHIAN, DelphianMonths.HKL): ("Herákleios", "Hkl", "Ἡράκλειος"),
     (Cal.DELPHIAN, DelphianMonths.ILA): ("Ilaîos", "Ila", "Ἰλαῖος"),
+    (Cal.ARGIVE, ArgiveMonths.AGU): ("Agúeios", "Agu", "Ἀγύειος"),
+    (Cal.ARGIVE, ArgiveMonths.KAR): ("Karneîos", "Kar", "Καρνεῖος"),
+    (Cal.ARGIVE, ArgiveMonths.ERI): ("Erithaieos", "Eri", "Ἐριθαιεος"),
+    (Cal.ARGIVE, ArgiveMonths.HER): ("Hermaîos", "Her", "Ἑρμαῖος"),
+    (Cal.ARGIVE, ArgiveMonths.GAM): ("Gámos", "Gam", "Γάμος"),
+    (Cal.ARGIVE, ArgiveMonths.TEL): ("Téleos", "Tel", "Τέλεος"),
+    (Cal.ARGIVE, ArgiveMonths.ARN): ("Arneîos", "Arn", "Ἀρνεῖος"),
+    (Cal.ARGIVE, ArgiveMonths.ART): ("Artamítios", "Art", "Ἀρταμίτιος"),
+    (Cal.ARGIVE, ArgiveMonths.AGR): ("Agriánios", "Agr", "Ἀγριάωιος"),
+    (Cal.ARGIVE, ArgiveMonths.AMU): ("Amuklaîos", "Amu", "Ἀμυκλαῖος"),
+    (Cal.ARGIVE, ArgiveMonths.PAN): ("Pánamos", "Pan", "Πάναμος"),
+    (Cal.ARGIVE, ArgiveMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
     
 }
 
@@ -885,6 +913,37 @@ def delian_festival_calendar(
         intercalate=intercalate,
         event=Seasons.WINTER_SOLSTICE,
         before_event=False,
+        rule=rule,
+        data=data,
+    )
+
+
+def argive_festival_calendar(
+    year,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    """Return a tuple representing festival calendar.
+    Parameters:
+    year (int) -- The year for the calendar
+    intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
+    name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+    rule (Visible) -- Constant from Visible indicating the desired rule
+    (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+    Get an Argive  festival calendar (calls festival_calendar with appropriate options).
+
+    """
+    return festival_calendar(
+        year,
+        calendar=Cal.ARGIVE,
+        intercalate=intercalate,
+        event=Seasons.AUTUMN_EQUINOX,
+        before_event=True,
         rule=rule,
         data=data,
     )
