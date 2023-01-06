@@ -423,7 +423,7 @@ def solar_event(year, e, data=load_data()):
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
         return [
-            s[0] for s in data["solstices"] if s[1] == e and s[0] >= d1 and s[0] <= d2
+            s[0] for s in data["solstices"] if s[1] == e and d1 <= s[0] <= d2
         ][0]
     except IndexError:
         if year < 1:
@@ -438,7 +438,7 @@ def solar_event(year, e, data=load_data()):
 def __all_moon_phases(year, data):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    return [m for m in data["new_moons"] if m[0] >= d1 and m[0] <= d2] or None
+    return [m for m in data["new_moons"] if d1 <= m[0] <= d2] or None
 
 
 # # MAYBE REMOVE
@@ -596,7 +596,7 @@ def calendar_months(
 
     first, last = __bounding_moons(moons, sol1, sol2, before_event)
 
-    return tuple([m for m in zip(moons, moons[1:]) if m[0] >= first and m[0] <= last])
+    return tuple([m for m in zip(moons, moons[1:]) if first <= m[0] <= last])
 
 
 def __festival_months(
