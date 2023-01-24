@@ -257,7 +257,7 @@ def filtered_festival_calendar(year, args, astro_data):
 def filtered_prytany_calendar(year, args, astro_data):
     """Filter prytany calendar to requested scope."""
     return prytany_filters(
-        ha.prytany_calendar(year, rule=get_rule(args.rule), data=astro_data())
+        ha.prytanies.prytany_calendar(year, rule=get_rule(args.rule), data=astro_data())
         , args)
 
 
@@ -467,7 +467,7 @@ under certain conditions."""
     parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
                         type=str, default="Pos",
                         help="Month after which to intercalate")
-    parser.add_argument("-b", "--conciliar", action="store_true",
+    parser.add_argument("-C", "--conciliar", action="store_true",
                         help="Output conciliar calendar (prytanies)")
     parser.add_argument("--arabic", action="store_true",
                         help="Display prytany numbers as Arabic rather than "
