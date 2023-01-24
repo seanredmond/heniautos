@@ -46,7 +46,7 @@ class Prytany(IntEnum):
     ALIGNED_13 = 4
 
 
-PrytanyDay = namedtuple("PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy"))
+PrytanyDay = namedtuple("PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy", "year"))
 
 
 # Maybe remove
@@ -287,10 +287,10 @@ def prytanies(
     raise HeniautosError("Not Handled")
 
 
-def _make_prytany(prytany, prytany_index, doy):
+def _make_prytany(prytany, pryt_year, prytany_index, doy):
     return [
         PrytanyDay(
-            prytany["start"] + d - 1, prytany_index, prytany["constant"], d, next(doy)
+            prytany["start"] + d - 1, prytany_index, prytany["constant"], d, next(doy), pryt_year
         )
         for d in range(1, prytany["end"] - prytany["start"] + 1, 1)
     ]
@@ -331,12 +331,13 @@ def prytany_calendar(
     """
 
     doy = heniautos.heniautos._doy_gen()
+    cal_year = heniautos.arkhon_year(year)
 
     return tuple(
         [
             a
             for b in [
-                _make_prytany(p, i, doy)
+                _make_prytany(p, cal_year, i, doy)
                 for i, p in enumerate(
                     prytanies(
                         year,
