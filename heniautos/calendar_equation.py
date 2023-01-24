@@ -20,38 +20,40 @@ import argparse
 import csv
 from datetime import datetime
 import heniautos as ha
+import heniautos.prytanies as pryt
+import heniautos.equations as heq
 from itertools import product
 import sys
 
 
 # Conversions for argument parameters to Months constants
-CMD_MONTHS = {"hek": ha.Months.HEK,
-              "met": ha.Months.MET,
-              "boe": ha.Months.BOE,
-              "pua": ha.Months.PUA,
-              "mai": ha.Months.MAI,
-              "pos": ha.Months.POS,
-              "gam": ha.Months.GAM,
-              "ant": ha.Months.ANT,
-              "ela": ha.Months.ELA,
-              "mou": ha.Months.MOU,
-              "tha": ha.Months.THA,
-              "ski": ha.Months.SKI}
+CMD_MONTHS = {"hek": ha.AthenianMonths.HEK,
+              "met": ha.AthenianMonths.MET,
+              "boe": ha.AthenianMonths.BOE,
+              "pua": ha.AthenianMonths.PUA,
+              "mai": ha.AthenianMonths.MAI,
+              "pos": ha.AthenianMonths.POS,
+              "gam": ha.AthenianMonths.GAM,
+              "ant": ha.AthenianMonths.ANT,
+              "ela": ha.AthenianMonths.ELA,
+              "mou": ha.AthenianMonths.MOU,
+              "tha": ha.AthenianMonths.THA,
+              "ski": ha.AthenianMonths.SKI}
 
 # Conversions for argument parameters to Prytanies constants
-CMD_PRYT = {"i": ha.Prytanies.I,
-            "ii": ha.Prytanies.II,
-            "iii": ha.Prytanies.III,
-            "iv": ha.Prytanies.IV,
-            "v": ha.Prytanies.V,
-            "vi": ha.Prytanies.VI,
-            "vii": ha.Prytanies.VII,
-            "viii": ha.Prytanies.VIII,
-            "ix": ha.Prytanies.IX,
-            "x": ha.Prytanies.X,
-            "xi": ha.Prytanies.XI,
-            "xii": ha.Prytanies.XII,
-            "xiii": ha.Prytanies.XIII}
+CMD_PRYT = {"i": pryt.Prytanies.I,
+            "ii": pryt.Prytanies.II,
+            "iii": pryt.Prytanies.III,
+            "iv": pryt.Prytanies.IV,
+            "v": pryt.Prytanies.V,
+            "vi": pryt.Prytanies.VI,
+            "vii": pryt.Prytanies.VII,
+            "viii": pryt.Prytanies.VIII,
+            "ix": pryt.Prytanies.IX,
+            "x": pryt.Prytanies.X,
+            "xi": pryt.Prytanies.XI,
+            "xii": pryt.Prytanies.XII,
+            "xiii": pryt.Prytanies.XIII}
 
 
 def abbrev_from_constant(val, dct):
@@ -114,7 +116,7 @@ def eq_fmt(fest, pryt, ph_cnt):
 def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary,
                     intercalary):
     solutions = [e for e
-                 in ha.equations(fest, pryt, pryt_type=pryt_type, year=year)
+                 in heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
                  if year_type(e, ordinary, intercalary)]
 
     if len(solutions) == 0:
@@ -128,12 +130,12 @@ def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary,
 def phulai_count(pryt_type, year):
     """Return the number of phulai."""
     if year is not None:
-        return ha.phulai_count(year)
+        return ha.prytanies._pryt_auto(year)
 
-    if pryt_type == ha.Prytany.ALIGNED_13:
+    if pryt_type == pryt.Prytany.ALIGNED_13:
         return 13
 
-    if pryt_type == ha.Prytany.ALIGNED_12:
+    if pryt_type == pryt.Prytany.ALIGNED_12:
         return 12
 
     return 10
@@ -264,15 +266,15 @@ def cmd_parse_equations(equation, pryt_type, year):
 
 def prytany_type_year(pryt_cnt, year):
     if year is not None:
-        return (ha.Prytany.AUTO, ha.bce_as_negative(year))
+        return (pryt.Prytany.AUTO, ha.bce_as_negative(year))
 
     if pryt_cnt == 10:
-        return (ha.Prytany.ALIGNED_10, None)
+        return (pryt.Prytany.ALIGNED_10, None)
 
     if pryt_cnt == 12:
-        return (ha.Prytany.ALIGNED_12, None)
+        return (pryt.Prytany.ALIGNED_12, None)
 
-    return (ha.Prytany.ALIGNED_13, None)
+    return (pryt.Prytany.ALIGNED_13, None)
 
 
 def main():
@@ -313,8 +315,8 @@ under certain conditions.""")
 
     if args.collate:
         output_collations(
-            ha.collations(
-                *[ha.equations(fest, pryt, pryt_type=pryt_type, year=year)
+            heq.collations(
+                *[heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
                   for fest, pryt in equations]),
             pryt_type, year)
 
