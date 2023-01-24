@@ -29,7 +29,8 @@ def test_load_default_data():
     assert type(d["solstices"][0][0]) is float
     assert type(d["solstices"][0][1]) is int
     assert d["solstices"][0] == (1500533.0682705436, 0)
-    assert d["solstices"][-1] == (1721414.3908799929, 3)
+    assert [m for m in d["solstices"] if m[0] < 2000000][-1] == (1721414.3908799929, 3)
+    assert d["solstices"][-1] == (2489885.302570413, 3)
 
     assert "new_moons" in d
     assert type(d["new_moons"]) is tuple
@@ -37,7 +38,8 @@ def test_load_default_data():
     assert type(d["new_moons"][0][0]) is float
     assert type(d["new_moons"][0][1]) is int
     assert d["new_moons"][0] == (1500458.8964768478, 0)
-    assert d["new_moons"][-1] == (1721406.2574824847, 0)
+    assert [m for m in d["new_moons"] if m[0] < 2000000][-1] == (1721406.2574824847, 0)
+    assert d["new_moons"][-1] == (2489881.083336255, 0)
 
 
 def test_solar_event_data_param():
