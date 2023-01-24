@@ -286,7 +286,7 @@ MONTH_ABBREVS = (
 )
 
 FestivalDay = namedtuple(
-    "FestivalDay", ("jdn", "month_name", "month_index", "month", "day", "doy")
+    "FestivalDay", ("jdn", "month_name", "month_index", "month", "day", "doy", "year")
 )
 
 def __load_data_file(fn):
@@ -334,6 +334,13 @@ def bce_as_negative(year):
 
 # # bce as_negative works in reverse, but this alias makes things cleaner
 negative_as_bce = bce_as_negative
+
+
+def arkhon_year(year):
+    epoch = "BCE" if year < 1 else " CE"
+    year1 = negative_as_bce(year) if year < 1 else year
+    year2 = year1 - 1 if epoch == "BCE" else year1 + 1
+    return f"{epoch} {year1}/{year2}"
 
 
 def to_jdn(t):
@@ -644,6 +651,7 @@ def __make_generic_month(month, doy):
             None,
             d,
             next(doy),
+            None
         )
         for d in range(1, month["end"] - month["start"] + 1, 1)
     ])
@@ -732,11 +740,12 @@ def __intercalated_month_name_map(calendar, months):
     return MONTH_NAME_MAP
 
 
-def __make_festival_day(cal_day, name_as, calendar=None, months=None, month_names=None):
+def __make_festival_day(cal_day, cal_year, name_as, calendar=None, months=None, month_names=None):
     """Add month name and constant to FestivalDay
 
     Params:
     cal_day: A FestivalDay object
+    cal_year: year of calendar (as string, e.g. "BCE 411/410")
     name_as: A MonthNameOptions constant for the month name version
     calendar: A Cal constant for the requested calendar
     months: The list of appropriate month constants
@@ -755,8 +764,8 @@ def __make_festival_day(cal_day, name_as, calendar=None, months=None, month_name
         months[cal_day.month_index - 1],
         cal_day.day,
         cal_day.doy,
+        cal_year
     )
-
 
 def festival_calendar(
     year,
@@ -802,14 +811,16 @@ def festival_calendar(
         year, event=event, before_event=before_event, rule=rule, data=data
     )
 
+    cal_year = arkhon_year(year)
+
     if calendar is None:
-        return tuple([__make_festival_day(d, name_as) for d in base_cal])
+        return tuple([__make_festival_day(d, cal_year, name_as) for d in base_cal])
 
     months = __month_order(calendar, intercalate, len(by_months(base_cal)) > 12)
     month_names = __intercalated_month_name_map(calendar, months)
     return tuple(
         [
-            __make_festival_day(d, name_as, calendar, months, month_names)
+            __make_festival_day(d, cal_year, name_as, calendar, months, month_names)
             for d in base_cal
         ]
     )
