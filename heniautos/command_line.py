@@ -102,14 +102,11 @@ def doy_filter(day, doy):
     return True
 
 
-def month_filter(month, args):
-    # if type(month) == ha.Prytanies and args.prytany:
-    #     return ROMAN.index(args.prytany) + 1 == month
+def month_filter(idx, args):
+    if args.month is None:
+        return True
 
-    # if type(month) == ha.Months and args.month:
-    #     return ha.MONTH_ABBREVS.index(args.month) + 1 == month
-
-    return True
+    return idx == args.month
 
 
 def display_month(month, args):
@@ -180,7 +177,7 @@ def daily_tsv(year, writer, args):
 
 def festival_filters(cal, args):
     """Apply festival filters."""
-    return [d for d in cal if month_filter(d.month, args) and day_filter(d, args) and doy_filter(d, args.doy)]
+    return [d for d in cal if month_filter(d.month_index, args) and day_filter(d, args) and doy_filter(d, args.doy)]
 
 
 def prytany_filters(cal, args):
@@ -456,8 +453,8 @@ under certain conditions."""
                         choices=("argive", "athenian", "delian", "delphian", "spartan", "corinthian", "none"),
                         default="athenian",
                         help="Festival calendar to display"),
-    parser.add_argument("--month", choices=ha.MONTH_ABBREVS, type=str,
-                        help="Only show selected month")
+    parser.add_argument("--month", choices=tuple(range(1,14)), type=int,
+                        help="Only show requested month")
     parser.add_argument("--day", type=int,
                         help="Only show selected day")
     parser.add_argument("--doy", type=int,
