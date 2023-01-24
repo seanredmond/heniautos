@@ -80,14 +80,6 @@ def month_n(m, int_m, abbrev, greek=False):
     return month_name(m, int_m, greek)
 
 
-def arkhon_year(y):
-    eet = ha.as_alt(y)
-    epoch = eet[:3]
-    year1 = int(eet[4:8])
-    year2 = year1 - 1 if epoch == "BCE" else year1 + 1
-    return f"{epoch} {year1}/{year2}"
-
-
 def day_filter(day, args):
     if args.day:
         return day.day == args.day
@@ -119,7 +111,7 @@ def display_month(month, args):
 
 def yearly_table(year, writer, args):
     writer.writerow((
-        f"{arkhon_year(year[0].jdn):13} ",
+        f"{year[0].year:13} ",
         " I " if len(year) > 355 else " O ",
         f" {ha.as_alt(year[0].jdn)} ",
         f"{len(year):>5}"))
@@ -127,37 +119,34 @@ def yearly_table(year, writer, args):
 
 def yearly_tsv(year, writer, args):
     writer.writerow((
-        arkhon_year(year[0].jdn),
+        year[0].year,
         "I" if len(year) > 355 else "O",
         ha.as_alt(year[0].jdn),
         len(year)))
 
 
 def monthly_table(year, writer, args):
-    ay = arkhon_year(year[0][0].jdn)
     for month in year:
         writer.writerow((
-            f"{ay:13} ",
+            f"{month[0].year:13} ",
             f" {display_month(month[0], args):22}",
             f" {ha.as_alt(month[0].jdn)} ",
             f"{len(month):>5}"))
 
 
 def monthly_tsv(year, writer, args):
-    ay = arkhon_year(year[0][0].jdn)
     for month in year:
         writer.writerow((
-            ay,
+            month[0].year,
             display_month(month[0], args),
             ha.as_alt(month[0].jdn),
             len(month)))
 
 
 def daily_table(year, writer, args):
-    ay = arkhon_year(year[0].jdn)
     for day in year:
         writer.writerow((
-            f"{ay:13} ",
+            f"{day.year:13} ",
             f" {display_month(day, args):22}",
             f"{day.day:>4} ",
             f" {ha.as_alt(day.jdn)} ",
@@ -165,10 +154,9 @@ def daily_table(year, writer, args):
 
 
 def daily_tsv(year, writer, args):
-    ay = arkhon_year(year[0].jdn)
     for day in year:
         writer.writerow((
-            ay,
+            day.year,
             display_month(day, args),
             day.day,
             ha.as_alt(day.jdn),
