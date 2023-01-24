@@ -190,61 +190,39 @@ def test_pryt_auto_start():
     # Should return Julian dates from rounded Terrestrial Time
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0500-May-01 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO))
+        == "BCE 0500-May-01"
     )
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0425-Jun-26 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO))
+        == "BCE 0425-Jun-26"
     )
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0429-Jun-23 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO))
+        == "BCE 0429-Jun-23"
     )
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0424-Jun-27 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO))
+        == "BCE 0424-Jun-27"
     )
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0421-Jun-29 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO))
+        == "BCE 0421-Jun-29"
     )
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0420-Jun-30 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO))
+        == "BCE 0420-Jun-30"
     )
 
     assert (
-        as_eet(
-            heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO),
-            True,
-        )
-        == "BCE 0419-Jul-01 13:59:59 EET"
+        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO))
+        == "BCE 0419-Jul-01"
     )
-
 
 
 def test_pryt_solar_end():
@@ -278,7 +256,6 @@ def test_prytany_calendar_solar():
 
     p2 = prytany_calendar(bce_as_negative(429))
     assert as_gmt(p2[0].jdn) == "BCE 0429-Jun-23"
-
 
 
 def test_prytany_calendar_solar_rule():

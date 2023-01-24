@@ -348,29 +348,29 @@ def __add_hours(t, h):
     )
 
 
-def __gmt_fmt_bce(j, full):
+def __gmt_fmt_bce(j, full, tz_abbr="GMT"):
     """Convert negative (BCE) year for formating."""
-    return __gmt_fmt((bce_as_negative(j[0]),) + j[1:], full, "BCE")
+    return __gmt_fmt((bce_as_negative(j[0]),) + j[1:], full, "BCE", tz_abbr)
 
 
 def __jul_month(m):
     return ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[m-1]
 
 
-def __gmt_fmt(j, full, epoch=" CE"):
+def __gmt_fmt(j, full, epoch=" CE", tz_abbr="GMT"):
     """Return a short or full string representation of a JDN."""
     if full:
-        return __gmt_fmt_full(j, epoch)
+        return __gmt_fmt_full(j, epoch, tz_abbr)
 
     return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
 
 
-def __gmt_fmt_full(j, epoch):
+def __gmt_fmt_full(j, epoch, tz_abbr="GMT"):
     """Return a full string representation of a JDN."""
-    return datetime(*j).strftime(f"{epoch} %Y-%b-%d %H:%M:%S GMT")
+    return datetime(*j).strftime(f"{epoch} %Y-%b-%d %H:%M:%S {tz_abbr}")
 
 
-def as_gmt(t, full=False):
+def as_gmt(t, full=False, tz_abbr="GMT"):
     """Return a string representation of Julian date object in GMT.
 
     Parameters:
@@ -382,33 +382,21 @@ def as_gmt(t, full=False):
 
     """
     if is_bce(t):
-        return __gmt_fmt_bce(jd.to_julian(t), full)
+        return __gmt_fmt_bce(jd.to_julian(t), full, tz_abbr=tz_abbr)
 
     if t >= 2299161:  # Start of Gregorian Calendar
-        return __gmt_fmt(jd.to_gregorian(t), full)
+        return __gmt_fmt(jd.to_gregorian(t), full, tz_abbr=tz_abbr)
 
-    return __gmt_fmt(jd.to_julian(t), full)
+    return __gmt_fmt(jd.to_julian(t), full, tz_abbr=tz_abbr)
 
 
-def as_eet(t, full=False):
-    """Return a string representation of Time object in EET.
+def __alt(jdn):
+    """ Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich."""
+    return jdn + (23.728056/360)
 
-    Parameters:
-    t -- A Julian date (float or int)
-    full -- Boolean. Return a full date if True, short date if False
 
-    Eastern European Time is the local timezone for Athens. This does
-    not adjust for daylight savings and there may be some loss of
-    precision due to floating point computations.
-
-    The full date representation of 1685074.3287423, for example is
-    'BCE 0100-Jun-25 21:53:23 EET', the short BCE 'BCE 0100-Jun-25'.
-
-    """
-    if full:
-        return as_gmt(__add_hours(t, 2), full)[0:25] + "EET"
-
-    return as_gmt(__add_hours(t, 2))
+def as_alt(jd, full=False, tz_abbr="ALT"):
+    return as_gmt(__alt(jd), full, tz_abbr)
 
 
 def solar_event(year, e, data=load_data()):

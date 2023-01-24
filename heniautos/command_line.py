@@ -81,7 +81,7 @@ def month_n(m, int_m, abbrev, greek=False):
 
 
 def arkhon_year(y):
-    eet = ha.as_eet(y)
+    eet = ha.as_alt(y)
     epoch = eet[:3]
     year1 = int(eet[4:8])
     year2 = year1 - 1 if epoch == "BCE" else year1 + 1
@@ -124,7 +124,7 @@ def yearly_table(year, writer, args):
     writer.writerow((
         f"{arkhon_year(year[0].jdn):13} ",
         " I " if len(year) > 355 else " O ",
-        f" {ha.as_eet(year[0].jdn)} ",
+        f" {ha.as_alt(year[0].jdn)} ",
         f"{len(year):>5}"))
 
 
@@ -132,7 +132,7 @@ def yearly_tsv(year, writer, args):
     writer.writerow((
         arkhon_year(year[0].jdn),
         "I" if len(year) > 355 else "O",
-        ha.as_eet(year[0].jdn),
+        ha.as_alt(year[0].jdn),
         len(year)))
 
 
@@ -142,7 +142,7 @@ def monthly_table(year, writer, args):
         writer.writerow((
             f"{ay:13} ",
             f" {display_month(month[0], args):22}",
-            f" {ha.as_eet(month[0].jdn)} ",
+            f" {ha.as_alt(month[0].jdn)} ",
             f"{len(month):>5}"))
 
 
@@ -152,7 +152,7 @@ def monthly_tsv(year, writer, args):
         writer.writerow((
             ay,
             display_month(month[0], args),
-            ha.as_eet(month[0].jdn),
+            ha.as_alt(month[0].jdn),
             len(month)))
 
 
@@ -163,7 +163,7 @@ def daily_table(year, writer, args):
             f"{ay:13} ",
             f" {display_month(day, args):22}",
             f"{day.day:>4} ",
-            f" {ha.as_eet(day.jdn)} ",
+            f" {ha.as_alt(day.jdn)} ",
             f"{day.doy:>4}"))
 
 
@@ -174,7 +174,7 @@ def daily_tsv(year, writer, args):
             ay,
             display_month(day, args),
             day.day,
-            ha.as_eet(day.jdn),
+            ha.as_alt(day.jdn),
             day.doy))
 
 
@@ -327,7 +327,7 @@ def is_solar(with_solar, day, solar):
     if not with_solar:
         return tuple()
 
-    event = tuple([s[1] for s in solar if s[0] == ha.as_eet(day)])
+    event = tuple([s[1] for s in solar if s[0] == ha.as_alt(day)])
 
     if event:
         return event
@@ -346,7 +346,7 @@ def is_lunar(with_nm, day, lunar):
     if not with_nm:
         return tuple()
 
-    event = tuple([s[1] for s in lunar if s[0] == ha.as_eet(day)])
+    event = tuple([s[1] for s in lunar if s[0] == ha.as_alt(day)])
 
     if event:
         return event
@@ -401,7 +401,7 @@ def zz_output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
         solar = solar_events(year, with_solar)
         lunar = lunar_events(year, with_nm)
         for x in get_julian_year(year):
-            row = (x, ha.as_eet(x),) + \
+            row = (x, ha.as_alt(x),) + \
                 is_astro_event(with_solar, x, solar) + \
                 is_astro_event(with_nm, x, lunar)
 
@@ -529,7 +529,7 @@ under certain conditions."""
                     if args.gmt:
                         print(ha.as_gmt(nm, True))
                     else:
-                        print(ha.as_eet(nm, True))
+                        print(ha.as_alt(nm, True))
             exit()
 
         if args.full_moons:
@@ -538,7 +538,7 @@ under certain conditions."""
                     if args.gmt:
                         print(ha.as_gmt(nm, True))
                     else:
-                        print(ha.as_eet(nm, True))
+                        print(ha.as_alt(nm, True))
             exit()
 
         # Check for one of the solar events (and take the first one)
@@ -551,7 +551,7 @@ under certain conditions."""
                         ha.solar_event(year, solar[1], data=astro_data()),
                         True))
                 else:
-                    print(ha.as_eet(
+                    print(ha.as_alt(
                         ha.solar_event(year, solar[1], data=astro_data()),
                         True))
             exit()

@@ -1,20 +1,6 @@
 from heniautos import *
 import pytest
 
-# import skyfield
-
-# from skyfield.api import load
-# from skyfield.api import GREGORIAN_START
-
-
-# TS = api.load.timescale()
-# TS.julian_calendar_cutoff = GREGORIAN_START
-# EPH = api.load('de422.bsp')
-
-
-# init_data()
-
-
 def test_version():
     assert version() == "1.3.0"
 
@@ -31,20 +17,6 @@ def test_is_bce():
     assert is_bce(1685074.3287422964)  # Summer Solstice 100 BCE
 
 
-# def test_add_hours():
-#     sol = summer_solstice(-99)
-#     print(sol)
-#     print(add_hours(sol, 1))
-#     print(add_hours(sol, 1) - sol)
-#     assert jd.to_julian(add_hours(sol, 1))[3] == jd.to_julian(sol)[3] + 1
-
-
-# def test_add_days():
-#     sol = summer_solstice(-99)
-#     assert jd.to_julian(add_days(sol, 1))[2] == jd.to_julian(sol)[2] + 1
-#     assert jd.to_julian(add_days(sol, -1))[2] == jd.to_julian(sol)[2] - 1
-
-
 def test_as_gmt():
     assert as_gmt(1685074.3287423) == "BCE 0100-Jun-25"
     assert as_gmt(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
@@ -52,13 +24,8 @@ def test_as_gmt():
     assert as_gmt(1685074.3287422964, True) == "BCE 0100-Jun-25 19:53:23 GMT"
 
 
-def test_as_eet():
-    assert as_eet(1685074.3287422964) == "BCE 0100-Jun-25"
-    assert as_eet(1685074.3287422964, True) == "BCE 0100-Jun-25 21:53:23 EET"
-
-
-# def test_summer_solstice():
-#     assert as_gmt(summer_solstice(-99), True) == "BCE 0100-Jun-25 19:53:23 GMT"
+def test_as_alt():
+    assert as_alt(1563092.61, True) == "BCE 0434-Jul-07 04:13:18 ALT"
 
 
 def test_solar_event():
@@ -221,8 +188,8 @@ def test_generic_festival_calendar():
     assert isinstance(p[0], FestivalDay)
     assert p[0].month is None
     assert p[0].month_name is None
-    assert as_eet(p[0].jdn) == "BCE 0101-Jul-16"
-    assert as_eet(p[-1].jdn) == "BCE 0100-Jul-04"
+    assert as_alt(p[0].jdn) == "BCE 0101-Jul-16"
+    assert as_alt(p[-1].jdn) == "BCE 0100-Jul-04"
 
 
 def test_generic_festival_calendar_athenian():
@@ -231,7 +198,7 @@ def test_generic_festival_calendar_athenian():
     assert len(by_months(p)) == 12
     assert p[0].month is AthenianMonths.HEK
     assert p[0].month_name == "Hekatombaiṓn"
-    assert as_eet(p[0].jdn) == "BCE 0101-Jul-16"
+    assert as_alt(p[0].jdn) == "BCE 0101-Jul-16"
 
     # Intercalary year
     p = festival_calendar(-101)
@@ -255,19 +222,19 @@ def test_athenian_festival_calendar():
     assert len(by_months(p)) == 12
     assert p[0].month is AthenianMonths.HEK
     assert p[0].month_name == "Hekatombaiṓn"
-    assert as_eet(p[0].jdn) == "BCE 0101-Jul-16"
+    assert as_alt(p[0].jdn) == "BCE 0101-Jul-16"
 
 
 def test_generic_festival_calendar_delian():
     p = festival_calendar(-100, calendar=Cal.DELIAN, event=Seasons.WINTER_SOLSTICE)
-    assert as_eet(p[0].jdn) == "BCE 0100-Jan-10"
+    assert as_alt(p[0].jdn) == "BCE 0100-Jan-10"
     assert len(by_months(p)) == 12
     assert p[0].month is DelianMonths.LEN
     assert p[0].month_name == "Lēnaiṓn"
 
     # Intercalary year
     p = festival_calendar(-102, calendar=Cal.DELIAN, event=Seasons.WINTER_SOLSTICE)
-    assert as_eet(p[0].jdn) == "BCE 0102-Jan-02"
+    assert as_alt(p[0].jdn) == "BCE 0102-Jan-02"
     p_months = by_months(p)
     assert len(p_months) == 13
     # By default, the 7th month should be intercalated
@@ -278,7 +245,7 @@ def test_generic_festival_calendar_delian():
     p = festival_calendar(
         -102, intercalate=1, calendar=Cal.DELIAN, event=Seasons.WINTER_SOLSTICE
     )
-    assert as_eet(p[0].jdn) == "BCE 0102-Jan-02"
+    assert as_alt(p[0].jdn) == "BCE 0102-Jan-02"
     p_months = by_months(p)
     assert p_months[1][0].month is Months.INT
     assert p_months[1][0].month_name == "Lēnaiṓn hústeros"
@@ -291,7 +258,7 @@ def test_delian_festival_calendar():
     assert len(by_months(p)) == 12
     assert p[0].month is DelianMonths.LEN
     assert p[0].month_name == "Lēnaiṓn"
-    assert as_eet(p[0].jdn) == "BCE 0100-Jan-10"
+    assert as_alt(p[0].jdn) == "BCE 0100-Jan-10"
 
 
 def test_spartan_festival_calendar():
@@ -299,11 +266,11 @@ def test_spartan_festival_calendar():
     assert len(by_months(p)) == 12
     assert p[0].month is SpartanMonths.UN1
     assert p[0].month_name == "Unknown 1"
-    assert as_eet(p[0].jdn) == "BCE 0101-Sep-13"
+    assert as_alt(p[0].jdn) == "BCE 0101-Sep-13"
 
     p = spartan_festival_calendar(-102)
     assert len(by_months(p)) == 13
-    assert as_eet(p[0].jdn) == "BCE 0103-Sep-06"
+    assert as_alt(p[0].jdn) == "BCE 0103-Sep-06"
     p_months = by_months(p)
     assert p_months[6][0].month is Months.INT
     assert p_months[6][0].month_name == "Unknown 6 hústeros"
@@ -336,15 +303,15 @@ def test_delian_festival_calendar_434_433():
     assert len(c) == 354
     c_months = by_months(c)
     assert len(c_months) == 12
-    assert as_eet(c_months[0][0].jdn) == "BCE 0434-Jan-13"
-    assert as_eet(c_months[-1][0].jdn) == "BCE 0434-Dec-03"
+    assert as_alt(c_months[0][0].jdn) == "BCE 0434-Jan-13"
+    assert as_alt(c_months[-1][0].jdn) == "BCE 0434-Dec-03"
 
     c = festival_calendar(-433, event=Seasons.WINTER_SOLSTICE)
     assert len(c) == 384
     c_months = by_months(c)
     assert len(c_months) == 13
-    assert as_eet(c_months[0][0].jdn) == "BCE 0433-Jan-02"
-    assert as_eet(c_months[-1][0].jdn) == "BCE 0433-Dec-21"
+    assert as_alt(c_months[0][0].jdn) == "BCE 0433-Jan-02"
+    assert as_alt(c_months[-1][0].jdn) == "BCE 0433-Dec-21"
 
 
 def test_find_date():
@@ -464,26 +431,26 @@ def test_festival_doy():
 
 
 def test_doy_to_julian():
-    assert as_eet(doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
+    assert as_alt(doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
 
     assert (
-        as_eet(doy_to_julian(256, bce_as_negative(332), rule=Visible.SECOND_DAY))
+        as_alt(doy_to_julian(256, bce_as_negative(332), rule=Visible.SECOND_DAY))
         == "BCE 0331-Apr-02"
     )
     assert (
-        as_eet(doy_to_julian(256, bce_as_negative(332), rule=Visible.CONJUNCTION))
+        as_alt(doy_to_julian(256, bce_as_negative(332), rule=Visible.CONJUNCTION))
         == "BCE 0331-Mar-31"
     )
 
 
 def test_festival_to_julian():
     assert (
-        as_eet(festival_to_julian(bce_as_negative(332), AthenianMonths.ELA, 19))
+        as_alt(festival_to_julian(bce_as_negative(332), AthenianMonths.ELA, 19))
         == "BCE 0331-Apr-01"
     )
 
     assert (
-        as_eet(
+        as_alt(
             festival_to_julian(
                 bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.SECOND_DAY
             )
@@ -492,7 +459,7 @@ def test_festival_to_julian():
     )
 
     assert (
-        as_eet(
+        as_alt(
             festival_to_julian(
                 bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.CONJUNCTION
             )
@@ -553,9 +520,9 @@ def test_320():
     assert cal_320[-1].doy == 354
 
     # It starts on Jul 9
-    assert as_eet(cal_320[0].jdn) == "BCE 0320-Jul-09"
+    assert as_alt(cal_320[0].jdn) == "BCE 0320-Jul-09"
     # and ends on Jun 27
-    assert as_eet(cal_320[-1].jdn) == "BCE 0319-Jun-27"
+    assert as_alt(cal_320[-1].jdn) == "BCE 0319-Jun-27"
 
     months = dict(
         zip(Months, [[d.jdn for d in cal_320 if d.month == m] for m in Months])
