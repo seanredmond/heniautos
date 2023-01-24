@@ -19,6 +19,7 @@ import juliandate as jd
 import heniautos
 from itertools import product
 
+
 class Prytanies(IntEnum):
     I = 1
     II = 2
@@ -37,6 +38,7 @@ class Prytanies(IntEnum):
 
 class Prytany(IntEnum):
     """Constants representing choices of conciilar calendars."""
+
     AUTO = 0
     QUASI_SOLAR = 1
     ALIGNED_10 = 2
@@ -151,7 +153,12 @@ def _pryt_auto(year):
     return Prytany.ALIGNED_10
 
 
-def _pryt_auto_start(year, pryt_start=Prytany.AUTO, rule=heniautos.Visible.NEXT_DAY, data=heniautos.load_data()):
+def _pryt_auto_start(
+    year,
+    pryt_start=Prytany.AUTO,
+    rule=heniautos.Visible.NEXT_DAY,
+    data=heniautos.load_data(),
+):
     """Determine start dates for quasi-solar prytanies. Based on Meritt
     (1961)
 
@@ -167,7 +174,6 @@ def _pryt_auto_start(year, pryt_start=Prytany.AUTO, rule=heniautos.Visible.NEXT_
 
     return start_jdn + (offset * 366)
 
-    
     # if start == Prytany.AUTO:
     #     if year < -423:
     #         # return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
@@ -205,7 +211,7 @@ def prytanies(
 
     if auto_type == Prytany.QUASI_SOLAR:
         start = _pryt_auto_start(year, pryt_start, rule=rule)
-        end = start + 366 #_pryt_solar_end(start)
+        end = start + 366  # _pryt_solar_end(start)
         p_len = _pryt_len(37, 6)
         pryt = _pryt_gen(start, end, p_len)
         return tuple([p for p in pryt])
@@ -363,7 +369,9 @@ def by_prytanies(p):
     return heniautos.calendar_groups(p, lambda x: x.prytany)
 
 
-def prytany_to_julian(year, prytany, day, rule=heniautos.Visible.NEXT_DAY, data=heniautos.load_data()):
+def prytany_to_julian(
+    year, prytany, day, rule=heniautos.Visible.NEXT_DAY, data=heniautos.load_data()
+):
     """Return the Julian Day Number for a prytany date.
 
     Parameters:
@@ -551,7 +559,3 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
         )
 
     raise HeniautosError("Unhandled")
-
-
-
-
