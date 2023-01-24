@@ -63,10 +63,13 @@ def get_rule(r):
     if r == "1":
         return ha.Visible.NEXT_DAY
 
+    if r == "2":
+        return ha.Visible.SECOND_DAY
+
     if r == "d":
         return ha.Visible.DINSMOOR
 
-    return ha.Visible.SECOND_DAY
+    return ha.Visible.NEXT_DAY
 
 
 def month_n(m, int_m, abbrev, greek=False):
@@ -495,7 +498,7 @@ under certain conditions."""
     parser.add_argument("--gmt", action="store_true",
                         help="Format times as GMT (rather than EET)")
     parser.add_argument("-r", "--rule", choices=["0", "1", "2", "d"],
-                        default="2", type=str,
+                        default="1", type=str,
                         help="Rule for determining date of new moon. "
                         "0, 1, 2 days after astronomical conjunction, or "
                         "d for Dinsmoor"
