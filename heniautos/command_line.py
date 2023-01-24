@@ -228,12 +228,22 @@ def needs_before(cal):
     return False
 
 
+def name_as(abbrev, greek):
+    if greek:
+        return ha.MonthNameOptions.GREEK
+
+    if abbrev:
+        return ha.MonthNameOptions.ABBREV
+
+    return ha.MonthNameOptions.TRANSLITERATION
+
+
 def filtered_festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
     return festival_filters(
         ha.festival_calendar(year,
-                             #abbrev=args.abbreviations,
-                             #greek=args.greek_names,
+                             name_as=name_as(
+                                 args.abbreviations,args.greek_names),
                              calendar=get_calendar(args.calendar),
                              event=get_solar_event(args.calendar),
                              before_event=needs_before(args.calendar),
@@ -311,10 +321,6 @@ def get_julian_year(year):
     jan1 = int(jd.from_julian(year, 1, 1) + 0.5)
     dec31 = int(jd.from_julian(year, 12, 31) + 0.5)
     return range(jan1, dec31+1)
-    # print(jan1)
-    # print(dec31)
-    # return get_julian_half_year(year - 1, year) + \
-    #     get_julian_half_year(year, year)
     
 
 def is_solar(with_solar, day, solar):
@@ -427,7 +433,7 @@ def maybe_load_from_ephemeris(args):
         import heniautos.ephemeris as heph
 
         eph_cfg = heph.init_ephemeris(eph=args.ephemeris) if args.ephemeris else heph.init_ephemeris()
-        cal_years = list(years(args.start_year, args.end_year, args.as_ce))
+        cal_years = list(years(args.start_year-2, args.end_year + 2 if args.end_year else args.start_year + 2, args.as_ce))
 
         return lambda: heph.get_ephemeris_data(cal_years[0], cal_years[-1], eph_cfg)
 
