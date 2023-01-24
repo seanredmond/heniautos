@@ -6,16 +6,6 @@ Naive ancient Attic calendar generator and calendar equation explorer.
 
     pip install heniautos
     
-### On an M1 Macintosh
-
-Heniautos uses a package named [Skyfield](https://rhodesmill.org/skyfield/) for astronomical calculations which, in turn, requires [NumPy](https://numpy.org/). NumPy cannot yet be installed the normal way on a Macintosh with an M1 processor. These steps should work to install Heniautos on an M1 Mac:
-
-    pip install cython
-    pip install --no-binary :all: --no-use-pep517 numpy
-    pip install heniautos
-    
-(See this [StackOverflow comment](https://stackoverflow.com/a/66456204/131226))
-    
 ## Usage
 
 ### Command Line
@@ -23,24 +13,13 @@ Heniautos uses a package named [Skyfield](https://rhodesmill.org/skyfield/) for 
 Generate a calendar for 416 BCE:
 
     heniautos 416
-    
-Solve the calendar equation Metageitniṓn 9 = Prytany I 39:
-
-    calendar_equation -e Met 9 I 39
-    
+        
 ### In a Program
 
 Generate a calendar for 416 BCE
 
     import heniautos as ha
-    ha.init_data()
-    ha.festival_calendar(ha.bce_as_negative(416))
-
-Solve the calendar equation Metageitniṓn 9 = Prytany I 39:    
-
-    ha.equations((ha.Months.MET, 9), (ha.Prytanies.I, 39), ha.Prytany.ALIGNED_10)
-    
-**Note**: Heniautos will automatically download an [ephemeris file](/guide#ephemeris-files-important) rom jpl.nasa.gov the first time you use it (or anytime it cannot find the file). This is normal.
+    ha.athenian_festival_calendar(ha.bce_as_negative(416))
 
 ## The Basics
 
@@ -62,10 +41,11 @@ information provided mostly by ancient inscriptions--and a Python
 library for writing your own programs. See the [Guide](guide/) for
 details.
 
-What A. W. Gomme wrote in 1970 (Gomme, 1945-1981,) 4.264) is
-still true today—"It does not seem easy at the present time to make
-any statement about the Athenian calendar which is both significant
-and undisputed." Still, there are a few certain principals by which the Athenian calendar functioned:
+What A. W. Gomme wrote in 1970 (Gomme, 1945-1981,) 4.264) is still
+true today—"It does not seem easy at the present time to make any
+statement about the Athenian calendar which is both significant and
+undisputed." Still, there are a few certain principals by which the
+Athenian calendar functioned:
 
 * It was
   [lunisolar](https://en.wikipedia.org/wiki/Lunisolar_calendar),
@@ -91,30 +71,36 @@ moon by observation, by calculation, or even by guessing?
 
 
 Heniautos generates "naive" calendars, aligning ancient Greek dates
-with Julian calendar dates, according to astronomical data \(provided
-by the [`Skyfield`](https://rhodesmill.org/skyfield/) library\) using
-a few simple rules:
+with Julian calendar dates, according to astronomical data using a few
+simple rules:
 
-1. Each month begins, by default, on an "observed" new moon two days after the [astronomical conjunction](https://en.wikipedia.org/wiki/New_moon) (though you can choose other values).
-2. The year begins on the first observed new moon (by rule #1) on or after the day of the summer solstice.
-3. Intercalations are made when _astronomically_ necessary. Essentially, if one year ends close enough to the summer solstice that twelve lunar months will not be enough to reach the next solstice, then the next year will be intercalary.
+1. Each month begins, by default, on an "observed" new moon one days
+   after the [astronomical
+   conjunction](https://en.wikipedia.org/wiki/New_moon) (though you
+   can choose other values).
+2. The year begins on the first observed new moon (by rule #1) on or
+   after the day of the summer solstice.
+3. Intercalations are made when _astronomically_
+   necessary. Essentially, if one year ends close enough to the summer
+   solstice that twelve lunar months will not be enough to reach the
+   next solstice, then the next year will be intercalary.
 
 For example, Heniautos' calendar for 416/415 BCE:
 
 |  # | Month        | Julian Date     | # days|
 |---:|--------------|-----------------|------:|
-| 1  | Hekatombaiṓn | BCE 0416-Jul-20 | 29    |
-| 2  | Metageitniṓn | BCE 0416-Aug-18 | 30    |
-| 3  | Boēdromiṓn   | BCE 0416-Sep-17 | 29    |
-| 4  | Puanopsiṓn   | BCE 0416-Oct-16 | 30    |
-| 5  | Maimaktēriṓn | BCE 0416-Nov-15 | 30    |
-| 6  | Posideiṓn    | BCE 0416-Dec-15 | 29    |
-| 7  | Gamēliṓn     | BCE 0415-Jan-13 | 30    |
-| 8  | Anthestēriṓn | BCE 0415-Feb-12 | 30    |
-| 9  | Elaphēboliṓn | BCE 0415-Mar-14 | 29    |
-| 10 | Mounuchiṓn   | BCE 0415-Apr-12 | 30    |
-| 11 | Thargēliṓn   | BCE 0415-May-12 | 29    |
-| 12 | Skirophoriṓn | BCE 0415-Jun-10 | 30    |
+| 1  | Hekatombaiṓn | BCE 0416-Jul-19 | 29    |
+| 2  | Metageitniṓn | BCE 0416-Aug-17 | 30    |
+| 3  | Boēdromiṓn   | BCE 0416-Sep-16 | 29    |
+| 4  | Puanopsiṓn   | BCE 0416-Oct-15 | 30    |
+| 5  | Maimaktēriṓn | BCE 0416-Nov-14 | 30    |
+| 6  | Posideiṓn    | BCE 0416-Dec-14 | 29    |
+| 7  | Gamēliṓn     | BCE 0415-Jan-14 | 30    |
+| 8  | Anthestēriṓn | BCE 0415-Feb-11 | 30    |
+| 9  | Elaphēboliṓn | BCE 0415-Mar-13 | 29    |
+| 10 | Mounuchiṓn   | BCE 0415-Apr-11 | 30    |
+| 11 | Thargēliṓn   | BCE 0415-May-11 | 29    |
+| 12 | Skirophoriṓn | BCE 0415-Jun-09 | 30    |
 
 Notice that the hollow and full months do not alternate regularly
 (unless you observed enough over a long enough period of time to see
@@ -128,104 +114,123 @@ rather than by prescription.
 
 |  # | Month              | Julian Date     | # days|
 |---:|--------------------|-----------------|------:|
-| 1  | Hekatombaiṓn       | BCE 0417-Jul-01 | 29    |
-| 2  | Metageitniṓn       | BCE 0417-Jul-30 | 30    |
-| 3  | Boēdromiṓn         | BCE 0417-Aug-29 | 29    |
-| 4  | Puanopsiṓn         | BCE 0417-Sep-27 | 30    |
-| 5  | Maimaktēriṓn       | BCE 0417-Oct-27 | 30    |
-| 6  | Posideiṓn          | BCE 0417-Nov-26 | 30    |
-| 7  | Posideiṓn hústeros | BCE 0417-Dec-26 | 29    |
-| 8  | Gamēliṓn           | BCE 0416-Jan-24 | 30    |
-| 9  | Anthestēriṓn       | BCE 0416-Feb-23 | 30    |
-| 10 | Elaphēboliṓn       | BCE 0416-Mar-25 | 29    |
-| 11 | Mounuchiṓn         | BCE 0416-Apr-23 | 30    |
-| 12 | Thargēliṓn         | BCE 0416-May-23 | 29    |
-| 13 | Skirophoriṓn       | BCE 0416-Jun-21 | 29    |
+| 1  | Hekatombaiṓn       | BCE 0417-Jun-30 | 29    |
+| 2  | Metageitniṓn       | BCE 0417-Jul-29 | 30    |
+| 3  | Boēdromiṓn         | BCE 0417-Aug-28 | 29    |
+| 4  | Puanopsiṓn         | BCE 0417-Sep-26 | 30    |
+| 5  | Maimaktēriṓn       | BCE 0417-Oct-26 | 30    |
+| 6  | Posideiṓn          | BCE 0417-Nov-25 | 30    |
+| 7  | Posideiṓn hústeros | BCE 0417-Dec-25 | 29    |
+| 8  | Gamēliṓn           | BCE 0416-Jan-23 | 30    |
+| 9  | Anthestēriṓn       | BCE 0416-Feb-22 | 30    |
+| 10 | Elaphēboliṓn       | BCE 0416-Mar-24 | 29    |
+| 11 | Mounuchiṓn         | BCE 0416-Apr-22 | 30    |
+| 12 | Thargēliṓn         | BCE 0416-May-22 | 29    |
+| 13 | Skirophoriṓn       | BCE 0416-Jun-20 | 29    |
 
 
 Posideiṓn hústeros ("later Posideiṓn") is the intercalated
-month. Without this extra month, the 12th month would end on June 20,
+month. Without this extra month, the 12th month would end on June 19,
 before the solstice (June 28 on the Julian calendar at this
-time). Athenians intercalated by repeating one of the months, usually
-Posideiṓn as shown here, which Heniautos intercalates by default (you
-can choose other months).
+time). Athenians intercalated by repeating one of the months, most
+commonly Posideiṓn as shown here, which Heniautos intercalates by
+default (you can choose other months).
 
 ## Example
 
-We can find a "modern" date for the the peace treaty between Athens and Sparta which, according to Thucydides (5.19.1) was signed on this "the sixth day of the waning moon of Elaphēboliṓn":
+Aristotle (or Pseudo-Aristotle) tells us in [_Athenaion Politeia_
+32](https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0046%3Achapter%3D32)
+that The 400, an oligarchic faction that briefly took control of
+Athens during the Peloponnesian War, came into power on Thargelion 21
+in the year 412/411. `heniautos` can give you this overview of the
+year:
 
-> ἄρχει δὲ τῶν σπονδῶν <ἐν μὲν Λακεδαίμονι> ἔφορος Πλειστόλας
-> Ἀρτεμισίου μηνὸς τετάρτῃ φθίνοντος, ἐν δὲ Ἀθήναις ἄρχων Ἀλκαῖος
-> Ἐλαφηβολιῶνος μηνὸς ἕκτῃ φθίνοντος. ὤμνυον δὲ οἵδε καὶ ἐσπένδοντο.
+    > heniautos 412 -m
+         Year     |        Month          |      Start      | Days
+    --------------|-----------------------|-----------------|------
+    BCE 412/411   | Hekatombaiṓn          | BCE 0412-Jul-05 |   30
+    BCE 412/411   | Metageitniṓn          | BCE 0412-Aug-04 |   29
+    BCE 412/411   | Boēdromiṓn            | BCE 0412-Sep-02 |   30
+    BCE 412/411   | Puanopsiṓn            | BCE 0412-Oct-02 |   30
+    BCE 412/411   | Maimaktēriṓn          | BCE 0412-Nov-01 |   29
+    BCE 412/411   | Posideiṓn             | BCE 0412-Nov-30 |   30
+    BCE 412/411   | Posideiṓn hústeros    | BCE 0412-Dec-30 |   29
+    BCE 412/411   | Gamēliṓn              | BCE 0411-Jan-28 |   29
+    BCE 412/411   | Anthestēriṓn          | BCE 0411-Feb-26 |   30
+    BCE 412/411   | Elaphēboliṓn          | BCE 0411-Mar-28 |   29
+    BCE 412/411   | Mounuchiṓn            | BCE 0411-Apr-26 |   30
+    BCE 412/411   | Thargēliṓn            | BCE 0411-May-26 |   29
+    BCE 412/411   | Skirophoriṓn          | BCE 0411-Jun-24 |   30
 
-> The treaty begins in Lakedaimōn in the ephorate of Pleistolas on the
-> fourth day of the waning moon of Artemisios, in Athens in the arkhonship
-> of Alkaios on the sixth day of the waning moon of Elaphēboliṓn.
+`heniautos 412 -m` means show me the calendar for the Athenian year
+that started in 412 BCE (`heniautos 412`), but only show the months
+(`-m`). The month of Posideiṓn is repeated because Heniautos
+calculates this as an intercalary year. Without the `-m` you can see
+the whole calendar, which might be a bit much, but you can limit it to
+a single month:
 
-Alkaios was arkhon in 422/421 so to find the "sixth day of the waning moon" we can start with the calendar for Elaphēboliṓn that year:
-
-    > heniautos 422 --month Ela
+    heniautos 412 --month 12
          Year     |        Month          | Day |      Start      | DOY
-    --------------|-----------------------|-----|-----------------|----
-    BCE 422/421   | Elaphēboliṓn          |   1 | BCE 0421-Mar-19 | 237
-    BCE 422/421   | Elaphēboliṓn          |   2 | BCE 0421-Mar-20 | 238
-    BCE 422/421   | Elaphēboliṓn          |   3 | BCE 0421-Mar-21 | 239
-    BCE 422/421   | Elaphēboliṓn          |   4 | BCE 0421-Mar-22 | 240
-    BCE 422/421   | Elaphēboliṓn          |   5 | BCE 0421-Mar-23 | 241
-    BCE 422/421   | Elaphēboliṓn          |   6 | BCE 0421-Mar-24 | 242
-    BCE 422/421   | Elaphēboliṓn          |   7 | BCE 0421-Mar-25 | 243
-    BCE 422/421   | Elaphēboliṓn          |   8 | BCE 0421-Mar-26 | 244
-    BCE 422/421   | Elaphēboliṓn          |   9 | BCE 0421-Mar-27 | 245
-    BCE 422/421   | Elaphēboliṓn          |  10 | BCE 0421-Mar-28 | 246
-    BCE 422/421   | Elaphēboliṓn          |  11 | BCE 0421-Mar-29 | 247
-    BCE 422/421   | Elaphēboliṓn          |  12 | BCE 0421-Mar-30 | 248
-    BCE 422/421   | Elaphēboliṓn          |  13 | BCE 0421-Mar-31 | 249
-    BCE 422/421   | Elaphēboliṓn          |  14 | BCE 0421-Apr-01 | 250
-    BCE 422/421   | Elaphēboliṓn          |  15 | BCE 0421-Apr-02 | 251
-    BCE 422/421   | Elaphēboliṓn          |  16 | BCE 0421-Apr-03 | 252
-    BCE 422/421   | Elaphēboliṓn          |  17 | BCE 0421-Apr-04 | 253
-    BCE 422/421   | Elaphēboliṓn          |  18 | BCE 0421-Apr-05 | 254
-    BCE 422/421   | Elaphēboliṓn          |  19 | BCE 0421-Apr-06 | 255
-    BCE 422/421   | Elaphēboliṓn          |  20 | BCE 0421-Apr-07 | 256
-    BCE 422/421   | Elaphēboliṓn          |  21 | BCE 0421-Apr-08 | 257
-    BCE 422/421   | Elaphēboliṓn          |  22 | BCE 0421-Apr-09 | 258
-    BCE 422/421   | Elaphēboliṓn          |  23 | BCE 0421-Apr-10 | 259
-    BCE 422/421   | Elaphēboliṓn          |  24 | BCE 0421-Apr-11 | 260
-    BCE 422/421   | Elaphēboliṓn          |  25 | BCE 0421-Apr-12 | 261
-    BCE 422/421   | Elaphēboliṓn          |  26 | BCE 0421-Apr-13 | 262
-    BCE 422/421   | Elaphēboliṓn          |  27 | BCE 0421-Apr-14 | 263
-    BCE 422/421   | Elaphēboliṓn          |  28 | BCE 0421-Apr-15 | 264
-    BCE 422/421   | Elaphēboliṓn          |  29 | BCE 0421-Apr-16 | 265
-    
-`heniautos 422 --month Ela` means "show me the calendar for the month
-Elaphēboliṓn in 422/421 BCE (see [`heniautos`
-Command](guide/heniautos-command.md) in the guide for more
-details). Now, "the sixth day of the waning moon" sounds very poetic,
-but it was simply the way of naming days in the last ten days of the
-month. There is disagreement over exactly how to interpret a date like
-ἕκτῃ φθίνοντος in a hollow month (which this month is since it has 29
-days, see [The Backwards
-Count](guide/reading-dated-inscriptions.md#the-backwards-count) in the
-guide) so this might mean either the 24th or the 25th. These
-correspond to either April 11 or April 12, 421 BCE.
+    --------------|-----------------------|-----|-----------------|-----
+    BCE 412/411   | Thargēliṓn            |   1 | BCE 0411-May-26 | 326
+    BCE 412/411   | Thargēliṓn            |   2 | BCE 0411-May-27 | 327
+    BCE 412/411   | Thargēliṓn            |   3 | BCE 0411-May-28 | 328
+    BCE 412/411   | Thargēliṓn            |   4 | BCE 0411-May-29 | 329
+    BCE 412/411   | Thargēliṓn            |   5 | BCE 0411-May-30 | 330
+    BCE 412/411   | Thargēliṓn            |   6 | BCE 0411-May-31 | 331
+    BCE 412/411   | Thargēliṓn            |   7 | BCE 0411-Jun-01 | 332
+    BCE 412/411   | Thargēliṓn            |   8 | BCE 0411-Jun-02 | 333
+    BCE 412/411   | Thargēliṓn            |   9 | BCE 0411-Jun-03 | 334
+    BCE 412/411   | Thargēliṓn            |  10 | BCE 0411-Jun-04 | 335
+    BCE 412/411   | Thargēliṓn            |  11 | BCE 0411-Jun-05 | 336
+    BCE 412/411   | Thargēliṓn            |  12 | BCE 0411-Jun-06 | 337
+    BCE 412/411   | Thargēliṓn            |  13 | BCE 0411-Jun-07 | 338
+    BCE 412/411   | Thargēliṓn            |  14 | BCE 0411-Jun-08 | 339
+    BCE 412/411   | Thargēliṓn            |  15 | BCE 0411-Jun-09 | 340
+    BCE 412/411   | Thargēliṓn            |  16 | BCE 0411-Jun-10 | 341
+    BCE 412/411   | Thargēliṓn            |  17 | BCE 0411-Jun-11 | 342
+    BCE 412/411   | Thargēliṓn            |  18 | BCE 0411-Jun-12 | 343
+    BCE 412/411   | Thargēliṓn            |  19 | BCE 0411-Jun-13 | 344
+    BCE 412/411   | Thargēliṓn            |  20 | BCE 0411-Jun-14 | 345
+    BCE 412/411   | Thargēliṓn            |  21 | BCE 0411-Jun-15 | 346
+    BCE 412/411   | Thargēliṓn            |  22 | BCE 0411-Jun-16 | 347
+    BCE 412/411   | Thargēliṓn            |  23 | BCE 0411-Jun-17 | 348
+    BCE 412/411   | Thargēliṓn            |  24 | BCE 0411-Jun-18 | 349
+    BCE 412/411   | Thargēliṓn            |  25 | BCE 0411-Jun-19 | 350
+    BCE 412/411   | Thargēliṓn            |  26 | BCE 0411-Jun-20 | 351
+    BCE 412/411   | Thargēliṓn            |  27 | BCE 0411-Jun-21 | 352
+    BCE 412/411   | Thargēliṓn            |  28 | BCE 0411-Jun-22 | 353
+    BCE 412/411   | Thargēliṓn            |  29 | BCE 0411-Jun-23 | 354
 
-This is simply a starting point. If you want to state something more
-concretely you will need to apply other evidence or hypotheses. Meritt
-(1928, 109) first made it April 9 while Dinsmoor (1931, 334-335) said
-April 10. Meritt then citicized Dinsmoor at some length (1932,
-146-151) to conclude (1932, 178) that it should be April 11--Heniautos
-arrives at this date but by a different path than Meritt. Gomme
-concludes that it should be "about March 12" (1945-1981, 4.711-713)
-because he has a different view about the intercalations. Most
-recently, Planeux calculates April 11 again (forthcoming, 187).
+From the previous output we can see that Thargelion was the 12th month
+of the year and `heniautos 412 --month 12` means "show me the calendar
+for just the 12th month of 412/411." Thargelion 21, when the 400 took
+power was June 15, 411 BCE.
 
-That said, the date given by Heniautos is close to all calculations,
-(though least close to Gomme's because of the intercalation). "About
-April 11" is good enough for most purposes. That is not bad over a
-span of 2,442 years or more than 890,000 days. This margin of error
-should hold for any ancient date. The cited discussions are complex,
-and Heniautos can hopefully help anyone less steeped in ancient
-Athenian calendar equations follow along and check their calculations.
+This should be correct within about a day. There are very serious
+questions about which years are intercalary, especially in the 5th
+century BCE, and sometimes which month was intercalated. For serious
+purposes Heniautos' calculations should only be taken as a baseline.
+
+For fun, Heniautos can generate calendars for current years. For
+example, `heniautos 2023 --as-ce -m` will show what the Athenian
+calendar _would be_ for 2023 CE:
+
+    heniautos 2023 --as-ce -m
+         Year     |        Month          |      Start      | Days
+    --------------|-----------------------|-----------------|------
+     CE 2023/2024 | Hekatombaiṓn          |  CE 2023-Jul-18 |   30
+     CE 2023/2024 | Metageitniṓn          |  CE 2023-Aug-17 |   30
+     CE 2023/2024 | Boēdromiṓn            |  CE 2023-Sep-16 |   29
+     CE 2023/2024 | Puanopsiṓn            |  CE 2023-Oct-15 |   30
+     CE 2023/2024 | Maimaktēriṓn          |  CE 2023-Nov-14 |   29
+     CE 2023/2024 | Posideiṓn             |  CE 2023-Dec-13 |   30
+     CE 2023/2024 | Gamēliṓn              |  CE 2024-Jan-12 |   29
+     CE 2023/2024 | Anthestēriṓn          |  CE 2024-Feb-10 |   30
+     CE 2023/2024 | Elaphēboliṓn          |  CE 2024-Mar-11 |   29
+     CE 2023/2024 | Mounuchiṓn            |  CE 2024-Apr-09 |   30
+     CE 2023/2024 | Thargēliṓn            |  CE 2024-May-09 |   29
+     CE 2023/2024 | Skirophoriṓn          |  CE 2024-Jun-07 |   29 
 
 ## Learn More
 
@@ -234,16 +239,18 @@ and what calendar equations are and how they're used, as well as for
 details about the usage of `heniautos` command, the
 `calendar-equation` command, and the Python library.
 
-## Works Cited
+## Note about M1 Macintoshes
 
-* Dinsmoor, William Bell. 1931. _The Archons of Athens in the
-  Hellenistic Age_. Cambridge: Harvard University Press.
-* Gomme, A. W., A. Andrewes, and K. J. Dover. 1945-1981. _A Historical
-  Commentary on Thucydides_. 5 vols. Oxford: Oxford University Press.
-* Meritt, Benjamin D. 1928. _The Athenian Calendar in the Fifth
-  Century_. Cambridge: Harvard University Press.
-* ----------. 1932. _Athenian Financial Documents of the Fifth
-  Century_. Ann Arbor: University of Michigan Press.
-* Planeux, Christopher. Forthcoming. _The Athenian Year Primer_.
+Heniautos has its own data for the 5th-1st centuries BCE and 20th-21st
+centuries CE. For years outside these ranges you can use a a package
+named [Skyfield](https://rhodesmill.org/skyfield/) for astronomical
+data. Skyfield, in turn, requires [NumPy](https://numpy.org/) which
+cannot always be installed the normal way on a Macintosh with an M1
+processor. These steps should work to install Skyfield on an M1 Mac:
 
+    pip install cython
+    pip install --no-binary :all: --no-use-pep517 numpy
+    pip install skyfield
+    
+(See this [StackOverflow comment](https://stackoverflow.com/a/66456204/131226))
 
