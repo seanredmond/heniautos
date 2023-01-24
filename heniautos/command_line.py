@@ -272,7 +272,7 @@ def filtered_calendar(year, args, astro_data):
 def by_group(year):
     """Group by months or prytanies depending on type of calendar."""
     if type(year[0]) is ha.prytanies.PrytanyDay:
-        return ha.by_prytanies(year)
+        return ha.prytanies.by_prytanies(year)
 
     return ha.by_months(year)
 

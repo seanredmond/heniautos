@@ -102,10 +102,13 @@ def test_by_prytanies():
 def test_prytanies_solar():
     p = prytanies(-420)
     assert len(p) == 10
-    assert sum([q["end"] - q["start"] for q in p]) == 365
+    assert sum([q["end"] - q["start"] for q in p]) == 366
+
     assert p[0]["end"] - p[0]["start"] == 37
     assert p[4]["end"] - p[4]["start"] == 37
+    assert p[4]["start"] == 1567981
     assert p[6]["end"] - p[6]["start"] == 36
+    assert p[-1]["start"] == 1568163
     assert p[-1]["end"] - p[-1]["start"] == 36
 
 
@@ -116,7 +119,7 @@ def test_prytanies_solar_leap():
     assert p[0]["end"] - p[0]["start"] == 37
     assert p[4]["end"] - p[4]["start"] == 37
     assert p[6]["end"] - p[6]["start"] == 36
-    assert p[-1]["end"] - p[-1]["start"] == 37
+    assert p[-1]["end"] - p[-1]["start"] == 36
 
 
 def test_prytanies_10_ordinary_long():
@@ -141,7 +144,7 @@ def test_prytany_auto():
     assert heniautos.prytanies._pryt_auto(bce_as_negative(508)) == Prytany.QUASI_SOLAR
     assert heniautos.prytanies._pryt_auto(bce_as_negative(410)) == Prytany.QUASI_SOLAR
 
-    assert heniautos.prytanies._pryt_auto(bce_as_negative(409)) == Prytany.ALIGNED_10
+    assert heniautos.prytanies._pryt_auto(bce_as_negative(402)) == Prytany.ALIGNED_10
     assert heniautos.prytanies._pryt_auto(bce_as_negative(308)) == Prytany.ALIGNED_10
 
     assert heniautos.prytanies._pryt_auto(bce_as_negative(307)) == Prytany.ALIGNED_12
@@ -191,7 +194,7 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO),
             True,
         )
-        == "BCE 0500-Jul-04 13:59:59 EET"
+        == "BCE 0500-May-01 13:59:59 EET"
     )
 
     assert (
@@ -199,7 +202,7 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO),
             True,
         )
-        == "BCE 0425-Jul-04 13:59:59 EET"
+        == "BCE 0425-Jun-26 13:59:59 EET"
     )
 
     assert (
@@ -207,7 +210,7 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO),
             True,
         )
-        == "BCE 0429-Jul-04 13:59:59 EET"
+        == "BCE 0429-Jun-23 13:59:59 EET"
     )
 
     assert (
@@ -215,7 +218,7 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO),
             True,
         )
-        == "BCE 0424-Jul-07 13:59:59 EET"
+        == "BCE 0424-Jun-27 13:59:59 EET"
     )
 
     assert (
@@ -223,7 +226,7 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO),
             True,
         )
-        == "BCE 0421-Jul-07 13:59:59 EET"
+        == "BCE 0421-Jun-29 13:59:59 EET"
     )
 
     assert (
@@ -231,7 +234,7 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO),
             True,
         )
-        == "BCE 0420-Jul-08 13:59:59 EET"
+        == "BCE 0420-Jun-30 13:59:59 EET"
     )
 
     assert (
@@ -239,14 +242,9 @@ def test_pryt_auto_start():
             heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO),
             True,
         )
-        == "BCE 0419-Jul-09 13:59:59 EET"
-    )
-
-    # Provide your own start day
-    assert (
-        as_eet(heniautos.prytanies._pryt_auto_start(bce_as_negative(419), 1), True)
         == "BCE 0419-Jul-01 13:59:59 EET"
     )
+
 
 
 def test_pryt_solar_end():
@@ -259,21 +257,40 @@ def test_pryt_solar_end():
     assert year_end == next_year
 
 
+def test_prytany_calendar_408():
+    p = by_prytanies(prytany_calendar(-407))
+    assert as_gmt(p[0][0].jdn) == "BCE 0408-Jul-09"
+    assert as_gmt(p[-1][-1].jdn) == "BCE 0407-Jul-09"
+
+
 def test_prytany_calendar_solar():
     p = by_prytanies(prytany_calendar(-420))
 
     assert len(p) == 10
     assert p[0][0].prytany_index == 1
-    assert as_gmt(p[0][0].jdn) == "BCE 0421-Jul-07"
+    assert as_gmt(p[0][0].jdn) == "BCE 0421-Jun-29"
     assert len(p[0]) == 37
 
     assert p[-1][-1].prytany_index == 10
-    assert as_gmt(p[-1][-1].jdn) == "BCE 0420-Jul-06"
+    assert as_gmt(p[-1][-1].jdn) == "BCE 0420-Jun-29"
     assert len(p[-1]) == 36
-    assert p[-1][-1].doy == 365
+    assert p[-1][-1].doy == 366
 
     p2 = prytany_calendar(bce_as_negative(429))
-    assert as_gmt(p2[0].jdn) == "BCE 0429-Jul-04"
+    assert as_gmt(p2[0].jdn) == "BCE 0429-Jun-23"
+
+
+
+def test_prytany_calendar_solar_rule():
+    assert prytany_calendar(-420)[0].jdn == 1567833
+    assert prytany_calendar(-420, rule=Visible.CONJUNCTION)[0].jdn == 1567832
+    assert prytany_calendar(-420, rule=Visible.SECOND_DAY)[0].jdn == 1567834
+
+
+def test_prytany_calendar_solar_supplied_jdn():
+    assert prytany_calendar(-420)[0].jdn == 1567833
+    assert prytany_calendar(-420, pryt_start=1572952)[0].jdn == 1567828
+    assert prytany_calendar(-420, pryt_start=1572962)[0].jdn == 1567838
 
 
 def test_prytany_calendar_solar_leap():
@@ -281,12 +298,12 @@ def test_prytany_calendar_solar_leap():
 
     assert len(p) == 10
     assert p[0][0].prytany_index == 1
-    assert as_gmt(p[0][0].jdn) == "BCE 0418-Jul-09"
+    assert as_gmt(p[0][0].jdn) == "BCE 0418-Jul-02"
     assert len(p[0]) == 37
 
     assert p[-1][-1].prytany_index == 10
-    assert as_gmt(p[-1][-1].jdn) == "BCE 0417-Jul-08"
-    assert len(p[-1]) == 37
+    assert as_gmt(p[-1][-1].jdn) == "BCE 0417-Jul-01"
+    assert len(p[-1]) == 36
     assert p[-1][-1].doy == 366
 
 

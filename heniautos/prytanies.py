@@ -136,7 +136,7 @@ def _pryt_auto(year):
             "of democracy in Athens in 508 BCE"
         )
 
-    if year >= -507 and year <= -409:
+    if year >= -507 and year <= -402:
         return Prytany.QUASI_SOLAR
 
     if year >= -306 and year <= -223:
@@ -151,29 +151,41 @@ def _pryt_auto(year):
     return Prytany.ALIGNED_10
 
 
-def _pryt_auto_start(year, start):
+def _pryt_auto_start(year, pryt_start=Prytany.AUTO, rule=heniautos.Visible.NEXT_DAY, data=heniautos.load_data()):
     """Determine start dates for quasi-solar prytanies. Based on Meritt
     (1961)
 
     """
-    if start == Prytany.AUTO:
-        if year < -423:
-            # return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
-            return jd.from_julian(year, 7, 4, 12, 0, 0)
 
-        if year < -419:
-            # return tt_round(__h["ts"].ut1(year, 7, 7, 12, 0, 0))
-            return jd.from_julian(year, 7, 7, 12, 0, 0)
+    if pryt_start != Prytany.AUTO:
+        offset = year - jd.to_julian(pryt_start)[0]
+        return pryt_start + (offset * 366)
 
-        if year < -418:
-            # return tt_round(__h["ts"].ut1(year, 7, 8, 12, 0, 0))
-            return jd.from_julian(year, 7, 8, 12, 0, 0)
+    p_start = heniautos.find_festival_date(-406, 1, 1, rule=rule, data=data)
+    start_jdn = p_start.jdn
+    offset = year - jd.to_julian(start_jdn)[0]
 
-        # return tt_round(__h["ts"].ut1(year, 7, 9, 12, 0, 0))
-        return jd.from_julian(year, 7, 9, 12, 0, 0)
+    return start_jdn + (offset * 366)
 
-    # return tt_round(__h["ts"].ut1(year, 7, start, 12, 0, 0))
-    return jd.from_julian(year, 7, start, 12, 0, 0)
+    
+    # if start == Prytany.AUTO:
+    #     if year < -423:
+    #         # return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
+    #         return jd.from_julian(year, 7, 4, 12, 0, 0)
+
+    #     if year < -419:
+    #         # return tt_round(__h["ts"].ut1(year, 7, 7, 12, 0, 0))
+    #         return jd.from_julian(year, 7, 7, 12, 0, 0)
+
+    #     if year < -418:
+    #         # return tt_round(__h["ts"].ut1(year, 7, 8, 12, 0, 0))
+    #         return jd.from_julian(year, 7, 8, 12, 0, 0)
+
+    #     # return tt_round(__h["ts"].ut1(year, 7, 9, 12, 0, 0))
+    #     return jd.from_julian(year, 7, 9, 12, 0, 0)
+
+    # # return tt_round(__h["ts"].ut1(year, 7, start, 12, 0, 0))
+    # return jd.from_julian(year, 7, start, 12, 0, 0)
 
 
 def _pryt_solar_end(start):
@@ -192,9 +204,9 @@ def prytanies(
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
 
     if auto_type == Prytany.QUASI_SOLAR:
-        start = _pryt_auto_start(year, pryt_start)
-        end = _pryt_solar_end(start)
-        p_len = _pryt_len(37, 5)
+        start = _pryt_auto_start(year, pryt_start, rule=rule)
+        end = start + 366 #_pryt_solar_end(start)
+        p_len = _pryt_len(37, 6)
         pryt = _pryt_gen(start, end, p_len)
         return tuple([p for p in pryt])
 
@@ -292,8 +304,8 @@ def prytany_calendar(
         year (int) -- The year for the calendar
         pryt_type (Prytany) -- Constant representign the type of prytanies
     (default Prytany,AUTO)
-        pryt_start -- start day (in June) for quasi-solar prytanies. If
-    Prytany.AUTO it will be calculated.
+        pryt_start -- start day (JDN) for quasi-solar prytanies. If
+    Prytany.AUTO it will be calculated as the first day of 407 BCE (which was also Prytany 1.1 that year) If an integer (a JDN), 366-day prytanies will be calculated relative to this day.
         rule (heniautos.Visible) -- Constant from heniautos.Visible indicating the desired rule
     (default heniautos.Visible.SECOND_DAY)
         data -- Astronomical data for calculations. By default this is

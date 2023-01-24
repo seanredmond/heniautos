@@ -618,3 +618,13 @@ def test_320():
     assert (
         festival_calendar(bce_as_negative(320), rule=Visible.CONJUNCTION)[-1].doy == 384
     )
+
+
+def test_to_jd():
+    d = find_festival_date(-406, 1, 1)
+
+    assert d.jdn == 1572957
+
+    with pytest.raises(HeniautosDateNotFoundError) as e:
+        find_festival_date(-406, 1, 30)
+

@@ -38,6 +38,9 @@ class HeniautosNoDataError(HeniautosError):
 class HeniautionNoDayInYearError(HeniautosError):
     pass
 
+class HeniautosDateNotFoundError(HeniautosError):
+    pass
+
 
 class Seasons(IntEnum):
     """Constants representing the solar year seasons."""
@@ -1011,6 +1014,15 @@ def corinthian_festival_calendar(
     )
 
 
+def find_festival_date(year, month, day, calendar=Cal.ATHENIAN, intercalate=6, rule=Visible.NEXT_DAY, data=load_data()):
+    cal = CAL_FUNCTION_MAP[calendar](year, intercalate, rule=rule, data=data)
+    date = [c for c in cal if c.month == month and c.day == day]
+    if len(date) == 1:
+        return date[0]
+
+    raise HeniautosDateNotFoundError(f"No festival date matching {year}, {month}, {day}")
+
+
 def find_date(
     year,
     month,
@@ -1312,3 +1324,13 @@ def festival_doy(month, day):
 
 def version():
     return __version__
+
+CAL_FUNCTION_MAP = {
+    Cal.ARGIVE: argive_festival_calendar,
+    Cal.ATHENIAN: athenian_festival_calendar,
+    Cal.CORINTHIAN: corinthian_festival_calendar,
+    Cal.DELPHIAN: delphian_festival_calendar,
+    Cal.DELIAN: delian_festival_calendar,
+    Cal.SPARTAN: spartan_festival_calendar
+}
+
