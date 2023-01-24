@@ -463,41 +463,6 @@ def test_festival_doy():
     assert all([d["intercalation"] for d in doy if d["doy"] > 295])
 
 
-@pytest.mark.skip(reason="probably going to remove")
-def test_dinsmoor():
-    c = festival_calendar(-430, rule=Visible.DINSMOOR)
-    pos = [d for d in c if d.month_index == 6]
-
-    assert pos[0].month_name == "Posideiṓn"
-    assert as_eet(pos[0].jdn) == "BCE 0431-Nov-29"
-    assert pos[0].doy == 148
-    assert pos[-1].doy == 177
-
-    pos2 = [d for d in c if d.month_index == 7]
-    assert pos2[0].month_name == "Posideiṓn hústeros"
-    assert as_eet(pos2[0].jdn) == "BCE 0431-Dec-29"
-    assert pos2[0].doy == 178
-    assert pos2[-1].doy == 206
-
-    e = festival_calendar(-310, rule=Visible.DINSMOOR)
-    assert e[0].month_name == "Uncertain"
-    assert as_eet(e[0].jdn) == "BCE 0311-Jun-29"
-
-
-@pytest.mark.skip(reason="probably going to remove")
-def test_dinsmoor_months():
-    assert dinsmoor_months(-430)[5]["month"] == "Posideiṓn"
-    assert as_eet(dinsmoor_months(-430)[5]["start"]) == "BCE 0431-Nov-29"
-    assert as_eet(dinsmoor_months(-430)[5]["end"]) == "BCE 0431-Dec-29"
-    assert dinsmoor_months(-430)[6]["month"] == "Posideiṓn hústeros"
-    assert dinsmoor_months(-430, abbrev=True)[6]["month"] == "Pos₂"
-    assert dinsmoor_months(-430, greek=True)[6]["month"] == "Ποσιδειών ὕστερος"
-
-    assert dinsmoor_months(-310)[0]["month"] == "Uncertain"
-    assert dinsmoor_months(-310, abbrev=True)[0]["month"] == "Unc"
-    assert dinsmoor_months(-310, greek=True)[0]["month"] == "Uncertain"
-
-
 def test_doy_to_julian():
     assert as_eet(doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
 

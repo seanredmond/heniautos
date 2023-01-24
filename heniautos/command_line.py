@@ -66,9 +66,6 @@ def get_rule(r):
     if r == "2":
         return ha.Visible.SECOND_DAY
 
-    if r == "d":
-        return ha.Visible.DINSMOOR
-
     return ha.Visible.NEXT_DAY
 
 
@@ -497,11 +494,10 @@ under certain conditions."""
                         help="Only list dates of winter solstice")
     parser.add_argument("--gmt", action="store_true",
                         help="Format times as GMT (rather than EET)")
-    parser.add_argument("-r", "--rule", choices=["0", "1", "2", "d"],
+    parser.add_argument("-r", "--rule", choices=["0", "1", "2"],
                         default="1", type=str,
                         help="Rule for determining date of new moon. "
-                        "0, 1, 2 days after astronomical conjunction, or "
-                        "d for Dinsmoor"
+                        "0, 1, 2 days after astronomical conjunction"
                         "(default: 2)")
     parser.add_argument("-E", "--use-ephemeris", action="store_true",
                         help="Use ephemeris for data")
