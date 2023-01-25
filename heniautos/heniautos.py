@@ -299,6 +299,10 @@ FestivalDay = namedtuple(
     "FestivalDay", ("jdn", "month_name", "month_index", "month", "day", "doy", "year")
 )
 
+PrytanyDay = namedtuple(
+    "PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy", "year")
+)
+
 
 def __load_data_file(fn):
     """Load astronomical data from file fn
@@ -417,6 +421,9 @@ def as_julian(t, full=False, tz=TZOptions.GMT):
     are returned as Gregorian calendar dates.
 
     """
+    if isinstance(t, FestivalDay) or isinstance(t, PrytanyDay):
+        return as_julian(t.jdn, full, tz)
+
     if is_bce(t):
         return __gmt_fmt_bce(jd.to_julian(__alt_offset(t, tz)), full, tz=tz)
 
@@ -442,7 +449,7 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
         return __gmt_fmt_bce(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
 
     return __gmt_fmt(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
-    
+
 
 def solar_event(year, e, data=load_data()):
     """Return a Julian date (float) for the event e in the given year.

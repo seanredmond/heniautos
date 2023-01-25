@@ -46,9 +46,6 @@ class Prytany(IntEnum):
     ALIGNED_13 = 4
 
 
-PrytanyDay = namedtuple("PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy", "year"))
-
-
 # Maybe remove
 def __add_years(t, y):
     """Return a new Time object with y years added to Time t."""
@@ -289,7 +286,7 @@ def prytanies(
 
 def _make_prytany(prytany, pryt_year, prytany_index, doy):
     return [
-        PrytanyDay(
+        heniautos.PrytanyDay(
             prytany["start"] + d - 1, prytany_index, prytany["constant"], d, next(doy), pryt_year
         )
         for d in range(1, prytany["end"] - prytany["start"] + 1, 1)
