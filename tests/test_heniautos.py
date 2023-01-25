@@ -560,3 +560,14 @@ def test_to_jd():
     with pytest.raises(HeniautosDateNotFoundError) as e:
         find_festival_date(-406, 1, 30)
 
+def test_name_as():
+    assert athenian_festival_calendar(-406)[0].month_name == "Hekatombaiṓn"
+    assert athenian_festival_calendar(-406, name_as=MonthNameOptions.ABBREV)[0].month_name == "Hek"
+    assert athenian_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name == "Ἑκατομβαιών"
+
+    assert delphian_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name == "Ἀπελλαῖος"
+    assert delian_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name == "Ληναιών"
+    assert argive_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name == "Ἀγύειος"
+    assert spartan_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name == "Unknown 1"
+    assert corinthian_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name == "Φοινικαῖος"
+    
