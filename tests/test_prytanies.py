@@ -129,8 +129,8 @@ def test_prytanies_10_ordinary_long():
     assert sum([span(q["start"], q["end"]) for q in p2]) == 355
 
     assert p2[0]["prytany"] == 1
-    assert as_gmt(p2[0]["start"]) == as_gmt(c2[0]["start"])
-    assert as_gmt(p2[-1]["end"]) == as_gmt(c2[-1]["end"])
+    assert as_julian(p2[0]["start"]) == as_julian(c2[0]["start"])
+    assert as_julian(p2[-1]["end"]) == as_julian(c2[-1]["end"])
 
     assert span(p2[0]["start"], p2[0]["end"]) == 36
     assert span(p2[4]["start"], p2[4]["end"]) == 35
@@ -190,37 +190,37 @@ def test_pryt_auto_start():
     # Should return Julian dates from rounded Terrestrial Time
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO))
         == "BCE 0500-May-01"
     )
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO))
         == "BCE 0425-Jun-26"
     )
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO))
         == "BCE 0429-Jun-23"
     )
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO))
         == "BCE 0424-Jun-27"
     )
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO))
         == "BCE 0421-Jun-29"
     )
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO))
         == "BCE 0420-Jun-30"
     )
 
     assert (
-        as_alt(heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO))
+        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO))
         == "BCE 0419-Jul-01"
     )
 
@@ -237,8 +237,8 @@ def test_pryt_solar_end():
 
 def test_prytany_calendar_408():
     p = by_prytanies(prytany_calendar(-407))
-    assert as_gmt(p[0][0].jdn) == "BCE 0408-Jul-09"
-    assert as_gmt(p[-1][-1].jdn) == "BCE 0407-Jul-09"
+    assert as_julian(p[0][0].jdn) == "BCE 0408-Jul-09"
+    assert as_julian(p[-1][-1].jdn) == "BCE 0407-Jul-09"
 
 
 def test_prytany_calendar_solar():
@@ -246,16 +246,16 @@ def test_prytany_calendar_solar():
 
     assert len(p) == 10
     assert p[0][0].prytany_index == 1
-    assert as_gmt(p[0][0].jdn) == "BCE 0421-Jun-29"
+    assert as_julian(p[0][0].jdn) == "BCE 0421-Jun-29"
     assert len(p[0]) == 37
 
     assert p[-1][-1].prytany_index == 10
-    assert as_gmt(p[-1][-1].jdn) == "BCE 0420-Jun-29"
+    assert as_julian(p[-1][-1].jdn) == "BCE 0420-Jun-29"
     assert len(p[-1]) == 36
     assert p[-1][-1].doy == 366
 
     p2 = prytany_calendar(bce_as_negative(429))
-    assert as_gmt(p2[0].jdn) == "BCE 0429-Jun-23"
+    assert as_julian(p2[0].jdn) == "BCE 0429-Jun-23"
 
 
 def test_prytany_calendar_solar_rule():
@@ -275,11 +275,11 @@ def test_prytany_calendar_solar_leap():
 
     assert len(p) == 10
     assert p[0][0].prytany_index == 1
-    assert as_gmt(p[0][0].jdn) == "BCE 0418-Jul-02"
+    assert as_julian(p[0][0].jdn) == "BCE 0418-Jul-02"
     assert len(p[0]) == 37
 
     assert p[-1][-1].prytany_index == 10
-    assert as_gmt(p[-1][-1].jdn) == "BCE 0417-Jul-01"
+    assert as_julian(p[-1][-1].jdn) == "BCE 0417-Jul-01"
     assert len(p[-1]) == 36
     assert p[-1][-1].doy == 366
 
@@ -1043,12 +1043,12 @@ def test_prytany_doy_auto():
 
 def test_prytany_to_julian():
     assert (
-        as_gmt(prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7).jdn)
+        as_julian(prytany_to_julian(bce_as_negative(332), Prytanies.VIII, 7).jdn)
         == "BCE 0331-Apr-01"
     )
 
     assert (
-        as_gmt(
+        as_julian(
             prytany_to_julian(
                 bce_as_negative(332), Prytanies.VIII, 7, rule=Visible.SECOND_DAY
             ).jdn
@@ -1057,7 +1057,7 @@ def test_prytany_to_julian():
     )
 
     assert (
-        as_gmt(
+        as_julian(
             prytany_to_julian(
                 bce_as_negative(332), Prytanies.VIII, 7, rule=Visible.CONJUNCTION
             ).jdn
@@ -1067,7 +1067,7 @@ def test_prytany_to_julian():
 
     with pytest.raises(HeniautionNoDayInYearError):
         assert (
-            as_gmt(
+            as_julian(
                 prytany_to_julian(
                     bce_as_negative(332), Prytanies.VIII, 39, rule=Visible.CONJUNCTION
                 ).jdn

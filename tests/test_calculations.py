@@ -9,8 +9,8 @@ def test_athenian_434():
     # Generate generic calendar
     m = festival_calendar(-433, calendar=None)
     assert len(m) == 384
-    assert as_gmt(m[0].jdn) == "BCE 0434-Jul-09"
-    assert as_gmt(m[-1].jdn) == "BCE 0433-Jul-26"
+    assert as_julian(m[0].jdn) == "BCE 0434-Jul-09"
+    assert as_julian(m[-1].jdn) == "BCE 0433-Jul-26"
 
     # Make sure generic and specific calendar match
     assert all([d[0].jdn == d[1].jdn for d in zip(m, athenian_festival_calendar(-433))])
@@ -23,8 +23,8 @@ def test_athenian_433():
     """
     m = festival_calendar(-432, calendar=None)
     assert len(m) == 354
-    assert as_gmt(m[0].jdn) == "BCE 0433-Jul-27"
-    assert as_gmt(m[-1].jdn) == "BCE 0432-Jul-15"
+    assert as_julian(m[0].jdn) == "BCE 0433-Jul-27"
+    assert as_julian(m[-1].jdn) == "BCE 0432-Jul-15"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, athenian_festival_calendar(-432))])
     
 
@@ -47,8 +47,8 @@ def test_athenian_424():
     """
     m = festival_calendar(-423, calendar=None)
     assert len(m) == 354
-    assert as_gmt(m[0].jdn) == "BCE 0424-Jul-18"
-    assert as_gmt(m[-1].jdn) == "BCE 0423-Jul-06"
+    assert as_julian(m[0].jdn) == "BCE 0424-Jul-18"
+    assert as_julian(m[-1].jdn) == "BCE 0423-Jul-06"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, athenian_festival_calendar(-423))])
 
 
@@ -58,8 +58,8 @@ def test_athenian_423():
     """
     m = festival_calendar(-422, calendar=None)
     assert len(m) == 384
-    assert as_gmt(m[0].jdn) == "BCE 0423-Jul-07"
-    assert as_gmt(m[-1].jdn) == "BCE 0422-Jul-25"
+    assert as_julian(m[0].jdn) == "BCE 0423-Jul-07"
+    assert as_julian(m[-1].jdn) == "BCE 0422-Jul-25"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, athenian_festival_calendar(-422))])
 
 
@@ -68,8 +68,8 @@ def test_athenian_422():
     and ending on July 13, 421"""
     m = festival_calendar(-421, calendar=None)
     assert len(m) == 354
-    assert as_gmt(m[0].jdn) == "BCE 0422-Jul-26"
-    assert as_gmt(m[-1].jdn) == "BCE 0421-Jul-13"
+    assert as_julian(m[0].jdn) == "BCE 0422-Jul-26"
+    assert as_julian(m[-1].jdn) == "BCE 0421-Jul-13"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, athenian_festival_calendar(-421))])
 
 
@@ -80,8 +80,8 @@ def test_delian_435():
     """
     m = festival_calendar(-434, event=Seasons.WINTER_SOLSTICE, calendar=None)
     assert len(m) == 354
-    assert as_gmt(m[0].jdn) == "BCE 0434-Jan-13"
-    assert as_gmt(m[-1].jdn) == "BCE 0433-Jan-01"
+    assert as_julian(m[0].jdn) == "BCE 0434-Jan-13"
+    assert as_julian(m[-1].jdn) == "BCE 0433-Jan-01"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, delian_festival_calendar(-434))])
 
 
@@ -92,8 +92,8 @@ def test__delian_434():
     """
     m = festival_calendar(-433, event=Seasons.WINTER_SOLSTICE, calendar=None)
     assert len(m) == 384
-    assert as_gmt(m[0].jdn) == "BCE 0433-Jan-02"
-    assert as_gmt(m[-1].jdn) == "BCE 0432-Jan-19"
+    assert as_julian(m[0].jdn) == "BCE 0433-Jan-02"
+    assert as_julian(m[-1].jdn) == "BCE 0432-Jan-19"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, delian_festival_calendar(-433))])
 
 
@@ -104,8 +104,8 @@ def test_spartan_424():
     """
     m = festival_calendar(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True, calendar=None)
     assert len(m) == 354
-    assert as_gmt(m[0].jdn) == "BCE 0424-Sep-15"
-    assert as_gmt(m[-1].jdn) == "BCE 0423-Sep-03"
+    assert as_julian(m[0].jdn) == "BCE 0424-Sep-15"
+    assert as_julian(m[-1].jdn) == "BCE 0423-Sep-03"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, spartan_festival_calendar(-423))])
 
 
@@ -116,8 +116,8 @@ def test_generic_festival_months_spartan_423():
     """
     m = festival_calendar(-422, event=Seasons.AUTUMN_EQUINOX, before_event=True, calendar=None)
     assert len(m) == 384
-    assert as_gmt(m[0].jdn) == "BCE 0423-Sep-04"
-    assert as_gmt(m[-1].jdn) == "BCE 0422-Sep-22"
+    assert as_julian(m[0].jdn) == "BCE 0423-Sep-04"
+    assert as_julian(m[-1].jdn) == "BCE 0422-Sep-22"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, spartan_festival_calendar(-422))])
 
 
@@ -128,8 +128,8 @@ def test_spartan_422():
     """
     m = festival_calendar(-421, event=Seasons.AUTUMN_EQUINOX, before_event=True, calendar=None)
     assert len(m) == 355
-    assert as_gmt(m[0].jdn) == "BCE 0422-Sep-23"
-    assert as_gmt(m[-1].jdn) == "BCE 0421-Sep-11"
+    assert as_julian(m[0].jdn) == "BCE 0422-Sep-23"
+    assert as_julian(m[-1].jdn) == "BCE 0421-Sep-11"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, spartan_festival_calendar(-421))])
 
 

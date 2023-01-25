@@ -38,6 +38,7 @@ class HeniautosNoDataError(HeniautosError):
 class HeniautionNoDayInYearError(HeniautosError):
     pass
 
+
 class HeniautosDateNotFoundError(HeniautosError):
     pass
 
@@ -53,6 +54,7 @@ class Seasons(IntEnum):
 
 class Phases(IntEnum):
     """Constants representing the lunar phases."""
+
     NEW = 0
     FIRST_Q = 1
     FULL = 2
@@ -61,6 +63,7 @@ class Phases(IntEnum):
 
 class MonthNameOptions(IntEnum):
     """Options for displaying Greek month names."""
+
     TRANSLITERATION = 0
     ABBREV = 1
     GREEK = 2
@@ -68,6 +71,7 @@ class MonthNameOptions(IntEnum):
 
 class Cal(Enum):
     """Constants representing available calendars."""
+
     ARGIVE = object()
     ATHENIAN = object()
     CORINTHIAN = object()
@@ -81,9 +85,15 @@ class Cal(Enum):
 
 class Visible(IntEnum):
     """Constants representing lunar visibility options."""
+
     CONJUNCTION = 0
     NEXT_DAY = 1
     SECOND_DAY = 2
+
+
+class TZOptions(Enum):
+    GMT = "GMT"
+    ALT = "ALT"
 
 
 class Months(IntEnum):
@@ -104,7 +114,8 @@ class ArgiveMonths(IntEnum):
     AMU = 10
     PAN = 11
     APE = 12
-    
+
+
 class AthenianMonths(IntEnum):
     HEK = 1
     MET = 2
@@ -265,7 +276,6 @@ MONTH_NAME_MAP = {
     (Cal.ARGIVE, ArgiveMonths.AMU): ("Amuklaîos", "Amu", "Ἀμυκλαῖος"),
     (Cal.ARGIVE, ArgiveMonths.PAN): ("Pánamos", "Pan", "Πάναμος"),
     (Cal.ARGIVE, ArgiveMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
-    
 }
 
 
@@ -288,6 +298,7 @@ MONTH_ABBREVS = (
 FestivalDay = namedtuple(
     "FestivalDay", ("jdn", "month_name", "month_index", "month", "day", "doy", "year")
 )
+
 
 def __load_data_file(fn):
     """Load astronomical data from file fn
@@ -348,63 +359,90 @@ def to_jdn(t):
     return int(t + 0.5)
 
 
-def __add_hours(t, h):
-    """Return a new JDN object with h hours added."""
-    return jd.from_julian(
-        *[sum(x) for x in zip(jd.to_julian(t), (0, 0, 0, h, 0, 0, 0))]
-    )
-
-
-def __gmt_fmt_bce(j, full, tz_abbr="GMT"):
+def __gmt_fmt_bce(j, full, tz=TZOptions.GMT):
     """Convert negative (BCE) year for formating."""
-    return __gmt_fmt((bce_as_negative(j[0]),) + j[1:], full, "BCE", tz_abbr)
+    return __gmt_fmt((bce_as_negative(j[0]),) + j[1:], full, "BCE", tz)
 
 
 def __jul_month(m):
-    return ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")[m-1]
+    return (
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    )[m - 1]
 
 
-def __gmt_fmt(j, full, epoch=" CE", tz_abbr="GMT"):
+def __gmt_fmt(j, full, epoch=" CE", tz=TZOptions.GMT):
     """Return a short or full string representation of a JDN."""
     if full:
-        return __gmt_fmt_full(j, epoch, tz_abbr)
+        return __gmt_fmt_full(j, epoch, tz)
 
     return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
 
 
-def __gmt_fmt_full(j, epoch, tz_abbr="GMT"):
+def __gmt_fmt_full(j, epoch, tz=TZOptions.GMT):
     """Return a full string representation of a JDN."""
-    return datetime(*j).strftime(f"{epoch} %Y-%b-%d %H:%M:%S {tz_abbr}")
+    return datetime(*j).strftime(f"{epoch} %Y-%b-%d %H:%M:%S {tz.value}")
 
 
-def as_gmt(t, full=False, tz_abbr="GMT"):
-    """Return a string representation of Julian date object in GMT.
+def __alt_offset(jd, tz):
+    """Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich."""
+    if tz == TZOptions.ALT:
+        return jd + (23.728056 / 360)
+
+    return jd
+
+
+def as_julian(t, full=False, tz=TZOptions.GMT):
+    """Return a string representation of Julian date object as a Julian calendar date.
 
     Parameters:
     t -- A Julian date (float or int)
     full -- Boolean. Return a full date if True, short date if False
+    tz -- TZOptions. Convert GMT (default) or "Athens Local Time" (AST)
+
+    The full date representation of 1685074.3287423, for example is
+    'BCE 0100-Jun-25 19:53:23 GMT', the short BCE 'BCE 0100-Jun-25'.
+
+    Dates following the start of the gregorian calendar (10/15/1682)
+    are returned as Gregorian calendar dates.
+
+    """
+    if is_bce(t):
+        return __gmt_fmt_bce(jd.to_julian(__alt_offset(t, tz)), full, tz=tz)
+
+    if t >= 2299161:  # Start of Gregorian Calendar
+        return as_gregorian(t, full, tz)
+
+    return __gmt_fmt(jd.to_julian(__alt_offset(t, tz)), full, tz=tz)
+
+
+def as_gregorian(t, full=False, tz=TZOptions.GMT):
+    """Return a string representation of Julian date object as a Gregorian calendar date.
+
+    Parameters:
+    t -- A Julian date (float or int)
+    full -- Boolean. Return a full date if True, short date if False
+    tz -- TZOptions. Convert GMT (default) or "Athens Local Time" (AST)
 
     The full date representation of 1685074.3287423, for example is
     'BCE 0100-Jun-25 19:53:23 GMT', the short BCE 'BCE 0100-Jun-25'.
 
     """
     if is_bce(t):
-        return __gmt_fmt_bce(jd.to_julian(t), full, tz_abbr=tz_abbr)
+        return __gmt_fmt_bce(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
 
-    if t >= 2299161:  # Start of Gregorian Calendar
-        return __gmt_fmt(jd.to_gregorian(t), full, tz_abbr=tz_abbr)
-
-    return __gmt_fmt(jd.to_julian(t), full, tz_abbr=tz_abbr)
-
-
-def __alt(jdn):
-    """ Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich."""
-    return jdn + (23.728056/360)
-
-
-def as_alt(jd, full=False, tz_abbr="ALT"):
-    return as_gmt(__alt(jd), full, tz_abbr)
-
+    return __gmt_fmt(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
+    
 
 def solar_event(year, e, data=load_data()):
     """Return a Julian date (float) for the event e in the given year.
@@ -419,9 +457,7 @@ def solar_event(year, e, data=load_data()):
     try:
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-        return [
-            s[0] for s in data["solstices"] if s[1] == e and d1 <= s[0] <= d2
-        ][0]
+        return [s[0] for s in data["solstices"] if s[1] == e and d1 <= s[0] <= d2][0]
     except IndexError:
         if year < 1:
             raise HeniautosNoDataError(
@@ -641,20 +677,21 @@ def __make_generic_month(month, doy):
     doy -- a generator that returns the next integer (to keep track of days of the year
 
     This generates a tuple of FestivalDay objects, one for each day of a month bounded by the start JDN (inclusive) and end JDN (exclusive) passed as the month parameter. This is a generic list, with no specific Greek month assigned yet.
-
-"""
-    return tuple([
-        FestivalDay(
-            month["start"] + d - 1,
-            None,
-            month["month_index"],
-            None,
-            d,
-            next(doy),
-            None
-        )
-        for d in range(1, month["end"] - month["start"] + 1, 1)
-    ])
+    """
+    return tuple(
+        [
+            FestivalDay(
+                month["start"] + d - 1,
+                None,
+                month["month_index"],
+                None,
+                d,
+                next(doy),
+                None,
+            )
+            for d in range(1, month["end"] - month["start"] + 1, 1)
+        ]
+    )
 
 
 def __base_festival_calendar(
@@ -685,13 +722,7 @@ def __base_festival_calendar(
         year, event=event, before_event=before_event, rule=rule, data=data
     )
 
-    return tuple(
-        [
-            a
-            for b in [__make_generic_month(m, doy) for m in months]
-            for a in b
-        ]
-    )
+    return tuple([a for b in [__make_generic_month(m, doy) for m in months] for a in b])
 
 
 def __intercalary_order(months, intercalate=6):
@@ -740,7 +771,9 @@ def __intercalated_month_name_map(calendar, months):
     return MONTH_NAME_MAP
 
 
-def __make_festival_day(cal_day, cal_year, name_as, calendar=None, months=None, month_names=None):
+def __make_festival_day(
+    cal_day, cal_year, name_as, calendar=None, months=None, month_names=None
+):
     """Add month name and constant to FestivalDay
 
     Params:
@@ -764,8 +797,9 @@ def __make_festival_day(cal_day, cal_year, name_as, calendar=None, months=None, 
         months[cal_day.month_index - 1],
         cal_day.day,
         cal_day.doy,
-        cal_year
+        cal_year,
     )
+
 
 def festival_calendar(
     year,
@@ -1018,13 +1052,23 @@ def corinthian_festival_calendar(
     )
 
 
-def find_festival_date(year, month, day, calendar=Cal.ATHENIAN, intercalate=6, rule=Visible.NEXT_DAY, data=load_data()):
+def find_festival_date(
+    year,
+    month,
+    day,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
     cal = CAL_FUNCTION_MAP[calendar](year, intercalate, rule=rule, data=data)
     date = [c for c in cal if c.month == month and c.day == day]
     if len(date) == 1:
         return date[0]
 
-    raise HeniautosDateNotFoundError(f"No festival date matching {year}, {month}, {day}")
+    raise HeniautosDateNotFoundError(
+        f"No festival date matching {year}, {month}, {day}"
+    )
 
 
 def find_date(
@@ -1189,12 +1233,12 @@ def festival_doy(month, day):
 def version():
     return __version__
 
+
 CAL_FUNCTION_MAP = {
     Cal.ARGIVE: argive_festival_calendar,
     Cal.ATHENIAN: athenian_festival_calendar,
     Cal.CORINTHIAN: corinthian_festival_calendar,
     Cal.DELPHIAN: delphian_festival_calendar,
     Cal.DELIAN: delian_festival_calendar,
-    Cal.SPARTAN: spartan_festival_calendar
+    Cal.SPARTAN: spartan_festival_calendar,
 }
-
