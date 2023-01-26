@@ -300,7 +300,7 @@ FestivalDay = namedtuple(
 )
 
 PrytanyDay = namedtuple(
-    "PrytanyDay", ("jdn", "prytany_index", "prytany", "day", "doy", "year")
+    "PrytanyDay", ("jdn", "prytany_index", "prytany", "prytany_length", "day", "doy", "year")
 )
 
 

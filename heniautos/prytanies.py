@@ -285,7 +285,7 @@ def __prytanies(
 def _make_prytany(prytany, pryt_year, prytany_index, doy):
     return [
         heniautos.PrytanyDay(
-            prytany["start"] + d - 1, prytany_index, prytany["constant"], d, next(doy), pryt_year
+            prytany["start"] + d - 1, prytany_index, prytany["constant"], prytany["end"] - prytany["start"], d, next(doy), pryt_year
         )
         for d in range(1, prytany["end"] - prytany["start"] + 1, 1)
     ]
