@@ -296,7 +296,7 @@ MONTH_ABBREVS = (
 )
 
 FestivalDay = namedtuple(
-    "FestivalDay", ("jdn", "month_name", "month_index", "month", "month_length", "day", "doy", "year")
+    "FestivalDay", ("jdn", "month_name", "month_index", "month", "month_length", "day", "doy", "year", "year_length")
 )
 
 PrytanyDay = namedtuple(
@@ -696,6 +696,7 @@ def __make_generic_month(month, doy):
                 d,
                 next(doy),
                 None,
+                None
             )
             for d in range(1, month["end"] - month["start"] + 1, 1)
         ]
@@ -780,7 +781,7 @@ def __intercalated_month_name_map(calendar, months):
 
 
 def __make_festival_day(
-        cal_day, cal_year, name_as, calendar=None, months=None, month_length=None, month_names=None
+        cal_day, cal_year, name_as, year_len=None, calendar=None, months=None, month_length=None, month_names=None
 ):
     """Add month name and constant to FestivalDay
 
@@ -807,6 +808,7 @@ def __make_festival_day(
         cal_day.day,
         cal_day.doy,
         cal_year,
+        year_length=year_len
     )
 
 
@@ -863,7 +865,7 @@ def festival_calendar(
     month_names = __intercalated_month_name_map(calendar, months)
     return tuple(
         [
-            __make_festival_day(d, cal_year, name_as, calendar, months, d.month_length, month_names)
+            __make_festival_day(d, cal_year, name_as, base_cal[-1].doy, calendar, months, d.month_length, month_names)
             for d in base_cal
         ]
     )

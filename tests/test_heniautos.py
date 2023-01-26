@@ -550,4 +550,5 @@ def test_festival_day():
     assert d.day == 1
     assert d.doy == 1
     assert d.year == 'BCE 407/406'
+    assert d.year_length == 355
     
