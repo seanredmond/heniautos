@@ -540,3 +540,14 @@ def test_find_date():
     assert d.day == 1
 
 
+def test_festival_day():
+    d = find_date(-406, 7, 10)
+    assert d.jdn == 1572957
+    assert d.month_name == 'Hekatombaiṓn'
+    assert d.month_index == 1
+    assert d.month == AthenianMonths.HEK
+    assert d.month_length == 29
+    assert d.day == 1
+    assert d.doy == 1
+    assert d.year == 'BCE 407/406'
+    
