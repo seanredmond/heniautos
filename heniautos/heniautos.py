@@ -482,7 +482,7 @@ def __all_moon_phases(year, data):
 
 
 # # MAYBE REMOVE
-def moon_phases(year, p=Phases.NEW, data=load_data()):
+def __moon_phases(year, p=Phases.NEW, data=load_data()):
     """Return a list of Julian dates for each indicated lunar phase in the
     given year.
 
@@ -517,7 +517,7 @@ def new_moons(year, data=load_data()):
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
     """
-    return moon_phases(year, Phases.NEW, data=data)
+    return __moon_phases(year, Phases.NEW, data=data)
 
 
 def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):

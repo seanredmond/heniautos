@@ -70,16 +70,6 @@ def test_summer_solstice_data_param():
         solar_event(-99, Seasons.SUMMER_SOLSTICE, data={"solstices": ()})
 
 
-def test_moon_phases_data_param():
-    assert moon_phases(-99)[0] == 1684907.0310656228
-    assert (
-        moon_phases(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684900.12345
-    )
-
-    with pytest.raises(HeniautosNoDataError):
-        moon_phases(-99, data={"new_moons": ()})
-
-
 def test_new_moons_data_param():
     assert new_moons(-99)[0] == 1684907.0310656228
     assert new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684900.12345
