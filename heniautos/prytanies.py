@@ -195,7 +195,7 @@ def _pryt_solar_end(start):
     return heniautos.to_jdn(__add_years(start, 1))
 
 
-def prytanies(
+def __prytanies(
     year,
     pryt_type=Prytany.AUTO,
     pryt_start=Prytany.AUTO,
@@ -334,7 +334,7 @@ def prytany_calendar(
             for b in [
                 _make_prytany(p, cal_year, i, doy)
                 for i, p in enumerate(
-                    prytanies(
+                    __prytanies(
                         year,
                         pryt_type=pryt_type,
                         pryt_start=pryt_start,
