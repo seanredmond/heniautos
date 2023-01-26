@@ -593,7 +593,7 @@ def __bounding_moons(moons, sol1, sol2, before_event):
     return __bounding_after(moons, sol1, sol2)
 
 
-def calendar_months(
+def _calendar_months(
     year,
     event=Seasons.SUMMER_SOLSTICE,
     rule=Visible.NEXT_DAY,
@@ -661,7 +661,7 @@ def __festival_months(
         [
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
             for m in enumerate(
-                calendar_months(
+                _calendar_months(
                     year, event=event, before_event=before_event, rule=rule, data=data
                 ),
                 1,

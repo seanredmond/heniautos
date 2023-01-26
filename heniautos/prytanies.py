@@ -214,9 +214,7 @@ def prytanies(
         return tuple([p for p in pryt])
 
     # Get the calendar for the requested year
-    cal = heniautos.calendar_months(year, rule=rule, data=data)
-    # y_len = sum([__span(*m) for m in calendar_months(year, rule=rule, data=data)])
-    # y_len = sum([m[1] - m[0] for m in heniautos.calendar_months(year, rule=rule, data=data)])
+    cal = heniautos.heniautos._calendar_months(year, rule=rule, data=data)
     y_len = sum([m[1] - m[0] for m in cal])
 
     if auto_type == Prytany.ALIGNED_10:
