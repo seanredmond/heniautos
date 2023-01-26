@@ -102,7 +102,7 @@ def month_filter(idx, args):
 
 
 def display_month(month, args):
-    if type(month) is ha.prytanies.PrytanyDay:
+    if type(month) is ha.PrytanyDay:
         if not args.arabic:
             return ROMAN[month.prytany-1]
 
@@ -113,7 +113,7 @@ def yearly_table(year, writer, args):
     writer.writerow((
         f"{year[0].year:13} ",
         " I " if len(year) > 355 else " O ",
-        f" {ha.as_alt(year[0].jdn)} ",
+        f" {ha.as_julian(year[0].jdn)} ",
         f"{len(year):>5}"))
 
 
@@ -121,7 +121,7 @@ def yearly_tsv(year, writer, args):
     writer.writerow((
         year[0].year,
         "I" if len(year) > 355 else "O",
-        ha.as_alt(year[0].jdn),
+        ha.as_julian(year[0].jdn),
         len(year)))
 
 
@@ -130,7 +130,7 @@ def monthly_table(year, writer, args):
         writer.writerow((
             f"{month[0].year:13} ",
             f" {display_month(month[0], args):22}",
-            f" {ha.as_alt(month[0].jdn)} ",
+            f" {ha.as_julian(month[0].jdn)} ",
             f"{len(month):>5}"))
 
 
@@ -139,7 +139,7 @@ def monthly_tsv(year, writer, args):
         writer.writerow((
             month[0].year,
             display_month(month[0], args),
-            ha.as_alt(month[0].jdn),
+            ha.as_julian(month[0].jdn),
             len(month)))
 
 
@@ -149,7 +149,7 @@ def daily_table(year, writer, args):
             f"{day.year:13} ",
             f" {display_month(day, args):22}",
             f"{day.day:>4} ",
-            f" {ha.as_alt(day.jdn)} ",
+            f" {ha.as_julian(day.jdn)} ",
             f"{day.doy:>4}"))
 
 
@@ -159,7 +159,7 @@ def daily_tsv(year, writer, args):
             day.year,
             display_month(day, args),
             day.day,
-            ha.as_alt(day.jdn),
+            ha.as_julian(day.jdn),
             day.doy))
 
 
@@ -256,7 +256,7 @@ def filtered_calendar(year, args, astro_data):
 
 def by_group(year):
     """Group by months or prytanies depending on type of calendar."""
-    if type(year[0]) is ha.prytanies.PrytanyDay:
+    if type(year[0]) is ha.PrytanyDay:
         return ha.prytanies.by_prytanies(year)
 
     return ha.by_months(year)
@@ -312,7 +312,7 @@ def is_solar(with_solar, day, solar):
     if not with_solar:
         return tuple()
 
-    event = tuple([s[1] for s in solar if s[0] == ha.as_alt(day)])
+    event = tuple([s[1] for s in solar if s[0] == ha.as_julian(day)])
 
     if event:
         return event
@@ -331,7 +331,7 @@ def is_lunar(with_nm, day, lunar):
     if not with_nm:
         return tuple()
 
-    event = tuple([s[1] for s in lunar if s[0] == ha.as_alt(day)])
+    event = tuple([s[1] for s in lunar if s[0] == ha.as_julian(day)])
 
     if event:
         return event
@@ -386,7 +386,7 @@ def zz_output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
         solar = solar_events(year, with_solar)
         lunar = lunar_events(year, with_nm)
         for x in get_julian_year(year):
-            row = (x, ha.as_alt(x),) + \
+            row = (x, ha.as_julian(x),) + \
                 is_astro_event(with_solar, x, solar) + \
                 is_astro_event(with_nm, x, lunar)
 
@@ -512,18 +512,18 @@ under certain conditions."""
             for year in years(args.start_year, args.end_year, args.as_ce):
                 for nm in ha.new_moons(year, data=astro_data()):
                     if args.gmt:
-                        print(ha.as_gmt(nm, True))
+                        print(ha.as_julian(nm, True))
                     else:
-                        print(ha.as_alt(nm, True))
+                        print(ha.as_julian(nm, True, tz=TZOptions.ALT))
             exit()
 
         if args.full_moons:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 for nm in ha.moon_phases(year, ha.Phases.FULL, data=astro_data()):
                     if args.gmt:
-                        print(ha.as_gmt(nm, True))
+                        print(ha.as_julian(nm, True))
                     else:
-                        print(ha.as_alt(nm, True))
+                        print(ha.as_julian(nm, True, tz=TZOptions.ALT))
             exit()
 
         # Check for one of the solar events (and take the first one)
@@ -532,13 +532,13 @@ under certain conditions."""
         if solar is not None:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 if args.gmt:
-                    print(ha.as_gmt(
+                    print(ha.as_julian(
                         ha.solar_event(year, solar[1], data=astro_data()),
                         True))
                 else:
-                    print(ha.as_alt(
+                    print(ha.as_julian(
                         ha.solar_event(year, solar[1], data=astro_data()),
-                        True))
+                        True, tz=TZOptions.ALT))
             exit()
             
 
