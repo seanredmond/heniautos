@@ -113,66 +113,6 @@ def test_calendar_months_delian_424():
     assert as_julian(p[-1][0]) == "BCE 0423-Dec-01"
 
 
-# def test_month_label():
-#     assert month_label(Months.HEK) == "Hekatombaiṓn"
-#     assert month_label(Months.HEK, abbrev=True) == "Hek"
-#     assert month_label(Months.HEK, greek=True) == "Ἑκατομβαιών"
-
-
-# def test_suffix():
-#     assert heniautos._suffix() == " hústeros"
-#     assert heniautos._suffix(abbrev=True) == "₂"
-#     assert heniautos._suffix(greek=True) == " ὕστερος"
-#     assert heniautos._suffix(abbrev=True, greek=True) == " ὕστερος"
-
-
-# def test_maybe_intercalate():
-#     # No intercalations, just the list of ordinary months
-#     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[0] == (
-#         "Hekatombaiṓn",
-#         Months.HEK,
-#     )
-#     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[3] == (
-#         "Puanopsiṓn",
-#         Months.PUA,
-#     )
-#     assert heniautos._maybe_intercalate(12, Months.POS, False, False)[6] == (
-#         "Gamēliṓn",
-#         Months.GAM,
-#     )
-
-#     # Intercalates Pos
-#     # Month before Pos unchanged
-#     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[3] == (
-#         "Puanopsiṓn",
-#         Months.PUA,
-#     )
-#     # The intercalated month
-#     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[6] == (
-#         "Posideiṓn hústeros",
-#         Months.INT,
-#     )
-#     # Indexes of months after the intercalation 1 more than usual
-#     assert heniautos._maybe_intercalate(13, Months.POS, False, False)[7] == (
-#         "Gamēliṓn",
-#         Months.GAM,
-#     )
-
-#     # Intercalated Boe
-#     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[3] == (
-#         "Boēdromiṓn hústeros",
-#         Months.INT,
-#     )
-#     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[6] == (
-#         "Posideiṓn",
-#         Months.POS,
-#     )
-#     assert heniautos._maybe_intercalate(13, Months.BOE, False, False)[7] == (
-#         "Gamēliṓn",
-#         Months.GAM,
-#     )
-
-
 def test_generic_festival_calendar():
     p = festival_calendar(-100, calendar=None)
     assert len(p) == 354
@@ -304,18 +244,6 @@ def test_delian_festival_calendar_434_433():
     assert len(c_months) == 13
     assert as_julian(c_months[0][0]) == "BCE 0433-Jan-02"
     assert as_julian(c_months[-1][0]) == "BCE 0433-Dec-21"
-
-
-def test_find_date():
-    d = find_date(-100, AthenianMonths.MET, 1)
-    assert d.month_name == "Metageitniṓn"
-    assert d.month == AthenianMonths.MET
-    assert d.day == 1
-    assert as_julian(d) == "BCE 0101-Aug-15"
-    assert d.doy == 31
-
-    with pytest.raises(HeniautosError):
-        find_date(-99, AthenianMonths.MET, 31)
 
 
 def test_by_months():
@@ -582,3 +510,33 @@ def test_name_as():
         corinthian_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name
         == "Φοινικαῖος"
     )
+
+
+def test_find_jdn_with_year_hint():
+    day = find_jdn(1572957, -406)
+    assert day.jdn == 1572957
+    assert day.month == AthenianMonths.HEK
+    assert day.day == 1
+
+
+def test_find_jdn_without_year_hint():
+    day = find_jdn(1572957)
+    assert day.jdn == 1572957
+    assert day.month == AthenianMonths.HEK
+    assert day.day == 1
+
+
+def test_find_jdn_argos():
+    day = find_jdn(1572957, calendar=Cal.ARGIVE)
+    assert day.jdn == 1572957
+    assert day.month == ArgiveMonths.PAN
+    assert day.day == 1
+    
+
+
+def test_find_date():
+    d = find_date(-406, 7, 10)
+    assert d.month == AthenianMonths.HEK
+    assert d.day == 1
+
+

@@ -1077,11 +1077,42 @@ def find_festival_date(
         f"No festival date matching {year}, {month}, {day}"
     )
 
+def find_jdn(
+    jdn,
+    year=None,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    """Find the Athenian date corresponding to a Julian Day Number
+
+    Parameters:
+    jdn (int) -- The Julian Day Number
+    year (int) -- Hint for year to find (can usually be +/- 1)
+    calendar (Cal) -- A Cal constant for the requested calendar
+    name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+    intercalate (Months) -- Month constant for month to intercalate if
+    necessary (default Months.POS)
+     rule (Visible) -- Constant from Visible indicating the desired rule
+    (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+    """
+    # If the year hint is not supplied, extract it from the jdna nd recurse
+    if not isinstance(year, int):
+        return find_jdn(jdn, jd.to_julian(jdn)[0], calendar=calendar, intercalate=intercalate, name_as=name_as, rule=rule, data=data)
+        
+    return [d for d in [a for b in [CAL_FUNCTION_MAP[calendar](y, intercalate, rule=rule, data=data) for y in range(year-1, year+2)] for a in b] if d.jdn == jdn][0]
+
 
 def find_date(
     year,
     month,
     day,
+    is_julian=True,
     calendar=Cal.ATHENIAN,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
@@ -1094,6 +1125,7 @@ def find_date(
     year (int) -- The Julian year, negative for BCE
     month (int) -- The Julian month
     day (int) -- The Julian day
+    is_julian -- If True, year, month, day are a Julian calendar date. If False a Gregorian date.
     calendar (Cal) -- A Cal constant for the requested calendar
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     intercalate (Months) -- Month constant for month to intercalate if
@@ -1105,30 +1137,8 @@ def find_date(
 
     """
 
-    try:
-        return [
-            d
-            for d in festival_calendar(
-                year,
-                calendar=calendar,
-                intercalate=intercalate,
-                name_as=name_as,
-                # abbrev=abbrev,
-                # greek=greek,
-                rule=rule,
-                data=data,
-            )
-            if d.month == month and d.day == day
-        ][0]
-    except IndexError:
-        if month == Months.INT:
-            raise HeniautosError(
-                f"No date found or no intercalated month " f"in year {year}"
-            )
-
-        raise HeniautosError(
-            f"No date found for {MONTH_NAME_MAP[(calendar, month)][0]} " f"{day} {year}"
-        )
+    # Convert the year/month/day to JDN and call find_jdn
+    return find_jdn(to_jdn(jd.from_julian(year, month, day) if is_julian else jd.from_gregorian(year, month, day)), year, calendar=calendar, intercalate=intercalate, name_as=name_as, rule=rule, data=data)
 
 
 def _calendar_groups(c, func):
