@@ -788,3 +788,15 @@ def test_gregorian_to_prytany():
     assert d.jdn == 1572962
     assert d.prytany == Prytanies.I
     assert d.day == 6
+
+
+def test_prytany_day():
+    d = julian_to_prytany(-406, 7, 10)
+    assert d.jdn == 1572957
+    assert d.prytany_index == 1
+    assert d.prytany == Prytanies.I
+    assert d.prytany_length == 37
+    assert d.day == 1
+    assert d.doy == 1
+    assert d.year == "BCE 407/406"
+    assert d.year_length == 366

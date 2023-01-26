@@ -282,7 +282,7 @@ def __prytanies(
     raise HeniautosError("Not Handled")
 
 
-def _make_prytany(prytany, pryt_year, prytany_index, doy):
+def __make_prytany(prytany, pryt_year, prytany_index, doy, year_length):
     return [
         heniautos.PrytanyDay(
             prytany["start"] + d - 1,
@@ -292,6 +292,7 @@ def _make_prytany(prytany, pryt_year, prytany_index, doy):
             d,
             next(doy),
             pryt_year,
+            year_length,
         )
         for d in range(1, prytany["end"] - prytany["start"] + 1, 1)
     ]
@@ -334,36 +335,26 @@ def prytany_calendar(
     doy = heniautos.heniautos._doy_gen()
     cal_year = heniautos.arkhon_year(year)
 
+    pryt_year = __prytanies(
+        year,
+        pryt_type=pryt_type,
+        pryt_start=pryt_start,
+        rule=rule,
+        rule_of_aristotle=rule_of_aristotle,
+        data=data,
+    )
+    year_len = pryt_year[-1]["end"] - pryt_year[0]["start"]
+
     return tuple(
         [
             a
             for b in [
-                _make_prytany(p, cal_year, i, doy)
-                for i, p in enumerate(
-                    __prytanies(
-                        year,
-                        pryt_type=pryt_type,
-                        pryt_start=pryt_start,
-                        rule=rule,
-                        rule_of_aristotle=rule_of_aristotle,
-                        data=data,
-                    ),
-                    1,
-                )
+                __make_prytany(p, cal_year, i, doy, year_len)
+                for i, p in enumerate(pryt_year, 1)
             ]
             for a in b
         ]
     )
-
-
-#     # return tuple([{"prytany": p["prytany"],
-#     #                "constant": p["constant"],
-#     #                "days": _month_days(p["start"], p["end"], doy)}
-#     #               for p
-#     #               in prytanies(year, pryt_type=pryt_type,
-#     #                            pryt_start=pryt_start, rule=rule,
-#     #                            rule_of_aristotle=rule_of_aristotle,
-#     #                            data=data)])
 
 
 def by_prytanies(p):
