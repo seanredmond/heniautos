@@ -1131,14 +1131,14 @@ def find_date(
         )
 
 
-def calendar_groups(c, func):
+def _calendar_groups(c, func):
     """Group calendar by func."""
     return [tuple(g[1]) for g in groupby(c, key=func)]
 
 
 def by_months(p):
     """Return festival calendar grouped into a tuple of tuples by months."""
-    return tuple(calendar_groups(p, lambda x: x.month_index))
+    return tuple(_calendar_groups(p, lambda x: x.month_index))
 
 
 def doy_to_julian(doy, year, rule=Visible.NEXT_DAY, data=load_data()):

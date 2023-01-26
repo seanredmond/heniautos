@@ -362,7 +362,7 @@ def prytany_calendar(
 
 def by_prytanies(p):
     """Return prytany calendar grouped into a tuple of tuples by prytany."""
-    return heniautos.calendar_groups(p, lambda x: x.prytany)
+    return heniautos.heniautos._calendar_groups(p, lambda x: x.prytany)
 
 
 def prytany_to_julian(
