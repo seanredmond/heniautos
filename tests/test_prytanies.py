@@ -143,37 +143,51 @@ def test_pryt_auto_start():
     # Should return Julian dates from rounded Terrestrial Time
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO)
+        )
         == "BCE 0500-May-01"
     )
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO)
+        )
         == "BCE 0425-Jun-26"
     )
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO)
+        )
         == "BCE 0429-Jun-23"
     )
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO)
+        )
         == "BCE 0424-Jun-27"
     )
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO)
+        )
         == "BCE 0421-Jun-29"
     )
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO)
+        )
         == "BCE 0420-Jun-30"
     )
 
     assert (
-        as_julian(heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO))
+        as_julian(
+            heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO)
+        )
         == "BCE 0419-Jul-01"
     )
 
@@ -744,3 +758,33 @@ def test_prytany_to_julian():
             )
             == "BCE 0331-Mar-31"
         )
+
+
+def test_jdn_to_prytany_with_year_hint():
+    day = jdn_to_prytany(1572957, -406)
+    assert day.jdn == 1572957
+    assert day.prytany == Prytanies.I
+    assert day.day == 1
+    assert day.year == "BCE 407/406"
+
+
+def test_jdn_to_prytany_without_year_hint():
+    day = jdn_to_prytany(1572957)
+    assert day.jdn == 1572957
+    assert day.prytany == Prytanies.I
+    assert day.day == 1
+    assert day.year == "BCE 407/406"
+
+
+def test_julian_to_prytany():
+    d = julian_to_prytany(-406, 7, 10)
+    assert d.jdn == 1572957
+    assert d.prytany == Prytanies.I
+    assert d.day == 1
+
+
+def test_gregorian_to_prytany():
+    d = gregorian_to_prytany(-406, 7, 10)
+    assert d.jdn == 1572962
+    assert d.prytany == Prytanies.I
+    assert d.day == 6

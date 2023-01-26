@@ -285,7 +285,13 @@ def __prytanies(
 def _make_prytany(prytany, pryt_year, prytany_index, doy):
     return [
         heniautos.PrytanyDay(
-            prytany["start"] + d - 1, prytany_index, prytany["constant"], prytany["end"] - prytany["start"], d, next(doy), pryt_year
+            prytany["start"] + d - 1,
+            prytany_index,
+            prytany["constant"],
+            prytany["end"] - prytany["start"],
+            d,
+            next(doy),
+            pryt_year,
         )
         for d in range(1, prytany["end"] - prytany["start"] + 1, 1)
     ]
@@ -555,3 +561,88 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
         )
 
     raise HeniautosError("Unhandled")
+
+
+def jdn_to_prytany(
+    jdn,
+    year=None,
+    pryt_type=Prytany.AUTO,
+    pryt_start=Prytany.AUTO,
+    rule=heniautos.Visible.NEXT_DAY,
+    rule_of_aristotle=False,
+    data=heniautos.load_data(),
+):
+
+    # If the year hint is not supplied, extract it from the jdn and recurse
+    if not isinstance(year, int):
+        return jdn_to_prytany(
+            jdn,
+            jd.to_julian(jdn)[0],
+            pryt_type=pryt_type,
+            pryt_start=pryt_start,
+            rule=rule,
+            rule_of_aristotle=rule_of_aristotle,
+            data=data,
+        )
+
+    return [
+        d
+        for d in [
+            a
+            for b in [
+                prytany_calendar(
+                    y,
+                    pryt_type=pryt_type,
+                    pryt_start=pryt_start,
+                    rule=rule,
+                    rule_of_aristotle=rule_of_aristotle,
+                    data=data,
+                )
+                for y in range(year - 1, year + 2)
+            ]
+            for a in b
+        ]
+        if d.jdn == jdn
+    ][0]
+
+
+def julian_to_prytany(
+    year,
+    month,
+    day,
+    pryt_type=Prytany.AUTO,
+    pryt_start=Prytany.AUTO,
+    rule=heniautos.Visible.NEXT_DAY,
+    rule_of_aristotle=False,
+    data=heniautos.load_data(),
+):
+    return jdn_to_prytany(
+        heniautos.to_jdn(jd.from_julian(year, month, day)),
+        year,
+        pryt_type=pryt_type,
+        pryt_start=pryt_start,
+        rule=rule,
+        rule_of_aristotle=rule_of_aristotle,
+        data=data,
+    )
+
+
+def gregorian_to_prytany(
+    year,
+    month,
+    day,
+    pryt_type=Prytany.AUTO,
+    pryt_start=Prytany.AUTO,
+    rule=heniautos.Visible.NEXT_DAY,
+    rule_of_aristotle=False,
+    data=heniautos.load_data(),
+):
+    return jdn_to_prytany(
+        heniautos.to_jdn(jd.from_gregorian(year, month, day)),
+        year,
+        pryt_type=pryt_type,
+        pryt_start=pryt_start,
+        rule=rule,
+        rule_of_aristotle=rule_of_aristotle,
+        data=data,
+    )

@@ -296,11 +296,23 @@ MONTH_ABBREVS = (
 )
 
 FestivalDay = namedtuple(
-    "FestivalDay", ("jdn", "month_name", "month_index", "month", "month_length", "day", "doy", "year", "year_length")
+    "FestivalDay",
+    (
+        "jdn",
+        "month_name",
+        "month_index",
+        "month",
+        "month_length",
+        "day",
+        "doy",
+        "year",
+        "year_length",
+    ),
 )
 
 PrytanyDay = namedtuple(
-    "PrytanyDay", ("jdn", "prytany_index", "prytany", "prytany_length", "day", "doy", "year")
+    "PrytanyDay",
+    ("jdn", "prytany_index", "prytany", "prytany_length", "day", "doy", "year"),
 )
 
 
@@ -696,7 +708,7 @@ def __make_generic_month(month, doy):
                 d,
                 next(doy),
                 None,
-                None
+                None,
             )
             for d in range(1, month["end"] - month["start"] + 1, 1)
         ]
@@ -781,7 +793,14 @@ def __intercalated_month_name_map(calendar, months):
 
 
 def __make_festival_day(
-        cal_day, cal_year, name_as, year_len=None, calendar=None, months=None, month_length=None, month_names=None
+    cal_day,
+    cal_year,
+    name_as,
+    year_len=None,
+    calendar=None,
+    months=None,
+    month_length=None,
+    month_names=None,
 ):
     """Add month name and constant to FestivalDay
 
@@ -808,7 +827,7 @@ def __make_festival_day(
         cal_day.day,
         cal_day.doy,
         cal_year,
-        year_length=year_len
+        year_length=year_len,
     )
 
 
@@ -865,7 +884,16 @@ def festival_calendar(
     month_names = __intercalated_month_name_map(calendar, months)
     return tuple(
         [
-            __make_festival_day(d, cal_year, name_as, base_cal[-1].doy, calendar, months, d.month_length, month_names)
+            __make_festival_day(
+                d,
+                cal_year,
+                name_as,
+                base_cal[-1].doy,
+                calendar,
+                months,
+                d.month_length,
+                month_names,
+            )
             for d in base_cal
         ]
     )
@@ -1081,7 +1109,8 @@ def find_festival_date(
         f"No festival date matching {year}, {month}, {day}"
     )
 
-def find_jdn(
+
+def jdn_to_festival(
     jdn,
     year=None,
     calendar=Cal.ATHENIAN,
@@ -1105,18 +1134,36 @@ def find_jdn(
     returned from load_data()
 
     """
-    # If the year hint is not supplied, extract it from the jdna nd recurse
+    # If the year hint is not supplied, extract it from the jdn and recurse
     if not isinstance(year, int):
-        return find_jdn(jdn, jd.to_julian(jdn)[0], calendar=calendar, intercalate=intercalate, name_as=name_as, rule=rule, data=data)
-        
-    return [d for d in [a for b in [CAL_FUNCTION_MAP[calendar](y, intercalate, rule=rule, data=data) for y in range(year-1, year+2)] for a in b] if d.jdn == jdn][0]
+        return jdn_to_festival(
+            jdn,
+            jd.to_julian(jdn)[0],
+            calendar=calendar,
+            intercalate=intercalate,
+            name_as=name_as,
+            rule=rule,
+            data=data,
+        )
+
+    return [
+        d
+        for d in [
+            a
+            for b in [
+                CAL_FUNCTION_MAP[calendar](y, intercalate, rule=rule, data=data)
+                for y in range(year - 1, year + 2)
+            ]
+            for a in b
+        ]
+        if d.jdn == jdn
+    ][0]
 
 
-def find_date(
+def julian_to_festival(
     year,
     month,
     day,
-    is_julian=True,
     calendar=Cal.ATHENIAN,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
@@ -1129,7 +1176,6 @@ def find_date(
     year (int) -- The Julian year, negative for BCE
     month (int) -- The Julian month
     day (int) -- The Julian day
-    is_julian -- If True, year, month, day are a Julian calendar date. If False a Gregorian date.
     calendar (Cal) -- A Cal constant for the requested calendar
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     intercalate (Months) -- Month constant for month to intercalate if
@@ -1142,7 +1188,54 @@ def find_date(
     """
 
     # Convert the year/month/day to JDN and call find_jdn
-    return find_jdn(to_jdn(jd.from_julian(year, month, day) if is_julian else jd.from_gregorian(year, month, day)), year, calendar=calendar, intercalate=intercalate, name_as=name_as, rule=rule, data=data)
+    return jdn_to_festival(
+        to_jdn(jd.from_julian(year, month, day)),
+        year,
+        calendar=calendar,
+        intercalate=intercalate,
+        name_as=name_as,
+        rule=rule,
+        data=data,
+    )
+
+
+def gregorian_to_festival(
+    year,
+    month,
+    day,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    """Find the Athenian date corresponding to a Gregorian date
+
+    Parameters:
+    year (int) -- The Gregorian year, negative for BCE
+    month (int) -- The Gregorian month
+    day (int) -- The Gregorian day
+    calendar (Cal) -- A Cal constant for the requested calendar
+    name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+    intercalate (Months) -- Month constant for month to intercalate if
+    necessary (default Months.POS)
+     rule (Visible) -- Constant from Visible indicating the desired rule
+    (default Visible.SECOND_DAY)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+    """
+
+    # Convert the year/month/day to JDN and call find_jdn
+    return jdn_to_festival(
+        to_jdn(jd.from_gregorian(year, month, day)),
+        year,
+        calendar=calendar,
+        intercalate=intercalate,
+        name_as=name_as,
+        rule=rule,
+        data=data,
+    )
 
 
 def _calendar_groups(c, func):

@@ -99,7 +99,9 @@ def test_calendar_months_athenian_424():
 
 def test_calendar_months_spartan_424():
     """Make sure calendar_months generates the correct new moons for Spartan 424/423"""
-    p = heniautos._calendar_months(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True)
+    p = heniautos._calendar_months(
+        -423, event=Seasons.AUTUMN_EQUINOX, before_event=True
+    )
     assert len(p) == 12
     assert as_julian(p[0][0]) == "BCE 0424-Sep-15"
     assert as_julian(p[-1][0]) == "BCE 0423-Aug-06"
@@ -513,42 +515,48 @@ def test_name_as():
 
 
 def test_find_jdn_with_year_hint():
-    day = find_jdn(1572957, -406)
+    day = jdn_to_festival(1572957, -406)
     assert day.jdn == 1572957
     assert day.month == AthenianMonths.HEK
     assert day.day == 1
 
 
 def test_find_jdn_without_year_hint():
-    day = find_jdn(1572957)
+    day = jdn_to_festival(1572957)
     assert day.jdn == 1572957
     assert day.month == AthenianMonths.HEK
     assert day.day == 1
 
 
 def test_find_jdn_argos():
-    day = find_jdn(1572957, calendar=Cal.ARGIVE)
+    day = jdn_to_festival(1572957, calendar=Cal.ARGIVE)
     assert day.jdn == 1572957
     assert day.month == ArgiveMonths.PAN
     assert day.day == 1
-    
 
 
-def test_find_date():
-    d = find_date(-406, 7, 10)
+def test_julian_to_festival():
+    d = julian_to_festival(-406, 7, 10)
+    assert d.jdn == 1572957
     assert d.month == AthenianMonths.HEK
     assert d.day == 1
 
 
+def test_gregorian_to_festival():
+    d = gregorian_to_festival(-406, 7, 10)
+    assert d.jdn == 1572962
+    assert d.month == AthenianMonths.HEK
+    assert d.day == 6
+
+
 def test_festival_day():
-    d = find_date(-406, 7, 10)
+    d = julian_to_festival(-406, 7, 10)
     assert d.jdn == 1572957
-    assert d.month_name == 'Hekatombaiṓn'
+    assert d.month_name == "Hekatombaiṓn"
     assert d.month_index == 1
     assert d.month == AthenianMonths.HEK
     assert d.month_length == 29
     assert d.day == 1
     assert d.doy == 1
-    assert d.year == 'BCE 407/406'
+    assert d.year == "BCE 407/406"
     assert d.year_length == 355
-    
