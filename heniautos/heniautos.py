@@ -1119,7 +1119,36 @@ def find_festival_date(
     )
 
 
-def jdn_to_festival(
+def jdn_to_festival_calendar(
+    jdn,
+    year=None,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
+    # If the year hint is not supplied, extract it from the jdn and recurse
+    if not isinstance(year, int):
+        return jdn_to_festival_calendar(
+            jdn,
+            jd.to_julian(jdn)[0],
+            calendar=calendar,
+            intercalate=intercalate,
+            name_as=name_as,
+            rule=rule,
+            data=data,
+        )
+
+    for y in reversed(range(year - 1, year + 1)):
+        candidate_cal = CAL_FUNCTION_MAP[calendar](y, intercalate, name_as, rule, data)
+        if jdn in [d.jdn for d in candidate_cal]:
+            return candidate_cal
+
+    return ()
+
+
+def jdn_to_festival_day(
     jdn,
     year=None,
     calendar=Cal.ATHENIAN,
@@ -1145,7 +1174,7 @@ def jdn_to_festival(
     """
     # If the year hint is not supplied, extract it from the jdn and recurse
     if not isinstance(year, int):
-        return jdn_to_festival(
+        return jdn_to_festival_day(
             jdn,
             jd.to_julian(jdn)[0],
             calendar=calendar,
@@ -1157,14 +1186,9 @@ def jdn_to_festival(
 
     return [
         d
-        for d in [
-            a
-            for b in [
-                CAL_FUNCTION_MAP[calendar](y, intercalate, rule=rule, data=data)
-                for y in range(year - 1, year + 2)
-            ]
-            for a in b
-        ]
+        for d in jdn_to_festival_calendar(
+            jdn, year, calendar, intercalate, name_as, rule, data
+        )
         if d.jdn == jdn
     ][0]
 
@@ -1197,7 +1221,7 @@ def julian_to_festival(
     """
 
     # Convert the year/month/day to JDN and call find_jdn
-    return jdn_to_festival(
+    return jdn_to_festival_day(
         to_jdn(jd.from_julian(year, month, day)),
         year,
         calendar=calendar,
@@ -1236,7 +1260,7 @@ def gregorian_to_festival(
     """
 
     # Convert the year/month/day to JDN and call find_jdn
-    return jdn_to_festival(
+    return jdn_to_festival_day(
         to_jdn(jd.from_gregorian(year, month, day)),
         year,
         calendar=calendar,

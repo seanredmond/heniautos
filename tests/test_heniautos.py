@@ -515,21 +515,21 @@ def test_name_as():
 
 
 def test_find_jdn_with_year_hint():
-    day = jdn_to_festival(1572957, -406)
+    day = jdn_to_festival_day(1572957, -406)
     assert day.jdn == 1572957
     assert day.month == AthenianMonths.HEK
     assert day.day == 1
 
 
 def test_find_jdn_without_year_hint():
-    day = jdn_to_festival(1572957)
+    day = jdn_to_festival_day(1572957)
     assert day.jdn == 1572957
     assert day.month == AthenianMonths.HEK
     assert day.day == 1
 
 
 def test_find_jdn_argos():
-    day = jdn_to_festival(1572957, calendar=Cal.ARGIVE)
+    day = jdn_to_festival_day(1572957, calendar=Cal.ARGIVE)
     assert day.jdn == 1572957
     assert day.month == ArgiveMonths.PAN
     assert day.day == 1
@@ -560,3 +560,11 @@ def test_festival_day():
     assert d.doy == 1
     assert d.year == "BCE 407/406"
     assert d.year_length == 355
+
+
+def test_jdn_to_festival_calendar():
+    y = jdn_to_festival_calendar(1572957)
+
+    assert y[0].year == "BCE 407/406"
+    assert y[0].month == AthenianMonths.HEK
+    assert y[0].day == 1
