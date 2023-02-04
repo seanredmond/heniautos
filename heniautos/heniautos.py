@@ -307,6 +307,7 @@ FestivalDay = namedtuple(
         "doy",
         "year",
         "year_length",
+        "astronomical_year",
     ),
 )
 
@@ -321,6 +322,7 @@ PrytanyDay = namedtuple(
         "doy",
         "year",
         "year_length",
+        "astronomical_year",
     ),
 )
 
@@ -718,6 +720,7 @@ def __make_generic_month(month, doy):
                 next(doy),
                 None,
                 None,
+                None,
             )
             for d in range(1, month["end"] - month["start"] + 1, 1)
         ]
@@ -805,6 +808,7 @@ def __make_festival_day(
     cal_day,
     cal_year,
     name_as,
+    year,
     year_len=None,
     calendar=None,
     months=None,
@@ -836,7 +840,9 @@ def __make_festival_day(
         cal_day.day,
         cal_day.doy,
         cal_year,
-        year_length=year_len,
+        year_len,
+        year
+        
     )
 
 
@@ -887,7 +893,7 @@ def festival_calendar(
     cal_year = arkhon_year(year)
 
     if calendar is None:
-        return tuple([__make_festival_day(d, cal_year, name_as) for d in base_cal])
+        return tuple([__make_festival_day(d, cal_year, name_as, year) for d in base_cal])
 
     months = __month_order(calendar, intercalate, len(by_months(base_cal)) > 12)
     month_names = __intercalated_month_name_map(calendar, months)
@@ -897,6 +903,7 @@ def festival_calendar(
                 d,
                 cal_year,
                 name_as,
+                year,
                 base_cal[-1].doy,
                 calendar,
                 months,

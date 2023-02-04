@@ -282,7 +282,7 @@ def __prytanies(
     raise HeniautosError("Not Handled")
 
 
-def __make_prytany(prytany, pryt_year, prytany_index, doy, year_length):
+def __make_prytany(prytany, pryt_year, prytany_index, doy, year_length, year):
     return [
         heniautos.PrytanyDay(
             prytany["start"] + d - 1,
@@ -293,6 +293,7 @@ def __make_prytany(prytany, pryt_year, prytany_index, doy, year_length):
             next(doy),
             pryt_year,
             year_length,
+            year
         )
         for d in range(1, prytany["end"] - prytany["start"] + 1, 1)
     ]
@@ -349,7 +350,7 @@ def prytany_calendar(
         [
             a
             for b in [
-                __make_prytany(p, cal_year, i, doy, year_len)
+                __make_prytany(p, cal_year, i, doy, year_len, year)
                 for i, p in enumerate(pryt_year, 1)
             ]
             for a in b

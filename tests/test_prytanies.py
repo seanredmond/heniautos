@@ -800,3 +800,4 @@ def test_prytany_day():
     assert d.doy == 1
     assert d.year == "BCE 407/406"
     assert d.year_length == 366
+    assert d.astronomical_year == -406

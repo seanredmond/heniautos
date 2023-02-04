@@ -560,6 +560,7 @@ def test_festival_day():
     assert d.doy == 1
     assert d.year == "BCE 407/406"
     assert d.year_length == 355
+    assert d.astronomical_year == -406
 
 
 def test_jdn_to_festival_calendar():
