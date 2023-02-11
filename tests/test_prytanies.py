@@ -749,7 +749,7 @@ def test_prytany_to_julian():
         == "BCE 0331-Mar-31"
     )
 
-    with pytest.raises(HeniautionNoDayInYearError):
+    with pytest.raises(HeniautosNoDayInYearError):
         assert (
             as_julian(
                 prytany_to_julian(

@@ -139,7 +139,7 @@ def test_festival_to_julian_data_param():
     assert festival_to_julian(-99, 6, 10) == 1685242
 
     assert festival_to_julian(-99, 1, 10, data=CUSTOM_YEAR) == 1685301
-    with pytest.raises(HeniautionNoDayInYearError):
+    with pytest.raises(HeniautosNoDayInYearError):
         festival_to_julian(-99, 6, 10, data=CUSTOM_YEAR)
 
     with pytest.raises(HeniautosNoDataError):

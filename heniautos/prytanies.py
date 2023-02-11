@@ -165,30 +165,10 @@ def _pryt_auto_start(
         offset = year - jd.to_julian(pryt_start)[0]
         return pryt_start + (offset * 366)
 
-    p_start = heniautos.find_festival_date(-406, 1, 1, rule=rule, data=data)
-    start_jdn = p_start.jdn
+    start_jdn = heniautos.festival_to_julian(-406, 1, 1, rule=rule, data=data)
     offset = year - jd.to_julian(start_jdn)[0]
 
     return start_jdn + (offset * 366)
-
-    # if start == Prytany.AUTO:
-    #     if year < -423:
-    #         # return tt_round(__h["ts"].ut1(year, 7, 4, 12, 0, 0))
-    #         return jd.from_julian(year, 7, 4, 12, 0, 0)
-
-    #     if year < -419:
-    #         # return tt_round(__h["ts"].ut1(year, 7, 7, 12, 0, 0))
-    #         return jd.from_julian(year, 7, 7, 12, 0, 0)
-
-    #     if year < -418:
-    #         # return tt_round(__h["ts"].ut1(year, 7, 8, 12, 0, 0))
-    #         return jd.from_julian(year, 7, 8, 12, 0, 0)
-
-    #     # return tt_round(__h["ts"].ut1(year, 7, 9, 12, 0, 0))
-    #     return jd.from_julian(year, 7, 9, 12, 0, 0)
-
-    # # return tt_round(__h["ts"].ut1(year, 7, start, 12, 0, 0))
-    # return jd.from_julian(year, 7, start, 12, 0, 0)
 
 
 def _pryt_solar_end(start):
@@ -383,7 +363,7 @@ def prytany_to_julian(
             if p.prytany == prytany and p.day == day
         ][0]
     except IndexError:
-        raise heniautos.HeniautionNoDayInYearError(
+        raise heniautos.HeniautosNoDayInYearError(
             f"There is no day matching prytany {prytany}, day {day} in the year {year}"
         )
 

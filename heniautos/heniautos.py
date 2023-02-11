@@ -35,7 +35,7 @@ class HeniautosNoDataError(HeniautosError):
     pass
 
 
-class HeniautionNoDayInYearError(HeniautosError):
+class HeniautosNoDayInYearError(HeniautosError):
     pass
 
 
@@ -1107,25 +1107,6 @@ def corinthian_festival_calendar(
     )
 
 
-def find_festival_date(
-    year,
-    month,
-    day,
-    calendar=Cal.ATHENIAN,
-    intercalate=6,
-    rule=Visible.NEXT_DAY,
-    data=load_data(),
-):
-    cal = CAL_FUNCTION_MAP[calendar](year, intercalate, rule=rule, data=data)
-    date = [c for c in cal if c.month == month and c.day == day]
-    if len(date) == 1:
-        return date[0]
-
-    raise HeniautosDateNotFoundError(
-        f"No festival date matching {year}, {month}, {day}"
-    )
-
-
 def jdn_to_festival_calendar(
     jdn,
     year=None,
@@ -1325,7 +1306,7 @@ def festival_to_julian(year, month, day, rule=Visible.NEXT_DAY, data=load_data()
             if d.month == month and d.day == day
         ][0]
     except IndexError:
-        raise HeniautionNoDayInYearError(
+        raise HeniautosNoDayInYearError(
             f"There is no day matching month {month}, day {day} in the year {year}"
         )
 

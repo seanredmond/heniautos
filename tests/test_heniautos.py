@@ -472,15 +472,6 @@ def test_320():
     )
 
 
-def test_to_jd():
-    d = find_festival_date(-406, 1, 1)
-
-    assert d.jdn == 1572957
-
-    with pytest.raises(HeniautosDateNotFoundError) as e:
-        find_festival_date(-406, 1, 30)
-
-
 def test_name_as():
     assert athenian_festival_calendar(-406)[0].month_name == "Hekatombaiṓn"
     assert (
@@ -534,6 +525,16 @@ def test_find_jdn_argos():
     assert day.month == ArgiveMonths.PAN
     assert day.day == 1
 
+
+def test_to_jd():
+    # From test for removed find_festival_date()
+    d = festival_to_julian(-406, 1, 1)
+
+    assert d == 1572957
+
+    with pytest.raises(HeniautosNoDayInYearError) as e:
+        festival_to_julian(-406, 1, 30)
+    
 
 def test_julian_to_festival():
     d = julian_to_festival(-406, 7, 10)
