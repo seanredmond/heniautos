@@ -352,19 +352,6 @@ def test_festival_doy():
     assert all([d["intercalation"] for d in doy if d["doy"] > 295])
 
 
-def test_doy_to_julian():
-    assert as_julian(doy_to_julian(256, bce_as_negative(332))) == "BCE 0331-Apr-01"
-
-    assert (
-        as_julian(doy_to_julian(256, bce_as_negative(332), rule=Visible.SECOND_DAY))
-        == "BCE 0331-Apr-02"
-    )
-    assert (
-        as_julian(doy_to_julian(256, bce_as_negative(332), rule=Visible.CONJUNCTION))
-        == "BCE 0331-Mar-31"
-    )
-
-
 def test_festival_to_julian():
     assert (
         as_julian(festival_to_julian(bce_as_negative(332), AthenianMonths.ELA, 19))

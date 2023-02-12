@@ -1269,24 +1269,6 @@ def by_months(p):
     return tuple(_calendar_groups(p, lambda x: x.month_index))
 
 
-def doy_to_julian(doy, year, rule=Visible.NEXT_DAY, data=load_data()):
-    """Return the Julian Day Number for the Day-of-Year in the given year.
-
-    Parameters:
-    doy (int) --  The Doy-of-Year
-    year (int) -- The year
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    data -- Astronomical data for calculations. By default this is
-    returned from load_data()
-    """
-    try:
-        return [
-            d.jdn for d in festival_calendar(year, rule=rule, data=data) if d.doy == doy
-        ][0]
-    except IndexError:
-        raise HeniautionNoDayInYearError(f"There is no DOY {doy} in the year {year}")
-
-
 def festival_to_julian(year, month, day, rule=Visible.NEXT_DAY, data=load_data()):
     """Return the Julian Day Number for a festival date.
 
