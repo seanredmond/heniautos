@@ -841,8 +841,7 @@ def __make_festival_day(
         cal_day.doy,
         cal_year,
         year_len,
-        year
-        
+        year,
     )
 
 
@@ -893,7 +892,9 @@ def festival_calendar(
     cal_year = arkhon_year(year)
 
     if calendar is None:
-        return tuple([__make_festival_day(d, cal_year, name_as, year) for d in base_cal])
+        return tuple(
+            [__make_festival_day(d, cal_year, name_as, year) for d in base_cal]
+        )
 
     months = __month_order(calendar, intercalate, len(by_months(base_cal)) > 12)
     month_names = __intercalated_month_name_map(calendar, months)
@@ -1269,13 +1270,28 @@ def by_months(p):
     return tuple(_calendar_groups(p, lambda x: x.month_index))
 
 
-def festival_to_julian(year, month, day, rule=Visible.NEXT_DAY, data=load_data()):
+def festival_to_jdn(
+    year,
+    month,
+    day,
+    calendar=Cal.ATHENIAN,
+    intercalate=6,
+    event=Seasons.SUMMER_SOLSTICE,
+    before_event=False,
+    rule=Visible.NEXT_DAY,
+    data=load_data(),
+):
     """Return the Julian Day Number for a festival date.
 
     Parameters:
     year (int) -- The year
     month (Months) -- Constant from Months indicating the desired month
     day (int) -- The day
+    calendar (Cal) -- A Cal constant for the requested calendar
+    intercalate (Months) -- Month constant for month to intercalate if
+    necessary (default Months.POS)
+    event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
+    before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
     rule (Visible) -- Constant from Visible indicating the desired rule
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
@@ -1284,7 +1300,15 @@ def festival_to_julian(year, month, day, rule=Visible.NEXT_DAY, data=load_data()
 
         return [
             d.jdn
-            for d in festival_calendar(year, rule=rule, data=data)
+            for d in festival_calendar(
+                year,
+                calendar=calendar,
+                intercalate=intercalate,
+                event=event,
+                before_event=before_event,
+                rule=rule,
+                data=data,
+            )
             if d.month == month and d.day == day
         ][0]
     except IndexError:
@@ -1321,7 +1345,7 @@ def festival_doy(month, day):
     """Return possible DOYs for a given month and day.
 
     Calculates every possible DOY for a month and day with all the
-    possible comibinations of full and hollow months preceding it.
+    possible combinations of full and hollow months preceding it.
 
     Parameters:
         month (Months): Months constant for the month

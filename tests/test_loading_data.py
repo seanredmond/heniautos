@@ -135,12 +135,12 @@ def test_doy_to_julian_data_param():
 
 
 def test_festival_to_julian_data_param():
-    assert festival_to_julian(-99, 1, 10) == 1685093
-    assert festival_to_julian(-99, 6, 10) == 1685242
+    assert festival_to_jdn(-99, 1, 10) == 1685093
+    assert festival_to_jdn(-99, 6, 10) == 1685242
 
-    assert festival_to_julian(-99, 1, 10, data=CUSTOM_YEAR) == 1685301
+    assert festival_to_jdn(-99, 1, 10, data=CUSTOM_YEAR) == 1685301
     with pytest.raises(HeniautosNoDayInYearError):
-        festival_to_julian(-99, 6, 10, data=CUSTOM_YEAR)
+        festival_to_jdn(-99, 6, 10, data=CUSTOM_YEAR)
 
     with pytest.raises(HeniautosNoDataError):
-        festival_to_julian(-99, 1, 10, data={"solstices": (), "new_moons": ()})
+        festival_to_jdn(-99, 1, 10, data={"solstices": (), "new_moons": ()})

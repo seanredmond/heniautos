@@ -352,15 +352,15 @@ def test_festival_doy():
     assert all([d["intercalation"] for d in doy if d["doy"] > 295])
 
 
-def test_festival_to_julian():
+def test_festival_to_julian_athenian():
     assert (
-        as_julian(festival_to_julian(bce_as_negative(332), AthenianMonths.ELA, 19))
+        as_julian(festival_to_jdn(bce_as_negative(332), AthenianMonths.ELA, 19))
         == "BCE 0331-Apr-01"
     )
 
     assert (
         as_julian(
-            festival_to_julian(
+            festival_to_jdn(
                 bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.SECOND_DAY
             )
         )
@@ -369,11 +369,75 @@ def test_festival_to_julian():
 
     assert (
         as_julian(
-            festival_to_julian(
+            festival_to_jdn(
                 bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.CONJUNCTION
             )
         )
         == "BCE 0331-Mar-31"
+    )
+
+
+def test_festival_to_julian_other_calendars():
+    assert (
+        as_julian(
+            festival_to_jdn(
+                bce_as_negative(332),
+                CorinthianMonths.GAM,
+                19,
+                calendar=Cal.CORINTHIAN,
+                event=Seasons.AUTUMN_EQUINOX,
+                before_event=True,
+            )
+        )
+        == "BCE 0331-May-29"
+    )
+
+    assert (
+        as_julian(
+            festival_to_jdn(
+                bce_as_negative(332),
+                DelianMonths.BOU,
+                19,
+                rule=Visible.SECOND_DAY,
+                calendar=Cal.DELIAN,
+                event=Seasons.WINTER_SOLSTICE,
+            )
+        )
+        == "BCE 0331-Sep-26"
+    )
+
+
+def test_festival_to_julian_intercalation():
+    assert (
+        as_julian(festival_to_jdn(bce_as_negative(320), AthenianMonths.ELA, 19))
+        == "BCE 0319-Apr-18"
+    )
+
+    assert (
+        as_julian(
+            festival_to_jdn(
+                bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=6
+            )
+        )
+        == "BCE 0319-Apr-18"
+    )
+
+    assert (
+        as_julian(
+            festival_to_jdn(
+                bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=1
+            )
+        )
+        == "BCE 0319-Apr-18"
+    )
+
+    assert (
+        as_julian(
+            festival_to_jdn(
+                bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=12
+            )
+        )
+        == "BCE 0319-Mar-20"
     )
 
 
@@ -515,13 +579,13 @@ def test_find_jdn_argos():
 
 def test_to_jd():
     # From test for removed find_festival_date()
-    d = festival_to_julian(-406, 1, 1)
+    d = festival_to_jdn(-406, 1, 1)
 
     assert d == 1572957
 
     with pytest.raises(HeniautosNoDayInYearError) as e:
-        festival_to_julian(-406, 1, 30)
-    
+        festival_to_jdn(-406, 1, 30)
+
 
 def test_julian_to_festival():
     d = julian_to_festival(-406, 7, 10)

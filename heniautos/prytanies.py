@@ -165,7 +165,7 @@ def _pryt_auto_start(
         offset = year - jd.to_julian(pryt_start)[0]
         return pryt_start + (offset * 366)
 
-    start_jdn = heniautos.festival_to_julian(-406, 1, 1, rule=rule, data=data)
+    start_jdn = heniautos.festival_to_jdn(-406, 1, 1, rule=rule, data=data)
     offset = year - jd.to_julian(start_jdn)[0]
 
     return start_jdn + (offset * 366)
