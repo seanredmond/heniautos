@@ -579,6 +579,14 @@ def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):
         return [to_jdn(n) + 2 for n in new_moons(year, data=data)]
 
 
+def month_name(month, name_as=MonthNameOptions.TRANSLITERATION):
+    """Returns the month name corresponding to the given constant"""
+    try:
+        return [v for m, v in MONTH_NAME_MAP.items() if m[1] is month][0][name_as]
+    except IndexError:
+        raise HeniautosNoMatchError(f"No month names matching {month}")
+
+
 def __bounding_before(moons, sol1, sol2):
     """Return the first and last new moons for year if the beginning precedes sol1"""
     return ([m for m in moons if m <= sol1][-1], [m for m in moons if m <= sol2][-2])

@@ -332,18 +332,14 @@ def test_festival_to_julian_intercalation():
 
     assert (
         as_julian(
-            festival_to_jdn(
-                bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=6
-            )
+            festival_to_jdn(bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=6)
         )
         == "BCE 0319-Apr-18"
     )
 
     assert (
         as_julian(
-            festival_to_jdn(
-                bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=1
-            )
+            festival_to_jdn(bce_as_negative(320), AthenianMonths.ELA, 19, intercalate=1)
         )
         == "BCE 0319-Apr-18"
     )
@@ -538,3 +534,15 @@ def test_jdn_to_festival_calendar():
     assert y[0].year == "BCE 407/406"
     assert y[0].month == AthenianMonths.HEK
     assert y[0].day == 1
+
+
+def test_month_name():
+    assert month_name(AthenianMonths.GAM) == "Gamēliṓn"
+    assert (
+        month_name(AthenianMonths.GAM, MonthNameOptions.TRANSLITERATION) == "Gamēliṓn"
+    )
+    assert month_name(AthenianMonths.GAM, MonthNameOptions.ABBREV) == "Gam"
+    assert month_name(AthenianMonths.GAM, MonthNameOptions.GREEK) == "Γαμηλιών"
+
+    with pytest.raises(HeniautosError):
+        assert month_name(Months.UNC)
