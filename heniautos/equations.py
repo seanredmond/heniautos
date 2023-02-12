@@ -17,9 +17,63 @@ import heniautos
 import heniautos.prytanies
 from itertools import product
 
+def _fest_doy_ranges(month, day, intercalation):
+    """Return possible DOYs with preceding months."""
+    pairs = [
+        p
+        for p in [
+            (r, (int(month) + (0 if intercalation else -1)) - r)
+            for r in range(int(month) + (1 if intercalation else 0))
+        ]
+        if p[0] <= 7 and p[1] <= (6 + (1 if intercalation else 0))
+    ]
+
+    ranges = [(30,) * p[0] + (29,) * p[1] for p in pairs]
+
+    return [
+        {
+            "date": (month, day),
+            "doy": sum(m) + day,
+            "preceding": m,
+            "intercalation": intercalation,
+        }
+        for m in ranges
+    ]
+
+
+def festival_doy(month, day):
+    """Return possible DOYs for a given month and day.
+
+    Calculates every possible DOY for a month and day with all the
+    possible combinations of full and hollow months preceding it.
+
+    Parameters:
+        month (Months): Months constant for the month
+        day (int): Day of the month
+
+    Returns a tuple of dicts, one for each DOY, and each consisting of:
+        date: Month and day supplied
+        doy: The DOY
+        preceding: tuple of ints that are the lengths of the months preceding
+                   the given date, which goes in the DOY calculation
+        intercalation: True if the DOY requires in intercalation among the
+                       months preceding the given date. False otherwise
+
+    """
+    if month == heniautos.AthenianMonths.HEK:
+        return _fest_doy_ranges(month, day, False)
+
+    return tuple(
+        sorted(
+            _fest_doy_ranges(month, day, False) + _fest_doy_ranges(month, day, True),
+            key=lambda m: m["doy"],
+        )
+    )
+
+
 def _fest_eq(months):
     try:
-        return heniautos.festival_doy(months[0], months[1])
+        return festival_doy(months[0], months[1])
     except TypeError as e:
         # We got a tuple of tuples
         if "tuple" in e.__str__():

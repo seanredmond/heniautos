@@ -261,3 +261,88 @@ def test_collations():
 
     c = collations(eq1, eq2, eq3, failures=True)
     assert len(c) == 19
+
+
+def test_fest_doy_ranges():
+    r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, False)
+    assert len(r) == 6
+    assert min([m["doy"] for m in r]) == 253
+    assert max([m["doy"] for m in r]) == 258
+
+    r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, True)
+    assert len(r) == 6
+    assert min([m["doy"] for m in r]) == 282
+    assert max([m["doy"] for m in r]) == 287
+
+    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, False)
+    assert len(r) == 5
+    assert min([m["doy"] for m in r]) == 135
+    assert max([m["doy"] for m in r]) == 139
+
+    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, True)
+    assert len(r) == 6
+    assert min([m["doy"] for m in r]) == 164
+    assert max([m["doy"] for m in r]) == 169
+
+    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, False)
+    assert len(r) == 5
+    assert min([m["doy"] for m in r]) == 291
+    assert max([m["doy"] for m in r]) == 295
+
+    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, True)
+    assert len(r) == 5
+    assert min([m["doy"] for m in r]) == 320
+    assert max([m["doy"] for m in r]) == 324
+
+
+def test_festival_doy():
+    # 1st month, no intercalation possible
+    doy = festival_doy(AthenianMonths.HEK, 5)
+    assert len(doy) == 1
+    assert doy[0]["doy"] == 5
+    assert len(doy[0]["preceding"]) == 0
+
+    assert doy[0]["intercalation"] is False
+    assert not any([d["intercalation"] for d in doy])
+
+    # 2nd month
+    doy = festival_doy(AthenianMonths.MET, 5)
+    print(doy)
+    assert len(doy) == 5
+    assert doy[0]["doy"] == 34
+    assert len(doy[0]["preceding"]) == 1
+    assert doy[0]["intercalation"] is False
+
+    assert doy[-1]["doy"] == 65
+    assert len(doy[-1]["preceding"]) == 2
+    assert doy[-1]["intercalation"] is True
+
+    assert not any([d["intercalation"] for d in doy if d["doy"] < 63])
+    assert all([d["intercalation"] for d in doy if d["doy"] > 35])
+
+    # 5th month
+    doy = festival_doy(AthenianMonths.MAI, 27)
+    assert len(doy) == 11
+    assert doy[0]["doy"] == 143
+    assert len(doy[0]["preceding"]) == 4
+    assert doy[0]["intercalation"] is False
+
+    assert doy[-1]["doy"] == 177
+    assert len(doy[-1]["preceding"]) == 5
+    assert doy[-1]["intercalation"] is True
+    assert not any([d["intercalation"] for d in doy if d["doy"] < 172])
+    assert all([d["intercalation"] for d in doy if d["doy"] > 147])
+
+    doy = festival_doy(AthenianMonths.MOU, 27)
+    assert len(doy) == 10
+    assert doy[0]["doy"] == 291
+    assert len(doy[0]["preceding"]) == 9
+    assert doy[0]["intercalation"] is False
+
+    assert doy[-1]["doy"] == 324
+    assert len(doy[-1]["preceding"]) == 10
+    assert doy[-1]["intercalation"] is True
+    assert not any([d["intercalation"] for d in doy if d["doy"] < 320])
+    assert all([d["intercalation"] for d in doy if d["doy"] > 295])
+
+
