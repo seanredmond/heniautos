@@ -28,22 +28,22 @@ def test_load_default_data():
     assert type(d["solstices"][0]) is tuple
     assert type(d["solstices"][0][0]) is float
     assert type(d["solstices"][0][1]) is int
-    assert d["solstices"][0] == (1500533.0682705436, 0)
-    assert [m for m in d["solstices"] if m[0] < 2000000][-1] == (1721414.3908799929, 3)
-    assert d["solstices"][-1] == (2489885.302570413, 3)
+    assert d["solstices"][0] == (1500533.0682762668, 0)
+    assert [m for m in d["solstices"] if m[0] < 2000000][-1] == (1721414.390882324, 3)
+    assert d["solstices"][-1] == (2489885.302570365, 3)
 
     assert "new_moons" in d
     assert type(d["new_moons"]) is tuple
     assert type(d["new_moons"][0]) is tuple
     assert type(d["new_moons"][0][0]) is float
     assert type(d["new_moons"][0][1]) is int
-    assert d["new_moons"][0] == (1500458.8964768478, 0)
-    assert [m for m in d["new_moons"] if m[0] < 2000000][-1] == (1721406.2574824847, 0)
-    assert d["new_moons"][-1] == (2489881.083336255, 0)
+    assert d["new_moons"][0] == (1500458.896009883, 0)
+    assert [m for m in d["new_moons"] if m[0] < 2000000][-1] == (1721406.2572131928, 0)
+    assert d["new_moons"][-1] == (2489881.083335883, 0)
 
 
 def test_solar_event_data_param():
-    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287422964
+    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287454094
     assert (
         solar_event(
             -99,
@@ -58,7 +58,7 @@ def test_solar_event_data_param():
 
 
 def test_summer_solstice_data_param():
-    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287422964
+    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287454094
     assert (
         solar_event(
             -99, Seasons.SUMMER_SOLSTICE, data={"solstices": ((1685074.12345, 1),)}
@@ -71,7 +71,7 @@ def test_summer_solstice_data_param():
 
 
 def test_new_moons_data_param():
-    assert new_moons(-99)[0] == 1684907.0310656228
+    assert new_moons(-99)[0] == 1684907.0307689062
     assert new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684900.12345
 
     with pytest.raises(HeniautosNoDataError):

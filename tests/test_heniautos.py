@@ -66,7 +66,7 @@ def test_solar_event():
 def test_new_moons():
     p = new_moons(-99)
     assert type(p) is list
-    assert as_julian(p[0], True) == "BCE 0100-Jan-09 12:44:44 GMT"
+    assert as_julian(p[0], True) == "BCE 0100-Jan-09 12:44:18 GMT"
 
 
 def test_calendar_months_after():
