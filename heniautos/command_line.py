@@ -514,7 +514,7 @@ under certain conditions."""
                     if args.gmt:
                         print(ha.as_julian(nm, True))
                     else:
-                        print(ha.as_julian(nm, True, tz=TZOptions.ALT))
+                        print(ha.as_julian(nm, True, tz=ha.TZOptions.ALT))
             exit()
 
         if args.full_moons:
@@ -523,7 +523,7 @@ under certain conditions."""
                     if args.gmt:
                         print(ha.as_julian(nm, True))
                     else:
-                        print(ha.as_julian(nm, True, tz=TZOptions.ALT))
+                        print(ha.as_julian(nm, True, tz=ha.TZOptions.ALT))
             exit()
 
         # Check for one of the solar events (and take the first one)
@@ -538,7 +538,7 @@ under certain conditions."""
                 else:
                     print(ha.as_julian(
                         ha.solar_event(year, solar[1], data=astro_data()),
-                        True, tz=TZOptions.ALT))
+                        True, tz=ha.TZOptions.ALT))
             exit()
             
 
