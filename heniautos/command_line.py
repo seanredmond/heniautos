@@ -232,7 +232,7 @@ def filtered_festival_calendar(year, args, astro_data):
                              calendar=get_calendar(args.calendar),
                              event=get_solar_event(args.calendar),
                              before_event=needs_before(args.calendar),
-                             intercalate=6,
+                             intercalate=args.intercalate,
                              rule=get_rule(args.rule),
                              data=astro_data()
                              ),
@@ -362,7 +362,7 @@ def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
         solar = dict(solar_events(year, with_solar))
         lunar = dict(lunar_events(year, with_nm))
         for day in get_julian_year(year):
-            row = (day, ha.as_gmt(day), solar.get(day, ""), lunar.get(day, ""))
+            row = (day, ha.as_julian(day), solar.get(day, ""), lunar.get(day, ""))
             
             writer.writerow(row)
 
@@ -449,8 +449,8 @@ under certain conditions."""
                         help="Only show selected day of year")
     parser.add_argument("-m", "--month-summary", action="store_true")
     parser.add_argument("-y", "--year-summary", action="store_true")
-    parser.add_argument("--intercalate", choices=ha.MONTH_ABBREVS,
-                        type=str, default="Pos",
+    parser.add_argument("--intercalate", choices=tuple(range(1, 13)),
+                        type=int, default=6,
                         help="Month after which to intercalate")
     parser.add_argument("-C", "--conciliar", action="store_true",
                         help="Output conciliar calendar (prytanies)")
