@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import namedtuple
-from datetime import datetime
+#from datetime import datetime
 from enum import IntEnum, Enum  # , auto
 from itertools import groupby, product  # , zip_longest
 import juliandate as jd
@@ -411,14 +411,9 @@ def __jul_month(m):
 def __gmt_fmt(j, full, epoch=" CE", tz=TZOptions.GMT):
     """Return a short or full string representation of a JDN."""
     if full:
-        return __gmt_fmt_full(j, epoch, tz)
+        return __gmt_fmt(j, False, epoch, tz) + f" {j[3]:02d}:{j[4]:02d}:{j[5]:02d} {tz.value}"
 
     return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
-
-
-def __gmt_fmt_full(j, epoch, tz=TZOptions.GMT):
-    """Return a full string representation of a JDN."""
-    return datetime(*j).strftime(f"{epoch} %Y-%b-%d %H:%M:%S {tz.value}")
 
 
 def __alt_offset(jd, tz):
