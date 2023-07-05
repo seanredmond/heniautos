@@ -213,7 +213,7 @@ MONTH_NAME_MAP = {
     (Cal.ATHENIAN, AthenianMonths.GAM): ("Gamēliṓn", "Gam", "Γαμηλιών"),
     (Cal.ATHENIAN, AthenianMonths.ANT): ("Anthestēriṓn", "Ant", "Ἀνθεστηριών"),
     (Cal.ATHENIAN, AthenianMonths.ELA): ("Elaphēboliṓn", "Ela", "Ἑλαφηβολιών"),
-    (Cal.ATHENIAN, AthenianMonths.MOU): ("Mounuchiṓn", "Mou", "Μουνυχιών"),
+    (Cal.ATHENIAN, AthenianMonths.MOU): ("Mounukhiṓn", "Mou", "Μουνυχιών"),
     (Cal.ATHENIAN, AthenianMonths.THA): ("Thargēliṓn", "Tha", "Θαργηλιών"),
     (Cal.ATHENIAN, AthenianMonths.SKI): ("Skirophoriṓn", "Ski", "Σκιροφοριών"),
     (Cal.DELIAN, DelianMonths.LEN): ("Lēnaiṓn", "Len", "Ληναιών"),
