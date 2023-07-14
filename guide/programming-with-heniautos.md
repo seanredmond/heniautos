@@ -49,7 +49,8 @@ Note that there is no conversion to a Python `date` or `datetime` available beca
     
 For comparison, we can choose another random day of this year:
 
-    >>> ha.athenian_festival_calendar(ha.bce_as_negative(430))[231] FestivalDay(jdn=1564801, month_name='Anthestēriṓn', month_index=8, month=<AthenianMonths.ANT: 8>, month_length=30, day=25, doy=232, year='BCE 430/429', year_length=355, astronomical_year=-429)
+    >>> ha.athenian_festival_calendar(ha.bce_as_negative(430))[231] 
+	FestivalDay(jdn=1564801, month_name='Anthestēriṓn', month_index=8, month=<AthenianMonths.ANT: 8>, month_length=30, day=25, doy=232, year='BCE 430/429', year_length=355, astronomical_year=-429)
     
 This day (the 232nd) was Anthestēriṓn 25, Anthestēriṓn was the 8th month (`month_index=8`) and was JDN 1564801.
 
