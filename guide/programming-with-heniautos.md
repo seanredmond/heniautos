@@ -99,6 +99,135 @@ and end on different days (June 29 and July 10, 406 BCE, respectively). `as_juli
 
     >>> ha.as_julian(pryt_year[0])
     'BCE 0407-Jul-10'
+	
+	
+## Advanced Usage
+
+### Festival Calendars
+
+`athenian_festival_calendar()` has a number of optional parameter that allow you to control the calendar that it generates:
+
+    athenian_festival_calendar(year, intercalate=<AthenianMonths.POS: 6>, name_as=<MonthNameOptions.TRANSLITERATION: 0>, rule=<Visible.NEXT_DAY: 1>, data
+	
+The only required parameter is `year` as shown above.
+
+#### Intercalation
+
+When an intercalation is required, `intercalate` allows you to specifiy which month is intercalated. The value should be a constant from the `AthenianMonths` class. These are constants (an `IntEnum`) for representing Athenian months. The integer values of the constants correspond to each month's position in the Athenian calendar:
+
+	
+| Constant | Integer Value | Month |
+| -------- | ------------: | ----- |
+| `AthenianMonths.HEK` |  1 | Hekatombaiṓn | 
+| `AthenianMonths.MET` |  2 | Metageitniṓn |
+| `AthenianMonths.BOE` |  3 | Boēdromiṓn   |
+| `AthenianMonths.PUA` |  4 | Puanopsiṓn   |
+| `AthenianMonths.MAI` |  5 | Maimaktēriṓn |
+| `AthenianMonths.POS` |  6 | Posideiṓn    |
+| `AthenianMonths.GAM` |  7 | Gamēliṓn     |
+| `AthenianMonths.ANT` |  8 | Anthestēriṓn |
+| `AthenianMonths.ELA` |  9 | Elaphēboliṓn |
+| `AthenianMonths.MOU` | 10 | Mounukhiṓn   |
+| `AthenianMonths.THA` | 11 | Thargēliṓn   |
+| `AthenianMonths.SKI` | 12 | Skirophoriṓn |
+
+When in extra, intercalary month was needed, Athenians would double one of the months, most commonly Posideiṓn which is the default value for `athenian_festival_calendar()`
+
+An ordinary year will have twelve months, each in its normal position. To show this, we'll get the calendar for 418 BCE, grouped by month (with `by_months()`), and look at the `month_index` and `month_name` of the first day of each month:
+
+    >>> m = ha.by_months(ha.athenian_festival_calendar(ha.bce_as_negative(418)))
+    >>> [(n[0].month_index, n[0].month_name) for n in m]
+    [(1, 'Hekatombaiṓn'), (2, 'Metageitniṓn'), (3, 'Boēdromiṓn'), 
+	(4, 'Puanopsiṓn'), (5, 'Maimaktēriṓn'), (6, 'Posideiṓn'), (7, 'Gamēliṓn'), 
+	(8, 'Anthestēriṓn'), (9, 'Elaphēboliṓn'), (10, 'Mounukhiṓn'), 
+	(11, 'Thargēliṓn'), (12, 'Skirophoriṓn')]
+	
+If we do the same for 417 BCE:
+
+    >>> m = ha.by_months(ha.athenian_festival_calendar(ha.bce_as_negative(417)))
+    >>> [(n[0].month_index, n[0].month_name) for n in m]
+    [(1, 'Hekatombaiṓn'), (2, 'Metageitniṓn'), (3, 'Boēdromiṓn'), 
+	(4, 'Puanopsiṓn'), (5, 'Maimaktēriṓn'), (6, 'Posideiṓn'), 
+	(7, 'Posideiṓn hústeros'), (8, 'Gamēliṓn'), (9, 'Anthestēriṓn'), 
+	(10, 'Elaphēboliṓn'), (11, 'Mounukhiṓn'), (12, 'Thargēliṓn'), 
+	(13, 'Skirophoriṓn')]
+
+This intercalary year has 13 months. The seventh is not _Gamēliṓn_ but _Posideiṓn hústeros_, “later Posideiṓn,” and _Gamēliṓn_ is now the eighth month.
+
+Posideiṓn was the most commonly intercalated month, but any month could be used. Heniautos is able to judge which years should be intercalary based on astronomical calculations, but there are few cases where we are certain which was the intercalary month. Posideiṓn is simply the best guess.
+
+211/210 is a year for which we do know the intercalated month, because an inscription [IG II³,1 1137](https://www.atticinscriptions.com/inscription/IGII31/1137) (l. 33) records an _Anthestēriṓn embólimos_ (“inserted”, a synonym for _hústeros_; _deúteros_, “second,” was also used). To recreate this, we use:
+
+    >>> m = ha.by_months(ha.athenian_festival_calendar(ha.bce_as_negative(211), intercalate=ha.AthenianMonths.ANT))
+    >>> [(n[0].month_index, n[0].month_name) for n in m]
+    [(1, 'Hekatombaiṓn'), (2, 'Metageitniṓn'), (3, 'Boēdromiṓn'), 
+	(4, 'Puanopsiṓn'), (5, 'Maimaktēriṓn'), (6, 'Posideiṓn'), (7, 'Gamēliṓn'), 
+	(8, 'Anthestēriṓn'), (9, 'Anthestēriṓn hústeros'), (10, 'Elaphēboliṓn'), 
+	(11, 'Mounukhiṓn'), (12, 'Thargēliṓn'), (13, 'Skirophoriṓn')]
+	
+A special value, `Months.INT`, is used to represent an intercalated month:
+
+    >>> m[8][0].month
+    <Months.INT: 13>
+	
+#### Abbreviated and Transliterated Month Names
+
+By default, `athenian_festival_calendar()` returns the translitered month names shown above. This is controlled by the `name_as` parameter which takes constants from the `MonthNameOptions` class. Use `MonthNameOptions.ABBREV` to get abbreviations (intercalated months are indicated by a subscript 2):
+
+    >>> m = ha.by_months(ha.athenian_festival_calendar(ha.bce_as_negative(417), name_as=ha.MonthNameOptions.ABBREV))
+    >>> [(n[0].month_index, n[0].month_name) for n in m]
+    [(1, 'Hek'), (2, 'Met'), (3, 'Boe'), (4, 'Pua'), (5, 'Mai'), (6, 'Pos'), 
+	(7, 'Pos₂'), (8, 'Gam'), (9, 'Ant'), (10, 'Ela'), (11, 'Mou'), (12, 'Tha'), 
+	(13, 'Ski')]
+	
+For untransliterated Greek, use `MonthNameOptions.GREEK`
+	  
+    >>> m = ha.by_months(ha.athenian_festival_calendar(ha.bce_as_negative(417), name_as=ha.MonthNameOptions.GREEK))
+    >>> [(n[0].month_index, n[0].month_name) for n in m]
+    [(1, 'Ἑκατομβαιών'), (2, 'Μεταγειτνιών'), (3, 'Βοηδρομιών'), 
+	(4, 'Πυανοψιών'), (5, 'Μαιμακτηριών'), (6, 'Ποσιδειών'), 
+	(7, 'Ποσιδειών ὕστερος'), (8, 'Γαμηλιών'), (9, 'Ἀνθεστηριών'), 
+	(10, 'Ἑλαφηβολιών'), (11, 'Μουνυχιών'), (12, 'Θαργηλιών'), 
+	(13, 'Σκιροφοριών')]
+	
+Use `MonthNameOptions.TRANSLITERATION` to explicitly request transliterated names.
+
+#### New Moon Visibility
+
+Greek months began when the new moon first became visible. As we tend to think of it, the new moon is completely dark, the opposited of the full moon. In modern astronomy, this is the moment of alignment, or “conjunction,” of the Earth, Sun and Moon. While the ancient Greeks understood the conjunction, for them the new moon was the first light of the waxing crescent. This is commonly visible the day following the day when the conjunction occurs, though it is impossible to calculate—not even taking bad weather into account. In fact it is very doubtful whether the ancient Greeks needed to literally see the new moon before declaring that the new month had begun.
+
+By default, Heniautos calculates visibility as occuring the day after the conjunction. There is a function `new_moons()` that will give you the exact times of conjunctions (as Julian Dates) in any year. Here we will convert them to something more readable:
+
+    >>> [ha.as_julian(nm, full=True) for nm in ha.new_moons(ha.bce_as_negative(417))]
+    ['BCE 0417-Jan-04 01:37:36 GMT', 'BCE 0417-Feb-03 17:36:06 GMT', 
+	'BCE 0417-Mar-04 06:22:28 GMT', 'BCE 0417-Apr-02 16:26:19 GMT', 
+	'BCE 0417-May-02 00:36:08 GMT', 'BCE 0417-May-31 07:41:55 GMT', 
+	'BCE 0417-Jun-29 14:34:39 GMT', 'BCE 0417-Jul-29 22:11:51 GMT', 
+	'BCE 0417-Aug-27 07:38:25 GMT', 'BCE 0417-Sep-26 19:55:11 GMT', 
+	'BCE 0417-Oct-25 11:31:38 GMT', 'BCE 0417-Nov-24 05:55:53 GMT', 
+	'BCE 0417-Dec-24 01:33:37 GMT']
+	
+Note that these are the conjunctions for the _Julian_ year 417 BCE. The Athenian year would beging on the first visible new moon after the solstice. 
+
+    >>> m = ha.athenian_festival_calendar(ha.bce_as_negative(417))
+    >>> ha.as_julian(m[0].jdn)
+    'BCE 0417-Jun-30'
+	
+So we can see that, by default, Heniautos calculates this month and year as starting on June 30, 417 BCE, the day after the conjunction that occurred at 2:34 PM on June 29.
+
+This is controlled by the `rule` parameter, which uses constants from the `Visible` class. You can ask that the visible new moon be calculated as the day of the conjunction:
+
+    >>> m = ha.athenian_festival_calendar(ha.bce_as_negative(417), rule=ha.Visible.CONJUNCTION)
+    >>> ha.as_julian(m[0].jdn)
+    'BCE 0417-Jun-29'
+	
+Or two days after the conjunction:
+
+    >>> m = ha.athenian_festival_calendar(ha.bce_as_negative(417), rule=ha.Visible.SECOND_DAY)
+    >>> ha.as_julian(m[0].jdn)
+    'BCE 0417-Jul-01'
+	
+The default is `Visible.NEXT_DAY`
 
     
 ### Constants and Abbreviations
