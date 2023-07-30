@@ -2,71 +2,131 @@
 
 [Top: Intro](README.md) | [Previous: `calendar-equation` Command](calendar-equations-command.md) | [Next: Reading Dated Inscriptions](reading-dated-inscriptions.md)
 
+Heniautos generates ancient Greek calendars based on historical
+astronomical data. There are a number of built-in methods for
+specific cities:
 
+- `athenian_festival_calendar()`
+- `argive_festival_calendar()`
+- `corinthian_festival_calendar()`
+- `delian_festival_calendar()`
+- `delphian_festival_calendar()`
+- `spartan_festival_calendar()`
 
-## Overview
+These differ in when the years start and the names of the
+months. There is a generic method, `festival_calendar()`, that will
+allow you to customize these for any other required Greek calendar
+(the specid methods above are simple wrappers around
+`festival_calendar()`).
 
-### The Festival Calendar
+Athens had a separate "conciliar" calendar for official purposes that
+was based on the "tribal" organization of their democratic
+government. This consisted not of months but of ten, twelve, or
+thirteen "prytanies" (based on the time period). The `prytanies`
+submodule has a method for generating these conciliar calendars:
+`prytanies.prytany_calendar()`.
 
-You are probably most interested in generating Athenian festival calendars (see [Festival Calendar Basics](festival-calendar-basics.md) for details about the calendar):
+Most of this documentation assumes you are calculating ancient dates
+and by default Heniautos can operate on dates between 605 BCE and 2BCE
+(inclusive). You can also generate calendars for modern dates (1896 CE
+to 2102 CE) or for any date if you can supply the astronomical
+data. See Modern Dates and Custom Ranges below.
+
+## The Festival Calendar
+
+You are probably most interested in generating Athenian festival
+calendars. The simplest use of `athenian_festival_calendar()` simply
+takes a year and the only parameter. The year, however, must be an integer according to
+[Astronomical Year
+Numbering](https://en.wikipedia.org/wiki/Astronomical_year_numbering). 1
+BCE is 0 (not -1), 2 BCE is -1, and so on, with the years BCE offset
+by 1 in the positive direction.
 
     >>> import heniautos as ha
-    >>> ha.athenian_festival_calendar(-429)
+    >>> ha.athenian_festival_calendar(-399)
     
-The parameter `-429` requests a calendar for the year 430 BCE. BCE years are expressed as negative numbers according to [Astronomical Year Numbering](https://en.wikipedia.org/wiki/Astronomical_year_numbering). 1 BCE is 0 (not -1), 2 BCE is -1, and so on, with the years BCE offset by 1 in the positive direction. If you don't want to work that out every time, you can use `bce_as_negative()`
+This will generate a calendar for 400 BCE. If you don't want to work
+the astronomical year numbering out every time, you can use
+`bce_as_negative()`
 
-    >>> ha.bce_as_negative(430)
-    -429
+    >>> ha.bce_as_negative(400)
+    -399
     
 So these two invocations are equivalent:
 
-    >>> ha.athenian_festival_calendar(-429)
-    >>> ha.athenian_festival_calendar(ha.bce_as_negative(430))
+    >>> ha.athenian_festival_calendar(-399)
+    >>> ha.athenian_festival_calendar(ha.bce_as_negative(400))
+	
+### Year Tuples and `FestivalDay` Objects
     
-This returns a tuple of `FestivalDay` objects (they are instances of [namedtuple](https://docs.python.org/3.11/library/collections.html?highlight=namedtuple#collections.namedtuple)). The first item in the above example would have these properties and values
+The calendar functions return a tuple of `FestivalDay` objects (which
+are instances of
+[namedtuple](https://docs.python.org/3.11/library/collections.html?highlight=namedtuple#collections.namedtuple)), one `FestivalDay` for each day of the year. The
+first item in the above example would have these properties and values:
 
 | Property | Value | Meaning |
 | -------- | ----- | ------- |
-| jdn      | 1564570 | Corresponding [Julian Day Number](https://en.wikipedia.org/wiki/Julian_day#Julian_day_numbers) |
+| jdn      | 1575526 | Corresponding [Julian Day Number](https://en.wikipedia.org/wiki/Julian_day#Julian_day_numbers) |
 | month_name | 'Hekatombaiṓn' | Name of Athenian month |
 | month_index | 1 | Order of month in the year |
 | month | \<AthenianMonths.HEK: 1\> | Constant representing the month |
-| month_length | 30 | Length of this month |
+| month_length | 29 | Length of this month |
 | day | 1 | Day of the month |
 | doy | 1 | Day of the year |
-| year | 'BCE 430/429' | Julian year(s) corresponding to the Athenian year |
-| year_length | 355 | Length of this year |
-| astronomical_year | -429 | Astronomical year |
+| year | 'BCE 400/399' | Julian year(s) corresponding to the Athenian year |
+| year_length | 354 | Length of this year |
+| astronomical_year | -399 | Astronomical year |
 
-Altogether, this means that this is the first day (`doy` 1) of the Athenian year 430/429 BCE. This year (or actually the beginning of the year) corresponds to the astronomical year -429, that is 430 BCE. The year is 355 days long and this Hekatombaiṓn 30 days. 
+Altogether, this means that this is the first day (`doy` = 1) of the
+Athenian year 400/399 BCE. This year (or actually the beginning of the
+year) corresponds to the astronomical year -399 (that is, 400 BCE) and
+the year is calculated to be 354 days long. It is also the first day
+(`day` = 1) of the first month (`month_index` = 1). The month's name
+is Hekatombaiṓn, and it has 29 days.
 
-Hekatombaiṓn 1, corresponds to the [Julian Day Number](https://en.wikipedia.org/wiki/Julian_day) (JDN) 1564570. To convert this to a Julian calendar (string) equivalent, use the `as_julian` function:
+### Julian Day Numbers
 
-    >>> ha.as_julian(1564570)
-    'BCE 0430-Jul-24'
+No modern (that is, Gregorian of Julian) calendar date is included,
+but this can be calculated from the the [Julian Day
+Number](https://en.wikipedia.org/wiki/Julian_day) (JDN) `1564570`. For
+ancient dates, historians usually employ the [Proleptic Julian
+Calendar](https://en.wikipedia.org/wiki/Proleptic_Julian_calendar), so
+you will probably want to use `as_julian()` to convert the JDN into a
+Julian calendar (string) equivalent:
+
+	>>> ha.as_julian(1575526)
+    'BCE 0400-Jul-22'
 	
-Note that there is no conversion to a Python `date` or `datetime` available because the `datetime` library does not handle dates very far in the past.
-    
-For comparison, we can choose another random day of this year:
+For a [Proleptic *Gregorian*
+Calendar](https://en.wikipedia.org/wiki/Proleptic_Gregorian_calendar)
+date, use `as_gregorian()`:
 
-    >>> ha.athenian_festival_calendar(ha.bce_as_negative(430))[231] 
-	FestivalDay(jdn=1564801, month_name='Anthestēriṓn', month_index=8, month=<AthenianMonths.ANT: 8>, month_length=30, day=25, doy=232, year='BCE 430/429', year_length=355, astronomical_year=-429)
+    >>> ha.as_gregorian(1564570)
+    'BCE 0400-Jul-17'
+	
+Heniautos uses the
+[juliandate](https://github.com/seanredmond/juliandate) package for
+these conversations. For more detail refer to that documentation.
+	
+	
+Note that there is no conversion to a Python `date` or `datetime`
+available because the `datetime` library does not handle dates very
+far in the past.
     
-This day (the 232nd) was Anthestēriṓn 25, Anthestēriṓn was the 8th month (`month_index=8`) and was JDN 1564801.
+### Grouping by Month
 
-    >>> ha.as_julian1564801)
-    'BCE 0429-Mar-11'
-    
-For convenience, there is a function, `by_months()` that will group this into a tuple of tuples. Each member of the outer tuple represents a month and contains a tuple of `FestivalDay` objects for the days in that month:
+The tuples returned by the festival calendar contain one object per day. For convenience, there is a function, `by_months()` that will group this into a tuple of tuples. Each member of the outer tuple represents a month and contains a tuple of `FestivalDay` objects for the days in that month:
 
-    >>> year = ha.athenian_festival_calendar(ha.bce_as_negative(430))
+    >>> year = ha.athenian_festival_calendar(ha.bce_as_negative(400))
     >>> len(year)
-    355
+    354
     >>> months = ha.by_months(year)
     >>> len(months)
     12
     >>> len(months[0])
-    30    
+    29
+	
+
     
 The Athenian year began at the first new moon after the summer solstice. Most festival years were 354 (sometimes 355) days long, but every second or third year, this was not long enough to last until the solstice and a thirteenth month needed added, or intercalated, to create a 384-day intercalary year. Heniautos does this automatically, adding an intercalary Posideiṓn (the 6th month) by default. You can control which month is intercalated, as well as many other details, by passing parameters to `festival_calendar()` (see below).
     
