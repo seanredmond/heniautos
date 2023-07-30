@@ -35,19 +35,19 @@ data. See Modern Dates and Custom Ranges below.
 ## The Festival Calendar
 
 You are probably most interested in generating Athenian festival
-calendars. The simplest use of `athenian_festival_calendar()` simply
-takes a year and the only parameter. The year, however, must be an integer according to
-[Astronomical Year
-Numbering](https://en.wikipedia.org/wiki/Astronomical_year_numbering). 1
-BCE is 0 (not -1), 2 BCE is -1, and so on, with the years BCE offset
-by 1 in the positive direction.
+calendars. The simplest use of `athenian_festival_calendar()` takes a
+year as the only parameter. The year, however, must be an integer
+according to [Astronomical Year
+Numbering](https://en.wikipedia.org/wiki/Astronomical_year_numbering). Years
+BCE are represented as negative numbersm but 1 BCE is 0 (not -1), 2
+BCE is -1, and so on, with the years offset by 1 in the positive
+direction. To generate a calendar for 400 BCE:
 
     >>> import heniautos as ha
     >>> ha.athenian_festival_calendar(-399)
     
-This will generate a calendar for 400 BCE. If you don't want to work
-the astronomical year numbering out every time, you can use
-`bce_as_negative()`
+If you don't want to work out the astronomical year numbering out
+every time, you can use `bce_as_negative()`
 
     >>> ha.bce_as_negative(400)
     -399
@@ -125,6 +125,121 @@ The tuples returned by the festival calendar contain one object per day. For con
     12
     >>> len(months[0])
     29
+	
+### Options for the Output
+
+The festival calendar functions have optional parameters that allow
+you to change how the month names are returned, what month is
+intercalated, and exactly when the month starts.
+
+#### Month Names
+
+The optional `name_as` parameter controls the form of the `month_name`
+property of the `FestivalDay` objects. The choices are:
+transliteration (default), abbreviation, and Greek. It takes one of
+the `MonthNameOptions` values.
+
+The default is transliteration, which you can choose explicitly with
+`MonthNameOptions.TRANSLITERATION`:
+
+    >>> ha.athenian_festival_calendar(-399)[0].month_name
+    'Hekatombaiṓn'
+    >>> ha.athenian_festival_calendar(-399, name_as=ha.MonthNameOptions.TRANSLITERATION)[0].month_name
+    'Hekatombaiṓn'
+	
+For abbreviations use `ha.MonthNameOptions.ABBREV`:
+
+    >>> ha.athenian_festival_calendar(-399, name_as=ha.MonthNameOptions.ABBREV)[0].month_name
+    'Hek'
+    
+And to get the month names in Greek, use ha.MonthNameOptions.GREEK:
+	
+	>>> ha.athenian_festival_calendar(-399, name_as=ha.MonthNameOptions.GREEK)[0].month_name
+    'Ἑκατομβαιών'
+	
+	
+#### Intercalated Month
+
+When intercalations are required (see Festival Calendar Basics)
+Heniautos intercalates some default month (usually the sixth), but
+this can be controlled with the `intercalate` parameter.
+
+For example, 211/210 BCE should be an intercalary year. By default the
+intercalated month will be a second Posideiṓn, _Posideiṓn hústeros_.
+
+    >>> year = ha.athenian_festival_calendar(-210)
+    >>> months = ha.by_months(year)
+    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
+    >>> print("\n".join(month_names))
+    BCE 0211-Jul-04: Hekatombaiṓn
+    BCE 0211-Aug-02: Metageitniṓn
+    BCE 0211-Aug-31: Boēdromiṓn
+    BCE 0211-Sep-30: Puanopsiṓn
+    BCE 0211-Oct-29: Maimaktēriṓn
+    BCE 0211-Nov-28: Posideiṓn
+    BCE 0211-Dec-27: Posideiṓn hústeros
+    BCE 0210-Jan-26: Gamēliṓn
+    BCE 0210-Feb-24: Anthestēriṓn
+    BCE 0210-Mar-26: Elaphēboliṓn
+    BCE 0210-Apr-25: Mounukhiṓn
+    BCE 0210-May-24: Thargēliṓn
+    BCE 0210-Jun-23: Skirophoriṓn	
+	
+However we know from an inscription, [IG II³,1
+1137](https://inscriptions.packhum.org/text/347432), not only that
+211/210 *was* an interalary year but also that Anthestēriṓn was
+intercalated. We can recreate this by passing the right month constant
+(see Month Constants below), in this case `AthenianMonths.ANT`:
+
+    >>> year = ha.athenian_festival_calendar(-210, intercalate=ha.AthenianMonths.ANT)
+    >>> months = ha.by_months(year)
+    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
+    >>> print("\n".join(month_names))
+    BCE 0211-Jul-04: Hekatombaiṓn
+    BCE 0211-Aug-02: Metageitniṓn
+    BCE 0211-Aug-31: Boēdromiṓn
+    BCE 0211-Sep-30: Puanopsiṓn
+    BCE 0211-Oct-29: Maimaktēriṓn
+    BCE 0211-Nov-28: Posideiṓn
+    BCE 0211-Dec-27: Gamēliṓn
+    BCE 0210-Jan-26: Anthestēriṓn
+    BCE 0210-Feb-24: Anthestēriṓn hústeros
+    BCE 0210-Mar-26: Elaphēboliṓn
+    BCE 0210-Apr-25: Mounukhiṓn
+    BCE 0210-May-24: Thargēliṓn
+    BCE 0210-Jun-23: Skirophoriṓn	
+
+#### First Day of the Month
+
+To the Greeks, "new moon" meant the first night that the first sliver
+of the waxing crescent was visible (see Festival Calendar Basics). We
+can't say exactly when this occured for any given month since there
+are many variables involved, nor do we know how much the Greeks cared
+about actually sighting this moon over calculating or even just
+guestimating when it should be visible. Heniautos uses an
+approximation, defining the day of the visible new moon as some _N_
+days after the date of the conjunction, by default 1.
+
+This can be changed with the `rule` parameter (the "rule" for
+calculating visibility), which takes values from `Visible`. The
+default rule is `Visible.NEXT_DAY`:
+
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399)[0].jdn)
+    'BCE 0400-Jul-22'
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399, rule=ha.Visible.NEXT_DAY)[0].jdn)
+    'BCE 0400-Jul-22'
+	
+`Visible.CONJUNCTION` causes Heniautos to treat the new as as visible *on the day of the conjunction*. This has the effect of moving the dates up one day
+
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399, rule=ha.Visible.CONJUNCTION)[0].jdn)
+    'BCE 0400-Jul-21'
+
+and `Visible.SECOND_DAY` has the effect of moving the dates back one day, as if the new moon was visible the second day after the conjunction:
+
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399, rule=ha.Visible.SECOND_DAY)[0].jdn)
+    'BCE 0400-Jul-23'
+
+
 	
 
     
