@@ -1,3 +1,5 @@
+# coding=utf-8
+
 # heniautos. Ancient Athenian calendar generator
 # Copyright (C) 2021 Sean Redmond
 
