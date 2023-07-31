@@ -475,7 +475,7 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
     return __gmt_fmt(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
 
 
-def solar_event(year, e, data=load_data):
+def solar_event(year, e, s_off=0, data=load_data):
     """Return a Julian date (float) for the event e in the given year.
 
     Parameters:
@@ -489,7 +489,7 @@ def solar_event(year, e, data=load_data):
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
         return [
-            s[0]
+            s[0] + s_off
             for s in __optionally_load_data(data)["solstices"]
             if s[1] == e and d1 <= s[0] <= d2
         ][0]
@@ -615,7 +615,7 @@ def __bounding_moons(moons, sol1, sol2, before_event):
 
 
 def _calendar_months(
-    year, data, event=Seasons.SUMMER_SOLSTICE, v_off=1, before_event=False
+        year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
 ):
 
     """Return a tuple representing start and end dates of Athenian festival
@@ -623,12 +623,11 @@ def _calendar_months(
 
     Parameters:
     year (int) -- The year for the calendar
+    data -- Astronomical data for calculations
     event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
-    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     before_event: True if new moons should preceded the solar event, false if they should follow
-    data -- Astronomical data for calculations. By default this is
-    returned from load_data()
-
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
 
     Return a tuple with start and end times, as Julian Day Numbers for
     each month, in order of Athenian festival calendar months
@@ -641,8 +640,8 @@ def _calendar_months(
 
     """
     astro_data = __optionally_load_data(data)
-    sol1 = to_jdn(solar_event(year, event, astro_data))
-    sol2 = to_jdn(solar_event(year + 1, event, astro_data))
+    sol1 = to_jdn(solar_event(year, event, s_off, astro_data))
+    sol2 = to_jdn(solar_event(year + 1, event, s_off, astro_data))
 
     moons = [
         to_jdn(v)
@@ -657,7 +656,7 @@ def _calendar_months(
 
 
 def __festival_months(
-    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1
+        year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
 ):
     """Return a tuple of dicts, each containing a month index, start JDN for the month and (non-inclusive) end JND
 
@@ -668,13 +667,14 @@ def __festival_months(
     event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
     before_event: True if new moons should preceded the solar event, false if they should follow
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     """
     return tuple(
         [
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
             for m in enumerate(
                 _calendar_months(
-                    year, data, event=event, before_event=before_event, v_off=v_off
+                    year, data, event=event, before_event=before_event, v_off=v_off, s_off=s_off
                 ),
                 1,
             )
@@ -722,6 +722,7 @@ def __base_festival_calendar(
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
     v_off=1,
+    s_off=0
 ):
     """Generate a base calendar for a given year
 
@@ -732,6 +733,7 @@ def __base_festival_calendar(
     event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
     before_event: True if new moons should preceded the solar event, false if they should follow
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
 
     Generate a base calendar, a tuple of FestivalDay objects.
 
@@ -740,7 +742,7 @@ def __base_festival_calendar(
     doy = _doy_gen()
 
     months = __festival_months(
-        year, data, event=event, before_event=before_event, v_off=v_off
+        year, data, event=event, before_event=before_event, v_off=v_off, s_off=s_off
     )
 
     return tuple([a for b in [__make_generic_month(m, doy) for m in months] for a in b])
@@ -841,6 +843,7 @@ def festival_calendar(
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -853,6 +856,7 @@ def festival_calendar(
     event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
     before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -873,7 +877,7 @@ def festival_calendar(
     """
 
     base_cal = __base_festival_calendar(
-        year, data, event=event, before_event=before_event, v_off=v_off
+        year, data, event=event, before_event=before_event, v_off=v_off, s_off=s_off
     )
 
     cal_year = arkhon_year(year)
@@ -908,6 +912,7 @@ def athenian_festival_calendar(
     intercalate=AthenianMonths.POS,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -916,6 +921,7 @@ def athenian_festival_calendar(
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -930,6 +936,7 @@ def athenian_festival_calendar(
         event=Seasons.SUMMER_SOLSTICE,
         before_event=False,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -939,6 +946,7 @@ def delphian_festival_calendar(
     intercalate=DelphianMonths.POI,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -947,6 +955,7 @@ def delphian_festival_calendar(
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -961,6 +970,7 @@ def delphian_festival_calendar(
         event=Seasons.SUMMER_SOLSTICE,
         before_event=False,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -970,6 +980,7 @@ def delian_festival_calendar(
     intercalate=DelianMonths.PAN,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -978,6 +989,7 @@ def delian_festival_calendar(
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -992,6 +1004,7 @@ def delian_festival_calendar(
         event=Seasons.WINTER_SOLSTICE,
         before_event=False,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -1001,6 +1014,7 @@ def argive_festival_calendar(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1009,6 +1023,7 @@ def argive_festival_calendar(
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1023,6 +1038,7 @@ def argive_festival_calendar(
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -1032,6 +1048,7 @@ def spartan_festival_calendar(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1040,6 +1057,7 @@ def spartan_festival_calendar(
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1054,6 +1072,7 @@ def spartan_festival_calendar(
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -1063,6 +1082,7 @@ def corinthian_festival_calendar(
     intercalate=CorinthianMonths.MAK,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1071,6 +1091,7 @@ def corinthian_festival_calendar(
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1085,6 +1106,7 @@ def corinthian_festival_calendar(
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -1096,6 +1118,7 @@ def jdn_to_festival_calendar(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     # If the year hint is not supplied, extract it from the jdn and recurse
@@ -1107,11 +1130,12 @@ def jdn_to_festival_calendar(
             intercalate=intercalate,
             name_as=name_as,
             v_off=v_off,
+            s_off=s_off,
             data=data,
         )
 
     for y in reversed(range(year - 1, year + 1)):
-        candidate_cal = CAL_FUNCTION_MAP[calendar](y, intercalate, name_as, v_off, data)
+        candidate_cal = CAL_FUNCTION_MAP[calendar](y, intercalate, name_as, v_off, s_off, data)
         if jdn in [d.jdn for d in candidate_cal]:
             return candidate_cal
 
@@ -1125,6 +1149,7 @@ def jdn_to_festival_day(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian Day Number
@@ -1137,6 +1162,7 @@ def jdn_to_festival_day(
     intercalate (Months) -- Month constant for month to intercalate if
     necessary (default Months.POS)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1150,13 +1176,14 @@ def jdn_to_festival_day(
             intercalate=intercalate,
             name_as=name_as,
             v_off=v_off,
+            s_off=s_off,
             data=data,
         )
 
     return [
         d
         for d in jdn_to_festival_calendar(
-            jdn, year, calendar, intercalate, name_as, v_off, data
+            jdn, year, calendar, intercalate, name_as, v_off, s_off, data
         )
         if d.jdn == jdn
     ][0]
@@ -1170,6 +1197,7 @@ def julian_to_festival(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+        s_off=0,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian date
@@ -1183,6 +1211,7 @@ def julian_to_festival(
     intercalate (Months) -- Month constant for month to intercalate if
     necessary (default Months.POS)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1196,6 +1225,7 @@ def julian_to_festival(
         intercalate=intercalate,
         name_as=name_as,
         v_off=v_off,
+        s_off=s_off,
         data=data,
     )
 
@@ -1208,6 +1238,7 @@ def gregorian_to_festival(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Gregorian date
@@ -1221,6 +1252,7 @@ def gregorian_to_festival(
     intercalate (Months) -- Month constant for month to intercalate if
     necessary (default Months.POS)
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1257,6 +1289,7 @@ def festival_to_jdn(
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
     v_off=1,
+    s_off=0,
     data=load_data,
 ):
     """Return the Julian Day Number for a festival date.
@@ -1271,6 +1304,7 @@ def festival_to_jdn(
     event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
     before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
     """
@@ -1285,6 +1319,7 @@ def festival_to_jdn(
                 event=event,
                 before_event=before_event,
                 v_off=v_off,
+                s_off=s_off,
                 data=data,
             )
             if d.month == month and d.day == day

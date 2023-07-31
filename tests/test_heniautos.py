@@ -63,6 +63,23 @@ def test_solar_event():
     )
 
 
+def test_solar_event_offset():
+    assert (
+        as_julian(solar_event(-99, Seasons.SPRING_EQUINOX, s_off=0), True)
+        == "BCE 0100-Mar-23 19:48:34 GMT"
+    )
+
+    assert (
+        as_julian(solar_event(-99, Seasons.SPRING_EQUINOX, s_off=-1), True)
+        == "BCE 0100-Mar-22 19:48:34 GMT"
+    )
+
+    assert (
+        as_julian(solar_event(-99, Seasons.SPRING_EQUINOX, s_off=1), True)
+        == "BCE 0100-Mar-24 19:48:34 GMT"
+    )
+    
+
 def test_new_moons():
     p = new_moons(-99)
     assert type(p) is list
@@ -230,6 +247,15 @@ def test_festival_calendar():
     assert met[0].day == 1
     assert as_julian(met[0]) == "BCE 0101-Aug-15"
     assert met[0].doy == 31
+
+
+def test_festival_calendar_solar_offset():
+    p = festival_calendar(-421)
+    assert as_julian(p[0]) == "BCE 0422-Jul-26"
+
+    p = festival_calendar(-421, s_off=-2)
+    assert as_julian(p[0]) == "BCE 0422-Jun-27"
+
 
 
 def test_delian_festival_calendar_434_433():
