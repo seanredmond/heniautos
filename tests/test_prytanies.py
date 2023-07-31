@@ -227,8 +227,8 @@ def test_prytany_calendar_solar():
 
 def test_prytany_calendar_solar_rule():
     assert prytany_calendar(-420)[0].jdn == 1567833
-    assert prytany_calendar(-420, rule=Visible.CONJUNCTION)[0].jdn == 1567832
-    assert prytany_calendar(-420, rule=Visible.SECOND_DAY)[0].jdn == 1567834
+    assert prytany_calendar(-420, v_off=0)[0].jdn == 1567832
+    assert prytany_calendar(-420, v_off=2)[0].jdn == 1567834
 
 
 def test_prytany_calendar_solar_supplied_jdn():
@@ -734,7 +734,7 @@ def test_prytany_to_julian():
     assert (
         as_julian(
             prytany_to_julian(
-                bce_as_negative(332), Prytanies.VIII, 7, rule=Visible.SECOND_DAY
+                bce_as_negative(332), Prytanies.VIII, 7, v_off=2
             ).jdn
         )
         == "BCE 0331-Apr-02"
@@ -743,7 +743,7 @@ def test_prytany_to_julian():
     assert (
         as_julian(
             prytany_to_julian(
-                bce_as_negative(332), Prytanies.VIII, 7, rule=Visible.CONJUNCTION
+                bce_as_negative(332), Prytanies.VIII, 7, v_off=0
             ).jdn
         )
         == "BCE 0331-Mar-31"
@@ -753,7 +753,7 @@ def test_prytany_to_julian():
         assert (
             as_julian(
                 prytany_to_julian(
-                    bce_as_negative(332), Prytanies.VIII, 39, rule=Visible.CONJUNCTION
+                    bce_as_negative(332), Prytanies.VIII, 39, v_off=0
                 ).jdn
             )
             == "BCE 0331-Mar-31"

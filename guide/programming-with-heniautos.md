@@ -187,9 +187,10 @@ intercalated month will be a second Posideiṓn, _Posideiṓn hústeros_.
 	
 However we know from an inscription, [IG II³,1
 1137](https://inscriptions.packhum.org/text/347432), not only that
-211/210 *was* an interalary year but also that Anthestēriṓn was
-intercalated. We can recreate this by passing the right month constant
-(see Month Constants below), in this case `AthenianMonths.ANT`:
+211/210 *was* an interalary year but also that Anthestēriṓn was the
+intercalated month. We can recreate this by passing the right month
+constant (see Month Constants below), in this case
+`AthenianMonths.ANT`:
 
     >>> year = ha.athenian_festival_calendar(-210, intercalate=ha.AthenianMonths.ANT)
     >>> months = ha.by_months(year)
@@ -220,28 +221,130 @@ guestimating when it should be visible. Heniautos uses an
 approximation, defining the day of the visible new moon as some _N_
 days after the date of the conjunction, by default 1.
 
-This can be changed with the `rule` parameter (the "rule" for
-calculating visibility), which takes values from `Visible`. The
-default rule is `Visible.NEXT_DAY`:
+This can be changed with the `v_off` (for "visibility offset")
+parameter. Again, the default is 1, so these are equivalent:
 
     >>> ha.as_julian(ha.athenian_festival_calendar(-399)[0].jdn)
     'BCE 0400-Jul-22'
-    >>> ha.as_julian(ha.athenian_festival_calendar(-399, rule=ha.Visible.NEXT_DAY)[0].jdn)
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399, v_off=1)[0].jdn)
     'BCE 0400-Jul-22'
 	
-`Visible.CONJUNCTION` causes Heniautos to treat the new as as visible *on the day of the conjunction*. This has the effect of moving the dates up one day
+If you wanted to treat the new moon as visible on the day of the
+conjunction you would pass `v_off=0`. The effect would be shifting all
+the dates up one day (which might have an effect on which years were
+intercalary).
 
-    >>> ha.as_julian(ha.athenian_festival_calendar(-399, rule=ha.Visible.CONJUNCTION)[0].jdn)
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399, v_off=0)[0].jdn)
     'BCE 0400-Jul-21'
 
-and `Visible.SECOND_DAY` has the effect of moving the dates back one day, as if the new moon was visible the second day after the conjunction:
+Or you could use `v_off=2` to make the new visible two days after the
+day of the conjunction.
 
-    >>> ha.as_julian(ha.athenian_festival_calendar(-399, rule=ha.Visible.SECOND_DAY)[0].jdn)
+    >>> ha.as_julian(ha.athenian_festival_calendar(-399, v_off=2)[0].jdn)
     'BCE 0400-Jul-23'
 
+### Other Calendars
 
+The various calendars of different Greek cities had different month
+names and began relative to different solstices or equinoxes. They
+might also differ in whether the first month *followed* the solstice
+or equinox or the the month *in which the solstice or equinox
+occured*.
+
+For instance, in Delphi, the year began as in Athens after the summer
+solstice so the twelve months have the same dates as the in Athenian
+year, but different names:
+
+    >>> year = ha.delphian_festival_calendar(-399)
+    >>> months = ha.by_months(year)
+    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
+    >>> print("\n".join(month_names))
+    BCE 0400-Jul-22: Apellaîos
+    BCE 0400-Aug-20: Boukátios
+    BCE 0400-Sep-19: Boathóos
+    BCE 0400-Oct-18: Heraîos
+    BCE 0400-Nov-17: Dadaphórios
+    BCE 0400-Dec-17: Poitrópios
+    BCE 0399-Jan-16: Amálios
+    BCE 0399-Feb-15: Búsios
+    BCE 0399-Mar-16: Theoxénios
+    BCE 0399-Apr-14: Enduspoitrópios
+    BCE 0399-May-14: Herákleios
+    BCE 0399-Jun-12: Ilaîos
 	
+On Delos, some of the month names were the same as the Athenian, but the year began after the *winter* solstice.
 
+    >>> year = ha.delian_festival_calendar(-399)
+    >>> months = ha.by_months(year)
+    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
+    >>> print("\n".join(month_names))
+    BCE 0399-Jan-16: Lēnaiṓn
+    BCE 0399-Feb-15: Hierós
+    BCE 0399-Mar-16: Galaxiṓn
+    BCE 0399-Apr-14: Artemisiṓn
+    BCE 0399-May-14: Thargēliṓn
+    BCE 0399-Jun-12: Pánēmos
+    BCE 0399-Jul-11: Hekatombaiṓn
+    BCE 0399-Aug-10: Metageitniṓn
+    BCE 0399-Sep-08: Bouphoniṓn
+    BCE 0399-Oct-08: Apatouriṓn
+    BCE 0399-Nov-06: Arēsiṓn
+    BCE 0399-Dec-06: Posideiṓn
+	
+Something special to not about this invocation of
+`delian_festival_calendar()`. Ancient Greek years usually span two
+Julian years (the end of one and beginning of the next) so we refer to
+the Athenian year 400/399. To get the calendar from
+`athenian_festival_year()` you pass it the first year of the span, 400
+BCE or, in astronomical year numbering, -399. Think of this as the
+year of the summer solstice after which the year begins.
+
+Because the winter solstice falls near the end of December, a
+lunisolar years following this solstice will frequently not begin
+until the next Julian year. In the example above,
+`delian_festival_calendar(-399)` asks for the year following the
+winter solstice of 400 BCE, which we would have to call 399/398.
+
+The Corinthia, Delian, and Spartan calendars all begin with at the
+last new moon _before_ the autumn equinox so that the equinox falls in
+the first month (unlike the Athenian, where the solstice falls in the
+*last* month)
+
+    >>> year = ha.corinthian_festival_calendar(-399)
+    >>> months = ha.by_months(year)
+    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
+    >>> print("\n".join(month_names))
+    BCE 0400-Sep-19: Phoinikaîos
+    BCE 0400-Oct-18: Kráneios
+    BCE 0400-Nov-17: Lanotropíos
+    BCE 0400-Dec-17: Makhaneús
+    BCE 0399-Jan-16: Dōdekateús
+    BCE 0399-Feb-15: Εúkleios
+    BCE 0399-Mar-16: Artemísios
+    BCE 0399-Apr-14: Psudreús
+    BCE 0399-May-14: Gameílios
+    BCE 0399-Jun-12: Agriánios
+    BCE 0399-Jul-11: Pánamos
+    BCE 0399-Aug-10: Apellaîos
+
+We don't know all the names of the Spartan month or their order, so these are simply all called "Unknown"
+
+    >>> year = ha.spartan_festival_calendar(-399)
+    >>> months = ha.by_months(year)
+    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
+    >>> print("\n".join(month_names))
+    BCE 0400-Sep-19: Unknown 1
+    BCE 0400-Oct-18: Unknown 2
+    BCE 0400-Nov-17: Unknown 3
+    BCE 0400-Dec-17: Unknown 4
+    BCE 0399-Jan-16: Unknown 5
+    BCE 0399-Feb-15: Unknown 6
+    BCE 0399-Mar-16: Unknown 7
+    BCE 0399-Apr-14: Unknown 8
+    BCE 0399-May-14: Unknown 9
+    BCE 0399-Jun-12: Unknown 10
+    BCE 0399-Jul-11: Unknown 11
+    BCE 0399-Aug-10: Unknown 12
     
 The Athenian year began at the first new moon after the summer solstice. Most festival years were 354 (sometimes 355) days long, but every second or third year, this was not long enough to last until the solstice and a thirteenth month needed added, or intercalated, to create a 384-day intercalary year. Heniautos does this automatically, adding an intercalary Posideiṓn (the 6th month) by default. You can control which month is intercalated, as well as many other details, by passing parameters to `festival_calendar()` (see below).
     

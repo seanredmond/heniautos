@@ -278,7 +278,7 @@ def test_festival_to_julian_athenian():
     assert (
         as_julian(
             festival_to_jdn(
-                bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.SECOND_DAY
+                bce_as_negative(332), AthenianMonths.ELA, 19, v_off=2
             )
         )
         == "BCE 0331-Apr-02"
@@ -287,7 +287,7 @@ def test_festival_to_julian_athenian():
     assert (
         as_julian(
             festival_to_jdn(
-                bce_as_negative(332), AthenianMonths.ELA, 19, rule=Visible.CONJUNCTION
+                bce_as_negative(332), AthenianMonths.ELA, 19, v_off=0
             )
         )
         == "BCE 0331-Mar-31"
@@ -315,7 +315,7 @@ def test_festival_to_julian_other_calendars():
                 bce_as_negative(332),
                 DelianMonths.BOU,
                 19,
-                rule=Visible.SECOND_DAY,
+                v_off=2,
                 calendar=Cal.DELIAN,
                 event=Seasons.WINTER_SOLSTICE,
             )
@@ -400,7 +400,7 @@ def test_320():
     # round()) Julian days rather than using just the integer part
     # (with int())
 
-    cal_320 = festival_calendar(bce_as_negative(320), rule=Visible.SECOND_DAY)
+    cal_320 = festival_calendar(bce_as_negative(320), v_off=2)
 
     # With the two day rule, 320 is ordinary
     assert cal_320[-1].doy == 354
@@ -428,11 +428,11 @@ def test_320():
     ]
 
     # With the 1-day rule it is intercalary
-    assert festival_calendar(bce_as_negative(320), rule=Visible.NEXT_DAY)[-1].doy == 384
+    assert festival_calendar(bce_as_negative(320), v_off=1)[-1].doy == 384
 
     # Likewise with the 0-day rule it is intercalary
     assert (
-        festival_calendar(bce_as_negative(320), rule=Visible.CONJUNCTION)[-1].doy == 384
+        festival_calendar(bce_as_negative(320), v_off=0)[-1].doy == 384
     )
 
 

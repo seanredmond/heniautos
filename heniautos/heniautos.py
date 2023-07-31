@@ -86,14 +86,6 @@ class Cal(Enum):
         return "<%s.%s>" % (self.__class__.__name__, self._name_)
 
 
-class Visible(IntEnum):
-    """Constants representing lunar visibility options."""
-
-    CONJUNCTION = 0
-    NEXT_DAY = 1
-    SECOND_DAY = 2
-
-
 class TZOptions(Enum):
     GMT = "GMT"
     ALT = "ALT"
@@ -555,40 +547,26 @@ def new_moons(year, data=load_data):
     return __moon_phases(year, Phases.NEW, __optionally_load_data(data))
 
 
-def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data):
+def visible_new_moons(year, v_off=1, data=load_data):
     """Return a list of Julian dates for all visible new moons according
-       to selected rule.
+       to given visibility offset.
 
     Parameters:
     year (int) -- The year
-    rule (Visible) -- Constant from Visible indicating the desired rule
+    v_off (int) -- Offset from the conjunction for lunar visibility
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
     new_moons() returns the time of new moons according to an
     astronomical calculation, not when the waxing crescent of the new
-    moon was first visible to human eyes. The time of first visibility
-    is what is needed for calendar calculations but it is complicated
-    so three simplified rules are provided:
-
-    CONJUNCTION: The new moon is visible on the same day as the
-    astronomical new moon (conjunction).
-
-    NEXT_DAY (Default): The moon is visible the first day after the
-    astronomical new moon.
-
-    SECOND_DAY: The moon is visible the second day
-    after the astronomical new moon.
+    moon was first visible to human eyes. This is taken to be the day
+    of the conjunction + v_off. For example. v_off = 1 (the default)
+    means that the lunar crescent is assumed to be first visible 1 day
+    after the day of the conjunction. v_off = 0 would mean the lunar
+    crescent is assumed to be visible the day of the conjunction.
 
     """
-    if rule == Visible.CONJUNCTION:
-        return [to_jdn(n) for n in new_moons(year, data=data)]
-
-    if rule == Visible.NEXT_DAY:
-        return [to_jdn(n) + 1 for n in new_moons(year, data=data)]
-
-    if rule == Visible.SECOND_DAY:
-        return [to_jdn(n) + 2 for n in new_moons(year, data=data)]
+    return [to_jdn(n) + v_off for n in new_moons(year, data=data)]
 
 
 def month_name(month, name_as=MonthNameOptions.TRANSLITERATION):
@@ -637,7 +615,7 @@ def __bounding_moons(moons, sol1, sol2, before_event):
 
 
 def _calendar_months(
-    year, data, event=Seasons.SUMMER_SOLSTICE, rule=Visible.NEXT_DAY, before_event=False
+    year, data, event=Seasons.SUMMER_SOLSTICE, v_off=1, before_event=False
 ):
 
     """Return a tuple representing start and end dates of Athenian festival
@@ -646,8 +624,7 @@ def _calendar_months(
     Parameters:
     year (int) -- The year for the calendar
     event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     before_event: True if new moons should preceded the solar event, false if they should follow
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
@@ -655,7 +632,7 @@ def _calendar_months(
 
     Return a tuple with start and end times, as Julian Day Numbers for
     each month, in order of Athenian festival calendar months
-    calculated according to the give new moon visibility rule. The
+    calculated according to the give new moon visibility offset. The
     length of the tuple will be 12 for regular years or 13 for
     intercalary years. Each member of the tuple is a tuple with two
     members: (a) the start of the given month and (b) the start of the
@@ -669,9 +646,9 @@ def _calendar_months(
 
     moons = [
         to_jdn(v)
-        for v in visible_new_moons(year, rule, astro_data)
-        + visible_new_moons(year + 1, rule, astro_data)
-        + visible_new_moons(year + 2, rule, astro_data)
+        for v in visible_new_moons(year, v_off, astro_data)
+        + visible_new_moons(year + 1, v_off, astro_data)
+        + visible_new_moons(year + 2, v_off, astro_data)
     ]
 
     first, last = __bounding_moons(moons, sol1, sol2, before_event)
@@ -680,7 +657,7 @@ def _calendar_months(
 
 
 def __festival_months(
-    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, rule=Visible.NEXT_DAY
+    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1
 ):
     """Return a tuple of dicts, each containing a month index, start JDN for the month and (non-inclusive) end JND
 
@@ -690,15 +667,14 @@ def __festival_months(
     returned from load_data()
     event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
     before_event: True if new moons should preceded the solar event, false if they should follow
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     """
     return tuple(
         [
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
             for m in enumerate(
                 _calendar_months(
-                    year, data, event=event, before_event=before_event, rule=rule
+                    year, data, event=event, before_event=before_event, v_off=v_off
                 ),
                 1,
             )
@@ -745,18 +721,17 @@ def __base_festival_calendar(
     data,
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
 ):
     """Generate a base calendar for a given year
 
     Params:
     year (int) -- The year for the calendar
-    event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
-    before_event: True if new moons should preceded the solar event, false if they should follow
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
+    event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
+    before_event: True if new moons should preceded the solar event, false if they should follow
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
 
     Generate a base calendar, a tuple of FestivalDay objects.
 
@@ -765,7 +740,7 @@ def __base_festival_calendar(
     doy = _doy_gen()
 
     months = __festival_months(
-        year, data, event=event, before_event=before_event, rule=rule
+        year, data, event=event, before_event=before_event, v_off=v_off
     )
 
     return tuple([a for b in [__make_generic_month(m, doy) for m in months] for a in b])
@@ -865,7 +840,7 @@ def festival_calendar(
     name_as=MonthNameOptions.TRANSLITERATION,
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -877,12 +852,11 @@ def festival_calendar(
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
     before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
-    See calendar_months for documentation of visibility rules.
+    See visible_new_moons for documentation of visibility offset.
 
     Returns a tuple of FestivalDay objected with one member for each
     month. Each member is a tuple of the month name and tuple of start
@@ -899,7 +873,7 @@ def festival_calendar(
     """
 
     base_cal = __base_festival_calendar(
-        year, data, event=event, before_event=before_event, rule=rule
+        year, data, event=event, before_event=before_event, v_off=v_off
     )
 
     cal_year = arkhon_year(year)
@@ -933,7 +907,7 @@ def athenian_festival_calendar(
     year,
     intercalate=AthenianMonths.POS,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -941,8 +915,7 @@ def athenian_festival_calendar(
     year (int) -- The year for the calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -956,7 +929,7 @@ def athenian_festival_calendar(
         name_as=name_as,
         event=Seasons.SUMMER_SOLSTICE,
         before_event=False,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -965,7 +938,7 @@ def delphian_festival_calendar(
     year,
     intercalate=DelphianMonths.POI,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -973,8 +946,7 @@ def delphian_festival_calendar(
     year (int) -- The year for the calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -988,7 +960,7 @@ def delphian_festival_calendar(
         name_as=name_as,
         event=Seasons.SUMMER_SOLSTICE,
         before_event=False,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -997,7 +969,7 @@ def delian_festival_calendar(
     year,
     intercalate=DelianMonths.PAN,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1005,8 +977,7 @@ def delian_festival_calendar(
     year (int) -- The year for the calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1020,7 +991,7 @@ def delian_festival_calendar(
         name_as=name_as,
         event=Seasons.WINTER_SOLSTICE,
         before_event=False,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -1029,7 +1000,7 @@ def argive_festival_calendar(
     year,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1037,8 +1008,7 @@ def argive_festival_calendar(
     year (int) -- The year for the calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1052,7 +1022,7 @@ def argive_festival_calendar(
         name_as=name_as,
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -1061,7 +1031,7 @@ def spartan_festival_calendar(
     year,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1069,8 +1039,7 @@ def spartan_festival_calendar(
     year (int) -- The year for the calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1084,7 +1053,7 @@ def spartan_festival_calendar(
         name_as=name_as,
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -1093,7 +1062,7 @@ def corinthian_festival_calendar(
     year,
     intercalate=CorinthianMonths.MAK,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return a tuple representing festival calendar.
@@ -1101,8 +1070,7 @@ def corinthian_festival_calendar(
     year (int) -- The year for the calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
-    rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1116,7 +1084,7 @@ def corinthian_festival_calendar(
         name_as=name_as,
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -1127,7 +1095,7 @@ def jdn_to_festival_calendar(
     calendar=Cal.ATHENIAN,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     # If the year hint is not supplied, extract it from the jdn and recurse
@@ -1138,12 +1106,12 @@ def jdn_to_festival_calendar(
             calendar=calendar,
             intercalate=intercalate,
             name_as=name_as,
-            rule=rule,
+            v_off=v_off,
             data=data,
         )
 
     for y in reversed(range(year - 1, year + 1)):
-        candidate_cal = CAL_FUNCTION_MAP[calendar](y, intercalate, name_as, rule, data)
+        candidate_cal = CAL_FUNCTION_MAP[calendar](y, intercalate, name_as, v_off, data)
         if jdn in [d.jdn for d in candidate_cal]:
             return candidate_cal
 
@@ -1156,7 +1124,7 @@ def jdn_to_festival_day(
     calendar=Cal.ATHENIAN,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian Day Number
@@ -1168,8 +1136,7 @@ def jdn_to_festival_day(
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     intercalate (Months) -- Month constant for month to intercalate if
     necessary (default Months.POS)
-     rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1182,14 +1149,14 @@ def jdn_to_festival_day(
             calendar=calendar,
             intercalate=intercalate,
             name_as=name_as,
-            rule=rule,
+            v_off=v_off,
             data=data,
         )
 
     return [
         d
         for d in jdn_to_festival_calendar(
-            jdn, year, calendar, intercalate, name_as, rule, data
+            jdn, year, calendar, intercalate, name_as, v_off, data
         )
         if d.jdn == jdn
     ][0]
@@ -1202,7 +1169,7 @@ def julian_to_festival(
     calendar=Cal.ATHENIAN,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian date
@@ -1215,8 +1182,7 @@ def julian_to_festival(
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     intercalate (Months) -- Month constant for month to intercalate if
     necessary (default Months.POS)
-     rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1229,7 +1195,7 @@ def julian_to_festival(
         calendar=calendar,
         intercalate=intercalate,
         name_as=name_as,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -1241,7 +1207,7 @@ def gregorian_to_festival(
     calendar=Cal.ATHENIAN,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Gregorian date
@@ -1254,8 +1220,7 @@ def gregorian_to_festival(
     name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     intercalate (Months) -- Month constant for month to intercalate if
     necessary (default Months.POS)
-     rule (Visible) -- Constant from Visible indicating the desired rule
-    (default Visible.SECOND_DAY)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
 
@@ -1268,7 +1233,7 @@ def gregorian_to_festival(
         calendar=calendar,
         intercalate=intercalate,
         name_as=name_as,
-        rule=rule,
+        v_off=v_off,
         data=data,
     )
 
@@ -1291,7 +1256,7 @@ def festival_to_jdn(
     intercalate=6,
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
-    rule=Visible.NEXT_DAY,
+    v_off=1,
     data=load_data,
 ):
     """Return the Julian Day Number for a festival date.
@@ -1305,7 +1270,7 @@ def festival_to_jdn(
     necessary (default Months.POS)
     event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
     before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
-    rule (Visible) -- Constant from Visible indicating the desired rule
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
     """
@@ -1319,7 +1284,7 @@ def festival_to_jdn(
                 intercalate=intercalate,
                 event=event,
                 before_event=before_event,
-                rule=rule,
+                v_off=v_off,
                 data=data,
             )
             if d.month == month and d.day == day
