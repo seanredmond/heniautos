@@ -17,7 +17,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import namedtuple
-#from datetime import datetime
+
+# from datetime import datetime
 from enum import IntEnum, Enum  # , auto
 from itertools import groupby, product  # , zip_longest
 import juliandate as jd
@@ -358,6 +359,14 @@ def load_data(
     }
 
 
+def __optionally_load_data(data):
+    """Return result of function call if param is a function, or the param."""
+    if callable(data):
+        return data()
+
+    return data
+
+
 def is_bce(t):
     """Return true if time t represents a BCE date."""
     return jd.to_julian(t)[0] < 1
@@ -413,7 +422,10 @@ def __jul_month(m):
 def __gmt_fmt(j, full, epoch=" CE", tz=TZOptions.GMT):
     """Return a short or full string representation of a JDN."""
     if full:
-        return __gmt_fmt(j, False, epoch, tz) + f" {j[3]:02d}:{j[4]:02d}:{j[5]:02d} {tz.value}"
+        return (
+            __gmt_fmt(j, False, epoch, tz)
+            + f" {j[3]:02d}:{j[4]:02d}:{j[5]:02d} {tz.value}"
+        )
 
     return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
 
@@ -471,7 +483,7 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
     return __gmt_fmt(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
 
 
-def solar_event(year, e, data=load_data()):
+def solar_event(year, e, data=load_data):
     """Return a Julian date (float) for the event e in the given year.
 
     Parameters:
@@ -484,7 +496,11 @@ def solar_event(year, e, data=load_data()):
     try:
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-        return [s[0] for s in data["solstices"] if s[1] == e and d1 <= s[0] <= d2][0]
+        return [
+            s[0]
+            for s in __optionally_load_data(data)["solstices"]
+            if s[1] == e and d1 <= s[0] <= d2
+        ][0]
     except IndexError:
         if year < 1:
             raise HeniautosNoDataError(
@@ -494,7 +510,7 @@ def solar_event(year, e, data=load_data()):
         raise HeniautosNoDataError(f"No data for the year {year} CE")
 
 
-# # MAYBE REMOVE
+# # MAYBE REMOVE because the data only has new moons now
 def __all_moon_phases(year, data):
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
@@ -502,18 +518,17 @@ def __all_moon_phases(year, data):
 
 
 # # MAYBE REMOVE
-def __moon_phases(year, p=Phases.NEW, data=load_data()):
+def __moon_phases(year, p, data):
     """Return a list of Julian dates for each indicated lunar phase in the
     given year.
 
     Parameters:
     year -- The year for which the phases are requested
     p (Phases) -- Constant from Phases indicating the lunar phase
-    data -- Astronomical data for calculations. By default this is
-    returned from load_data() (which only includes data from new moons)
+    data -- Astronomical data for calculations.
     """
     try:
-        phases = [mp[0] for mp in __all_moon_phases(year, data=data) if mp[1] == p]
+        phases = [mp[0] for mp in __all_moon_phases(year, data) if mp[1] == p]
         if phases:
             return phases
 
@@ -529,7 +544,7 @@ def __moon_phases(year, p=Phases.NEW, data=load_data()):
         raise HeniautosNoDataError(f"No data for the year {year} CE")
 
 
-def new_moons(year, data=load_data()):
+def new_moons(year, data=load_data):
     """Return a list of Julian dates for all new moons e in the given year.
 
     Parameters:
@@ -537,10 +552,10 @@ def new_moons(year, data=load_data()):
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
     """
-    return __moon_phases(year, Phases.NEW, data=data)
+    return __moon_phases(year, Phases.NEW, __optionally_load_data(data))
 
 
-def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data()):
+def visible_new_moons(year, rule=Visible.NEXT_DAY, data=load_data):
     """Return a list of Julian dates for all visible new moons according
        to selected rule.
 
@@ -622,11 +637,7 @@ def __bounding_moons(moons, sol1, sol2, before_event):
 
 
 def _calendar_months(
-    year,
-    event=Seasons.SUMMER_SOLSTICE,
-    rule=Visible.NEXT_DAY,
-    before_event=False,
-    data=load_data(),
+    year, data, event=Seasons.SUMMER_SOLSTICE, rule=Visible.NEXT_DAY, before_event=False
 ):
 
     """Return a tuple representing start and end dates of Athenian festival
@@ -652,14 +663,15 @@ def _calendar_months(
     and exclusive of b (a <= month < b).
 
     """
-    sol1 = to_jdn(solar_event(year, event, data=data))
-    sol2 = to_jdn(solar_event(year + 1, event, data=data))
+    astro_data = __optionally_load_data(data)
+    sol1 = to_jdn(solar_event(year, event, astro_data))
+    sol2 = to_jdn(solar_event(year + 1, event, astro_data))
 
     moons = [
         to_jdn(v)
-        for v in visible_new_moons(year, rule, data=data)
-        + visible_new_moons(year + 1, rule, data=data)
-        + visible_new_moons(year + 2, rule, data=data)
+        for v in visible_new_moons(year, rule, astro_data)
+        + visible_new_moons(year + 1, rule, astro_data)
+        + visible_new_moons(year + 2, rule, astro_data)
     ]
 
     first, last = __bounding_moons(moons, sol1, sol2, before_event)
@@ -668,29 +680,25 @@ def _calendar_months(
 
 
 def __festival_months(
-    year,
-    event=Seasons.SUMMER_SOLSTICE,
-    before_event=False,
-    rule=Visible.NEXT_DAY,
-    data=load_data(),
+    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, rule=Visible.NEXT_DAY
 ):
     """Return a tuple of dicts, each containing a month index, start JDN for the month and (non-inclusive) end JND
 
     Parameters:
     year (int) -- The year for the calendar
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
     event (Seasons) -- The soloar event that marks the beginning of the year (default Seasons.SUMMER_SOLSTICE)
     before_event: True if new moons should preceded the solar event, false if they should follow
     rule (Visible) -- Constant from Visible indicating the desired rule
     (default Visible.SECOND_DAY)
-    data -- Astronomical data for calculations. By default this is
-    returned from load_data()
     """
     return tuple(
         [
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
             for m in enumerate(
                 _calendar_months(
-                    year, event=event, before_event=before_event, rule=rule, data=data
+                    year, data, event=event, before_event=before_event, rule=rule
                 ),
                 1,
             )
@@ -734,10 +742,10 @@ def __make_generic_month(month, doy):
 
 def __base_festival_calendar(
     year,
+    data,
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
 ):
     """Generate a base calendar for a given year
 
@@ -757,7 +765,7 @@ def __base_festival_calendar(
     doy = _doy_gen()
 
     months = __festival_months(
-        year, event=event, before_event=before_event, rule=rule, data=data
+        year, data, event=event, before_event=before_event, rule=rule
     )
 
     return tuple([a for b in [__make_generic_month(m, doy) for m in months] for a in b])
@@ -858,7 +866,7 @@ def festival_calendar(
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
 
@@ -891,7 +899,7 @@ def festival_calendar(
     """
 
     base_cal = __base_festival_calendar(
-        year, event=event, before_event=before_event, rule=rule, data=data
+        year, data, event=event, before_event=before_event, rule=rule
     )
 
     cal_year = arkhon_year(year)
@@ -926,7 +934,7 @@ def athenian_festival_calendar(
     intercalate=AthenianMonths.POS,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
     Parameters:
@@ -958,7 +966,7 @@ def delphian_festival_calendar(
     intercalate=DelphianMonths.POI,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
     Parameters:
@@ -990,7 +998,7 @@ def delian_festival_calendar(
     intercalate=DelianMonths.PAN,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
     Parameters:
@@ -1022,7 +1030,7 @@ def argive_festival_calendar(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
     Parameters:
@@ -1054,7 +1062,7 @@ def spartan_festival_calendar(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
     Parameters:
@@ -1086,7 +1094,7 @@ def corinthian_festival_calendar(
     intercalate=CorinthianMonths.MAK,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return a tuple representing festival calendar.
     Parameters:
@@ -1120,7 +1128,7 @@ def jdn_to_festival_calendar(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     # If the year hint is not supplied, extract it from the jdn and recurse
     if not isinstance(year, int):
@@ -1149,7 +1157,7 @@ def jdn_to_festival_day(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian Day Number
 
@@ -1195,7 +1203,7 @@ def julian_to_festival(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian date
 
@@ -1234,7 +1242,7 @@ def gregorian_to_festival(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Find the Athenian date corresponding to a Gregorian date
 
@@ -1284,7 +1292,7 @@ def festival_to_jdn(
     event=Seasons.SUMMER_SOLSTICE,
     before_event=False,
     rule=Visible.NEXT_DAY,
-    data=load_data(),
+    data=load_data,
 ):
     """Return the Julian Day Number for a festival date.
 
