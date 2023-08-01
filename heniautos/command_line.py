@@ -56,19 +56,6 @@ def years(start, end, ce):
     raise ValueError("End year must be later than the start year")
 
 
-def get_rule(r):
-    if r == "0":
-        return ha.Visible.CONJUNCTION
-
-    if r == "1":
-        return ha.Visible.NEXT_DAY
-
-    if r == "2":
-        return ha.Visible.SECOND_DAY
-
-    return ha.Visible.NEXT_DAY
-
-
 def month_n(m, int_m, abbrev, greek=False):
     if abbrev:
         n = month_name(m, int_m, greek).split(" ")
@@ -233,7 +220,7 @@ def filtered_festival_calendar(year, args, astro_data):
                              event=get_solar_event(args.calendar),
                              before_event=needs_before(args.calendar),
                              intercalate=args.intercalate,
-                             rule=get_rule(args.rule),
+                             v_off=args.visibility_offset,
                              data=astro_data()
                              ),
         args)
@@ -242,7 +229,7 @@ def filtered_festival_calendar(year, args, astro_data):
 def filtered_prytany_calendar(year, args, astro_data):
     """Filter prytany calendar to requested scope."""
     return prytany_filters(
-        ha.prytanies.prytany_calendar(year, rule=get_rule(args.rule), data=astro_data())
+        ha.prytanies.prytany_calendar(year, rule=args.visibility_offset, data=astro_data())
         , args)
 
 
@@ -479,11 +466,11 @@ under certain conditions."""
                         help="Only list dates of winter solstice")
     parser.add_argument("--gmt", action="store_true",
                         help="Format times as GMT (rather than EET)")
-    parser.add_argument("-r", "--rule", choices=["0", "1", "2"],
-                        default="1", type=str,
-                        help="Rule for determining date of new moon. "
-                        "0, 1, 2 days after astronomical conjunction"
-                        "(default: 2)")
+    parser.add_argument("-v", "--visibility-offset", default=1, type=int,
+                        metavar="N",
+                        help="Offset for determining date of new moon. "
+                        " N days after astronomical conjunction"
+                        "(default: 1)")
     parser.add_argument("-E", "--use-ephemeris", action="store_true",
                         help="Use ephemeris for data")
     parser.add_argument("-e", "--ephemeris", metavar="FILE", type=str,
