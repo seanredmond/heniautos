@@ -215,8 +215,8 @@ def test_delian_festival_calendar():
 def test_spartan_festival_calendar():
     p = spartan_festival_calendar(-100)
     assert len(by_months(p)) == 12
-    assert p[0].month is SpartanMonths.UN1
-    assert p[0].month_name == "Unknown 1"
+    assert p[0].month is GenericMonths.M01
+    assert p[0].month_name == "1"
     assert as_julian(p[0]) == "BCE 0101-Sep-13"
 
     p = spartan_festival_calendar(-102)
@@ -224,7 +224,7 @@ def test_spartan_festival_calendar():
     assert as_julian(p[0]) == "BCE 0103-Sep-06"
     p_months = by_months(p)
     assert p_months[6][0].month is Months.INT
-    assert p_months[6][0].month_name == "Unknown 6 hústeros"
+    assert p_months[6][0].month_name == "6 hústeros"
 
 
 def test_festival_calendar():
@@ -485,7 +485,7 @@ def test_name_as():
     )
     assert (
         spartan_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name
-        == "Unknown 1"
+        == "δεῖνα αʹ"
     )
     assert (
         corinthian_festival_calendar(-406, name_as=MonthNameOptions.GREEK)[0].month_name

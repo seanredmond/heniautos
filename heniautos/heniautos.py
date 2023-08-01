@@ -157,21 +157,6 @@ class DelphianMonths(IntEnum):
     ILA = 12
 
 
-class SpartanMonths(IntEnum):
-    UN1 = 1
-    UN2 = 2
-    UN3 = 3
-    UN4 = 4
-    UN5 = 5
-    UN6 = 6
-    UN7 = 7
-    UN8 = 8
-    UN9 = 9
-    U10 = 10
-    U11 = 11
-    U12 = 12
-
-
 class CorinthianMonths(IntEnum):
     PHO = 1
     KRA = 2
@@ -208,7 +193,7 @@ CALENDAR_MAP = {
     Cal.CORINTHIAN: CorinthianMonths,
     Cal.DELPHIAN: DelphianMonths,
     Cal.DELIAN: DelianMonths,
-    Cal.SPARTAN: SpartanMonths,
+    Cal.SPARTAN: GenericMonths,
     Cal.GENERIC: GenericMonths
 }
 
@@ -240,18 +225,18 @@ MONTH_NAME_MAP = {
     (Cal.DELIAN, DelianMonths.APA): ("Apatouriṓn", "Apa", "Ἀπατουριών"),
     (Cal.DELIAN, DelianMonths.ARE): ("Arēsiṓn", "Are", "Ἀρησιών"),
     (Cal.DELIAN, DelianMonths.POS): ("Posideiṓn", "Pos", "Ποσιδειών"),
-    (Cal.SPARTAN, SpartanMonths.UN1): ("Unknown 1", "? 1", "Unknown 1"),
-    (Cal.SPARTAN, SpartanMonths.UN2): ("Unknown 2", "? 2", "Unknown 2"),
-    (Cal.SPARTAN, SpartanMonths.UN3): ("Unknown 3", "? 3", "Unknown 3"),
-    (Cal.SPARTAN, SpartanMonths.UN4): ("Unknown 4", "? 4", "Unknown 4"),
-    (Cal.SPARTAN, SpartanMonths.UN5): ("Unknown 5", "? 5", "Unknown 5"),
-    (Cal.SPARTAN, SpartanMonths.UN6): ("Unknown 6", "? 6", "Unknown 6"),
-    (Cal.SPARTAN, SpartanMonths.UN7): ("Unknown 7", "? 7", "Unknown 7"),
-    (Cal.SPARTAN, SpartanMonths.UN8): ("Unknown 8", "? 8", "Unknown 8"),
-    (Cal.SPARTAN, SpartanMonths.UN9): ("Unknown 9", "? 9", "Unknown 9"),
-    (Cal.SPARTAN, SpartanMonths.U10): ("Unknown 10", "? 10", "Unknown 10"),
-    (Cal.SPARTAN, SpartanMonths.U11): ("Unknown 11", "? 11", "Unknown 11"),
-    (Cal.SPARTAN, SpartanMonths.U12): ("Unknown 12", "? 12", "Unknown 12"),
+    (Cal.SPARTAN, GenericMonths.M01): ("1", "1", "δεῖνα αʹ"),
+    (Cal.SPARTAN, GenericMonths.M02): ("2", "2", "δεῖνα βʹ"),
+    (Cal.SPARTAN, GenericMonths.M03): ("3", "3", "δεῖνα γʹ"),
+    (Cal.SPARTAN, GenericMonths.M04): ("4", "4", "δεῖνα δʹ"),
+    (Cal.SPARTAN, GenericMonths.M05): ("5", "5", "δεῖνα εʹ"),
+    (Cal.SPARTAN, GenericMonths.M06): ("6", "6", "δεῖνα ϛʹ"),
+    (Cal.SPARTAN, GenericMonths.M07): ("7", "7", "δεῖνα ζʹ"),
+    (Cal.SPARTAN, GenericMonths.M08): ("8", "8", "δεῖνα ηʹ"),
+    (Cal.SPARTAN, GenericMonths.M09): ("9", "9", "δεῖνα θʹ"),
+    (Cal.SPARTAN, GenericMonths.M10): ("10", "10", "δεῖνα ιʹ"),
+    (Cal.SPARTAN, GenericMonths.M11): ("11", "11", "δεῖνα ιαʹ"),
+    (Cal.SPARTAN, GenericMonths.M12): ("12", "12", "δεῖνα ιβʹ"),
     (Cal.CORINTHIAN, CorinthianMonths.PHO): ("Phoinikaîos", "Pho", "Φοινικαῖος"),
     (Cal.CORINTHIAN, CorinthianMonths.KRA): ("Kráneios", "Kra", "Κράνειος"),
     (Cal.CORINTHIAN, CorinthianMonths.LAN): ("Lanotropíos", "Lan", "Λανοτροπίος"),
