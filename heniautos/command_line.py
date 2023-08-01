@@ -221,6 +221,7 @@ def filtered_festival_calendar(year, args, astro_data):
                              before_event=needs_before(args.calendar),
                              intercalate=args.intercalate,
                              v_off=args.visibility_offset,
+                             s_off=args.solar_offset,
                              data=astro_data()
                              ),
         args)
@@ -468,9 +469,13 @@ under certain conditions."""
                         help="Format times as GMT (rather than EET)")
     parser.add_argument("-v", "--visibility-offset", default=1, type=int,
                         metavar="N",
-                        help="Offset for determining date of new moon. "
+                        help="Offset for determining date of new moon."
                         " N days after astronomical conjunction"
                         "(default: 1)")
+    parser.add_argument("-s", "--solar-offset", metavar="N", default=0,
+                        type=int,
+                        help="Offset for determining the date of solstices "
+                        "and equinoxes") 
     parser.add_argument("-E", "--use-ephemeris", action="store_true",
                         help="Use ephemeris for data")
     parser.add_argument("-e", "--ephemeris", metavar="FILE", type=str,
