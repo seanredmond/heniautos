@@ -142,30 +142,30 @@ def test_generic_festival_calendar():
     assert as_julian(p[0]) == "BCE 0101-Jul-16"
     assert as_julian(p[-1]) == "BCE 0100-Jul-04"
 
-
-def test_generic_festival_calendar_athenian():
-    # Athenian should be the default value
-    p = festival_calendar(-100)
-    assert len(by_months(p)) == 12
-    assert p[0].month is AthenianMonths.HEK
-    assert p[0].month_name == "Hekatombaiṓn"
-    assert as_julian(p[0]) == "BCE 0101-Jul-16"
-
-    # Intercalary year
     p = festival_calendar(-101)
     p_months = by_months(p)
     assert len(p_months) == 13
     # By default, the 7th month should be intercalated
     assert p_months[6][0].month is Months.INT
-    assert p_months[6][0].month_name == "Posideiṓn hústeros"
+    assert p_months[6][0].month_name == "6 hústeros"
 
-    # Intercalate Hek instead
     p = festival_calendar(-101, intercalate=1)
     p_months = by_months(p)
     assert p_months[1][0].month is Months.INT
-    assert p_months[1][0].month_name == "Hekatombaiṓn hústeros"
-    assert p_months[6][0].month is AthenianMonths.POS
-    assert p_months[6][0].month_name == "Posideiṓn"
+    assert p_months[1][0].month_name == "1 hústeros"
+    assert p_months[6][0].month is GenericMonths.M06
+    assert p_months[6][0].month_name == "6"
+
+
+    p = festival_calendar(-101, intercalate=1, name_as=MonthNameOptions.GREEK)
+    p_months = by_months(p)
+    assert p_months[1][0].month_name == "Πρῶτος ὕστερος"
+    assert p_months[6][0].month_name == "Ἕκτος"
+
+    p = festival_calendar(-101, intercalate=1, name_as=MonthNameOptions.ABBREV)
+    p_months = by_months(p)
+    assert p_months[1][0].month_name == "1₂"
+    assert p_months[6][0].month_name == "6"
 
 
 def test_athenian_festival_calendar():
@@ -233,17 +233,15 @@ def test_festival_calendar():
     assert type(p) is tuple
 
     assert type(p[0]) is FestivalDay
-    assert p[0].month_name == "Hekatombaiṓn"
-    assert p[0].month == AthenianMonths.HEK
-    # assert type(p[0]["days"]) is tuple
-    # assert type(p[0]["days"][0]) is dict
+    assert p[0].month_name == "1"
+    assert p[0].month is GenericMonths.M01
     assert p[0].day == 1
     assert as_julian(p[0]) == "BCE 0101-Jul-16"
     assert p[0].doy == 1
 
-    met = [d for d in p if d.month == AthenianMonths.MET]
+    met = [d for d in p if d.month is GenericMonths.M02]
 
-    assert met[0].month_name == "Metageitniṓn"
+    assert met[0].month_name == "2"
     assert met[0].day == 1
     assert as_julian(met[0]) == "BCE 0101-Aug-15"
     assert met[0].doy == 31

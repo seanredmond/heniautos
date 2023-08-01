@@ -81,6 +81,7 @@ class Cal(Enum):
     DELIAN = object()
     DELPHIAN = object()
     SPARTAN = object()
+    GENERIC = object()
 
     def __repr__(self):
         return "<%s.%s>" % (self.__class__.__name__, self._name_)
@@ -186,6 +187,21 @@ class CorinthianMonths(IntEnum):
     APE = 12
 
 
+class GenericMonths(IntEnum):
+    M01 = 1
+    M02 = 2
+    M03 = 3
+    M04 = 4
+    M05 = 5
+    M06 = 6
+    M07 = 7
+    M08 = 8
+    M09 = 9
+    M10 = 10
+    M11 = 11
+    M12 = 12
+
+
 CALENDAR_MAP = {
     Cal.ARGIVE: ArgiveMonths,
     Cal.ATHENIAN: AthenianMonths,
@@ -193,6 +209,7 @@ CALENDAR_MAP = {
     Cal.DELPHIAN: DelphianMonths,
     Cal.DELIAN: DelianMonths,
     Cal.SPARTAN: SpartanMonths,
+    Cal.GENERIC: GenericMonths
 }
 
 # Since the values of Enums like AthenianMonths.HEK and
@@ -271,6 +288,18 @@ MONTH_NAME_MAP = {
     (Cal.ARGIVE, ArgiveMonths.AMU): ("Amuklaîos", "Amu", "Ἀμυκλαῖος"),
     (Cal.ARGIVE, ArgiveMonths.PAN): ("Pánamos", "Pan", "Πάναμος"),
     (Cal.ARGIVE, ArgiveMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
+    (Cal.GENERIC, GenericMonths.M01): ("1", "1", "Πρῶτος"),
+    (Cal.GENERIC, GenericMonths.M02): ("2", "2", "Δεύτερος"),
+    (Cal.GENERIC, GenericMonths.M03): ("3", "3", "Τρίτος"),
+    (Cal.GENERIC, GenericMonths.M04): ("4", "4", "Τέταρτος"),
+    (Cal.GENERIC, GenericMonths.M05): ("5", "5", "Πέμπτος"),
+    (Cal.GENERIC, GenericMonths.M06): ("6", "6", "Ἕκτος"),
+    (Cal.GENERIC, GenericMonths.M07): ("7", "7", "Ἕβδομος"),
+    (Cal.GENERIC, GenericMonths.M08): ("8", "8", "Ὄγδοος"),
+    (Cal.GENERIC, GenericMonths.M09): ("9", "9", "Ἔνατος"),
+    (Cal.GENERIC, GenericMonths.M10): ("10", "10", "Δέκατος"),
+    (Cal.GENERIC, GenericMonths.M11): ("11", "11", "Ἑνδέκατος"),
+    (Cal.GENERIC, GenericMonths.M12): ("12", "12", "Δωδέκατος"),
 }
 
 
@@ -837,7 +866,7 @@ def __make_festival_day(
 
 def festival_calendar(
     year,
-    calendar=Cal.ATHENIAN,
+    calendar=Cal.GENERIC,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     event=Seasons.SUMMER_SOLSTICE,
