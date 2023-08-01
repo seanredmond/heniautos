@@ -1419,6 +1419,40 @@ Returns the date and time of any solstice or equinox, specified as one of the `S
 
     >>> ha.as_eet(ha.solar_event(ha.bce_as_negative(350), ha.Seasons.AUTUMN_EQUINOX), full=True)
     'BCE 0350-Sep-28 15:23:52 EET'
+	
+	
+## Reference
+
+## Generating Calendars
+
+#### `festival_calendar(year, calendar=Cal.ATHENIAN, intercalate=6, name_as=MonthNameOptions.TRANSLITERATION: 0, event=Seasons.SUMMER_SOLSTICE: 1, before_event=False, v_off=1, s_off=0, data=load_data)`
+
+Return a tuple representing festival calendar.
+ 
+Parameters:
+| Name | Expected type | Description |
+| ---- | ------------- | ----------- |
+| year | int | The year for the calendar |
+| calendar | Cal | A `Cal` constant for the requested calendar (default: Cal.ATHENIAN ) |
+| intercalate | int | Month index of month to intercalate if necessary (default: 6) |
+| name\_as | MonthNameOption | Option corresponding to desired form of the month name (transliteration, abbreviation, Greek, default: `MonthNameOptions.TRANSLITERATION`) |
+| event | Season | The solar event with the year begins (default: `Seasons.SUMMER_SOLSTICE`) |
+| before\_event | bool | True if the first month of year begins immediately before the solar\_event, False (default) if it begins after |
+| v\_off | int | Offset from the conjunction for lunar visibility (default: 1) |
+| s\_off | int | Offet for solar event in days (default: 0) |
+| data |   | Astronomical data for calculations. By default this is returned from `load\_data()` |
+ 
+See `visible_new_moons` for documentation of visibility offset.
+ 
+Returns a `tuple` of `FestivalDay` objects with one member for each
+day.
+
+If intercalation is necessary, the month indicated by the `intercalate`
+parameter will be intercalated. For example, the 6th month if
+`intercalate=6` (the default).
+ 
+If the calendar parameter is `None`, a generic calendar will be returned
+with the month and month_name members of each FestivalDay being None.
 
 ## Works Cited
 
