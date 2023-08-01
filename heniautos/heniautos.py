@@ -852,7 +852,7 @@ def festival_calendar(
     year (int) -- The year for the calendar
     calendar (Cal) -- A Cal constant for the requested calendar
     intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
-    name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+    name_as (MonthNameOption) -- Option corresponding to desired form of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
     event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
     before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
     v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
@@ -862,13 +862,12 @@ def festival_calendar(
 
     See visible_new_moons for documentation of visibility offset.
 
-    Returns a tuple of FestivalDay objected with one member for each
-    month. Each member is a tuple of the month name and tuple of start
-    and end dates of the month. See calendar_month for details on the
-    start and end times.
+    Returns a tuple of FestivalDay objects with one member for each
+    day.
 
-    If intercalation is necessary, the intercalated month will be
-    calculated according the the intercalate parameter.
+    If intercalation is necessary, the month indicated by the
+    intercalate parameter will be intercalated. For example, the 6th
+    month if intercalate=6 (the default).
 
     If the calendar parameter is None, a generic calendar will be
     returned with the month and month_name members of each
