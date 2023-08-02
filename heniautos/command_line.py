@@ -229,13 +229,25 @@ def get_calendar(cal):
     return ha.Cal.ATHENIAN
 
 
-def get_solar_event(cal):
+def get_solar_event(cal, start):
+    if cal == "generic":
+        if start == "fall":
+            return ha.Seasons.AUTUMN_EQUINOX
+
+        if start == "winter":
+            return ha.Seasons.WINTER_SOLSTICE
+    
+        if start == "spring":
+            return ha.Seasons.SPRING_EQUINOX
+
+        return ha.Seasons.SUMMER_SOLSTICE
+
     if cal in ("argos", "corinth", "sparta"):
         return ha.Seasons.AUTUMN_EQUINOX
 
     if cal == "delos":
         return ha.Seasons.WINTER_SOLSTICE
-
+    
     return ha.Seasons.SUMMER_SOLSTICE
 
 
@@ -263,7 +275,7 @@ def filtered_festival_calendar(year, args, astro_data):
             year,
             name_as=name_as(args.abbreviations, args.greek_names),
             calendar=get_calendar(args.calendar),
-            event=get_solar_event(args.calendar),
+            event=get_solar_event(args.calendar, args.calendar_start),
             before_event=needs_before(args.calendar),
             intercalate=args.intercalate,
             v_off=args.visibility_offset,
@@ -599,6 +611,13 @@ under certain conditions.""",
         default=0,
         type=int,
         help="Offset for determining the date of solstices " "and equinoxes",
+    )
+    parser.add_argument(
+        "--calendar-start",
+        choices=("summer", "fall", "winter", "spring"),
+        default="summer",
+        type=str,
+        help="Season for beginning of the year (with -c generic, default: summer"
     )
     parser.add_argument(
         "-E", "--use-ephemeris", action="store_true", help="Use ephemeris for data"
