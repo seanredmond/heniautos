@@ -55,15 +55,6 @@ class Seasons(IntEnum):
     WINTER_SOLSTICE = 3
 
 
-class Phases(IntEnum):
-    """Constants representing the lunar phases."""
-
-    NEW = 0
-    FIRST_Q = 1
-    FULL = 2
-    LAST_Q = 3
-
-
 class MonthNameOptions(IntEnum):
     """Options for displaying Greek month names."""
 
@@ -516,40 +507,6 @@ def solar_event(year, e, s_off=0, data=load_data):
         raise HeniautosNoDataError(f"No data for the year {year} CE")
 
 
-# # MAYBE REMOVE because the data only has new moons now
-def __all_moon_phases(year, data):
-    d1 = jd.from_julian(year, 1, 1)
-    d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    return [m for m in data["new_moons"] if d1 <= m[0] <= d2] or None
-
-
-# # MAYBE REMOVE
-def __moon_phases(year, p, data):
-    """Return a list of Julian dates for each indicated lunar phase in the
-    given year.
-
-    Parameters:
-    year -- The year for which the phases are requested
-    p (Phases) -- Constant from Phases indicating the lunar phase
-    data -- Astronomical data for calculations.
-    """
-    try:
-        phases = [mp[0] for mp in __all_moon_phases(year, data) if mp[1] == p]
-        if phases:
-            return phases
-
-        raise HeniautosNoDataError(
-            "No data for requested lunar phase in requested year"
-        )
-    except TypeError:
-        if year < 1:
-            raise HeniautosNoDataError(
-                f"No data for the year {bce_as_negative(year)} BCE"
-            )
-
-        raise HeniautosNoDataError(f"No data for the year {year} CE")
-
-
 def new_moons(year, data=load_data):
     """Return a list of Julian dates for all new moons e in the given year.
 
@@ -558,7 +515,13 @@ def new_moons(year, data=load_data):
     data -- Astronomical data for calculations. By default this is
     returned from load_data()
     """
-    return __moon_phases(year, Phases.NEW, __optionally_load_data(data))
+    d1 = jd.from_julian(year, 1, 1)
+    d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
+    phases = [m[0] for m in __optionally_load_data(data)["new_moons"] if d1 <= m[0] <= d2] or None
+    if phases:
+        return phases
+
+    raise HeniautosNoDataError(f"No data for the year {year}")
 
 
 def visible_new_moons(year, v_off=1, data=load_data):

@@ -394,12 +394,12 @@ def test_no_moon_no_data():
     with pytest.raises(HeniautosNoDataError) as e1:
         new_moons(100)
 
-    assert "100 CE" in str(e1)
+    assert "100" in str(e1)
 
     with pytest.raises(HeniautosNoDataError) as e2:
         new_moons(-999)
 
-    assert "1000 BCE" in str(e2)
+    assert "-999" in str(e2)
 
 
 def test_320():
