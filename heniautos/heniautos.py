@@ -480,7 +480,7 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
     return __gmt_fmt(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
 
 
-def solar_event(year, e, s_off=0, data=load_data):
+def solar_event(year, e, data=load_data):
     """Return a Julian date (float) for the event e in the given year.
 
     Parameters:
@@ -494,7 +494,7 @@ def solar_event(year, e, s_off=0, data=load_data):
         d1 = jd.from_julian(year, 1, 1)
         d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
         return [
-            s[0] + s_off
+            s[0]
             for s in __optionally_load_data(data)["solstices"]
             if s[1] == e and d1 <= s[0] <= d2
         ][0]
@@ -506,6 +506,12 @@ def solar_event(year, e, s_off=0, data=load_data):
 
         raise HeniautosNoDataError(f"No data for the year {year} CE")
 
+
+def observed_solar_event(year, e, s_off=0, data=load_data):
+    """Return solar_event round to JDN and 'observed' according to the offset"""
+    return to_jdn(solar_event(year, e, data=data)) + s_off
+    
+    
 
 def new_moons(year, data=load_data):
     """Return a list of Julian dates for all new moons e in the given year.
@@ -617,8 +623,8 @@ def _calendar_months(
 
     """
     astro_data = __optionally_load_data(data)
-    sol1 = to_jdn(solar_event(year, event, s_off, astro_data))
-    sol2 = to_jdn(solar_event(year + 1, event, s_off, astro_data))
+    sol1 = to_jdn(observed_solar_event(year, event, s_off, astro_data))
+    sol2 = to_jdn(observed_solar_event(year + 1, event, s_off, astro_data))
 
     moons = [
         to_jdn(v)

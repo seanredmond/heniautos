@@ -63,20 +63,39 @@ def test_solar_event():
     )
 
 
-def test_solar_event_offset():
+def test_observed_solar_event():
     assert (
-        as_julian(solar_event(-99, Seasons.SPRING_EQUINOX, s_off=0), True)
-        == "BCE 0100-Mar-23 19:48:34 GMT"
+        as_julian(observed_solar_event(-99, Seasons.SPRING_EQUINOX), True)
+        == "BCE 0100-Mar-23 12:00:00 GMT"
+    )
+    assert (
+        as_julian(observed_solar_event(-99, Seasons.SUMMER_SOLSTICE), True)
+        == "BCE 0100-Jun-25 12:00:00 GMT"
+    )
+    assert (
+        as_julian(observed_solar_event(-99, Seasons.AUTUMN_EQUINOX), True)
+        == "BCE 0100-Sep-26 12:00:00 GMT"
+    )
+    assert (
+        as_julian(observed_solar_event(-99, Seasons.WINTER_SOLSTICE), True)
+        == "BCE 0100-Dec-23 12:00:00 GMT"
+    )
+    
+
+def test_observed_solar_event_offset():
+    assert (
+        as_julian(observed_solar_event(-99, Seasons.SPRING_EQUINOX, s_off=0), True)
+        == "BCE 0100-Mar-23 12:00:00 GMT"
     )
 
     assert (
-        as_julian(solar_event(-99, Seasons.SPRING_EQUINOX, s_off=-1), True)
-        == "BCE 0100-Mar-22 19:48:34 GMT"
+        as_julian(observed_solar_event(-99, Seasons.SPRING_EQUINOX, s_off=-1), True)
+        == "BCE 0100-Mar-22 12:00:00 GMT"
     )
 
     assert (
-        as_julian(solar_event(-99, Seasons.SPRING_EQUINOX, s_off=1), True)
-        == "BCE 0100-Mar-24 19:48:34 GMT"
+        as_julian(observed_solar_event(-99, Seasons.SPRING_EQUINOX, s_off=1), True)
+        == "BCE 0100-Mar-24 12:00:00 GMT"
     )
     
 
