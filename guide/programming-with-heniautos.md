@@ -3,21 +3,8 @@
 [Top: Intro](README.md) | [Previous: `calendar-equation` Command](calendar-equations-command.md) | [Next: Reading Dated Inscriptions](reading-dated-inscriptions.md)
 
 Heniautos generates ancient Greek calendars based on historical
-astronomical data. There are a number of built-in methods for
-specific cities:
-
-- `athenian_festival_calendar()`
-- `argive_festival_calendar()`
-- `corinthian_festival_calendar()`
-- `delian_festival_calendar()`
-- `delphian_festival_calendar()`
-- `spartan_festival_calendar()`
-
-These differ in when the years start and the names of the
-months. There is a generic method, `festival_calendar()`, that will
-allow you to customize these for any other required Greek calendar
-(the specid methods above are simple wrappers around
-`festival_calendar()`).
+astronomical data. There are a number of built-in methods for specific
+cities:
 
 Athens had a separate "conciliar" calendar for official purposes that
 was based on the "tribal" organization of their democratic
@@ -32,22 +19,66 @@ and by default Heniautos can operate on dates between 605 BCE and 2BCE
 to 2102 CE) or for any date if you can supply the astronomical
 data. See Modern Dates and Custom Ranges below.
 
-## The Festival Calendar
-
-You are probably most interested in generating Athenian festival
-calendars. The simplest use of `athenian_festival_calendar()` takes a
-year as the only parameter. The year, however, must be an integer
-according to [Astronomical Year
-Numbering](https://en.wikipedia.org/wiki/Astronomical_year_numbering). Years
-BCE are represented as negative numbersm but 1 BCE is 0 (not -1), 2
-BCE is -1, and so on, with the years offset by 1 in the positive
-direction. To generate a calendar for 400 BCE:
+All the example code below assumes you have imported Heniautos under
+the local name `ha` like so:
 
     >>> import heniautos as ha
-    >>> ha.athenian_festival_calendar(-399)
+
+
+# The Festival Calendar
+
+This section will cover the function for generating Athenian festival
+calendars:
+
+**athenian_festival_calendar(year, intercalate=<AthenianMonths.POS:
+6>, name_as=<MonthNameOptions.TRANSLITERATION: 0>, v_off=1, s_off=0,
+data=load_data**
+
+along with similar functions for generating the calendars of other
+important Greek cities:
+
+- **argive\_festival\_calendar()**
+- **corinthian\_festival\_calendar()**
+- **delian\_festival\_calendar()**
+- **delphian\_festival\_calendar()**
+- **sparta\_festival\_calendar()**
+
+and also the generic function for creating any calendar:
+
+**festival\_calendar(year, calendar=<Cal.GENERIC>, intercalate=6,
+name\_as=<MonthNameOptions.TRANSLITERATION: 0>,
+event=<Seasons.SUMMER\_SOLSTICE: 1>, before\_event=False, v\_off=1,
+s\_off=0, data=load_data)**
+
+In addition, it introduces some utility functions:
+
+- **bce_as_negative(year)**
+- **negative_as_bce(year)**
+- **as_julian(t, full=False, tz=TZOptions.GMT)**
+- **as_gregorian(t, full=False, tz=TZOptions.GMT)**
+- **by_months(p)**
+
+The city-specific calendars differ in the times when the years start
+and in the names of the months. The generic **festival_calendar()**
+method allows you to choose these parameters for any other required
+Greek calendar (the specific methods above are simply wrappers around
+**festival_calendar()**).
+
+ 
+The examples below will use **athenian_festival_calendar()** since
+this is the one you are probably most interested in. This and all the
+city-specific functions take the same parameters and most parameters
+are optional. For the simplest use only the year is required. The
+year, however, must be an integer according to [Astronomical Year
+Numbering](https://en.wikipedia.org/wiki/Astronomical_year_numbering). Years
+BCE are represented as negative numbers but 1 BCE is 0 (not -1), 2 BCE
+is -1, and so on, with the years offset by 1 in the positive
+direction. To generate a calendar for 400 BCE:
+
+    >>> ha.athenian_festival_calendar(-399)	
     
-If you don't want to work out the astronomical year numbering out
-every time, you can use `bce_as_negative()`
+If you don't want to work out the astronomical year numbering every
+time, you can use **bce_as_negative()**
 
     >>> ha.bce_as_negative(400)
     -399
@@ -57,12 +88,34 @@ So these two invocations are equivalent:
     >>> ha.athenian_festival_calendar(-399)
     >>> ha.athenian_festival_calendar(ha.bce_as_negative(400))
 	
-### Year Tuples and `FestivalDay` Objects
+**bce_as_negative()** is its own inverse but, so you don't have to
+remember that (and because it could lead to some obscure code), there
+is an explicit inverse function **negative_as_bce()**:
+
+**bce_as_negative(year)** Convert positive year (considered BCE) to
+negative number.
+
+**negative_as_bce(year)** Convert negative year to positive number
+(considered BCE).
+
+    >>> ha.bce_as_negative(400)
+    -399
+    >>> ha.bce_as_negative(-399)
+    400
+    >>> ha.negative_as_bce(-399)
+    400
+
+
+
+	
+## Year Tuples and FestivalDay Objects
     
-The calendar functions return a tuple of `FestivalDay` objects (which
-are instances of
-[namedtuple](https://docs.python.org/3.11/library/collections.html?highlight=namedtuple#collections.namedtuple)), one `FestivalDay` for each day of the year. The
-first item in the above example would have these properties and values:
+The calendar functions return a tuple of **FestivalDay** objects
+(which are instances of
+[namedtuple](https://docs.python.org/3.11/library/collections.html?highlight=namedtuple#collections.namedtuple)),
+one **FestivalDay** for each day of the year. The first item in the
+tuple returned by the **athenian_festival_calendar()** example above
+would have these properties and values:
 
 | Property | Value | Meaning |
 | -------- | ----- | ------- |
@@ -82,17 +135,22 @@ Athenian year 400/399 BCE. This year (or actually the beginning of the
 year) corresponds to the astronomical year -399 (that is, 400 BCE) and
 the year is calculated to be 354 days long. It is also the first day
 (`day` = 1) of the first month (`month_index` = 1). The month's name
-is Hekatombaiṓn, and it has 29 days.
+is Hekatombaiṓn, and it has 29 days. 
 
-### Julian Day Numbers
+## Julian Day Numbers
 
-No modern (that is, Gregorian of Julian) calendar date is included,
+No modern (that is, Gregorian or Julian) calendar date is included,
 but this can be calculated from the the [Julian Day
-Number](https://en.wikipedia.org/wiki/Julian_day) (JDN) `1564570`. For
-ancient dates, historians usually employ the [Proleptic Julian
+Number](https://en.wikipedia.org/wiki/Julian_day) (JDN)
+`1564570`. This number of the day counting from January 1, 4713 BCE, a
+system devised by [Joseph
+Scaliger](https://en.wikipedia.org/wiki/Joseph_Justus_Scaliger), a
+classical scholar, in 1583 and still used by astronomers and
+chronologists today. For modern (or modern-like) versions of ancient
+dates, historians usually employ the [Proleptic Julian
 Calendar](https://en.wikipedia.org/wiki/Proleptic_Julian_calendar), so
 you will probably want to use `as_julian()` to convert the JDN into a
-Julian calendar (string) equivalent:
+string equivalent od a Julian calendar date:
 
 	>>> ha.as_julian(1575526)
     'BCE 0400-Jul-22'
@@ -110,29 +168,70 @@ these conversations. For more detail refer to that documentation.
 	
 	
 Note that there is no conversion to a Python `date` or `datetime`
-available because the `datetime` library does not handle dates very
-far in the past.
-    
-### Grouping by Month
+available because the `datetime` library does not handle BCE dates.
 
-The tuples returned by the festival calendar contain one object per day. For convenience, there is a function, `by_months()` that will group this into a tuple of tuples. Each member of the outer tuple represents a month and contains a tuple of `FestivalDay` objects for the days in that month:
+`as_julian()` and `as_gregorian()` have some further options:
+
+**as_julian(t, full=False, tz=TZOptions.GMT)**
+
+**as_gregorian(t, full=False, tz=TZOptions.GMT)**
+
+With `full=True` the output includes the time (HH:MM:SS) and timezone
+(GMT by default). **Note** that Julian Days start at noon, so any
+decimal part indicates the fraction of 24 hours following noon and
+therefore anything past .5 (midnight) actually falls into the next
+(Julio-Gregorian) day
+
+    >>> ha.as_julian(1575526.78, full=True)
+    'BCE 0400-Jul-23 06:43:12 GMT'
+    >>> ha.as_gregorian(1575526.78, full=True)
+    'BCE 0400-Jul-18 06:43:12 GMT'
+    >>>
+	
+The `tz` parameter takes one of two options: `TZOptions.GMT` (The
+default) or `TZOptions.ALT`. Since there were no time zones and no
+daylight savings time in the ancient world, ALT is an invented
+"timezone" that advances the time about 1 hour 35 minutes to reflect
+the fact that Athens is about 23.73 degrees east of the meridian. That
+is, if you were measuring time exactly by the sun, by the time it
+reaches noon in Greenwich, it is already almost 1:35 PM in Athens.
+
+    >>> ha.as_julian(1575526.78, full=True, tz=ha.TZOptions.ALT)
+    'BCE 0400-Jul-23 08:18:06 ALT'
+    >>> ha.as_gregorian(1575526.78, full=True, tz=ha.TZOptions.ALT)
+    'BCE 0400-Jul-18 08:18:06 ALT'
+
+## Grouping by Month
+
+The tuples returned by the festival calendar contain one object per day. For convenience, there is a `by_months()` function that will group this into a tuple of tuples. Each member of the outer tuple represents a month and contains a tuple of `FestivalDay` objects for the days in that month
+
+**by_months(p)** Return festival calendar grouped into a tuple of tuples by months.
 
     >>> year = ha.athenian_festival_calendar(ha.bce_as_negative(400))
     >>> len(year)
     354
+	>>> (year[0].month_name, year[0].day)
+    ('Hekatombaiṓn', 1)
+    >>> (year[1].month_name, year[1].day)
+    ('Hekatombaiṓn', 2)
+	>>>
     >>> months = ha.by_months(year)
     >>> len(months)
     12
     >>> len(months[0])
     29
+	>>> (months[0][0].month_name, months[0][0].day)
+    ('Hekatombaiṓn', 1)
+    >>> (months[1][0].month_name, months[1][0].day)
+    ('Metageitniṓn', 1)
 	
-### Options for the Output
+## Options for the Output
 
 The festival calendar functions have optional parameters that allow
 you to change how the month names are returned, what month is
 intercalated, and exactly when the month starts.
 
-#### Month Names
+### Month Names
 
 The optional `name_as` parameter controls the form of the `month_name`
 property of the `FestivalDay` objects. The choices are:
@@ -158,7 +257,7 @@ And to get the month names in Greek, use ha.MonthNameOptions.GREEK:
     'Ἑκατομβαιών'
 	
 	
-#### Intercalated Month
+### Intercalated Month
 
 When intercalations are required (see Festival Calendar Basics)
 Heniautos intercalates some default month (usually the sixth), but
@@ -169,22 +268,24 @@ intercalated month will be a second Posideiṓn, _Posideiṓn hústeros_.
 
     >>> year = ha.athenian_festival_calendar(-210)
     >>> months = ha.by_months(year)
-    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
-    >>> print("\n".join(month_names))
-    BCE 0211-Jul-04: Hekatombaiṓn
-    BCE 0211-Aug-02: Metageitniṓn
-    BCE 0211-Aug-31: Boēdromiṓn
-    BCE 0211-Sep-30: Puanopsiṓn
-    BCE 0211-Oct-29: Maimaktēriṓn
-    BCE 0211-Nov-28: Posideiṓn
-    BCE 0211-Dec-27: Posideiṓn hústeros
-    BCE 0210-Jan-26: Gamēliṓn
-    BCE 0210-Feb-24: Anthestēriṓn
-    BCE 0210-Mar-26: Elaphēboliṓn
-    BCE 0210-Apr-25: Mounukhiṓn
-    BCE 0210-May-24: Thargēliṓn
-    BCE 0210-Jun-23: Skirophoriṓn	
-	
+    >>> month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...	
+    ('BCE 0211-Jul-04', 'Hekatombaiṓn')
+    ('BCE 0211-Aug-02', 'Metageitniṓn')
+    ('BCE 0211-Aug-31', 'Boēdromiṓn')
+    ('BCE 0211-Sep-30', 'Puanopsiṓn')
+    ('BCE 0211-Oct-29', 'Maimaktēriṓn')
+    ('BCE 0211-Nov-28', 'Posideiṓn')
+    ('BCE 0211-Dec-27', 'Posideiṓn hústeros')
+    ('BCE 0210-Jan-26', 'Gamēliṓn')
+    ('BCE 0210-Feb-24', 'Anthestēriṓn')
+    ('BCE 0210-Mar-26', 'Elaphēboliṓn')
+    ('BCE 0210-Apr-25', 'Mounukhiṓn')
+    ('BCE 0210-May-24', 'Thargēliṓn')
+    ('BCE 0210-Jun-23', 'Skirophoriṓn')
+
 However we know from an inscription, [IG II³,1
 1137](https://inscriptions.packhum.org/text/347432), not only that
 211/210 *was* an interalary year but also that Anthestēriṓn was the
@@ -194,23 +295,25 @@ constant (see Month Constants below), in this case
 
     >>> year = ha.athenian_festival_calendar(-210, intercalate=ha.AthenianMonths.ANT)
     >>> months = ha.by_months(year)
-    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
-    >>> print("\n".join(month_names))
-    BCE 0211-Jul-04: Hekatombaiṓn
-    BCE 0211-Aug-02: Metageitniṓn
-    BCE 0211-Aug-31: Boēdromiṓn
-    BCE 0211-Sep-30: Puanopsiṓn
-    BCE 0211-Oct-29: Maimaktēriṓn
-    BCE 0211-Nov-28: Posideiṓn
-    BCE 0211-Dec-27: Gamēliṓn
-    BCE 0210-Jan-26: Anthestēriṓn
-    BCE 0210-Feb-24: Anthestēriṓn hústeros
-    BCE 0210-Mar-26: Elaphēboliṓn
-    BCE 0210-Apr-25: Mounukhiṓn
-    BCE 0210-May-24: Thargēliṓn
-    BCE 0210-Jun-23: Skirophoriṓn	
+    >>> month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0211-Jul-04', 'Hekatombaiṓn')
+    ('BCE 0211-Aug-02', 'Metageitniṓn')
+    ('BCE 0211-Aug-31', 'Boēdromiṓn')
+    ('BCE 0211-Sep-30', 'Puanopsiṓn')
+    ('BCE 0211-Oct-29', 'Maimaktēriṓn')
+    ('BCE 0211-Nov-28', 'Posideiṓn')
+    ('BCE 0211-Dec-27', 'Gamēliṓn')
+    ('BCE 0210-Jan-26', 'Anthestēriṓn')
+    ('BCE 0210-Feb-24', 'Anthestēriṓn hústeros')
+    ('BCE 0210-Mar-26', 'Elaphēboliṓn')
+    ('BCE 0210-Apr-25', 'Mounukhiṓn')
+    ('BCE 0210-May-24', 'Thargēliṓn')
+    ('BCE 0210-Jun-23', 'Skirophoriṓn')
 
-#### First Day of the Month
+### First Day of the Month
 
 To the Greeks, "new moon" meant the first night that the first sliver
 of the waxing crescent was visible (see Festival Calendar Basics). We
@@ -242,8 +345,46 @@ day of the conjunction.
 
     >>> ha.as_julian(ha.athenian_festival_calendar(-399, v_off=2)[0].jdn)
     'BCE 0400-Jul-23'
+	
+### Day of the Solstice
 
-### Other Calendars
+Just as we can't be sure when (even if) the Ancient Greek literally
+sighted the new moon, we can't be sure when they observed a solstice
+or equinox. By default, Heniautos treats the solstices and equinoxes
+as observed on the days which they actually occurred but, to handle
+the uncertainty, you can adjust this by supplying an integer with the
+`s_off` parameter. 
+
+This will only be obvious (at least with reasonable values) in the case of intercalations. For instance, They year 422 BCE should begin on July 26
+
+    >>> ha.as_julian(ha.athenian_festival_calendar(-421)[0].jdn)
+    'BCE 0422-Jul-26'
+
+However, the previous new moon, on _June_ 26 would have been very
+close to the solstice that year (June 28). If the solstice was
+observed just two days early, that would put it on the _same day_ as
+the June 26 new moon and the year (at least as Heniautos calculates
+it) would begin the next day.
+
+    >>> ha.as_julian(ha.athenian_festival_calendar(-421, s_off=-2)[0].jdn)
+    'BCE 0422-Jun-27'
+	
+Something similar can be achieved by combining `v_off` and `s_off`. In
+this case using `s_off=-1` to indicate a solstice observed one day
+before the true solstice and `v_off=2` to indicate a new moon observed
+two days after the conjunction (rather than 1) you get:
+
+    >>> ha.as_julian(ha.athenian_festival_calendar(-421, s_off=-1, v_off=2)[0].jdn)
+    'BCE 0422-Jun-28'
+	
+In general, the default values will be good enough. There are times,
+though, that you may want to explore other options. For example, though
+the details are not important here, there is some reason to believe
+that 422/421 BCE was intercalary and may have begun just before summer
+solstice.
+
+
+## Other Calendars
 
 The various calendars of different Greek cities had different month
 names and began relative to different solstices or equinoxes. They
@@ -257,105 +398,376 @@ year, but different names:
 
     >>> year = ha.delphian_festival_calendar(-399)
     >>> months = ha.by_months(year)
-    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
-    >>> print("\n".join(month_names))
-    BCE 0400-Jul-22: Apellaîos
-    BCE 0400-Aug-20: Boukátios
-    BCE 0400-Sep-19: Boathóos
-    BCE 0400-Oct-18: Heraîos
-    BCE 0400-Nov-17: Dadaphórios
-    BCE 0400-Dec-17: Poitrópios
-    BCE 0399-Jan-16: Amálios
-    BCE 0399-Feb-15: Búsios
-    BCE 0399-Mar-16: Theoxénios
-    BCE 0399-Apr-14: Enduspoitrópios
-    BCE 0399-May-14: Herákleios
-    BCE 0399-Jun-12: Ilaîos
-	
+    >>> month_names = month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0400-Jul-22', 'Apellaîos')
+    ('BCE 0400-Aug-20', 'Boukátios')
+    ('BCE 0400-Sep-19', 'Boathóos')
+    ('BCE 0400-Oct-18', 'Heraîos')
+    ('BCE 0400-Nov-17', 'Dadaphórios')
+    ('BCE 0400-Dec-17', 'Poitrópios')
+    ('BCE 0399-Jan-16', 'Amálios')
+    ('BCE 0399-Feb-15', 'Búsios')
+    ('BCE 0399-Mar-16', 'Theoxénios')
+    ('BCE 0399-Apr-14', 'Enduspoitrópios')
+    ('BCE 0399-May-14', 'Herákleios')
+    ('BCE 0399-Jun-12', 'Ilaîos')
+
 On Delos, some of the month names were the same as the Athenian, but the year began after the *winter* solstice.
 
     >>> year = ha.delian_festival_calendar(-399)
     >>> months = ha.by_months(year)
-    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
-    >>> print("\n".join(month_names))
-    BCE 0399-Jan-16: Lēnaiṓn
-    BCE 0399-Feb-15: Hierós
-    BCE 0399-Mar-16: Galaxiṓn
-    BCE 0399-Apr-14: Artemisiṓn
-    BCE 0399-May-14: Thargēliṓn
-    BCE 0399-Jun-12: Pánēmos
-    BCE 0399-Jul-11: Hekatombaiṓn
-    BCE 0399-Aug-10: Metageitniṓn
-    BCE 0399-Sep-08: Bouphoniṓn
-    BCE 0399-Oct-08: Apatouriṓn
-    BCE 0399-Nov-06: Arēsiṓn
-    BCE 0399-Dec-06: Posideiṓn
-	
-Something special to not about this invocation of
-`delian_festival_calendar()`. Ancient Greek years usually span two
-Julian years (the end of one and beginning of the next) so we refer to
-the Athenian year 400/399. To get the calendar from
-`athenian_festival_year()` you pass it the first year of the span, 400
-BCE or, in astronomical year numbering, -399. Think of this as the
+    >>> month_names = month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0399-Jan-16', 'Lēnaiṓn')
+    ('BCE 0399-Feb-15', 'Hierós')
+    ('BCE 0399-Mar-16', 'Galaxiṓn')
+    ('BCE 0399-Apr-14', 'Artemisiṓn')
+    ('BCE 0399-May-14', 'Thargēliṓn')
+    ('BCE 0399-Jun-12', 'Pánēmos')
+    ('BCE 0399-Jul-11', 'Hekatombaiṓn')
+    ('BCE 0399-Aug-10', 'Metageitniṓn')
+    ('BCE 0399-Sep-08', 'Bouphoniṓn')
+    ('BCE 0399-Oct-08', 'Apatouriṓn')
+    ('BCE 0399-Nov-06', 'Arēsiṓn')
+    ('BCE 0399-Dec-06', 'Posideiṓn')
+
+Something special to note about this invocation of
+**delian_festival_calendar()**. Ancient Greek years usually span two
+Julian years (the end of one and beginning of the next). This is why we
+refer to the Athenian year 400/399: because it begins in the middle of
+400 and ends in the middle of 399. To get the calendar from
+**athenian_festival_year()** you pass it the first year of the span,
+400 BCE or, in astronomical year numbering, -399. Think of this as the
 year of the summer solstice after which the year begins.
 
 Because the winter solstice falls near the end of December, a
-lunisolar years following this solstice will frequently not begin
-until the next Julian year. In the example above,
-`delian_festival_calendar(-399)` asks for the year following the
-winter solstice of 400 BCE, which we would have to call 399/398.
+lunisolar year following this solstice will frequently not begin until
+the next Julian year. In the example above,
+**delian_festival_calendar(-399)** asks for the year following the
+winter solstice of 400 BCE, which doesn't begin until January 16, 399
+and we would have to call it 399/398.
 
-The Corinthia, Delian, and Spartan calendars all begin with at the
-last new moon _before_ the autumn equinox so that the equinox falls in
-the first month (unlike the Athenian, where the solstice falls in the
-*last* month)
+The Corinthian, Argive, and Spartan calendars probably all begin at
+the _last new moon before_ the autumn equinox so that the equinox
+falls in the first month (unlike the Athenian, where the solstice
+falls in the *last* month)
 
     >>> year = ha.corinthian_festival_calendar(-399)
     >>> months = ha.by_months(year)
-    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
-    >>> print("\n".join(month_names))
-    BCE 0400-Sep-19: Phoinikaîos
-    BCE 0400-Oct-18: Kráneios
-    BCE 0400-Nov-17: Lanotropíos
-    BCE 0400-Dec-17: Makhaneús
-    BCE 0399-Jan-16: Dōdekateús
-    BCE 0399-Feb-15: Εúkleios
-    BCE 0399-Mar-16: Artemísios
-    BCE 0399-Apr-14: Psudreús
-    BCE 0399-May-14: Gameílios
-    BCE 0399-Jun-12: Agriánios
-    BCE 0399-Jul-11: Pánamos
-    BCE 0399-Aug-10: Apellaîos
+    >>> month_names = month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0400-Sep-19', 'Phoinikaîos')
+    ('BCE 0400-Oct-18', 'Kráneios')
+    ('BCE 0400-Nov-17', 'Lanotropíos')
+    ('BCE 0400-Dec-17', 'Makhaneús')
+    ('BCE 0399-Jan-16', 'Dōdekateús')
+    ('BCE 0399-Feb-15', 'Εúkleios')
+    ('BCE 0399-Mar-16', 'Artemísios')
+    ('BCE 0399-Apr-14', 'Psudreús')
+    ('BCE 0399-May-14', 'Gameílios')
+    ('BCE 0399-Jun-12', 'Agriánios')
+    ('BCE 0399-Jul-11', 'Pánamos')
+    ('BCE 0399-Aug-10', 'Apellaîos')
 
-We don't know all the names of the Spartan month or their order, so these are simply all called "Unknown"
+We don't know all the names of the Spartan month or their order, so
+`spartan_festival_calendar()` returns a generic calendar (see Generic
+Calendar) below in which the months are simply numbered:
 
     >>> year = ha.spartan_festival_calendar(-399)
     >>> months = ha.by_months(year)
-    >>> month_names = [f"{ha.as_julian(m[0].jdn)}: {m[0].month_name}" for m in months]
-    >>> print("\n".join(month_names))
-    BCE 0400-Sep-19: Unknown 1
-    BCE 0400-Oct-18: Unknown 2
-    BCE 0400-Nov-17: Unknown 3
-    BCE 0400-Dec-17: Unknown 4
-    BCE 0399-Jan-16: Unknown 5
-    BCE 0399-Feb-15: Unknown 6
-    BCE 0399-Mar-16: Unknown 7
-    BCE 0399-Apr-14: Unknown 8
-    BCE 0399-May-14: Unknown 9
-    BCE 0399-Jun-12: Unknown 10
-    BCE 0399-Jul-11: Unknown 11
-    BCE 0399-Aug-10: Unknown 12
+    >>> month_names = month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0400-Sep-19', '1')
+    ('BCE 0400-Oct-18', '2')
+    ('BCE 0400-Nov-17', '3')
+    ('BCE 0400-Dec-17', '4')
+    ('BCE 0399-Jan-16', '5')
+    ('BCE 0399-Feb-15', '6')
+    ('BCE 0399-Mar-16', '7')
+    ('BCE 0399-Apr-14', '8')
+    ('BCE 0399-May-14', '9')
+    ('BCE 0399-Jun-12', '10')
+    ('BCE 0399-Jul-11', '11')
+    ('BCE 0399-Aug-10', '12')
+	
+The months of fully generic calendar (see below) have ordinal numbers as Greek names: Πρῶτος, Δεύτερος, etc. So that a Spartan calendar cannot be confused with a truly generic calendar, the Greek names of Spartan months are δεῖνα αʹ, δεῖνα βʹ, etc. (which you can interpret as "Unknown 1", "Unknown 2"):
+
+    >>> year = ha.spartan_festival_calendar(-399, name_as=ha.MonthNameOptions.GREEK)
+    >>> months = ha.by_months(year)
+    >>> month_names = month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0400-Sep-19', 'δεῖνα αʹ')
+    ('BCE 0400-Oct-18', 'δεῖνα βʹ')
+    ('BCE 0400-Nov-17', 'δεῖνα γʹ')
+    ('BCE 0400-Dec-17', 'δεῖνα δʹ')
+    ('BCE 0399-Jan-16', 'δεῖνα εʹ')
+    ('BCE 0399-Feb-15', 'δεῖνα ϛʹ')
+    ('BCE 0399-Mar-16', 'δεῖνα ζʹ')
+    ('BCE 0399-Apr-14', 'δεῖνα ηʹ')
+    ('BCE 0399-May-14', 'δεῖνα θʹ')
+    ('BCE 0399-Jun-12', 'δεῖνα ιʹ')
+    ('BCE 0399-Jul-11', 'δεῖνα ιαʹ')
+    ('BCE 0399-Aug-10', 'δεῖνα ιβʹ')
+	
+
+## Generic Calendar
+
+The a function for creating a generic calendar (the calendar-specific
+functions are simply wrappers around this):
+
+**festival\_calendar(year, calendar=<Cal.GENERIC>, intercalate=6,
+name\_as=<MonthNameOptions.TRANSLITERATION: 0>,
+event=<Seasons.SUMMER\_SOLSTICE: 1>, before\_event=False, v\_off=1,
+s\_off=0, data=load_data)**
+
+With the default values it returns a calendar that begins after the
+summer solstice with months that are simply numbered:
+
+    >>> year = ha.festival_calendar(-399)
+    >>> months = ha.by_months(year)
+    >>> month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0400-Jul-22', '1')
+    ('BCE 0400-Aug-20', '2')
+    ('BCE 0400-Sep-19', '3')
+    ('BCE 0400-Oct-18', '4')
+    ('BCE 0400-Nov-17', '5')
+    ('BCE 0400-Dec-17', '6')
+    ('BCE 0399-Jan-16', '7')
+    ('BCE 0399-Feb-15', '8')
+    ('BCE 0399-Mar-16', '9')
+    ('BCE 0399-Apr-14', '10')
+    ('BCE 0399-May-14', '11')
+    ('BCE 0399-Jun-12', '12')
+
+
+The Greek option gives the months named by Greek numerals. Some calendars were actually this generic. For instance, the Achaean calendar began after the autumn equinox, and the months were simply numbered. With the corresponding options, we can generate this:
+
+    >>> year = ha.festival_calendar(-399, event=ha.Seasons.AUTUMN_EQUINOX, name_as=ha.MonthNameOptions.GREEK)
+    >>> months = ha.by_months(year)
+    >>> month_names = [(ha.as_julian(m[0].jdn), m[0].month_name) for m in months]
+    >>> for m in month_names:
+    ...     print(m)
+    ...
+    ('BCE 0400-Oct-18', 'Πρῶτος')
+    ('BCE 0400-Nov-17', 'Δεύτερος')
+    ('BCE 0400-Dec-17', 'Τρίτος')
+    ('BCE 0399-Jan-16', 'Τέταρτος')
+    ('BCE 0399-Feb-15', 'Πέμπτος')
+    ('BCE 0399-Mar-16', 'Ἕκτος')
+    ('BCE 0399-Apr-14', 'Ἕβδομος')
+    ('BCE 0399-May-14', 'Ὄγδοος')
+    ('BCE 0399-Jun-12', 'Ἔνατος')
+    ('BCE 0399-Jul-11', 'Δέκατος')
+    ('BCE 0399-Aug-10', 'Ἑνδέκατος')
+    ('BCE 0399-Sep-08', 'Δωδέκατος')
+
+
+## The `data` Parameter
+
+This parameter is used to supply your own astronomical (solstice, equinox, and new moon data). See "Ephimerides and Custom Data" below.
+
+# Constants for Months and Seasons
+
+This section will cover constants used to identify various calendar
+months (**AthenianMonths**, **ArgiveMonths**, **CorinthianMonths**,
+**DelianMonths**, **DelphianMonths**, and **GenericMonths**) and those
+used to identify seasons (that is solstices and equinoxes) **Season**
+
+It also introduces functions that use these constants to retrieve
+month names and dates for solstices, equinoxes, and new moons.
+
+**solar_event(year, e, data=load_data)**
+
+**observed_solar_event(year, e, s_off=0, data=load_data)**
+
+**new_moons(year, data=load_data)**
+
+**visible_new_moons(year, v_off=1, data=load_data)**
+
+
+## Months
+
+Months are represented by one set of constants for each calendar available in Heniautos. Each constant has an integer value that is the normal position of the month in the given calendar. For instance, for the Athenian calendar the constants come from **AthenianMonths**:
+
+    >>> for m in tuple(ha.AthenianMonths):
+    ...     m
+    ...
+    <AthenianMonths.HEK: 1>
+    <AthenianMonths.MET: 2>
+    <AthenianMonths.BOE: 3>
+    <AthenianMonths.PUA: 4>
+    <AthenianMonths.MAI: 5>
+    <AthenianMonths.POS: 6>
+    <AthenianMonths.GAM: 7>
+    <AthenianMonths.ANT: 8>
+    <AthenianMonths.ELA: 9>
+    <AthenianMonths.MOU: 10>
+    <AthenianMonths.THA: 11>
+    <AthenianMonths.SKI: 12>
+	
+The integer values can be used:
+
+    >>> int(ha.AthenianMonths.SKI)
+    12
+    >>> ha.AthenianMonths.SKI > ha.AthenianMonths.HEK
+    True
+	
+The `month` property of a **FestivalDay** contains the month
+constant. Due to intercalation, this value may not be the same as the
+position of the _given_ month in a _given_ year. The position of the
+month in a given year should always be determined by the `month_index`
+property of a **FestivalDay**. That is in an ordinary year, like 426
+BCE, the constant values will correspond to the month indices. If we
+examine Elaphēboliṓn (normally the 9th month) 426, for instance:
+
+    >>> m = ha.by_months(ha.athenian_festival_calendar(-425))
+    >>> (m[8][0].month_index, m[8][0].month)
+    (9, <AthenianMonths.ELA: 9>)	
+	
+If 425 BCE is intercalary though, and the intercalary month is the
+6th, Posideiṓn, Elaphēboliṓn, will be the tenth month:
+
+    >>> m = ha.by_months(ha.athenian_festival_calendar(-424))
+    >>> (m[5][0].month_index, m[5][0].month)
+    (6, <AthenianMonths.POS: 6>)
+    >>> (m[6][0].month_index, m[6][0].month)
+    (7, <Months.INT: 13>)
+    >>> (m[9][0].month_index, m[9][0].month)
+    (10, <AthenianMonths.ELA: 9>)
+
+Note that the intercalary month is always assigned the month constant
+`Months.INT` (regardless of the specific calendar).
+
+The other month constants are **ArgiveMonths**, **CorinthianMonths**,
+**DelianMonths**, **DelphianMonths**, and **GenericMonths**. Some
+months on different calendars have the same names but are represented
+by different constants. For instance, Hekatombaiṓn occurs both on the
+Athenian calendar, as the first month, and the Delian calendar, as the
+seventh (though they usually occur at the same time since the Delian
+year begins six months before the Athenian). These are represented by
+two different constants:
+
+    >>> ha.AthenianMonths.HEK
+    <AthenianMonths.HEK: 1>
+    >>> ha.DelianMonths.HEK
+    <DelianMonths.HEK: 7>
+    >>> ha.AthenianMonths.HEK == ha.DelianMonths.HEK
+    False
+	
+The **spartan_festival_calendar()** returns **GenericMonths** because
+we do not know the actual months:
+
+    >>> ha.spartan_festival_calendar(-399)[0].month
+    <GenericMonths.M01: 1>
     
-The Athenian year began at the first new moon after the summer solstice. Most festival years were 354 (sometimes 355) days long, but every second or third year, this was not long enough to last until the solstice and a thirteenth month needed added, or intercalated, to create a 384-day intercalary year. Heniautos does this automatically, adding an intercalary Posideiṓn (the 6th month) by default. You can control which month is intercalated, as well as many other details, by passing parameters to `festival_calendar()` (see below).
-    
-### The Conciliar Calendar
+Use the **month_name()** function to convert a constant to its
+transliterated name (default), abbreviation, or Greek name.
+	
+**month_name(month, name_as=MonthNameOptions.TRANSLITERATION)**:
 
-Athens had a second calendar, called the conciliar calendar, by which public business was done. Instead of months, this calendar had πρυτανείαι, “prytanies” or “presidencies.” Each of the _phulai_ or “tribes” presided, as the _prutaneis_ or “presidents,” over the council for one prytany each year.
+    >>> ha.month_name(ha.AthenianMonths.HEK)
+    'Hekatombaiṓn'
+    >>> ha.month_name(ha.AthenianMonths.HEK, name_as=ha.MonthNameOptions.ABBREV)
+    'Hek'
+    >>> ha.month_name(ha.AthenianMonths.HEK, name_as=ha.MonthNameOptions.GREEK)
+    'Ἑκατομβαιών'
+	
+## Seasons
 
-Conciliar calendar functions are in a sub-package `heniautos.prytanies`
+We saw the **Seasons** constants above under the generic
+**festival_calendar()**. These identify the solstices and equinoxes
+that are important to Greek calendars:
 
-    >>> import heniautos as ha
+    >>> for s in ha.Seasons:
+    ...     s
+    ...
+    <Seasons.SPRING_EQUINOX: 0>
+    <Seasons.SUMMER_SOLSTICE: 1>
+    <Seasons.AUTUMN_EQUINOX: 2>
+    <Seasons.WINTER_SOLSTICE: 3>
+
+To find the date of a historical solstice or equinox, use
+**solar_event()** or **observed_solar_event()** with one of these constants.
+
+**solar_event(year, e, data=load_data)**
+
+**observed_solar_event(year, e, s_off=0, data=load_data)**
+
+The difference between the two is that **solar_event()** returns the
+exact Julian Date of the event (that is, the astronomical truth):
+
+    >>> ha.solar_event(-399, ha.Seasons.SUMMER_SOLSTICE)
+    1575501.7962411924
+    >>> ha.as_julian(ha.solar_event(-399, ha.Seasons.SUMMER_SOLSTICE), full=True)
+    'BCE 0400-Jun-28 07:06:35 GMT'
+	
+**observed_solar_event()** returns the event rounded to the nearest
+Julian Day Number, optionally adjusted by the offset `s_off`
+(discussed above)
+
+    >>> ha.observed_solar_event(-399, ha.Seasons.SUMMER_SOLSTICE)
+    1575502
+    >>> ha.as_julian(ha.observed_solar_event(-399, ha.Seasons.SUMMER_SOLSTICE), full=True)
+    'BCE 0400-Jun-28 12:00:00 GMT'
+    >>> ha.as_julian(ha.observed_solar_event(-399, ha.Seasons.SUMMER_SOLSTICE, s_off=-1), full=True)
+    'BCE 0400-Jun-27 12:00:00 GMT'	
+	
+Like solar events, there are functions for new moons and visible new moons.
+
+**new_moons(year, data=load_data)**
+
+**visible_new_moons(year, v_off=1, data=load_data)**
+
+**new_moons()** returns exact Julian Dates, while
+**visible_new_moons()** are rounded to the nearest Julian Day Number
+with an offset. In this case the default offset is 1 day. They also
+return tuples containinf the dates of all the new moons in the
+calendar (not the Greek) year
+
+    >>> ha.new_moons(-399)
+    (1575348.655074811, 1575378.1413952103, 1575407.517358738, 1575436.8253117797, 1575466.1110969426, 1575495.4158226792, 1575524.7752166032, 1575554.222185349, 1575583.7858906111, 1575613.4801067342, 1575643.281607354, 1575673.119159554)
+    >>> ha.visible_new_moons(-399)
+    (1575350, 1575379, 1575409, 1575438, 1575467, 1575496, 1575526, 1575555, 1575585, 1575614, 1575644, 1575674)
+    >>> ha.visible_new_moons(-399, v_off=2)
+    (1575351, 1575380, 1575410, 1575439, 1575468, 1575497, 1575527, 1575556, 1575586, 1575615, 1575645, 1575675)
+
+Internally, these functions are used to determine the dates of months
+in the Greek year, and most importantly, when the year starts. If the
+_observed_ summer solstice of 400 BCE is on JDN 1575502 (June 28),
+then the next year begins at the first _visible_ new moon after, which
+falls on JDN 1575526 (July 22) and the following months begin on each
+following visible new moon.
+
+
+# The Conciliar Calendar
+
+Athens had a second calendar, called the conciliar calendar, by which
+public business was done. Instead of months, this calendar had
+πρυτανείαι, “prytanies” or “presidencies.” Each of the _phulai_ or
+“tribes” presided, as the _prutaneis_ or “presidents,” over the
+council for one prytany each year.
+
+Conciliar calendar functions are in a sub-package
+`heniautos.prytanies` and the examples below assume you have imported
+this package like so:
+
     >>> import heniautos.prytanies as pryt
+
+
     >>> pryt_year = pryt.prytany_calendar(ha.bce_as_negative(407))
 
 `prytany_calendar` returns a tuple of `PrytanyDay` objects (another `namedtuple`). The first item in the above example has the following properties and values:
@@ -1421,11 +1833,9 @@ Returns the date and time of any solstice or equinox, specified as one of the `S
     'BCE 0350-Sep-28 15:23:52 EET'
 	
 	
-## Reference
+# Reference
 
-## Generating Calendars
-
-#### `festival_calendar(year, calendar=Cal.ATHENIAN, intercalate=6, name_as=MonthNameOptions.TRANSLITERATION: 0, event=Seasons.SUMMER_SOLSTICE: 1, before_event=False, v_off=1, s_off=0, data=load_data)`
+## `festival_calendar(year, calendar=Cal.ATHENIAN, intercalate=6, name_as=MonthNameOptions.TRANSLITERATION: 0, event=Seasons.SUMMER_SOLSTICE: 1, before_event=False, v_off=1, s_off=0, data=load_data)`
 
 Return a tuple representing festival calendar.
  
@@ -1440,7 +1850,7 @@ Parameters:
 | before\_event | bool | True if the first month of year begins immediately before the solar\_event, False (default) if it begins after |
 | v\_off | int | Offset from the conjunction for lunar visibility (default: 1) |
 | s\_off | int | Offet for solar event in days (default: 0) |
-| data |   | Astronomical data for calculations. By default this is returned from `load\_data()` |
+| data |   | Astronomical data for calculations. By default this is returned from `load_data()` |
  
 See `visible_new_moons` for documentation of visibility offset.
  
