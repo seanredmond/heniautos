@@ -525,7 +525,7 @@ def new_moons(year, data=load_data):
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
     phases = [m[0] for m in __optionally_load_data(data)["new_moons"] if d1 <= m[0] <= d2] or None
     if phases:
-        return phases
+        return tuple(phases)
 
     raise HeniautosNoDataError(f"No data for the year {year}")
 
@@ -549,7 +549,7 @@ def visible_new_moons(year, v_off=1, data=load_data):
     crescent is assumed to be visible the day of the conjunction.
 
     """
-    return [to_jdn(n) + v_off for n in new_moons(year, data=data)]
+    return tuple([to_jdn(n) + v_off for n in new_moons(year, data=data)])
 
 
 def month_name(month, name_as=MonthNameOptions.TRANSLITERATION):
