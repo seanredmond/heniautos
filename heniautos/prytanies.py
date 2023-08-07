@@ -148,7 +148,7 @@ def _pryt_auto(year):
             "of democracy in Athens in 508 BCE"
         )
 
-    if year >= -507 and year <= -402:
+    if year >= -507 and year <= -375:
         return Prytany.QUASI_SOLAR
 
     if year >= -306 and year <= -223:
