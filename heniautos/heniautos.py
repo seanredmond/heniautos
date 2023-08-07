@@ -664,8 +664,15 @@ def __festival_months(
         ]
     )
 
+calendar_months = _calendar_months
 
 def _doy_gen(n=1):
+    """Recursivly return natural numbers starting with n."""
+    yield n
+    yield from _doy_gen(n + 1)
+
+
+def doy_gen(n=1):
     """Recursivly return natural numbers starting with n."""
     yield n
     yield from _doy_gen(n + 1)
@@ -1255,6 +1262,9 @@ def gregorian_to_festival(
 def _calendar_groups(c, func):
     """Group calendar by func."""
     return [tuple(g[1]) for g in groupby(c, key=func)]
+
+
+calendar_groups = _calendar_groups
 
 
 def by_months(p):

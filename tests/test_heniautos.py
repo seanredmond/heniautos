@@ -101,7 +101,7 @@ def test_observed_solar_event_offset():
 
 def test_new_moons():
     p = new_moons(-99)
-    assert type(p) is list
+    assert type(p) is tuple
     assert as_julian(p[0], True) == "BCE 0100-Jan-09 12:44:18 GMT"
 
 

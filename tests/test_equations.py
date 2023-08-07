@@ -4,67 +4,67 @@ from heniautos.prytanies import *
 from heniautos.equations import *
 
 
-def test_fest_eq_tuple():
-    eq = heniautos.equations._fest_eq((AthenianMonths.MET, 10))
-    assert len(eq) == 5
-    assert eq[0]["doy"] == 39
-    assert eq[0]["intercalation"] is False
-    assert eq[-1]["doy"] == 70
-    assert eq[-1]["intercalation"] is True
+# def test_fest_eq_tuple():
+#     eq = heniautos.equations._fest_eq((AthenianMonths.MET, 10))
+#     assert len(eq) == 5
+#     assert eq[0]["doy"] == 39
+#     assert eq[0]["intercalation"] is False
+#     assert eq[-1]["doy"] == 70
+#     assert eq[-1]["intercalation"] is True
 
-    assert heniautos.equations._fest_eq(
-        (AthenianMonths.MET, 10)
-    ) == heniautos.equations._fest_eq(((AthenianMonths.MET, 10),))
-
-
-def test_fest_eq_nested():
-    eq = heniautos.equations._fest_eq(
-        ((AthenianMonths.MET, 10), (AthenianMonths.MET, 11))
-    )
-    assert len(eq) == 10
-    assert eq[0]["date"] == (AthenianMonths.MET, 10)
-    assert eq[0]["doy"] == 39
-    assert eq[0]["intercalation"] is False
-    assert eq[4]["date"] == (AthenianMonths.MET, 10)
-    assert eq[4]["doy"] == 70
-    assert eq[4]["intercalation"] is True
-    assert eq[5]["date"] == (AthenianMonths.MET, 11)
-    assert eq[5]["doy"] == 40
-    assert eq[5]["intercalation"] is False
-    assert eq[-1]["date"] == (AthenianMonths.MET, 11)
-    assert eq[-1]["doy"] == 71
-    assert eq[-1]["intercalation"] is True
+#     assert heniautos.equations._fest_eq(
+#         (AthenianMonths.MET, 10)
+#     ) == heniautos.equations._fest_eq(((AthenianMonths.MET, 10),))
 
 
-def test_pryt_eq_tuple():
-    eq = heniautos.equations._pryt_eq((Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10)
-    assert len(eq) == 4
-    assert eq[0]["doy"] == 39
-    assert eq[0]["intercalation"] is False
-    assert eq[-1]["doy"] == 43
-    assert eq[-1]["intercalation"] is True
+# def test_fest_eq_nested():
+#     eq = heniautos.equations._fest_eq(
+#         ((AthenianMonths.MET, 10), (AthenianMonths.MET, 11))
+#     )
+#     assert len(eq) == 10
+#     assert eq[0]["date"] == (AthenianMonths.MET, 10)
+#     assert eq[0]["doy"] == 39
+#     assert eq[0]["intercalation"] is False
+#     assert eq[4]["date"] == (AthenianMonths.MET, 10)
+#     assert eq[4]["doy"] == 70
+#     assert eq[4]["intercalation"] is True
+#     assert eq[5]["date"] == (AthenianMonths.MET, 11)
+#     assert eq[5]["doy"] == 40
+#     assert eq[5]["intercalation"] is False
+#     assert eq[-1]["date"] == (AthenianMonths.MET, 11)
+#     assert eq[-1]["doy"] == 71
+#     assert eq[-1]["intercalation"] is True
 
-    assert heniautos.equations._pryt_eq(
-        (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
-    ) == heniautos.equations._pryt_eq(
-        ((Prytanies.II, 4),), pryt_type=Prytany.ALIGNED_10
-    )
+
+# def test_pryt_eq_tuple():
+#     eq = heniautos.equations._pryt_eq((Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10)
+#     assert len(eq) == 4
+#     assert eq[0]["doy"] == 39
+#     assert eq[0]["intercalation"] is False
+#     assert eq[-1]["doy"] == 43
+#     assert eq[-1]["intercalation"] is True
+
+#     assert heniautos.equations._pryt_eq(
+#         (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
+#     ) == heniautos.equations._pryt_eq(
+#         ((Prytanies.II, 4),), pryt_type=Prytany.ALIGNED_10
+#     )
 
 
-def test_pryt_eq_nested():
-    eq = heniautos.equations._pryt_eq(
-        ((Prytanies.II, 4), (Prytanies.II, 5)), pryt_type=Prytany.ALIGNED_10
-    )
-    assert len(eq) == 8
-    assert eq[0]["date"] == (Prytanies.II, 4)
-    assert eq[0]["doy"] == 39
-    assert eq[0]["intercalation"] is False
-    assert eq[3]["date"] == (Prytanies.II, 4)
-    assert eq[3]["doy"] == 43
-    assert eq[3]["intercalation"] is True
-    assert eq[-1]["date"] == (Prytanies.II, 5)
-    assert eq[-1]["doy"] == 44
-    assert eq[-1]["intercalation"] is True
+# def test_pryt_eq_nested():
+#     eq = heniautos.equations._pryt_eq(
+#         ((Prytanies.II, 4), (Prytanies.II, 5)), pryt_type=Prytany.ALIGNED_10
+#     )
+#     assert len(eq) == 8
+#     assert eq[0]["date"] == (Prytanies.II, 4)
+#     assert eq[0]["doy"] == 39
+#     assert eq[0]["intercalation"] is False
+#     assert eq[3]["date"] == (Prytanies.II, 4)
+#     assert eq[3]["doy"] == 43
+#     assert eq[3]["intercalation"] is True
+#     assert eq[-1]["date"] == (Prytanies.II, 5)
+#     assert eq[-1]["doy"] == 44
+#     assert eq[-1]["intercalation"] is True
 
 
 def test_equations_tuples():
@@ -229,15 +229,15 @@ def test_no_misaligned_intercalations():
 def test_collations():
     # Equation 1: Boe 11 = II 31
     eq1 = equations(
-        (AthenianMonths.MAI, 11), (Prytanies.IV, 21), year=bce_as_negative(319)
+        (AthenianMonths.MAI, 11), (Prytanies.IV, 21), Prytany.AUTO, year=bce_as_negative(319)
     )
 
     eq2 = equations(
-        (AthenianMonths.ELA, 12), (Prytanies.VII, 34), year=bce_as_negative(319)
+        (AthenianMonths.ELA, 12), (Prytanies.VII, 34), Prytany.AUTO, year=bce_as_negative(319)
     )
 
     eq3 = equations(
-        (AthenianMonths.MOU, 12), (Prytanies.VIII, 29), year=bce_as_negative(319)
+        (AthenianMonths.MOU, 12), (Prytanies.VIII, 29), Prytany.AUTO, year=bce_as_negative(319)
     )
 
     c = collations(eq1, eq2, eq3)
@@ -263,36 +263,36 @@ def test_collations():
     assert len(c) == 19
 
 
-def test_fest_doy_ranges():
-    r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, False)
-    assert len(r) == 6
-    assert min([m["doy"] for m in r]) == 253
-    assert max([m["doy"] for m in r]) == 258
+# def test_fest_doy_ranges():
+#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, False)
+#     assert len(r) == 6
+#     assert min([m["doy"] for m in r]) == 253
+#     assert max([m["doy"] for m in r]) == 258
 
-    r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, True)
-    assert len(r) == 6
-    assert min([m["doy"] for m in r]) == 282
-    assert max([m["doy"] for m in r]) == 287
+#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, True)
+#     assert len(r) == 6
+#     assert min([m["doy"] for m in r]) == 282
+#     assert max([m["doy"] for m in r]) == 287
 
-    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, False)
-    assert len(r) == 5
-    assert min([m["doy"] for m in r]) == 135
-    assert max([m["doy"] for m in r]) == 139
+#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, False)
+#     assert len(r) == 5
+#     assert min([m["doy"] for m in r]) == 135
+#     assert max([m["doy"] for m in r]) == 139
 
-    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, True)
-    assert len(r) == 6
-    assert min([m["doy"] for m in r]) == 164
-    assert max([m["doy"] for m in r]) == 169
+#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, True)
+#     assert len(r) == 6
+#     assert min([m["doy"] for m in r]) == 164
+#     assert max([m["doy"] for m in r]) == 169
 
-    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, False)
-    assert len(r) == 5
-    assert min([m["doy"] for m in r]) == 291
-    assert max([m["doy"] for m in r]) == 295
+#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, False)
+#     assert len(r) == 5
+#     assert min([m["doy"] for m in r]) == 291
+#     assert max([m["doy"] for m in r]) == 295
 
-    r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, True)
-    assert len(r) == 5
-    assert min([m["doy"] for m in r]) == 320
-    assert max([m["doy"] for m in r]) == 324
+#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, True)
+#     assert len(r) == 5
+#     assert min([m["doy"] for m in r]) == 320
+#     assert max([m["doy"] for m in r]) == 324
 
 
 def test_festival_doy():

@@ -16,7 +16,7 @@
 from collections import namedtuple
 from enum import IntEnum
 import juliandate as jd
-import heniautos
+# import heniautos
 from itertools import product
 
 
@@ -44,6 +44,17 @@ class Prytany(IntEnum):
     ALIGNED_10 = 2
     ALIGNED_12 = 3
     ALIGNED_13 = 4
+
+def load_data():
+    from heniautos import load_data
+    return load_data()
+
+def __optionally_load_data(data):
+    """Return result of function call if param is a function, or the param."""
+    if callable(data):
+        return data()
+
+    return data
 
 
 # Maybe remove
@@ -103,6 +114,8 @@ def __pryt_len_festival(cal):
 
 def _pryt_gen(start, end, length, num=10, count=1):
     """Recursively generate dicts representing prytanies."""
+    import heniautos
+    
     if count == num:
         # If this is the 10th prytany, return the EOY date as the end
         # date of the prytany, which may be one day more or one day
@@ -154,18 +167,20 @@ def _pryt_auto_start(
     year,
     pryt_start=Prytany.AUTO,
     v_off=1,
-    data=heniautos.load_data(),
+    data=(),
 ):
     """Determine start dates for quasi-solar prytanies. Based on Meritt
     (1961)
 
     """
 
+    from heniautos import festival_to_jdn
+
     if pryt_start != Prytany.AUTO:
         offset = year - jd.to_julian(pryt_start)[0]
         return pryt_start + (offset * 366)
 
-    start_jdn = heniautos.festival_to_jdn(-406, 1, 1, v_off=v_off, data=data)
+    start_jdn = festival_to_jdn(-406, 1, 1, v_off=v_off, data=data)
     offset = year - jd.to_julian(start_jdn)[0]
 
     return start_jdn + (offset * 366)
@@ -181,20 +196,23 @@ def __prytanies(
     pryt_start=Prytany.AUTO,
     v_off=1,
     rule_of_aristotle=False,
-    data=heniautos.load_data(),
+    data=load_data,
 ):
     """Return tuple of prytanies. See prytany_calendar for parameters."""
+
+    from heniautos import calendar_months
+    
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
 
     if auto_type == Prytany.QUASI_SOLAR:
-        start = _pryt_auto_start(year, pryt_start, v_off=v_off)
+        start = _pryt_auto_start(year, pryt_start, v_off=v_off, data=data)
         end = start + 366  # _pryt_solar_end(start)
         p_len = _pryt_len(37, 6)
         pryt = _pryt_gen(start, end, p_len)
         return tuple([p for p in pryt])
 
     # Get the calendar for the requested year
-    cal = heniautos.heniautos._calendar_months(year, v_off=v_off, data=data)
+    cal = calendar_months(year, v_off=v_off, data=data)
     y_len = sum([m[1] - m[0] for m in cal])
 
     if auto_type == Prytany.ALIGNED_10:
@@ -263,8 +281,9 @@ def __prytanies(
 
 
 def __make_prytany(prytany, pryt_year, prytany_index, doy, year_length, year):
+    from heniautos import PrytanyDay
     return [
-        heniautos.PrytanyDay(
+        PrytanyDay(
             prytany["start"] + d - 1,
             prytany_index,
             prytany["constant"],
@@ -285,36 +304,41 @@ def prytany_calendar(
     pryt_start=Prytany.AUTO,
     v_off=1,
     rule_of_aristotle=False,
-    data=heniautos.load_data(),
+    data=load_data
 ):
     """Return a tuple representing Athenian conciliar calendar.
 
-        Parameters:
-        year (int) -- The year for the calendar
-        pryt_type (Prytany) -- Constant representign the type of prytanies
+    Parameters:
+    year (int) -- The year for the calendar
+    pryt_type (Prytany) -- Constant representign the type of prytanies
     (default Prytany,AUTO)
-        pryt_start -- start day (JDN) for quasi-solar prytanies. If
+    pryt_start -- start day (JDN) for quasi-solar prytanies. If
     Prytany.AUTO it will be calculated as the first day of 407 BCE (which was also Prytany 1.1 that year) If an integer (a JDN), 366-day prytanies will be calculated relative to this day.
-        rule (heniautos.Visible) -- Constant from heniautos.Visible indicating the desired rule
+    rule (heniautos.Visible) -- Constant from heniautos.Visible indicating the desired rule
     (default heniautos.Visible.SECOND_DAY)
-        data -- Astronomical data for calculations. By default this is
-        returned from load_data()
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
 
-        See calendar_months for documentation of visibility rules.
+    See calendar_months for documentation of visibility rules.
 
-        Each member of the returned tuple is a dict containing:
-            "prytany": the number of the prytany
-            "constant": Prytanies constant for the prytany
-            "days": a tuple with one member for day of the month.
+    Each member of the returned tuple is a dict containing:
+    "prytany": the number of the prytany
+    "constant": Prytanies constant for the prytany
+    "days": a tuple with one member for day of the month.
 
-        Each member of the "days" tuple is a dict containing:
-             "day": the day of the month
-             "date": the Julian date of the day
-             "doy": the day of the year the day represents.
+    Each member of the "days" tuple is a dict containing:
+    "day": the day of the month
+    "date": the Julian date of the day
+    "doy": the day of the year the day represents.
     """
 
-    doy = heniautos.heniautos._doy_gen()
-    cal_year = heniautos.arkhon_year(year)
+    from heniautos import doy_gen, arkhon_year, festival_to_jdn
+    doy = doy_gen()
+    cal_year = arkhon_year(year)
+
+
+    astro_data = __optionally_load_data(data)
+    
 
     pryt_year = __prytanies(
         year,
@@ -322,7 +346,7 @@ def prytany_calendar(
         pryt_start=pryt_start,
         v_off=v_off,
         rule_of_aristotle=rule_of_aristotle,
-        data=data,
+        data=astro_data,
     )
     year_len = pryt_year[-1]["end"] - pryt_year[0]["start"]
 
@@ -340,11 +364,12 @@ def prytany_calendar(
 
 def by_prytanies(p):
     """Return prytany calendar grouped into a tuple of tuples by prytany."""
-    return heniautos.heniautos._calendar_groups(p, lambda x: x.prytany)
+    from heniautos import calendar_groups
+    return calendar_groups(p, lambda x: x.prytany)
 
 
 def prytany_to_julian(
-    year, prytany, day, v_off=1, data=heniautos.load_data()
+    year, prytany, day, v_off=1, data=load_data
 ):
     """Return the Julian Day Number for a prytany date.
 
@@ -356,6 +381,7 @@ def prytany_to_julian(
     data -- Astronomical data for calculations. By default this is
     returned from heniautos.load_data()
     """
+    from heniautos import HeniautosNoDayInYearError
     try:
         return [
             p
@@ -363,7 +389,7 @@ def prytany_to_julian(
             if p.prytany == prytany and p.day == day
         ][0]
     except IndexError:
-        raise heniautos.HeniautosNoDayInYearError(
+        raise HeniautosNoDayInYearError(
             f"There is no day matching prytany {prytany}, day {day} in the year {year}"
         )
 
@@ -468,9 +494,11 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
                        occurs before the given prytany or not.
 
     """
+    from heniautos import HeniautosError
+
     if pryt_type == Prytany.AUTO:
         if year is None:
-            raise heniautos.HeniautosError("Year required if pryt_type is Prytany.AUTO")
+            raise HeniautosError("Year required if pryt_type is Prytany.AUTO")
         return prytany_doy(pry, day, _pryt_auto(year))
 
     if pryt_type == Prytany.QUASI_SOLAR:
@@ -542,7 +570,7 @@ def jdn_to_prytany(
     pryt_start=Prytany.AUTO,
     v_off=1,
     rule_of_aristotle=False,
-    data=heniautos.load_data(),
+    data=load_data,
 ):
 
     # If the year hint is not supplied, extract it from the jdn and recurse
@@ -586,10 +614,11 @@ def julian_to_prytany(
     pryt_start=Prytany.AUTO,
     v_off=1,
     rule_of_aristotle=False,
-    data=heniautos.load_data(),
+    data=load_data,
 ):
+    from heniautos import to_jdn
     return jdn_to_prytany(
-        heniautos.to_jdn(jd.from_julian(year, month, day)),
+        to_jdn(jd.from_julian(year, month, day)),
         year,
         pryt_type=pryt_type,
         pryt_start=pryt_start,
@@ -607,10 +636,11 @@ def gregorian_to_prytany(
     pryt_start=Prytany.AUTO,
     v_off=1,
     rule_of_aristotle=False,
-    data=heniautos.load_data(),
+    data=load_data,
 ):
+    from heniautos import to_jdn
     return jdn_to_prytany(
-        heniautos.to_jdn(jd.from_gregorian(year, month, day)),
+        to_jdn(jd.from_gregorian(year, month, day)),
         year,
         pryt_type=pryt_type,
         pryt_start=pryt_start,

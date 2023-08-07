@@ -13,8 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import heniautos
-import heniautos.prytanies
+#import heniautos
+#import heniautos.prytanies
 from itertools import product
 
 def _fest_doy_ranges(month, day, intercalation):
@@ -60,7 +60,8 @@ def festival_doy(month, day):
                        months preceding the given date. False otherwise
 
     """
-    if month == heniautos.AthenianMonths.HEK:
+    from heniautos import AthenianMonths
+    if month == AthenianMonths.HEK:
         return _fest_doy_ranges(month, day, False)
 
     return tuple(
@@ -87,9 +88,11 @@ def _fest_eq(months):
     return tuple([a for b in [_fest_eq(m) for m in months] for a in b])
 
 
-def _pryt_eq(prytanies, pryt_type=heniautos.prytanies.Prytany.AUTO, year=None):
+def _pryt_eq(prytanies, pryt_type, year=None):
+    from heniautos.prytanies import prytany_doy
+
     try:
-        return heniautos.prytanies.prytany_doy(prytanies[0], prytanies[1], pryt_type=pryt_type, year=year)
+        return prytany_doy(prytanies[0], prytanies[1], pryt_type=pryt_type, year=year)
     except TypeError as e:
         if "'tuple'" in e.__str__():
             pass
@@ -106,7 +109,7 @@ def _pryt_eq(prytanies, pryt_type=heniautos.prytanies.Prytany.AUTO, year=None):
         ]
     )
 
-def equations(months, prytanies, pryt_type=heniautos.prytanies.Prytany.AUTO, year=None):
+def equations(months, prytanies, pryt_type, year=None):
     """Return possible solutions for a calendar equation
 
         Parameters:
@@ -208,6 +211,8 @@ def _no_deintercalations(i, pre=False):
 
 def _is_contained_in(a, b):
     """Test whether the values in first tuple are contained in second."""
+    from heniautos import HeniautosNoMatchError
+    
     if not len(a):
         # Successfully exhausted the first tuple. Return remainder
         return b
@@ -216,7 +221,7 @@ def _is_contained_in(a, b):
         i = b.index(a[0])
         return _is_contained_in(a[1:], b[:i] + b[i + 1 :])
     except ValueError as e:
-        raise heniautos.HeniautosNoMatchError(f"{a[0]} not found in {b}")
+        raise HeniautosNoMatchError(f"{a[0]} not found in {b}")
 
 
 def _each_overlaps(b, a=tuple()):
@@ -271,6 +276,8 @@ def collations(*args, failures=False):
     that cannot be fitted together, as a list of combinations
 
     """
+    from heniautos import HeniautosNoMatchError
+    
     successes = tuple()
     not_successes = tuple()
 
@@ -297,7 +304,7 @@ def collations(*args, failures=False):
                 },
             )
 
-        except heniautos.HeniautosNoMatchError as e:
+        except HeniautosNoMatchError as e:
             not_successes = not_successes + (p,)
 
     if failures is True:
