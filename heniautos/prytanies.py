@@ -142,8 +142,10 @@ def _pryt_gen(start, end, length, num=10, count=1):
 
 def _pryt_auto(year):
     """Determine prytany type base on year."""
+    from heniautos import HeniautosError
+
     if year < -507:
-        raise heniautos.HeniautosError(
+        raise HeniautosError(
             "There were no prytanies before the foundation "
             "of democracy in Athens in 508 BCE"
         )
