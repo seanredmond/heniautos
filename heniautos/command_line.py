@@ -290,7 +290,7 @@ def filtered_prytany_calendar(year, args, astro_data):
     """Filter prytany calendar to requested scope."""
     return prytany_filters(
         ha.prytanies.prytany_calendar(
-            year, rule=args.visibility_offset, data=astro_data()
+            year, v_off=args.visibility_offset, data=astro_data()
         ),
         args,
     )
