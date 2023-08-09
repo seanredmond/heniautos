@@ -543,8 +543,8 @@ def test_to_jd():
         festival_to_jdn(-406, 1, 30)
 
 
-def test_julian_to_festival():
-    d = julian_to_festival(-406, 7, 10)
+def test_julian_to_festival_day():
+    d = julian_to_festival_day(-406, 7, 10)
     assert d.jdn == 1572957
     assert d.month == AthenianMonths.HEK
     assert d.day == 1
@@ -557,8 +557,8 @@ def test_gregorian_to_festival():
     assert d.day == 6
 
 
-def test_festival_day():
-    d = julian_to_festival(-406, 7, 10)
+def test_festival_day_day():
+    d = julian_to_festival_day(-406, 7, 10)
     assert d.jdn == 1572957
     assert d.month_name == "Hekatombaiṓn"
     assert d.month_index == 1

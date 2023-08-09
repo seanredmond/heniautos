@@ -1178,7 +1178,7 @@ def jdn_to_festival_day(
     ][0]
 
 
-def julian_to_festival(
+def julian_to_festival_day(
     year,
     month,
     day,
