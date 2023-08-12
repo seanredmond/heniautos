@@ -569,7 +569,7 @@ def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
     raise HeniautosError("Unhandled")
 
 
-def jdn_to_prytany(
+def jdn_to_prytany_day(
     jdn,
     year=None,
     pryt_type=Prytany.AUTO,
@@ -582,7 +582,7 @@ def jdn_to_prytany(
 
     # If the year hint is not supplied, extract it from the jdn and recurse
     if not isinstance(year, int):
-        return jdn_to_prytany(
+        return jdn_to_prytany_day(
             jdn,
             jd.to_julian(jdn)[0],
             pryt_type=pryt_type,
@@ -615,7 +615,7 @@ def jdn_to_prytany(
     ][0]
 
 
-def julian_to_prytany(
+def julian_to_prytany_day(
     year,
     month,
     day,
@@ -627,7 +627,7 @@ def julian_to_prytany(
     data=load_data,
 ):
     from heniautos import to_jdn
-    return jdn_to_prytany(
+    return jdn_to_prytany_day(
         to_jdn(jd.from_julian(year, month, day)),
         year,
         pryt_type=pryt_type,
@@ -639,7 +639,7 @@ def julian_to_prytany(
     )
 
 
-def gregorian_to_prytany(
+def gregorian_to_prytany_day(
     year,
     month,
     day,
@@ -651,7 +651,7 @@ def gregorian_to_prytany(
     data=load_data,
 ):
     from heniautos import to_jdn
-    return jdn_to_prytany(
+    return jdn_to_prytany_day(
         to_jdn(jd.from_gregorian(year, month, day)),
         year,
         pryt_type=pryt_type,

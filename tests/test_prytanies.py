@@ -761,7 +761,7 @@ def test_prytany_to_julian():
 
 
 def test_jdn_to_prytany_with_year_hint():
-    day = jdn_to_prytany(1572957, -406)
+    day = jdn_to_prytany_day(1572957, -406)
     assert day.jdn == 1572957
     assert day.prytany == Prytanies.I
     assert day.day == 1
@@ -769,7 +769,7 @@ def test_jdn_to_prytany_with_year_hint():
 
 
 def test_jdn_to_prytany_without_year_hint():
-    day = jdn_to_prytany(1572957)
+    day = jdn_to_prytany_day(1572957)
     assert day.jdn == 1572957
     assert day.prytany == Prytanies.I
     assert day.day == 1
@@ -777,21 +777,21 @@ def test_jdn_to_prytany_without_year_hint():
 
 
 def test_julian_to_prytany():
-    d = julian_to_prytany(-406, 7, 10)
+    d = julian_to_prytany_day(-406, 7, 10)
     assert d.jdn == 1572957
     assert d.prytany == Prytanies.I
     assert d.day == 1
 
 
 def test_gregorian_to_prytany():
-    d = gregorian_to_prytany(-406, 7, 10)
+    d = gregorian_to_prytany_day(-406, 7, 10)
     assert d.jdn == 1572962
     assert d.prytany == Prytanies.I
     assert d.day == 6
 
 
 def test_prytany_day():
-    d = julian_to_prytany(-406, 7, 10)
+    d = julian_to_prytany_day(-406, 7, 10)
     assert d.jdn == 1572957
     assert d.prytany_index == 1
     assert d.prytany == Prytanies.I
