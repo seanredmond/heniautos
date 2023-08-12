@@ -375,7 +375,7 @@ def by_prytanies(p):
 
 
 def prytany_to_julian(
-    year, prytany, day, v_off=1, data=load_data
+    year, prytany, day, v_off=1, s_off=0, data=load_data
 ):
     """Return the Julian Day Number for a prytany date.
 
@@ -391,7 +391,7 @@ def prytany_to_julian(
     try:
         return [
             p
-            for p in prytany_calendar(year, v_off=v_off, data=data)
+            for p in prytany_calendar(year, v_off=v_off, s_off=s_off, data=data)
             if p.prytany == prytany and p.day == day
         ][0]
     except IndexError:
@@ -575,6 +575,7 @@ def jdn_to_prytany(
     pryt_type=Prytany.AUTO,
     pryt_start=Prytany.AUTO,
     v_off=1,
+    s_off=0,
     rule_of_aristotle=False,
     data=load_data,
 ):
@@ -587,6 +588,7 @@ def jdn_to_prytany(
             pryt_type=pryt_type,
             pryt_start=pryt_start,
             v_off=v_off,
+            s_off=s_off,
             rule_of_aristotle=rule_of_aristotle,
             data=data,
         )
@@ -601,6 +603,7 @@ def jdn_to_prytany(
                     pryt_type=pryt_type,
                     pryt_start=pryt_start,
                     v_off=v_off,
+                    s_off=s_off,
                     rule_of_aristotle=rule_of_aristotle,
                     data=data,
                 )
@@ -619,6 +622,7 @@ def julian_to_prytany(
     pryt_type=Prytany.AUTO,
     pryt_start=Prytany.AUTO,
     v_off=1,
+    s_off=0,
     rule_of_aristotle=False,
     data=load_data,
 ):
@@ -629,6 +633,7 @@ def julian_to_prytany(
         pryt_type=pryt_type,
         pryt_start=pryt_start,
         v_off=v_off,
+        s_off=s_off,
         rule_of_aristotle=rule_of_aristotle,
         data=data,
     )
@@ -641,6 +646,7 @@ def gregorian_to_prytany(
     pryt_type=Prytany.AUTO,
     pryt_start=Prytany.AUTO,
     v_off=1,
+    s_off=0,
     rule_of_aristotle=False,
     data=load_data,
 ):
@@ -651,6 +657,7 @@ def gregorian_to_prytany(
         pryt_type=pryt_type,
         pryt_start=pryt_start,
         v_off=v_off,
+        s_off=s_off,
         rule_of_aristotle=rule_of_aristotle,
         data=data,
     )
