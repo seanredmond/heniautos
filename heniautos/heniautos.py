@@ -474,6 +474,9 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
     'BCE 0100-Jun-25 19:53:23 GMT', the short BCE 'BCE 0100-Jun-25'.
 
     """
+    if isinstance(t, FestivalDay) or isinstance(t, PrytanyDay):
+        return as_gregorian(t.jdn, full, tz)
+    
     if is_bce(t):
         return __gmt_fmt_bce(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
 
