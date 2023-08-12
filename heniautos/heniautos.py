@@ -1219,7 +1219,7 @@ def julian_to_festival_day(
     )
 
 
-def gregorian_to_festival(
+def gregorian_to_festival_day(
     year,
     month,
     day,

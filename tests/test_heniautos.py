@@ -550,8 +550,8 @@ def test_julian_to_festival_day():
     assert d.day == 1
 
 
-def test_gregorian_to_festival():
-    d = gregorian_to_festival(-406, 7, 10)
+def test_gregorian_to_festival_day():
+    d = gregorian_to_festival_day(-406, 7, 10)
     assert d.jdn == 1572962
     assert d.month == AthenianMonths.HEK
     assert d.day == 6
