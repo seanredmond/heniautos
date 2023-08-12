@@ -169,6 +169,7 @@ def _pryt_auto_start(
     year,
     pryt_start=Prytany.AUTO,
     v_off=1,
+    s_off=0,
     data=(),
 ):
     """Determine start dates for quasi-solar prytanies. Based on Meritt
@@ -182,7 +183,7 @@ def _pryt_auto_start(
         offset = year - jd.to_julian(pryt_start)[0]
         return pryt_start + (offset * 366)
 
-    start_jdn = festival_to_jdn(-406, 1, 1, v_off=v_off, data=data)
+    start_jdn = festival_to_jdn(-406, 1, 1, v_off=v_off, s_off=s_off, data=data)
     offset = year - jd.to_julian(start_jdn)[0]
 
     return start_jdn + (offset * 366)
@@ -197,6 +198,7 @@ def __prytanies(
     pryt_type=Prytany.AUTO,
     pryt_start=Prytany.AUTO,
     v_off=1,
+    s_off=0,
     rule_of_aristotle=False,
     data=load_data,
 ):
@@ -207,14 +209,14 @@ def __prytanies(
     auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
 
     if auto_type == Prytany.QUASI_SOLAR:
-        start = _pryt_auto_start(year, pryt_start, v_off=v_off, data=data)
+        start = _pryt_auto_start(year, pryt_start, v_off=v_off, s_off=s_off, data=data)
         end = start + 366  # _pryt_solar_end(start)
         p_len = _pryt_len(37, 6)
         pryt = _pryt_gen(start, end, p_len)
         return tuple([p for p in pryt])
 
     # Get the calendar for the requested year
-    cal = calendar_months(year, v_off=v_off, data=data)
+    cal = calendar_months(year, v_off=v_off, s_off=s_off, data=data)
     y_len = sum([m[1] - m[0] for m in cal])
 
     if auto_type == Prytany.ALIGNED_10:
@@ -305,6 +307,7 @@ def prytany_calendar(
     pryt_type=Prytany.AUTO,
     pryt_start=Prytany.AUTO,
     v_off=1,
+    s_off=0,
     rule_of_aristotle=False,
     data=load_data
 ):
@@ -347,6 +350,7 @@ def prytany_calendar(
         pryt_type=pryt_type,
         pryt_start=pryt_start,
         v_off=v_off,
+        s_off=s_off,
         rule_of_aristotle=rule_of_aristotle,
         data=astro_data,
     )
