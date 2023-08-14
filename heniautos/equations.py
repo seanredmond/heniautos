@@ -60,8 +60,7 @@ def festival_doy(month, day):
                        months preceding the given date. False otherwise
 
     """
-    from heniautos import AthenianMonths
-    if month == AthenianMonths.HEK:
+    if month == 1:
         return _fest_doy_ranges(month, day, False)
 
     return tuple(
