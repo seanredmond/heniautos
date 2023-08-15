@@ -160,9 +160,6 @@ def prytany_type(year):
     return Prytany.ALIGNED_10
 
 
-_pryt_auto = prytany_type
-
-
 def _pryt_auto_start(
     year,
     pryt_start=Prytany.AUTO,
@@ -204,7 +201,7 @@ def __prytanies(
 
     from heniautos import calendar_months
     
-    auto_type = _pryt_auto(year) if pryt_type == Prytany.AUTO else pryt_type
+    auto_type = prytany_type(year) if pryt_type == Prytany.AUTO else pryt_type
 
     if auto_type == Prytany.QUASI_SOLAR:
         start = _pryt_auto_start(year, pryt_start, v_off=v_off, s_off=s_off, data=data)
