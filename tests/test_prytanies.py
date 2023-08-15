@@ -3,6 +3,9 @@ from heniautos.prytanies import *
 import pytest
 
 # Year to test prytany lengths
+O_SO = 424  # 354 days, quasi-solar prytanies
+O_SO_LONG = 426  # 355 days, quasi-solar prytanies
+I_SO = 425  # 384 days, quasi-solar prytanies
 O_10 = 369  # 354 days, 10 prytanies
 O_10_LONG = 367  # 355 days, 10 prytanies
 I_10 = 363  # 384 days, 10 prytanies
@@ -87,53 +90,54 @@ def test_by_prytanies():
     ]
 
 
-# def test_prytany_auto():
-#     with pytest.raises(HeniautosError):
-#         os.prytanies._pryt_auto(bce_as_negative(509))
+def test_prytany_type():
+    
+    with pytest.raises(HeniautosError):
+        prytany_type(bce_as_negative(509))
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(508)) == Prytany.QUASI_SOLAR
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(410)) == Prytany.QUASI_SOLAR
+    assert prytany_type(bce_as_negative(508)) == Prytany.QUASI_SOLAR
+    assert prytany_type(bce_as_negative(410)) == Prytany.QUASI_SOLAR
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(402)) == Prytany.ALIGNED_10
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(308)) == Prytany.ALIGNED_10
+    assert prytany_type(bce_as_negative(360)) == Prytany.ALIGNED_10
+    assert prytany_type(bce_as_negative(308)) == Prytany.ALIGNED_10
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(307)) == Prytany.ALIGNED_12
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(224)) == Prytany.ALIGNED_12
+    assert prytany_type(bce_as_negative(307)) == Prytany.ALIGNED_12
+    assert prytany_type(bce_as_negative(224)) == Prytany.ALIGNED_12
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(223)) == Prytany.ALIGNED_13
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(201)) == Prytany.ALIGNED_13
+    assert prytany_type(bce_as_negative(223)) == Prytany.ALIGNED_13
+    assert prytany_type(bce_as_negative(201)) == Prytany.ALIGNED_13
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(200)) == Prytany.ALIGNED_12
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(101)) == Prytany.ALIGNED_12
+    assert prytany_type(bce_as_negative(200)) == Prytany.ALIGNED_12
+    assert prytany_type(bce_as_negative(101)) == Prytany.ALIGNED_12
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(100)) == Prytany.ALIGNED_10
-#     assert heniautos.prytanies._pryt_auto(2021) == Prytany.ALIGNED_10
+    assert prytany_type(bce_as_negative(100)) == Prytany.ALIGNED_10
+    assert prytany_type(2021) == Prytany.ALIGNED_10
 
-#     # Confirm constants for other tests
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(O_SO)) == Prytany.QUASI_SOLAR
-#     assert (
-#         heniautos.prytanies._pryt_auto(bce_as_negative(O_SO_LONG))
-#         == Prytany.QUASI_SOLAR
-#     )
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(I_SO)) == Prytany.QUASI_SOLAR
+    # Confirm constants for other tests
+    assert prytany_type(bce_as_negative(O_SO)) == Prytany.QUASI_SOLAR
+    assert (
+        prytany_type(bce_as_negative(O_SO_LONG))
+        == Prytany.QUASI_SOLAR
+    )
+    assert prytany_type(bce_as_negative(I_SO)) == Prytany.QUASI_SOLAR
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(O_10)) == Prytany.ALIGNED_10
-#     assert (
-#         heniautos.prytanies._pryt_auto(bce_as_negative(O_10_LONG)) == Prytany.ALIGNED_10
-#     )
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(I_10)) == Prytany.ALIGNED_10
+    assert prytany_type(bce_as_negative(O_10)) == Prytany.ALIGNED_10
+    assert (
+        prytany_type(bce_as_negative(O_10_LONG)) == Prytany.ALIGNED_10
+    )
+    assert prytany_type(bce_as_negative(I_10)) == Prytany.ALIGNED_10
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(O_12)) == Prytany.ALIGNED_12
-#     assert (
-#         heniautos.prytanies._pryt_auto(bce_as_negative(O_12_LONG)) == Prytany.ALIGNED_12
-#     )
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(I_12)) == Prytany.ALIGNED_12
+    assert prytany_type(bce_as_negative(O_12)) == Prytany.ALIGNED_12
+    assert (
+        prytany_type(bce_as_negative(O_12_LONG)) == Prytany.ALIGNED_12
+    )
+    assert prytany_type(bce_as_negative(I_12)) == Prytany.ALIGNED_12
 
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(O_13)) == Prytany.ALIGNED_13
-#     assert (
-#         heniautos.prytanies._pryt_auto(bce_as_negative(O_13_LONG)) == Prytany.ALIGNED_13
-#     )
-#     assert heniautos.prytanies._pryt_auto(bce_as_negative(I_13)) == Prytany.ALIGNED_13
+    assert prytany_type(bce_as_negative(O_13)) == Prytany.ALIGNED_13
+    assert (
+        prytany_type(bce_as_negative(O_13_LONG)) == Prytany.ALIGNED_13
+    )
+    assert prytany_type(bce_as_negative(I_13)) == Prytany.ALIGNED_13
 
 
 # def test_pryt_auto_start():
@@ -141,49 +145,49 @@ def test_by_prytanies():
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(500), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(500), Prytany.AUTO)
 #         )
 #         == "BCE 0500-May-01"
 #     )
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(425), Prytany.AUTO)
 #         )
 #         == "BCE 0425-Jun-26"
 #     )
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(429), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(429), Prytany.AUTO)
 #         )
 #         == "BCE 0429-Jun-23"
 #     )
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(424), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(424), Prytany.AUTO)
 #         )
 #         == "BCE 0424-Jun-27"
 #     )
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(421), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(421), Prytany.AUTO)
 #         )
 #         == "BCE 0421-Jun-29"
 #     )
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(420), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(420), Prytany.AUTO)
 #         )
 #         == "BCE 0420-Jun-30"
 #     )
 
 #     assert (
 #         as_julian(
-#             heniautos.prytanies._pryt_auto_start(bce_as_negative(419), Prytany.AUTO)
+#             prytany_type_start(bce_as_negative(419), Prytany.AUTO)
 #         )
 #         == "BCE 0419-Jul-01"
 #     )
@@ -191,11 +195,11 @@ def test_by_prytanies():
 
 # def test_pryt_solar_end():
 #     # One quasi-solar year should end at the next quasi solar year
-#     year_start = heniautos.prytanies._pryt_auto_start(
+#     year_start = prytany_type_start(
 #         bce_as_negative(426), Prytany.AUTO
 #     )
 #     year_end = heniautos.prytanies._pryt_solar_end(year_start)
-#     next_year = heniautos.prytanies._pryt_auto_start(bce_as_negative(425), Prytany.AUTO)
+#     next_year = prytany_type_start(bce_as_negative(425), Prytany.AUTO)
 #     assert year_end == next_year
 
 
