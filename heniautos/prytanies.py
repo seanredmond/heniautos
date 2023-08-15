@@ -63,11 +63,6 @@ def __add_years(t, y):
     return jd.from_julian(*[sum(x) for x in zip(jd.to_julian(t), (y, 0, 0, 0, 0, 0))])
 
 
-def _max_or_fewer(n, mx):
-    """Return n if n is less than mx, otherwise mx."""
-    return n if n < mx else mx
-
-
 def prytany_label(p):
     return (
         "I",
@@ -140,7 +135,7 @@ def _pryt_gen(start, end, length, num=10, count=1):
     yield from _pryt_gen(p_end, end, length, num, count + 1)
 
 
-def _pryt_auto(year):
+def prytany_type(year):
     """Determine prytany type base on year."""
     from heniautos import HeniautosError
 
@@ -163,6 +158,9 @@ def _pryt_auto(year):
         return Prytany.ALIGNED_12
 
     return Prytany.ALIGNED_10
+
+
+_pryt_auto = prytany_type
 
 
 def _pryt_auto_start(
@@ -398,175 +396,6 @@ def prytany_to_julian(
         raise HeniautosNoDayInYearError(
             f"There is no day matching prytany {prytany}, day {day} in the year {year}"
         )
-
-
-def _pryt_long_count(n, pryt_type, intercalated):
-    """Return the number of long prytanies allowed for prytany type."""
-    if pryt_type == Prytany.QUASI_SOLAR:
-        return _max_or_fewer(n - 1, 5)
-
-    if pryt_type == Prytany.ALIGNED_10:
-        return _max_or_fewer(n - 1, 4)
-
-    if pryt_type == Prytany.ALIGNED_12:
-        return _max_or_fewer(n - 1, 7)
-
-    if pryt_type == Prytany.ALIGNED_13 and not intercalated:
-        return _max_or_fewer(n - 1, 3)
-
-    if pryt_type == Prytany.ALIGNED_13 and intercalated:
-        return _max_or_fewer(n - 1, 7)
-
-    raise HeniautosError("Unhandled")
-
-
-def _pryt_short_count(n, pryt_type, intercalated):
-    """Return the number of short prytanies allowed for prytany type."""
-    if pryt_type == Prytany.QUASI_SOLAR:
-        return _max_or_fewer(n - 1, 5)
-
-    if pryt_type == Prytany.ALIGNED_10:
-        return _max_or_fewer(n - 1, 6)
-
-    if pryt_type == Prytany.ALIGNED_12:
-        return _max_or_fewer(n - 1, 5)
-
-    if pryt_type == Prytany.ALIGNED_13 and not intercalated:
-        return _max_or_fewer(n - 1, 10)
-
-    if pryt_type == Prytany.ALIGNED_13 and intercalated:
-        return _max_or_fewer(n - 1, 6)
-
-    raise HeniautosError("Unhandled")
-
-
-def _pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
-    """Return possible DOYs with preceding prytanies."""
-    if pryt_type == Prytany.ALIGNED_12 and intercalation:
-        return [
-            {
-                "date": (pry, day),
-                "doy": sum(r) + day,
-                "preceding": r,
-                "intercalation": intercalation,
-            }
-            for r in ((32,) * (pry - 1),)
-        ]
-
-    max_long = _pryt_long_count(pry, pryt_type, intercalation)
-    max_short = _pryt_short_count(pry, pryt_type, intercalation)
-    min_long = int(pry - 1) - max_short
-    min_short = int(pry - 1) - max_long
-
-    pairs = [
-        p
-        for p in product(range(min_long, max_long + 1), range(min_short, max_short + 1))
-        if sum(p) == pry - 1
-    ]
-
-    ranges = [(lng,) * p[0] + (lng - 1,) * p[1] for p in pairs]
-
-    return [
-        {
-            "date": (pry, day),
-            "doy": sum(r) + day,
-            "preceding": r,
-            "intercalation": intercalation,
-        }
-        for r in ranges
-    ]
-
-
-def prytany_doy(pry, day, pryt_type=Prytany.AUTO, year=None):
-    """Return possible DOYs for a given prytany and day.
-
-    Calculates every possible DOY for a prytany and day with all the
-    possible combinations of long and short prytanies preceding it.
-
-    Parameters:
-        pry (Prytanies): Prytanies constant for the month
-        day (int): Day of the prytany
-        pryt_type: Prytany constant for the type of prytany
-        year: year, needed of pryt_type is Prytany.AUTO
-
-    Returns a tuple of dicts, one for each DOY, and each consisting of:
-        date: Prytany and day supplied
-        doy: The DOY
-        preceding: tuple of ints that are the lengths of the prytanies
-                   preceding the given date, which goes in the DOY calculation
-        intercalation: True if the DOY is for an intercalated year. N.B.: this
-                       is different from festival_doy() because it True
-                       for and intercalary DOY whether or not the intercalation
-                       occurs before the given prytany or not.
-
-    """
-    from heniautos import HeniautosError
-
-    if pryt_type == Prytany.AUTO:
-        if year is None:
-            raise HeniautosError("Year required if pryt_type is Prytany.AUTO")
-        return prytany_doy(pry, day, _pryt_auto(year))
-
-    if pryt_type == Prytany.QUASI_SOLAR:
-        return tuple(
-            sorted(
-                _pryt_doy_ranges(pry, day, pryt_type, 37, None), key=lambda p: p["doy"]
-            )
-        )
-
-    if pryt_type == Prytany.ALIGNED_10:
-        if day > 36:
-            # Must be intercalary
-            return tuple(
-                sorted(
-                    _pryt_doy_ranges(pry, day, pryt_type, 39, True),
-                    key=lambda p: p["doy"],
-                )
-            )
-
-        return tuple(
-            sorted(
-                _pryt_doy_ranges(pry, day, pryt_type, 36, False)
-                + _pryt_doy_ranges(pry, day, pryt_type, 39, True),
-                key=lambda p: p["doy"],
-            )
-        )
-
-    if pryt_type == Prytany.ALIGNED_12:
-        if day > 30:
-            return tuple(
-                sorted(
-                    _pryt_doy_ranges(pry, day, pryt_type, 32, True),
-                    key=lambda p: p["doy"],
-                )
-            )
-
-        return tuple(
-            sorted(
-                _pryt_doy_ranges(pry, day, pryt_type, 30, False)
-                + _pryt_doy_ranges(pry, day, pryt_type, 32, True),
-                key=lambda p: p["doy"],
-            )
-        )
-
-    if pryt_type == Prytany.ALIGNED_13:
-        if day > 28:
-            return tuple(
-                sorted(
-                    _pryt_doy_ranges(pry, day, pryt_type, 30, True),
-                    key=lambda p: p["doy"],
-                )
-            )
-
-        return tuple(
-            sorted(
-                _pryt_doy_ranges(pry, day, pryt_type, 28, False)
-                + _pryt_doy_ranges(pry, day, pryt_type, 30, True),
-                key=lambda p: p["doy"],
-            )
-        )
-
-    raise HeniautosError("Unhandled")
 
 
 def jdn_to_prytany_day(

@@ -17,7 +17,7 @@
 #import heniautos.prytanies
 from itertools import product
 
-def _fest_doy_ranges(month, day, intercalation):
+def __fest_doy_ranges(month, day, intercalation):
     """Return possible DOYs with preceding months."""
     pairs = [
         p
@@ -55,23 +55,205 @@ def festival_doy(month, day):
         date: Month and day supplied
         doy: The DOY
         preceding: tuple of ints that are the lengths of the months preceding
-                   the given date, which goes in the DOY calculation
+        the given date, which goes in the DOY calculation
         intercalation: True if the DOY requires in intercalation among the
-                       months preceding the given date. False otherwise
+        months preceding the given date. False otherwise
 
     """
     if month == 1:
-        return _fest_doy_ranges(month, day, False)
+        return __fest_doy_ranges(month, day, False)
 
     return tuple(
         sorted(
-            _fest_doy_ranges(month, day, False) + _fest_doy_ranges(month, day, True),
+            __fest_doy_ranges(month, day, False) + __fest_doy_ranges(month, day, True),
             key=lambda m: m["doy"],
         )
     )
 
 
-def _fest_eq(months):
+def __max_or_fewer(n, mx):
+    """Return n if n is less than mx, otherwise mx."""
+    return n if n < mx else mx
+
+
+def __pryt_long_count(n, pryt_type, intercalated):
+    """Return the number of long prytanies allowed for prytany type."""
+    from heniautos.prytanies import Prytany
+    
+    if pryt_type == Prytany.QUASI_SOLAR:
+        return __max_or_fewer(n - 1, 5)
+
+    if pryt_type == Prytany.ALIGNED_10:
+        return __max_or_fewer(n - 1, 4)
+
+    if pryt_type == Prytany.ALIGNED_12:
+        return __max_or_fewer(n - 1, 7)
+
+    if pryt_type == Prytany.ALIGNED_13 and not intercalated:
+        return __max_or_fewer(n - 1, 3)
+
+    if pryt_type == Prytany.ALIGNED_13 and intercalated:
+        return __max_or_fewer(n - 1, 7)
+
+    raise HeniautosError("Unhandled")
+
+
+def __pryt_short_count(n, pryt_type, intercalated):
+    """Return the number of short prytanies allowed for prytany type."""
+    from heniautos.prytanies import Prytany
+    
+    if pryt_type == Prytany.QUASI_SOLAR:
+        return __max_or_fewer(n - 1, 5)
+
+    if pryt_type == Prytany.ALIGNED_10:
+        return __max_or_fewer(n - 1, 6)
+
+    if pryt_type == Prytany.ALIGNED_12:
+        return __max_or_fewer(n - 1, 5)
+
+    if pryt_type == Prytany.ALIGNED_13 and not intercalated:
+        return __max_or_fewer(n - 1, 10)
+
+    if pryt_type == Prytany.ALIGNED_13 and intercalated:
+        return __max_or_fewer(n - 1, 6)
+
+    raise HeniautosError("Unhandled")
+
+
+def __pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
+    """Return possible DOYs with preceding prytanies."""
+
+    from heniautos.prytanies import Prytany
+    
+    if pryt_type == Prytany.ALIGNED_12 and intercalation:
+        return [
+            {
+                "date": (pry, day),
+                "doy": sum(r) + day,
+                "preceding": r,
+                "intercalation": intercalation,
+            }
+            for r in ((32,) * (pry - 1),)
+        ]
+
+    max_long = __pryt_long_count(pry, pryt_type, intercalation)
+    max_short = __pryt_short_count(pry, pryt_type, intercalation)
+    min_long = int(pry - 1) - max_short
+    min_short = int(pry - 1) - max_long
+
+    pairs = [
+        p
+        for p in product(range(min_long, max_long + 1), range(min_short, max_short + 1))
+        if sum(p) == pry - 1
+    ]
+
+    ranges = [(lng,) * p[0] + (lng - 1,) * p[1] for p in pairs]
+
+    return [
+        {
+            "date": (pry, day),
+            "doy": sum(r) + day,
+            "preceding": r,
+            "intercalation": intercalation,
+        }
+        for r in ranges
+    ]
+
+
+def prytany_doy(pry, day, pryt_type):
+    """Return possible DOYs for a given prytany and day.
+
+    Calculates every possible DOY for a prytany and day with all the
+    possible combinations of long and short prytanies preceding it.
+
+    Parameters:
+        pry (Prytanies): Prytanies constant for the month
+        day (int): Day of the prytany
+        pryt_type: Prytany constant for the type of prytany
+        year: year, needed of pryt_type is Prytany.AUTO
+
+    Returns a tuple of dicts, one for each DOY, and each consisting of:
+        date: Prytany and day supplied
+        doy: The DOY
+        preceding: tuple of ints that are the lengths of the prytanies
+                   preceding the given date, which goes in the DOY calculation
+        intercalation: True if the DOY is for an intercalated year. N.B.: this
+                       is different from festival_doy() because it True
+                       for and intercalary DOY whether or not the intercalation
+                       occurs before the given prytany or not.
+
+    """
+    from heniautos import HeniautosError
+    from heniautos.prytanies import Prytany
+
+    # if pryt_type == Prytany.AUTO:
+    #     if year is None:
+    #         raise HeniautosError("Year required if pryt_type is Prytany.AUTO")
+    #     return prytany_doy(pry, day, _pryt_auto(year))
+
+    if pryt_type == Prytany.QUASI_SOLAR:
+        return tuple(
+            sorted(
+                __pryt_doy_ranges(pry, day, pryt_type, 37, None), key=lambda p: p["doy"]
+            )
+        )
+
+    if pryt_type == Prytany.ALIGNED_10:
+        if day > 36:
+            # Must be intercalary
+            return tuple(
+                sorted(
+                    __pryt_doy_ranges(pry, day, pryt_type, 39, True),
+                    key=lambda p: p["doy"],
+                )
+            )
+
+        return tuple(
+            sorted(
+                __pryt_doy_ranges(pry, day, pryt_type, 36, False)
+                + __pryt_doy_ranges(pry, day, pryt_type, 39, True),
+                key=lambda p: p["doy"],
+            )
+        )
+
+    if pryt_type == Prytany.ALIGNED_12:
+        if day > 30:
+            return tuple(
+                sorted(
+                    __pryt_doy_ranges(pry, day, pryt_type, 32, True),
+                    key=lambda p: p["doy"],
+                )
+            )
+
+        return tuple(
+            sorted(
+                __pryt_doy_ranges(pry, day, pryt_type, 30, False)
+                + __pryt_doy_ranges(pry, day, pryt_type, 32, True),
+                key=lambda p: p["doy"],
+            )
+        )
+
+    if pryt_type == Prytany.ALIGNED_13:
+        if day > 28:
+            return tuple(
+                sorted(
+                    __pryt_doy_ranges(pry, day, pryt_type, 30, True),
+                    key=lambda p: p["doy"],
+                )
+            )
+
+        return tuple(
+            sorted(
+                __pryt_doy_ranges(pry, day, pryt_type, 28, False)
+                + __pryt_doy_ranges(pry, day, pryt_type, 30, True),
+                key=lambda p: p["doy"],
+            )
+        )
+
+    raise HeniautosError("Unhandled")
+
+
+def __fest_eq(months):
     try:
         return festival_doy(months[0], months[1])
     except TypeError as e:
@@ -84,14 +266,12 @@ def _fest_eq(months):
         # We got a tuple of tuples, but the len is only 1
         pass
 
-    return tuple([a for b in [_fest_eq(m) for m in months] for a in b])
+    return tuple([a for b in [__fest_eq(m) for m in months] for a in b])
 
 
-def _pryt_eq(prytanies, pryt_type, year=None):
-    from heniautos.prytanies import prytany_doy
-
+def __pryt_eq(prytanies, pryt_type):
     try:
-        return prytany_doy(prytanies[0], prytanies[1], pryt_type=pryt_type, year=year)
+        return prytany_doy(prytanies[0], prytanies[1], pryt_type=pryt_type)
     except TypeError as e:
         if "'tuple'" in e.__str__():
             pass
@@ -103,7 +283,7 @@ def _pryt_eq(prytanies, pryt_type, year=None):
     return tuple(
         [
             a
-            for b in [_pryt_eq(p, pryt_type=pryt_type, year=year) for p in prytanies]
+            for b in [__pryt_eq(p, pryt_type=pryt_type) for p in prytanies]
             for a in b
         ]
     )
@@ -111,39 +291,39 @@ def _pryt_eq(prytanies, pryt_type, year=None):
 def equations(months, prytanies, pryt_type, year=None):
     """Return possible solutions for a calendar equation
 
-        Parameters:
+    Parameters:
             month (tuple): A tuple consisting of a Month constant and a day, or a
     tuple of such tuples
             prytanies: A tuple consisting of a Prytany constant and a day, or a
     tuple of such tuples
             year (int): Year, used to calculate prytany type is Prytany.AUTO
             pryt_type (Prytany): Type of prytany calendar to use
-    (default Prytany.AUTO)
+            (default Prytany.AUTO)
 
-        Returns a tuple of tuples. Each inner tuple is a pair of dicts,
-        one for festival and one for conciliar calendar conditions that
-        satisfy the equation for a particular DOY. Each of these dicts
-        consists of:
+    Returns a tuple of tuples. Each inner tuple is a pair of dicts,
+    one for festival and one for conciliar calendar conditions that
+    satisfy the equation for a particular DOY. Each of these dicts
+    consists of:
 
             date: The festival or prytany date
             doy: The DOY of the date
             preceding: A tuple of lengths of the preceding months or prytanies
             intercalation: True if intercalation required for this solution
 
-        Intercalation means something slightly different for the festival
-        and conciliar calendar solutions. For the conciliar calendar True
-        means that the year is intercalary because that affects the
-        lengths of all the prytanies. For the festival calendar True means
-        that an intercalation must precede the date because that effects
-        the number of months, not the lengths. If a pair has intercalation
-        = False in the festival solution but intercalation = True in the
-        conciliar, it indicated that that solution is valid for an
-        intercalary, but only if the intercalation follows the festival
-        date.
+    Intercalation means something slightly different for the festival
+    and conciliar calendar solutions. For the conciliar calendar True
+    means that the year is intercalary because that affects the
+    lengths of all the prytanies. For the festival calendar True means
+    that an intercalation must precede the date because that effects
+    the number of months, not the lengths. If a pair has intercalation
+    = False in the festival solution but intercalation = True in the
+    conciliar, it indicated that that solution is valid for an
+    intercalary, but only if the intercalation follows the festival
+    date.
 
     """
-    pryt_eqs = _pryt_eq(prytanies, pryt_type, year)
-    fest_eqs = _fest_eq(months)
+    pryt_eqs = __pryt_eq(prytanies, pryt_type)
+    fest_eqs = __fest_eq(months)
 
     intersection = sorted(
         set([f["doy"] for f in fest_eqs]) & set([p["doy"] for p in pryt_eqs])
@@ -162,12 +342,12 @@ def equations(months, prytanies, pryt_type, year=None):
                 for i in intersection
             ]
             for a in b
-            if not _misaligned_intercalation(a)
+            if not __misaligned_intercalation(a)
         ]
     )
 
 
-def _misaligned_intercalation(i):
+def __misaligned_intercalation(i):
     """Check if festival is intercalated but conciliar not."""
     if i[0]["intercalation"] is True and i[1]["intercalation"] is False:
         return True
@@ -175,7 +355,7 @@ def _misaligned_intercalation(i):
     return False
 
 
-def _no_deintercalations(i, pre=False):
+def __no_deintercalations(i, pre=False):
     """Check festival intercalation sequence.
 
     Recursively check a sequence of festival month equation
@@ -192,15 +372,15 @@ def _no_deintercalations(i, pre=False):
 
     if pre is False and i[0] is False:
         # Proceed, no intercalation yet
-        return _no_deintercalations(i[1:], False)
+        return __no_deintercalations(i[1:], False)
 
     if pre is True and i[0] is True:
         # Proceed, we have intercalation
-        return _no_deintercalations(i[1:], True)
+        return __no_deintercalations(i[1:], True)
 
     if pre is False and i[0] is True:
         # Proceed, switch from no intercalation to intercalation
-        return _no_deintercalations(i[1:], True)
+        return __no_deintercalations(i[1:], True)
 
     # The only condition left in pre == True and i[0] == False.
     # The forbidden condition. We have a precedeing intercalation
@@ -208,7 +388,7 @@ def _no_deintercalations(i, pre=False):
     return False
 
 
-def _is_contained_in(a, b):
+def __is_contained_in(a, b):
     """Test whether the values in first tuple are contained in second."""
     from heniautos import HeniautosNoMatchError
     
@@ -218,16 +398,16 @@ def _is_contained_in(a, b):
 
     try:
         i = b.index(a[0])
-        return _is_contained_in(a[1:], b[:i] + b[i + 1 :])
+        return __is_contained_in(a[1:], b[:i] + b[i + 1 :])
     except ValueError as e:
         raise HeniautosNoMatchError(f"{a[0]} not found in {b}")
 
 
-def _each_overlaps(b, a=tuple()):
+def __each_overlaps(b, a=tuple()):
     """Test overlapping series of months or prytanies."""
     if not a:
         # First pass
-        return _each_overlaps(b[1:], a + (b[0],))
+        return __each_overlaps(b[1:], a + (b[0],))
 
     if not b:
         # Finished succesfully. Results in a
@@ -235,9 +415,9 @@ def _each_overlaps(b, a=tuple()):
 
     # Just use a flattened version of a, results are the same
     # raises HeniautosNoMatchError if unsuccessful
-    c = _is_contained_in([x for y in a for x in y], b[0])
+    c = __is_contained_in([x for y in a for x in y], b[0])
 
-    return _each_overlaps(b[1:], (a + (c,)))
+    return __each_overlaps(b[1:], (a + (c,)))
 
 
 def collations(*args, failures=False):
@@ -287,12 +467,12 @@ def collations(*args, failures=False):
                 raise HeniautosNoMatchError()
 
             # Criterion #2
-            if not _no_deintercalations([c[0]["intercalation"] for c in p]):
+            if not __no_deintercalations([c[0]["intercalation"] for c in p]):
                 raise HeniautosNoMatchError()
 
             # Criterion #3
-            fest_partitions = _each_overlaps([c[0]["preceding"] for c in p])
-            pryt_partitions = _each_overlaps([c[1]["preceding"] for c in p])
+            fest_partitions = __each_overlaps([c[0]["preceding"] for c in p])
+            pryt_partitions = __each_overlaps([c[1]["preceding"] for c in p])
             successes = successes + (
                 {
                     "partitions": {
