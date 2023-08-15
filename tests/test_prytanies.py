@@ -3,9 +3,6 @@ from heniautos.prytanies import *
 import pytest
 
 # Year to test prytany lengths
-# O_SO = 424  # 354 days, quasi-solar prytanies
-O_SO_LONG = 426  # 355 days, quasi-solar prytanies
-I_SO = 425  # 384 days, quasi-solar prytanies
 O_10 = 369  # 354 days, 10 prytanies
 O_10_LONG = 367  # 355 days, 10 prytanies
 I_10 = 363  # 384 days, 10 prytanies
