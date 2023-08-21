@@ -175,12 +175,12 @@ def prytany_doy(pry, day, pryt_type):
     Returns a tuple of dicts, one for each DOY, and each consisting of:
         date: Prytany and day supplied
         doy: The DOY
-        preceding: tuple of ints that are the lengths of the prytanies
-                   preceding the given date, which goes in the DOY calculation
+        preceding: tuple of ints that are the lengths of the prytanies 
+        preceding the given date, which goes in the DOY calculation
         intercalation: True if the DOY is for an intercalated year. N.B.: this
-                       is different from festival_doy() because it True
-                       for and intercalary DOY whether or not the intercalation
-                       occurs before the given prytany or not.
+        is different from festival_doy() because it True
+        for and intercalary DOY whether or not the intercalation
+        occurs before the given prytany or not.
 
     """
     from heniautos import HeniautosError
