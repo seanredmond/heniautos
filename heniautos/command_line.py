@@ -81,27 +81,6 @@ def month_n(m, int_m, abbrev, greek=False):
     return month_name(m, int_m, greek)
 
 
-def day_filter(day, args):
-    if args.day:
-        return day.day == args.day
-
-    return True
-
-
-def doy_filter(day, doy):
-    if doy:
-        return day.doy == doy
-
-    return True
-
-
-def month_filter(idx, args):
-    if args.month is None:
-        return True
-
-    return idx == args.month
-
-
 def display_month(month, args):
     if type(month) is ha.PrytanyDay:
         if not args.arabic:
@@ -268,40 +247,34 @@ def name_as(abbrev, greek):
     return ha.MonthNameOptions.TRANSLITERATION
 
 
-def filtered_festival_calendar(year, args, astro_data):
+def festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
-    return festival_filters(
-        ha.festival_calendar(
-            year,
-            name_as=name_as(args.abbreviations, args.greek_names),
-            calendar=get_calendar(args.calendar),
-            event=get_solar_event(args.calendar, args.calendar_start),
-            before_event=needs_before(args.calendar),
-            intercalate=args.intercalate,
-            v_off=args.visibility_offset,
-            s_off=args.solar_offset,
-            data=astro_data(),
-        ),
-        args,
+    return ha.festival_calendar(
+        year,
+        name_as=name_as(args.abbreviations, args.greek_names),
+        calendar=get_calendar(args.calendar),
+        event=get_solar_event(args.calendar, args.calendar_start),
+        before_event=needs_before(args.calendar),
+        intercalate=args.intercalate,
+        v_off=args.visibility_offset,
+        s_off=args.solar_offset,
+        data=astro_data(),
     )
 
 
-def filtered_prytany_calendar(year, args, astro_data):
+def prytany_calendar(year, args, astro_data):
     """Filter prytany calendar to requested scope."""
-    return prytany_filters(
-        ha.prytanies.prytany_calendar(
-            year, v_off=args.visibility_offset, data=astro_data()
-        ),
-        args,
+    return ha.prytanies.prytany_calendar(
+        year, v_off=args.visibility_offset, data=astro_data()
     )
 
 
-def filtered_calendar(year, args, astro_data):
+def selected_calendar(year, args, astro_data):
     """Return a calendar with requested filters."""
     if args.conciliar:
-        return filtered_prytany_calendar(year, args, astro_data)
+        return prytany_calendar(year, args, astro_data)
 
-    return filtered_festival_calendar(year, args, astro_data)
+    return festival_calendar(year, args, astro_data)
 
 
 def by_group(year):
@@ -325,7 +298,7 @@ def output_years(args, writer, tabs, astro_data):
             )
 
     for year in years(args.start_year, args.end_year, args.as_ce):
-        cal = filtered_calendar(year, args, astro_data)
+        cal = selected_calendar(year, args, astro_data)
 
         if args.year_summary:
             if tabs:
@@ -527,14 +500,6 @@ under certain conditions.""",
         default="athens",
         help="Festival calendar to display",
     ),
-    parser.add_argument(
-        "--month",
-        choices=tuple(range(1, 14)),
-        type=int,
-        help="Only show requested month",
-    )
-    parser.add_argument("--day", type=int, help="Only show selected day")
-    parser.add_argument("--doy", type=int, help="Only show selected day of year")
     parser.add_argument("-m", "--month-summary", action="store_true")
     parser.add_argument("-y", "--year-summary", action="store_true")
     parser.add_argument(
@@ -596,7 +561,10 @@ under certain conditions.""",
         help="Only list dates of winter solstice",
     )
     parser.add_argument(
-        "--gmt", action="store_true", help="Format times as GMT (rather than EET)"
+        "--athens-local-time",
+        dest="alt",
+        action="store_true",
+        help="Show times in Athens Local Time (adjusted for Athens' longitude rather than GMT)",
     )
     parser.add_argument(
         "-v",
@@ -666,19 +634,19 @@ under certain conditions.""",
         if args.new_moons:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 for nm in ha.new_moons(year, data=astro_data()):
-                    if args.gmt:
-                        print(ha.as_julian(nm, True))
-                    else:
+                    if args.alt:
                         print(ha.as_julian(nm, True, tz=ha.TZOptions.ALT))
+                    else:
+                        print(ha.as_julian(nm, True))
             exit()
 
         if args.full_moons:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 for nm in ha.moon_phases(year, ha.Phases.FULL, data=astro_data()):
-                    if args.gmt:
-                        print(ha.as_julian(nm, True))
-                    else:
+                    if args.alt:
                         print(ha.as_julian(nm, True, tz=ha.TZOptions.ALT))
+                    else:
+                        print(ha.as_julian(nm, True))
             exit()
 
         # Check for one of the solar events (and take the first one)
@@ -701,18 +669,18 @@ under certain conditions.""",
 
         if solar is not None:
             for year in years(args.start_year, args.end_year, args.as_ce):
-                if args.gmt:
-                    print(
-                        ha.as_julian(
-                            ha.solar_event(year, solar[1], data=astro_data()), True
-                        )
-                    )
-                else:
+                if args.alt:
                     print(
                         ha.as_julian(
                             ha.solar_event(year, solar[1], data=astro_data()),
                             True,
                             tz=ha.TZOptions.ALT,
+                        )
+                    )
+                else:
+                    print(
+                        ha.as_julian(
+                            ha.solar_event(year, solar[1], data=astro_data()), True
                         )
                     )
             exit()
