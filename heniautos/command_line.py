@@ -419,7 +419,7 @@ def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
         solar = dict(solar_events(year, with_solar))
         lunar = dict(lunar_events(year, with_nm))
         for day in get_julian_year(year):
-            row = (day, ha.as_julian(day), solar.get(day, ""), lunar.get(day, ""))
+            row = (day, ha.as_julian(day)) + ((solar.get(day, ""),) if with_solar else ()) + ((lunar.get(day, ""),) if with_nm else ())
 
             writer.writerow(row)
 
