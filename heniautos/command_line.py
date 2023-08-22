@@ -225,7 +225,7 @@ def get_calendar(cal):
 
     if cal == "generic":
         return ha.Cal.GENERIC
-    
+
     return ha.Cal.ATHENIAN
 
 
@@ -236,7 +236,7 @@ def get_solar_event(cal, start):
 
         if start == "winter":
             return ha.Seasons.WINTER_SOLSTICE
-    
+
         if start == "spring":
             return ha.Seasons.SPRING_EQUINOX
 
@@ -247,7 +247,7 @@ def get_solar_event(cal, start):
 
     if cal == "delos":
         return ha.Seasons.WINTER_SOLSTICE
-    
+
     return ha.Seasons.SUMMER_SOLSTICE
 
 
@@ -419,7 +419,11 @@ def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
         solar = dict(solar_events(year, with_solar))
         lunar = dict(lunar_events(year, with_nm))
         for day in get_julian_year(year):
-            row = (day, ha.as_julian(day)) + ((solar.get(day, ""),) if with_solar else ()) + ((lunar.get(day, ""),) if with_nm else ())
+            row = (
+                (day, ha.as_julian(day))
+                + ((solar.get(day, ""),) if with_solar else ())
+                + ((lunar.get(day, ""),) if with_nm else ())
+            )
 
             writer.writerow(row)
 
@@ -617,7 +621,7 @@ under certain conditions.""",
         choices=("summer", "fall", "winter", "spring"),
         default="summer",
         type=str,
-        help="Season for beginning of the year (with -c generic, default: summer"
+        help="Season for beginning of the year (with -c generic, default: summer",
     )
     parser.add_argument(
         "-E", "--use-ephemeris", action="store_true", help="Use ephemeris for data"
