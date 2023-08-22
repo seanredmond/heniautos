@@ -18,7 +18,7 @@ The :command:`heniautos` command-line application gives you access to most of th
                  [--doy DOY] [-m] [-y]
                  [--intercalate {1,2,3,4,5,6,7,8,9,10,11,12}] [-C] [--arabic]
                  [--prytany {I,II,III,IV,V,VI,VII,VIII,IX,X,XI,XII,XIII}]
-                 [--as-ce] [-a] [-g] [--new-moons] [--full-moons]
+                 [--as-ce] [-a] [-g] [--new-moons]
                  [--summer-solstice] [--spring-equinox] [--autumn-equinox]
                  [--winter-solstice] [--gmt] [-v N] [-s N]
                  [--calendar-start {summer,fall,winter,spring}] [-E] [-e FILE]
@@ -385,13 +385,13 @@ The :option:`--julian` option will output a *Julian* calendar for the year or ye
 .. code-block:: console
 
     $ heniautos 400 --julian
-    1575324|BCE 0400-Jan-01||
-    1575325|BCE 0400-Jan-02||
-    1575326|BCE 0400-Jan-03||
+    1575324|BCE 0400-Jan-01
+    1575325|BCE 0400-Jan-02
+    1575326|BCE 0400-Jan-03
     ...
-    1575686|BCE 0400-Dec-29||
-    1575687|BCE 0400-Dec-30||
-    1575688|BCE 0400-Dec-31||
+    1575686|BCE 0400-Dec-29
+    1575687|BCE 0400-Dec-30
+    1575688|BCE 0400-Dec-31
 
 .. note::
 
@@ -424,8 +424,92 @@ calendars, so you can use this to check the work of
    solstices/equinoxes are affected by :option:`--visibility-offset`
    or :option:`--solar-offset`
 
-Option Reference
-----------------
+
+Solstices and Equinoxes
+^^^^^^^^^^^^^^^^^^^^^^^
+
+You can see the dates of solstices and equinoxes for any year or years
+with :option:`--summer-solstice`, :option:`--autumn-equinox`,
+:option:`--winter-solstice`:, and :option:`--spring-equinox`
+
+.. code-block:: console
+
+    $ heniautos 400 --summer-solstice
+    BCE 0400-Jun-28 07:06:35 GMT
+
+    $ heniautos 400 --autumn-equinox
+    BCE 0400-Sep-28 10:24:44 GMT
+
+    $ heniautos 400 395 --winter-solstice
+    BCE 0400-Dec-25 23:45:54 GMT
+    BCE 0399-Dec-25 05:41:51 GMT
+    BCE 0398-Dec-25 11:26:39 GMT
+    BCE 0397-Dec-25 17:10:24 GMT
+    BCE 0396-Dec-25 23:03:29 GMT
+    BCE 0395-Dec-25 04:43:24 GMT
+
+    $ heniautos 2023 --as-ce --spring-equinox
+     CE 2023-Mar-20 21:25:35 GMT
+
+New Moons
+^^^^^^^^^
+
+The dates of new moons can be listed with :option:`--new-moons`:
+
+.. code-block:: console
+
+    $ heniautos 400 --new-moons
+    BCE 0400-Jan-26 03:43:18 GMT
+    BCE 0400-Feb-24 15:23:36 GMT
+    BCE 0400-Mar-26 00:24:59 GMT
+    BCE 0400-Apr-24 07:48:26 GMT
+    BCE 0400-May-23 14:39:58 GMT
+    BCE 0400-Jun-21 21:58:47 GMT
+    BCE 0400-Jul-21 06:36:18 GMT
+    BCE 0400-Aug-19 17:19:56 GMT
+    BCE 0400-Sep-18 06:51:40 GMT
+    BCE 0400-Oct-17 23:31:21 GMT
+    BCE 0400-Nov-16 18:45:30 GMT
+    BCE 0400-Dec-16 14:51:35 GMT
+
+.. note:: The new moons listes for the :option:`--new-moons` option
+          are for the *Julian* year given (or Gregorian for years
+          following the Gregorian reform). For all the new moons
+          relevant to the *Greek* year 400 (that is, 400/399 BCE) you
+          would need some new moons from 400 and some from 399.
+
+Athens Local Time
+^^^^^^^^^^^^^^^^^
+
+By default times of solstices, equinoxes, and new moons are given in
+Greenwich Mean Time. "Athens Local Time" (see :ref:`time-zones`) can
+be selected instead with :option:`--athens-local-time`.
+
+Ephemerides
+^^^^^^^^^^^
+
+If you have the `Skyfield <https://pypi.org/project/skyfield/>`_
+package installed you can tell :command:`heniautos` to use that for
+astronomical data rather than the data supplied with
+:py:mod:`heniautos`—for instance, if you want a calendar for a year
+not covered by the built-in data—with the :option:`--use-ephemeris`
+option (:option:`-E` for short).
+
+Use :option:`--ephemeris` (or :option:`-e`) to specify the path
+to a particular ephemeris file. If no ephemeris file is specified and
+one cannot be found on your file path (or if a file *is* specified but
+it cannot be found at the specified path) Skyfield will automatically
+download a (large) ephemeris.
+
+
+.. code-block:: console
+
+    $ heniautos 1600 --as-ce --use-ephemeris -e de422.bsp
+
+See :ref:`ephemerides`.
+
+:command:`heniautos` Option Reference
+----------------------------------------
 
 .. option:: start_year
 
@@ -450,6 +534,14 @@ Option Reference
 
     Treat dates as CE rather than BCE
 
+.. option:: --athens-local-time
+
+    Show times in Athens Local Times (see :ref:`time-zones`)
+
+.. option:: --autumn-equinox
+
+    Only list dates of autumn equinox	   
+
 .. option:: -c <city>
 
     Show calender for specific city (default Athens). Choices are
@@ -463,6 +555,14 @@ Option Reference
 
     Season for beginning of the year (with :option:`-c` generic). Choices are one of: summer, fall, winter,
     spring. Default: summer
+
+.. option:: -E, --use-ephemeris
+
+    Use ephemeris for data
+
+.. option:: -e <FILE>, --ephemeris <FILE>
+
+    Use existing ephemeris file (with :option:`-E`)
 
 .. option:: -g, --greek-names
 
@@ -493,9 +593,21 @@ Option Reference
 
     Summarize calendar by month
 
+.. option:: --new-moons
+
+    Only list dates of new moons (conjunctions)
+
 .. option:: -s, --solar-offset
 
     TK
+
+.. option:: --spring-equinox
+
+    Only list dates of spring equinox	    
+
+.. option:: --summer-solstice
+
+    Only list dates of solstices
 
 .. option:: --tab
 
@@ -504,6 +616,10 @@ Option Reference
 .. option:: -v, --visibility-offset
 
     TK
+
+.. option:: --winter-solstice
+
+    Only list dates of winter solstice
 
 .. option:: -y, --year-summary
 

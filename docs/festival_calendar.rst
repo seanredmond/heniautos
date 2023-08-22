@@ -191,6 +191,10 @@ conversations. For more detail refer to that `documentation
    Note that there is no conversion to a Python date or datetime
    available because the datetime library does not handle BCE dates.
 
+
+Julian and Gregorian Dates
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 :py:func:`as_julian` and :py:func:`as_gregorian` have some further
 options. With ``full=True`` the output includes the time (HH:MM:SS)
 and timezone (GMT by default). Note that Julian Days start at noon, so
@@ -206,6 +210,11 @@ therefore anything past .5 (midnight) actually falls into the next
 'BCE 0400-Jul-17 12:00:00 GMT'
 >>> ha.as_gregorian(1575526.78, full=True)
 'BCE 0400-Jul-18 06:43:12 GMT'
+
+.. _time-zones:
+
+Time Zones
+^^^^^^^^^^
 
 The ``tz`` parameter takes one of two options:
 :py:enum:`TZOptions.GMT` (The default) or
@@ -794,6 +803,7 @@ FestivalDay(jdn=1575531, month_name='Hekatombaiṓn', month_index=1, month=<Athe
 >>> ha.as_gregorian(gregorian_day)
 'BCE 0400-Jul-22'
 
+.. _ephemerides:
 
 Ephimerides and Custom Data
 ---------------------------
