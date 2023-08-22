@@ -84,7 +84,7 @@ Once you are more interested in the nitty-gritty of this calendar, read Calendar
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    festival_calendar
