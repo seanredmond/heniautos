@@ -71,6 +71,7 @@ class Cal(Enum):
     CORINTHIAN = object()
     DELIAN = object()
     DELPHIAN = object()
+    MACEDONIAN = object()
     SPARTAN = object()
     GENERIC = object()
 
@@ -163,6 +164,21 @@ class CorinthianMonths(IntEnum):
     APE = 12
 
 
+class MacedonianMonths(IntEnum):
+    DIO = 1
+    APE = 2
+    AUD = 3
+    PER = 4
+    DYS = 5
+    XAN = 6
+    ART = 7
+    DAI = 8
+    PAN = 9
+    LOI = 10
+    GOR = 11
+    HYP = 12
+    
+
 class GenericMonths(IntEnum):
     M01 = 1
     M02 = 2
@@ -184,6 +200,7 @@ CALENDAR_MAP = {
     Cal.CORINTHIAN: CorinthianMonths,
     Cal.DELPHIAN: DelphianMonths,
     Cal.DELIAN: DelianMonths,
+    Cal.MACEDONIAN: MacedonianMonths,
     Cal.SPARTAN: GenericMonths,
     Cal.GENERIC: GenericMonths
 }
@@ -260,10 +277,23 @@ MONTH_NAME_MAP = {
     (Cal.ARGIVE, ArgiveMonths.TEL): ("Téleos", "Tel", "Τέλεος"),
     (Cal.ARGIVE, ArgiveMonths.ARN): ("Arneîos", "Arn", "Ἀρνεῖος"),
     (Cal.ARGIVE, ArgiveMonths.ART): ("Artamítios", "Art", "Ἀρταμίτιος"),
-    (Cal.ARGIVE, ArgiveMonths.AGR): ("Agriánios", "Agr", "Ἀγριάωιος"),
+    (Cal.ARGIVE, ArgiveMonths.AGR): ("Agriánios", "Agr", "Ἀγριάνιος"),
     (Cal.ARGIVE, ArgiveMonths.AMU): ("Amuklaîos", "Amu", "Ἀμυκλαῖος"),
     (Cal.ARGIVE, ArgiveMonths.PAN): ("Pánamos", "Pan", "Πάναμος"),
     (Cal.ARGIVE, ArgiveMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
+
+    (Cal.MACEDONIAN, MacedonianMonths.DIO): ("Dîos", "Dio", "Δῖος"),
+    (Cal.MACEDONIAN, MacedonianMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
+    (Cal.MACEDONIAN, MacedonianMonths.AUD): ("Audnaîos", "Aud", "Αὐδναῖος"),
+    (Cal.MACEDONIAN, MacedonianMonths.PER): ("Perítios", "Per", "Περίτιος"),    
+    (Cal.MACEDONIAN, MacedonianMonths.DYS): ("Dústros", "Dus", "Δύστρος"),
+    (Cal.MACEDONIAN, MacedonianMonths.XAN): ("Xandikós", "Xan", "Ξανδικός"),
+    (Cal.MACEDONIAN, MacedonianMonths.ART): ("Artemísios", "Art", "Ἀρτεμίσιος"),
+    (Cal.MACEDONIAN, MacedonianMonths.DAI): ("Daísîos", "Dai", "Δαίσιος"),
+    (Cal.MACEDONIAN, MacedonianMonths.PAN): ("Pánēmos", "Pan", "Πάνημος"),
+    (Cal.MACEDONIAN, MacedonianMonths.LOI): ("Lōios", "Loi", "Λῷος"),
+    (Cal.MACEDONIAN, MacedonianMonths.GOR): ("Gorpiaîos", "Gor", "Γορπιαῖος"),
+    (Cal.MACEDONIAN, MacedonianMonths.HYP): ("Huperberetaîos", "Hup", "Ὑπερβερεταῖος"),
     (Cal.GENERIC, GenericMonths.M01): ("1", "1", "Πρῶτος"),
     (Cal.GENERIC, GenericMonths.M02): ("2", "2", "Δεύτερος"),
     (Cal.GENERIC, GenericMonths.M03): ("3", "3", "Τρίτος"),
@@ -1029,6 +1059,42 @@ def argive_festival_calendar(
         name_as=name_as,
         event=Seasons.AUTUMN_EQUINOX,
         before_event=True,
+        v_off=v_off,
+        s_off=s_off,
+        data=data,
+    )
+
+
+def macedonian_festival_calendar(
+    year,
+    intercalate=12,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    event=Seasons.AUTUMN_EQUINOX,
+    before_event=False,
+    v_off=1,
+    s_off=0,
+    data=load_data,
+):
+    """Return a tuple representing festival calendar.
+    Parameters:
+    year (int) -- The year for the calendar
+    intercalate (int) -- Month index of month to intercalate if necessary (default: 12)
+    name_as (MonthNameOption) -- Option corresponding to desired version of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+    Get a Macedonian festival calendar (calls festival_calendar with appropriate options).
+
+    """
+    return festival_calendar(
+        year,
+        calendar=Cal.MACEDONIAN,
+        intercalate=intercalate,
+        name_as=name_as,
+        event=event,
+        before_event=before_event,
         v_off=v_off,
         s_off=s_off,
         data=data,
