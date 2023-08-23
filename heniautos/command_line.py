@@ -183,78 +183,101 @@ def prytany_filters(cal, args):
     ]
 
 
-def get_calendar(cal):
-    if cal == "argos":
-        return ha.Cal.ARGIVE
+def get_solar_event(start):
+    if start == "fall":
+        return {"event": ha.Seasons.AUTUMN_EQUINOX}
 
-    if cal == "athens":
-        return ha.Cal.ATHENIAN
+    if start == "winter":
+        return {"event": ha.Seasons.WINTER_SOLSTICE}
 
-    if cal == "corinth":
-        return ha.Cal.CORINTHIAN
+    if start == "spring":
+        return {"event": ha.Seasons.SPRING_EQUINOX}
 
-    if cal == "delos":
-        return ha.Cal.DELIAN
+    if start == "summer":
+        return {"event": ha.Seasons.SUMMER_SOLSTICE}
 
-    if cal == "delphi":
-        return ha.Cal.DELPHIAN
+    return {}
+    
 
-    if cal == "sparta":
-        return ha.Cal.SPARTAN
+def needs_before(before, after):
+    if before:
+        return {"before_event": True}
 
-    if cal == "generic":
-        return ha.Cal.GENERIC
-
-    return ha.Cal.ATHENIAN
-
-
-def get_solar_event(cal, start):
-    if cal == "generic":
-        if start == "fall":
-            return ha.Seasons.AUTUMN_EQUINOX
-
-        if start == "winter":
-            return ha.Seasons.WINTER_SOLSTICE
-
-        if start == "spring":
-            return ha.Seasons.SPRING_EQUINOX
-
-        return ha.Seasons.SUMMER_SOLSTICE
-
-    if cal in ("argos", "corinth", "sparta"):
-        return ha.Seasons.AUTUMN_EQUINOX
-
-    if cal == "delos":
-        return ha.Seasons.WINTER_SOLSTICE
-
-    return ha.Seasons.SUMMER_SOLSTICE
-
-
-def needs_before(cal):
-    if cal in ("argos", "corinth", "sparta"):
-        return True
-
-    return False
+    if after:
+        return {"before_event": False}
+    
+    return {}
 
 
 def name_as(abbrev, greek):
     if greek:
-        return ha.MonthNameOptions.GREEK
+        return {"name_as": ha.MonthNameOptions.GREEK}
 
     if abbrev:
-        return ha.MonthNameOptions.ABBREV
+        return {"name_as": ha.MonthNameOptions.ABBREV}
 
-    return ha.MonthNameOptions.TRANSLITERATION
+    return {} #ha.MonthNameOptions.TRANSLITERATION
 
+
+def festival_func(cal):
+    if cal == "argos":
+        return ha.argive_festival_calendar
+
+    if cal == "corinth":
+        return ha.corinthian_festival_calendar
+
+    if cal == "delos":
+        return ha.delian_festival_calendar
+
+    if cal == "delphi":
+        return ha.delphian_festival_calendar
+
+    if cal == "sparta":
+        return ha.spartan_festival_calendar
+
+    if cal == "macedon":
+        return ha.macedonian_festival_calendar
+
+    if cal == "generic":
+        return ha.festival_calendar
+
+    return ha.athenian_festival_calendar
+
+def one_kwarg(args, argk, argn=None):
+    if vars(args).get(argk, None) is not None:
+        if argn is not None:
+            return {argn: vars(args).get(argk, None)}
+            
+        return {argk: vars(args).get(argk, None)}
+
+    return {}
+
+
+def cal_kwargs(args, astro_data):
+    return{
+        **name_as(args.abbreviations, args.greek_names),
+        **get_solar_event(args.calendar_start),
+        **needs_before(args.before_solar_event, args.after_solar_event),
+        **one_kwarg(args, "intercalate"),
+        **one_kwarg(args, "visibility_offset", "v_off"),         
+        **one_kwarg(args, "solar_offset", "s_off"),
+        **{"data": astro_data()}
+    }
+
+    raise ValueError()
+    
 
 def festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
+
+    return festival_func(args.calendar)(year, **cal_kwargs(args, astro_data))
+    
     return ha.festival_calendar(
         year,
         name_as=name_as(args.abbreviations, args.greek_names),
         calendar=get_calendar(args.calendar),
         event=get_solar_event(args.calendar, args.calendar_start),
-        before_event=needs_before(args.calendar),
+        before_event=needs_before(args.before_solar_event, args.after_solar_event),
         intercalate=args.intercalate,
         v_off=args.visibility_offset,
         s_off=args.solar_offset,
@@ -491,10 +514,11 @@ under certain conditions.""",
         choices=(
             "argos",
             "athens",
+            "corinth",
             "delos",
             "delphi",
+            "macedon",
             "sparta",
-            "corinth",
             "generic",
         ),
         default="athens",
@@ -506,7 +530,6 @@ under certain conditions.""",
         "--intercalate",
         choices=tuple(range(1, 13)),
         type=int,
-        default=6,
         help="Month after which to intercalate",
     )
     parser.add_argument(
@@ -569,7 +592,6 @@ under certain conditions.""",
     parser.add_argument(
         "-v",
         "--visibility-offset",
-        default=1,
         type=int,
         metavar="N",
         help="Offset for determining date of new moon."
@@ -580,16 +602,24 @@ under certain conditions.""",
         "-s",
         "--solar-offset",
         metavar="N",
-        default=0,
         type=int,
         help="Offset for determining the date of solstices " "and equinoxes",
     )
     parser.add_argument(
         "--calendar-start",
         choices=("summer", "fall", "winter", "spring"),
-        default="summer",
         type=str,
-        help="Season for beginning of the year (with -c generic, default: summer",
+        help="Season for beginning of the year (with -c generic, default: summer)",
+    )
+    parser.add_argument(
+        "--before-solar-event",
+        action="store_true",
+        help="Calendar begins before --calendar-start (with -c generic)",
+    )
+    parser.add_argument(
+        "--after-solar-event",
+        action="store_true",
+        help="Calendar begins after --calendar-start (with -c generic)",
     )
     parser.add_argument(
         "-E", "--use-ephemeris", action="store_true", help="Use ephemeris for data"
