@@ -464,7 +464,7 @@ def __gmt_fmt(j, full, epoch=" CE", tz=TZOptions.GMT):
     return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
 
 
-def tz_offset(jd, tz):
+def tz_offset(jd, tz=TZOptions.GMT):
     """Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich, or given longitude."""
     if tz == TZOptions.GMT:
         return jd
