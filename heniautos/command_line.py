@@ -531,7 +531,12 @@ under certain conditions.""",
     parser.add_argument(
         "--longitude",
         type=float,
-        help="Adjust times for longitude (use --athens-local-time for Athens)",
+        help="Adjust new moon and solstice times for longitude (use --athens-local-time for Athens)",
+    )
+    parser.add_argument(
+        "--as-jdn",
+        action="store_true",
+        help="Show new moon and solstice times as JDN"
     )
     parser.add_argument(
         "-v",
@@ -608,7 +613,10 @@ under certain conditions.""",
         if args.new_moons:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 for nm in ha.new_moons(year, data=astro_data()):
-                    print(ha.as_julian(nm, True, **adj_time(args)))
+                    if args.as_jdn:
+                        print(f"{ha.tz_offset(nm, **adj_time(args)):0.10f}")
+                    else:
+                        print(ha.as_julian(nm, True, **adj_time(args)))
 
             exit()
 
@@ -632,13 +640,16 @@ under certain conditions.""",
 
         if solar is not None:
             for year in years(args.start_year, args.end_year, args.as_ce):
-                print(
-                    ha.as_julian(
-                        ha.solar_event(year, solar[1], data=astro_data()),
-                        True,
-                        **adj_time(args),
+                if args.as_jdn:
+                    print(f"{ha.tz_offset(ha.solar_event(year, solar[1], data=astro_data()), **adj_time(args)):0.10f}")
+                else:
+                    print(
+                        ha.as_julian(
+                            ha.solar_event(year, solar[1], data=astro_data()),
+                            True,
+                            **adj_time(args),
+                        )
                     )
-                )
 
                 exit()
 
