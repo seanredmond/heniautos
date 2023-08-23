@@ -172,28 +172,6 @@ def daily_tsv(year, writer, args):
         )
 
 
-def festival_filters(cal, args):
-    """Apply festival filters."""
-    return [
-        d
-        for d in cal
-        if month_filter(d.month_index, args)
-        and day_filter(d, args)
-        and doy_filter(d, args.doy)
-    ]
-
-
-def prytany_filters(cal, args):
-    """Apply prytany filters."""
-    return [
-        d
-        for d in cal
-        if month_filter(d.prytany, args)
-        and day_filter(d, args)
-        and doy_filter(d, args.doy)
-    ]
-
-
 def get_solar_event(start):
     if start == "fall":
         return {"event": ha.Seasons.AUTUMN_EQUINOX}
@@ -283,18 +261,6 @@ def festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
 
     return festival_func(args.calendar)(year, **cal_kwargs(args, astro_data))
-
-    return ha.festival_calendar(
-        year,
-        name_as=name_as(args.abbreviations, args.greek_names),
-        calendar=get_calendar(args.calendar),
-        event=get_solar_event(args.calendar, args.calendar_start),
-        before_event=needs_before(args.before_solar_event, args.after_solar_event),
-        intercalate=args.intercalate,
-        v_off=args.visibility_offset,
-        s_off=args.solar_offset,
-        data=astro_data(),
-    )
 
 
 def prytany_calendar(year, args, astro_data):
@@ -434,40 +400,6 @@ def output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
             )
 
             writer.writerow(row)
-
-
-def zz_output_julian(start_y, end_y, with_solar, with_nm, as_ce, tabs, writer):
-    row_w = [16] + ([7] if with_solar else []) + ([7] if with_nm else [])
-
-    cent_j = ["^"] * len(row_w)
-
-    if not tabs:
-        header = (
-            ["Date"]
-            + (["Solar"] if with_solar else [])
-            + (["Lunar"] if with_nm else [])
-        )
-
-        writer.writerow([pad_cell(*h) for h in zip(header, cent_j, row_w)])
-        writer.writerow(["-" * w for w in row_w])
-
-    for year in years(start_y, end_y, as_ce):
-        solar = solar_events(year, with_solar)
-        lunar = lunar_events(year, with_nm)
-        for x in get_julian_year(year):
-            row = (
-                (
-                    x,
-                    ha.as_julian(x),
-                )
-                + is_astro_event(with_solar, x, solar)
-                + is_astro_event(with_nm, x, lunar)
-            )
-
-            if not tabs:
-                writer.writerow(pad_cell(*r) for r in zip(row, cent_j, row_w))
-            else:
-                writer.writerow(row)
 
 
 def pad_cell(c, j, w):
