@@ -464,8 +464,11 @@ def __gmt_fmt(j, full, epoch=" CE", tz=TZOptions.GMT):
     return f"{epoch} {j[0]:04d}-{__jul_month(j[1])}-{j[2]:02d}"
 
 
-def __alt_offset(jd, tz):
-    """Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich."""
+def tz_offset(jd, tz):
+    """Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich, or given longitude."""
+    if tz == TZOptions.GMT:
+        return jd
+
     if tz == TZOptions.ALT:
         return jd + (23.728056 / 360)
 
@@ -494,12 +497,12 @@ def as_julian(t, full=False, tz=TZOptions.GMT):
         return as_julian(t.jdn, full, tz)
 
     if is_bce(t):
-        return __gmt_fmt_bce(jd.to_julian(__alt_offset(t, tz)), full, tz=tz)
+        return __gmt_fmt_bce(jd.to_julian(tz_offset(t, tz)), full, tz=tz)
 
     if t >= 2299161:  # Start of Gregorian Calendar
         return as_gregorian(t, full, tz)
 
-    return __gmt_fmt(jd.to_julian(__alt_offset(t, tz)), full, tz=tz)
+    return __gmt_fmt(jd.to_julian(tz_offset(t, tz)), full, tz=tz)
 
 
 def as_gregorian(t, full=False, tz=TZOptions.GMT):
@@ -518,9 +521,9 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
         return as_gregorian(t.jdn, full, tz)
     
     if is_bce(t):
-        return __gmt_fmt_bce(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
+        return __gmt_fmt_bce(jd.to_gregorian(tz_offset(t, tz)), full, tz=tz)
 
-    return __gmt_fmt(jd.to_gregorian(__alt_offset(t, tz)), full, tz=tz)
+    return __gmt_fmt(jd.to_gregorian(tz_offset(t, tz)), full, tz=tz)
 
 
 def solar_event(year, e, data=load_data):

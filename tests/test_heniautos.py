@@ -33,6 +33,23 @@ def test_as_alt():
     assert as_julian(1563092.61, True, TZOptions.ALT) == "BCE 0434-Jul-07 04:13:18 ALT"
 
 
+def test_as_julian_longitude():
+    assert as_julian(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
+
+    # Time in Babylon
+    assert as_julian(1685074.3287423, True, tz=44.421111) == "BCE 0100-Jun-25 22:51:04    "
+
+
+def test_tz_offset():
+    assert tz_offset(1685074.3287423, TZOptions.ALT) == 1685074.3946535666
+
+    # Time in Babylon
+    assert tz_offset(1685074.3287423, 44.421111) == 1685074.4521342749
+
+    # GMT, no change
+    assert tz_offset(1685074.3287423, TZOptions.GMT) == 1685074.3287423
+    
+
 def test_as_gregorian():
     sol1 = solar_event(-431, Seasons.SUMMER_SOLSTICE)
     assert as_julian(sol1) == "BCE 0432-Jun-28"
