@@ -48,6 +48,17 @@ SOLAR = {
 }
 
 
+def adj_time(args):
+    """Return tz keyword parameter if requested"""
+    if args.alt:
+        return {"tz": ha.TZOptions.ALT}
+
+    if args.longitude:
+        return {"tz": args.longitude}
+
+    return {}
+
+
 def julian_fmt(d):
     return " ".join((bce_as_bce(tuple(d.utc)[0]), d.utc_strftime("%b %d")))
 
@@ -197,7 +208,7 @@ def get_solar_event(start):
         return {"event": ha.Seasons.SUMMER_SOLSTICE}
 
     return {}
-    
+
 
 def needs_before(before, after):
     if before:
@@ -205,7 +216,7 @@ def needs_before(before, after):
 
     if after:
         return {"before_event": False}
-    
+
     return {}
 
 
@@ -216,7 +227,7 @@ def name_as(abbrev, greek):
     if abbrev:
         return {"name_as": ha.MonthNameOptions.ABBREV}
 
-    return {} #ha.MonthNameOptions.TRANSLITERATION
+    return {}  # ha.MonthNameOptions.TRANSLITERATION
 
 
 def festival_func(cal):
@@ -243,35 +254,36 @@ def festival_func(cal):
 
     return ha.athenian_festival_calendar
 
+
 def one_kwarg(args, argk, argn=None):
     if vars(args).get(argk, None) is not None:
         if argn is not None:
             return {argn: vars(args).get(argk, None)}
-            
+
         return {argk: vars(args).get(argk, None)}
 
     return {}
 
 
 def cal_kwargs(args, astro_data):
-    return{
+    return {
         **name_as(args.abbreviations, args.greek_names),
         **get_solar_event(args.calendar_start),
         **needs_before(args.before_solar_event, args.after_solar_event),
         **one_kwarg(args, "intercalate"),
-        **one_kwarg(args, "visibility_offset", "v_off"),         
+        **one_kwarg(args, "visibility_offset", "v_off"),
         **one_kwarg(args, "solar_offset", "s_off"),
-        **{"data": astro_data()}
+        **{"data": astro_data()},
     }
 
     raise ValueError()
-    
+
 
 def festival_calendar(year, args, astro_data):
     """Filter festival calendar to requested scope."""
 
     return festival_func(args.calendar)(year, **cal_kwargs(args, astro_data))
-    
+
     return ha.festival_calendar(
         year,
         name_as=name_as(args.abbreviations, args.greek_names),
@@ -590,6 +602,11 @@ under certain conditions.""",
         help="Show times in Athens Local Time (adjusted for Athens' longitude rather than GMT)",
     )
     parser.add_argument(
+        "--longitude",
+        type=float,
+        help="Adjust times for longitude (use --athens-local-time for Athens)",
+    )
+    parser.add_argument(
         "-v",
         "--visibility-offset",
         type=int,
@@ -664,19 +681,8 @@ under certain conditions.""",
         if args.new_moons:
             for year in years(args.start_year, args.end_year, args.as_ce):
                 for nm in ha.new_moons(year, data=astro_data()):
-                    if args.alt:
-                        print(ha.as_julian(nm, True, tz=ha.TZOptions.ALT))
-                    else:
-                        print(ha.as_julian(nm, True))
-            exit()
+                    print(ha.as_julian(nm, True, **adj_time(args)))
 
-        if args.full_moons:
-            for year in years(args.start_year, args.end_year, args.as_ce):
-                for nm in ha.moon_phases(year, ha.Phases.FULL, data=astro_data()):
-                    if args.alt:
-                        print(ha.as_julian(nm, True, tz=ha.TZOptions.ALT))
-                    else:
-                        print(ha.as_julian(nm, True))
             exit()
 
         # Check for one of the solar events (and take the first one)
@@ -699,21 +705,15 @@ under certain conditions.""",
 
         if solar is not None:
             for year in years(args.start_year, args.end_year, args.as_ce):
-                if args.alt:
-                    print(
-                        ha.as_julian(
-                            ha.solar_event(year, solar[1], data=astro_data()),
-                            True,
-                            tz=ha.TZOptions.ALT,
-                        )
+                print(
+                    ha.as_julian(
+                        ha.solar_event(year, solar[1], data=astro_data()),
+                        True,
+                        **adj_time(args),
                     )
-                else:
-                    print(
-                        ha.as_julian(
-                            ha.solar_event(year, solar[1], data=astro_data()), True
-                        )
-                    )
-            exit()
+                )
+
+                exit()
 
         if args.julian:
             output_julian(
