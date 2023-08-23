@@ -573,11 +573,6 @@ under certain conditions.""",
         help="Only list times of astronomical new moons",
     )
     parser.add_argument(
-        "--full-moons",
-        action="store_true",
-        help="Only list times of astronomical full moons",
-    )
-    parser.add_argument(
         "--summer-solstice", action="store_true", help="Only list dates of solstices"
     )
     parser.add_argument(
