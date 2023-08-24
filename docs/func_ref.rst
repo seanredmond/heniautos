@@ -54,10 +54,17 @@ Date Formatting
 ^^^^^^^^^^^^^^^
 
 .. autofunction:: bce_as_negative
-.. autofunction:: negative_as_bce
+
+.. py:function:: negative_as_bce(year)
+
+    Inverse of :py:func:`bce_as_negative`. Treats a negative integer
+    as astronomical year numbering as converts to a positive integer
+    to be understood as a year BCE
+   
 .. autofunction:: arkhon_year
 .. autofunction:: month_name
 .. autofunction:: as_julian
+		  
 .. autofunction:: as_gregorian
 .. autofunction:: to_jdn
 .. autofunction:: tz_offset

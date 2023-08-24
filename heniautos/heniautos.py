@@ -393,7 +393,12 @@ def __is_bce(t):
 
 
 def bce_as_negative(year):
-    """Convert positive year (considered BCE) to negative number.
+    """Convert positive year (considered BCE) to astronomical year numbering.
+
+    :param year: Year to convert to astronomical year.
+    :type year: int
+    :return: Year as BCE astronomical year.
+    :rtype: int
 
     BCE years are represented as years less than 1. 1 BCE is 0 so all numbers
     are offset by 1 in the positive direction."""
@@ -406,7 +411,21 @@ negative_as_bce = bce_as_negative
 
 
 def arkhon_year(year):
-    """Format year as an arkhon year, eg. '431/430 BCE'"""
+    """Format year as an arkhon year, eg. '431/430 BCE'
+
+    :param year: Year to be formatted.
+    :type year: int
+    :return: Formatted arkhon year.
+    :rtype: str
+
+    Formats a single integer year (astronomical year numbering) as a
+    span of two years (the given and the following year), with epoch
+    (BCE or CE) appended.
+
+    For instance, -430 will be formatted as '431/430 BCE', 25 as
+    '25/26 CE'.
+
+    """
     epoch = "BCE" if year < 1 else " CE"
     year1 = negative_as_bce(year) if year < 1 else year
     year2 = year1 - 1 if epoch == "BCE" else year1 + 1
@@ -414,7 +433,15 @@ def arkhon_year(year):
 
 
 def to_jdn(t):
-    """Converts a Julian date to a Julian Day Number."""
+    """Converts a Julian date to a Julian Day Number.
+    
+    :param t: Julian date to be rounded to a JDN
+    :type t: float, int
+    :return: Corresponding Julian day number
+    :rtype: int
+
+    Rounds a Julian date to the nearest whole Julian Day Number.
+"""
     return int(t + 0.5)
 
 
@@ -459,7 +486,21 @@ def __gmt_fmt(j, full, epoch=" CE", tz=TZOptions.GMT):
 
 
 def tz_offset(jd, tz=TZOptions.GMT):
-    """Convert a JDN to a value that represents “Athens Local Time”, 23.728056 degrees east of Greenwich, or given longitude."""
+    """Adjust a Julian date to represent local time of a given longitude.
+
+    :param jd: Julian date.
+    :type jd: float, int
+    :param tz: Longitude or constant for offset.
+    :type tz: TZOptions, float
+    :return: Adjusted Julian date
+    :rtype: float
+
+    Offset a Julian date to a value that represents the local time for
+    a longitude. If tz is :py:enum:`TZOptions.ALT` time will be offset
+    for Athens (23.728056 degrees east), or for Greenwich (0 degrees)
+    with :py:enum:`TZOptions.GMT`.
+
+    """
     if tz == TZOptions.GMT:
         return jd
 
@@ -475,13 +516,19 @@ def tz_offset(jd, tz=TZOptions.GMT):
 def as_julian(t, full=False, tz=TZOptions.GMT):
     """Return a string representation of Julian date object as a Julian calendar date.
 
-    Parameters:
-    t -- A Julian date (float or int)
-    full -- Boolean. Return a full date if True, short date if False
-    tz -- TZOptions. Convert GMT (default) or "Athens Local Time" (AST)
+    :param t: Julian date.
+    :type t: float, int
+    :param full: Return a full date if True, short date if False
+    :type full: bool
+    :param tz: Longitude or :py:enum:`TZOptions` for conversion to local time (default, :py:enum:`TZOptions.GMT` is no conversion)
+    :type tz: TZOptions, float
+    :return: Formatted date as a Julian date
+    :rtype: str
 
-    The full date representation of 1685074.3287423, for example is
-    'BCE 0100-Jun-25 19:53:23 GMT', the short BCE 'BCE 0100-Jun-25'.
+    Returns a brief (default) or full date representation of a Julian
+    date. The full date representation of 1685074.3287423, for example
+    is 'BCE 0100-Jun-25 19:53:23 GMT', the brief BCE 'BCE
+    0100-Jun-25'. 
 
     Dates following the start of the gregorian calendar (10/15/1682)
     are returned as Gregorian calendar dates.
