@@ -406,6 +406,7 @@ negative_as_bce = bce_as_negative
 
 
 def arkhon_year(year):
+    """Format year as an arkhon year, eg. '431/430 BCE'"""
     epoch = "BCE" if year < 1 else " CE"
     year1 = negative_as_bce(year) if year < 1 else year
     year2 = year1 - 1 if epoch == "BCE" else year1 + 1

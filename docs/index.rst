@@ -91,6 +91,7 @@ Once you are more interested in the nitty-gritty of this calendar, read Calendar
    conciliar_calendar
    equations
    command_line
+   greek_calendar_basics
    func_ref
 
 

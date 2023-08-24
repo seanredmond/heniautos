@@ -6,16 +6,36 @@ Function Reference
 :py:mod:`heniautos`
 ----------------------
 
+Exceptions
+^^^^^^^^^^
+
+.. autoexception:: HeniautosError
+.. autoexception:: HeniautosNoMatchError
+.. autoexception:: HeniautosNoDataError
+.. autoexception:: HeniautosNoDayInYearError
+.. autoexception:: HeniautosDateNotFoundError
+
+Enums and Classes
+^^^^^^^^^^^^^^^^^
+
 .. autoenum:: GenericMonths
 .. autoenum:: ArgiveMonths
 .. autoenum:: AthenianMonths
 .. autoenum:: CorinthianMonths
 .. autoenum:: DelianMonths
 .. autoenum:: DelphianMonths
-
+	       
+		  
 .. autoenum:: Seasons
 .. autoenum:: TZOptions
 .. autoenum:: MonthNameOptions
+
+.. autoclass:: FestivalDay
+.. autoclass:: PrytanyDay
+	      
+
+Calendar Functions
+^^^^^^^^^^^^^^^^^^
 
 .. autofunction:: festival_calendar
 .. autofunction:: athenian_festival_calendar
@@ -24,24 +44,32 @@ Function Reference
 .. autofunction:: delian_festival_calendar
 .. autofunction:: delphian_festival_calendar
 .. autofunction:: spartan_festival_calendar
+.. autofunction:: by_months
+.. autofunction:: jdn_to_festival_day
+.. autofunction:: julian_to_festival_day
+.. autofunction:: gregorian_to_festival_day
 
-.. autoclass:: FestivalDay
-.. autoclass:: PrytanyDay
-	       
-		  
+
+Date Formatting
+^^^^^^^^^^^^^^^
 
 .. autofunction:: bce_as_negative
 .. autofunction:: negative_as_bce
+.. autofunction:: arkhon_year
+.. autofunction:: month_name
 .. autofunction:: as_julian
 .. autofunction:: as_gregorian
-.. autofunction:: by_months
+.. autofunction:: to_jdn
+.. autofunction:: tz_offset
+
+
+Astronomical Dates
+^^^^^^^^^^^^^^^^^^
+
 .. autofunction:: solar_event
 .. autofunction:: observed_solar_event
 .. autofunction:: new_moons
 .. autofunction:: visible_new_moons
-.. autofunction:: jdn_to_festival_day
-.. autofunction:: julian_to_festival_day
-.. autofunction:: gregorian_to_festival_day
 
 		  
 
