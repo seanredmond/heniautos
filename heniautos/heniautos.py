@@ -387,7 +387,7 @@ def __optionally_load_data(data):
     return data
 
 
-def is_bce(t):
+def __is_bce(t):
     """Return true if time t represents a BCE date."""
     return jd.to_julian(t)[0] < 1
 
@@ -489,7 +489,7 @@ def as_julian(t, full=False, tz=TZOptions.GMT):
     if isinstance(t, FestivalDay) or isinstance(t, PrytanyDay):
         return as_julian(t.jdn, full, tz)
 
-    if is_bce(t):
+    if __is_bce(t):
         return __gmt_fmt_bce(jd.to_julian(tz_offset(t, tz)), full, tz=tz)
 
     if t >= 2299161:  # Start of Gregorian Calendar
@@ -513,7 +513,7 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
     if isinstance(t, FestivalDay) or isinstance(t, PrytanyDay):
         return as_gregorian(t.jdn, full, tz)
     
-    if is_bce(t):
+    if __is_bce(t):
         return __gmt_fmt_bce(jd.to_gregorian(tz_offset(t, tz)), full, tz=tz)
 
     return __gmt_fmt(jd.to_gregorian(tz_offset(t, tz)), full, tz=tz)

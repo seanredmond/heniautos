@@ -14,10 +14,6 @@ def test_negative_as_bce():
     assert negative_as_bce(-99) == 100
 
 
-def test_is_bce():
-    assert is_bce(1685074.3287422964)  # Summer Solstice 100 BCE
-
-
 def test_as_julian():
     assert as_julian(1685074.3287423) == "BCE 0100-Jun-25"
     assert as_julian(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
