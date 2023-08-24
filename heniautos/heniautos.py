@@ -637,7 +637,7 @@ def __bounding_moons(moons, sol1, sol2, before_event):
     return __bounding_after(moons, sol1, sol2)
 
 
-def _calendar_months(
+def __calendar_months(
         year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
 ):
 
@@ -696,7 +696,7 @@ def __festival_months(
         [
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
             for m in enumerate(
-                _calendar_months(
+                __calendar_months(
                     year, data, event=event, before_event=before_event, v_off=v_off, s_off=s_off
                 ),
                 1,
@@ -704,7 +704,7 @@ def __festival_months(
         ]
     )
 
-calendar_months = _calendar_months
+calendar_months = __calendar_months
 
 def _doy_gen(n=1):
     """Recursivly return natural numbers starting with n."""

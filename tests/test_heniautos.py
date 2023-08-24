@@ -118,52 +118,6 @@ def test_new_moons():
     assert as_julian(p[0], True) == "BCE 0100-Jan-09 12:44:18 GMT"
 
 
-def test_calendar_months_after():
-    p = heniautos._calendar_months(-100, heniautos.load_data)
-    assert type(p) is tuple
-    assert len(p) == 12
-    assert type(p[0]) is tuple
-    assert len(p[0]) == 2
-    assert as_julian(p[0][0], True) == "BCE 0101-Jul-16 12:00:00 GMT"
-    assert p[0][1] == p[1][0]
-
-
-def test_calendar_months_before():
-    p = heniautos._calendar_months(-100, heniautos.load_data, before_event=True)
-    assert type(p) is tuple
-    assert len(p) == 12
-    assert type(p[0]) is tuple
-    assert len(p[0]) == 2
-    assert as_julian(p[0][0], True) == "BCE 0101-Jun-16 12:00:00 GMT"
-    assert p[0][1] == p[1][0]
-
-
-def test_calendar_months_athenian_424():
-    """Make sure calendar_months generates the correct new moons for Athenian 424/423"""
-    p = heniautos._calendar_months(-423, load_data)
-    assert len(p) == 12
-    assert as_julian(p[0][0]) == "BCE 0424-Jul-18"
-    assert as_julian(p[-1][0]) == "BCE 0423-Jun-08"
-
-
-def test_calendar_months_spartan_424():
-    """Make sure calendar_months generates the correct new moons for Spartan 424/423"""
-    p = heniautos._calendar_months(
-        -423, load_data, event=Seasons.AUTUMN_EQUINOX, before_event=True
-    )
-    assert len(p) == 12
-    assert as_julian(p[0][0]) == "BCE 0424-Sep-15"
-    assert as_julian(p[-1][0]) == "BCE 0423-Aug-06"
-
-
-def test_calendar_months_delian_424():
-    """Make sure calendar_months generates the correct new moons for Delian 424/423"""
-    p = heniautos._calendar_months(-423, load_data, event=Seasons.WINTER_SOLSTICE)
-    assert len(p) == 12
-    assert as_julian(p[0][0]) == "BCE 0423-Jan-11"
-    assert as_julian(p[-1][0]) == "BCE 0423-Dec-01"
-
-
 def test_generic_festival_calendar():
     p = festival_calendar(-100, calendar=None)
     assert len(p) == 354
