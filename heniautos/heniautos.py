@@ -80,16 +80,19 @@ class Cal(Enum):
 
 
 class TZOptions(Enum):
+    """Options for time zones"""
     GMT = "GMT"
     ALT = "ALT"
 
 
 class Months(IntEnum):
+    """Represents non-specific months"""
     INT = 13
     UNC = 14
 
 
 class ArgiveMonths(IntEnum):
+    """Represents months on the Argive calendar"""
     AGU = 1
     KAR = 2
     ERI = 3
@@ -105,6 +108,7 @@ class ArgiveMonths(IntEnum):
 
 
 class AthenianMonths(IntEnum):
+    """Represents months on the Athenian calendar"""
     HEK = 1
     MET = 2
     BOE = 3
@@ -120,6 +124,7 @@ class AthenianMonths(IntEnum):
 
 
 class DelianMonths(IntEnum):
+    """Represents months on the Delian calendar"""
     LEN = 1
     IER = 2
     GAL = 3
@@ -135,6 +140,7 @@ class DelianMonths(IntEnum):
 
 
 class DelphianMonths(IntEnum):
+    """Represents months on the Delphian calendar"""
     APE = 1
     BOU = 2
     BOA = 3
@@ -150,6 +156,7 @@ class DelphianMonths(IntEnum):
 
 
 class CorinthianMonths(IntEnum):
+    """Represents months on the Corinthian calendar"""
     PHO = 1
     KRA = 2
     LAN = 3
@@ -165,6 +172,7 @@ class CorinthianMonths(IntEnum):
 
 
 class MacedonianMonths(IntEnum):
+    """Represents months on the Macedonian calendar"""
     DIO = 1
     APE = 2
     AUD = 3
@@ -180,6 +188,7 @@ class MacedonianMonths(IntEnum):
     
 
 class GenericMonths(IntEnum):
+    """Represents Generic calendar months"""
     M01 = 1
     M02 = 2
     M03 = 3
@@ -308,22 +317,6 @@ MONTH_NAME_MAP = {
     (Cal.GENERIC, GenericMonths.M12): ("12", "12", "Δωδέκατος"),
 }
 
-
-# REMOVE
-MONTH_ABBREVS = (
-    "Hek",
-    "Met",
-    "Boe",
-    "Pua",
-    "Mai",
-    "Pos",
-    "Gam",
-    "Ant",
-    "Ela",
-    "Mou",
-    "Tha",
-    "Ski",
-)
 
 FestivalDay = namedtuple(
     "FestivalDay",
