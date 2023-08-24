@@ -21,7 +21,7 @@ def test_is_bce():
 def test_as_julian():
     assert as_julian(1685074.3287423) == "BCE 0100-Jun-25"
     assert as_julian(1685074.3287423, True) == "BCE 0100-Jun-25 19:53:23 GMT"
-    assert as_julian(1685439.56480925) == "BCE 0099-Jun-25"
+    assert as_julian(1685439.56480925) == "BCE 0099-Jun-26"
     assert as_julian(1685074.3287422964, True) == "BCE 0100-Jun-25 19:53:23 GMT"
 
     fest = athenian_festival_calendar(-431)
@@ -30,7 +30,7 @@ def test_as_julian():
 
 
 def test_as_alt():
-    assert as_julian(1563092.61, True, TZOptions.ALT) == "BCE 0434-Jul-07 04:13:18 ALT"
+    assert as_julian(1563092.61, True, TZOptions.ALT) == "BCE 0434-Jul-08 04:13:18 ALT"
 
 
 def test_as_julian_longitude():
