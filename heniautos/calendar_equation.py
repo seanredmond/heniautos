@@ -27,33 +27,37 @@ import sys
 
 
 # Conversions for argument parameters to Months constants
-CMD_MONTHS = {"hek": ha.AthenianMonths.HEK,
-              "met": ha.AthenianMonths.MET,
-              "boe": ha.AthenianMonths.BOE,
-              "pua": ha.AthenianMonths.PUA,
-              "mai": ha.AthenianMonths.MAI,
-              "pos": ha.AthenianMonths.POS,
-              "gam": ha.AthenianMonths.GAM,
-              "ant": ha.AthenianMonths.ANT,
-              "ela": ha.AthenianMonths.ELA,
-              "mou": ha.AthenianMonths.MOU,
-              "tha": ha.AthenianMonths.THA,
-              "ski": ha.AthenianMonths.SKI}
+CMD_MONTHS = {
+    "hek": ha.AthenianMonths.HEK,
+    "met": ha.AthenianMonths.MET,
+    "boe": ha.AthenianMonths.BOE,
+    "pua": ha.AthenianMonths.PUA,
+    "mai": ha.AthenianMonths.MAI,
+    "pos": ha.AthenianMonths.POS,
+    "gam": ha.AthenianMonths.GAM,
+    "ant": ha.AthenianMonths.ANT,
+    "ela": ha.AthenianMonths.ELA,
+    "mou": ha.AthenianMonths.MOU,
+    "tha": ha.AthenianMonths.THA,
+    "ski": ha.AthenianMonths.SKI,
+}
 
 # Conversions for argument parameters to Prytanies constants
-CMD_PRYT = {"i": pryt.Prytanies.I,
-            "ii": pryt.Prytanies.II,
-            "iii": pryt.Prytanies.III,
-            "iv": pryt.Prytanies.IV,
-            "v": pryt.Prytanies.V,
-            "vi": pryt.Prytanies.VI,
-            "vii": pryt.Prytanies.VII,
-            "viii": pryt.Prytanies.VIII,
-            "ix": pryt.Prytanies.IX,
-            "x": pryt.Prytanies.X,
-            "xi": pryt.Prytanies.XI,
-            "xii": pryt.Prytanies.XII,
-            "xiii": pryt.Prytanies.XIII}
+CMD_PRYT = {
+    "i": pryt.Prytanies.I,
+    "ii": pryt.Prytanies.II,
+    "iii": pryt.Prytanies.III,
+    "iv": pryt.Prytanies.IV,
+    "v": pryt.Prytanies.V,
+    "vi": pryt.Prytanies.VI,
+    "vii": pryt.Prytanies.VII,
+    "viii": pryt.Prytanies.VIII,
+    "ix": pryt.Prytanies.IX,
+    "x": pryt.Prytanies.X,
+    "xi": pryt.Prytanies.XI,
+    "xii": pryt.Prytanies.XII,
+    "xiii": pryt.Prytanies.XIII,
+}
 
 
 def abbrev_from_constant(val, dct):
@@ -89,35 +93,38 @@ def festival_pattern(f):
 
 
 def eq_fmt(fest, pryt, ph_cnt):
-    m = month_abbrev_from_constant(fest["date"][0])
-    m_day = fest["date"][1]
+    m = month_abbrev_from_constant(fest.date[0])
+    m_day = fest.date[1]
 
-    p = prytany_abbrev_from_constant(pryt["date"][0])
-    p_day = pryt["date"][1]
+    p = prytany_abbrev_from_constant(pryt.date[0])
+    p_day = pryt.date[1]
 
-    m_index = len(fest["preceding"]) + 1
+    m_index = len(fest.preceding) + 1
 
-    m_int = "+" if fest["intercalation"] else "-"
+    m_int = "+" if fest.intercalation else "-"
 
-    p_int = "(I)" if pryt["intercalation"] else "(O)"
+    p_int = "(I)" if pryt.intercalation else "(O)"
 
-    doy = fest["doy"]
+    doy = fest.doy
 
-    fest_p = "".join(["F" if d == 30 else "H" for d in fest["preceding"]])
-    pryt_p = prytany_pattern(pryt["preceding"], ph_cnt)
+    fest_p = "".join(["F" if d == 30 else "H" for d in fest.preceding])
+    pryt_p = prytany_pattern(pryt.preceding, ph_cnt)
 
     patterns = f"[{fest_p}, {pryt_p}]"
 
-    return (f"{m} {m_day:>2} ({m_index:>2}{m_int}) = "
-            f"{p:>4} {p_day:>2} = "
-            f" DOY {doy:>3} {p_int} {patterns}")
+    return (
+        f"{m} {m_day:>2} ({m_index:>2}{m_int}) = "
+        f"{p:>4} {p_day:>2} = "
+        f" DOY {doy:>3} {p_int} {patterns}"
+    )
 
 
-def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary,
-                    intercalary):
-    solutions = [e for e
-                 in heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
-                 if year_type(e, ordinary, intercalary)]
+def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary, intercalary):
+    solutions = [
+        e
+        for e in heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
+        if year_type(e, ordinary, intercalary)
+    ]
 
     if len(solutions) == 0:
         print(f"No solutions for {fest} = {pryt}")
@@ -129,8 +136,8 @@ def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary,
 
 def phulai_count(pryt_type, year):
     """Return the number of phulai."""
-    if year is not None:
-        return ha.prytanies._pryt_auto(year)
+    # if year is not None:
+    #     return ha.prytanies._pryt_auto(year)
 
     if pryt_type == pryt.Prytany.ALIGNED_13:
         return 13
@@ -147,19 +154,19 @@ def year_type(p, ordinary, intercalary):
         return True
 
     if ordinary:
-        return p[1]["intercalation"] is False
+        return p[1].intercalation is False
 
-    return p[1]["intercalation"] is True
+    return p[1].intercalation is True
 
 
 def coll_fmt2(fest, pryt):
-    m = month_abbrev_from_constant(fest["date"][0])
-    m_day = fest["date"][1]
+    m = month_abbrev_from_constant(fest.date[0])
+    m_day = fest.date[1]
 
-    p = prytany_abbrev_from_constant(pryt["date"][0])
-    p_day = pryt["date"][1]
+    p = prytany_abbrev_from_constant(pryt.date[0])
+    p_day = pryt.date[1]
 
-    doy = fest["doy"]
+    doy = fest.doy
 
     return f"{m} {m_day} = {p} {p_day} = {doy}"
 
@@ -170,21 +177,27 @@ def coll_fmt(eq):
 
 def output_collations(collations, pryt_type, year):
     for i, c in enumerate(collations, 1):
-        print(f"{i:>3}:", " ".join([festival_pattern(pat)
-                                    for pat in c["partitions"]["festival"]]),
-              " ",
-              " ".join([prytany_pattern(pat, phulai_count(pryt_type, year))
-                        for pat in c["partitions"]["conciliar"]]))
+        print(
+            f"{i:>3}:",
+            " ".join([festival_pattern(pat) for pat in c.partitions.festival]),
+            " ",
+            " ".join(
+                [
+                    prytany_pattern(pat, phulai_count(pryt_type, year))
+                    for pat in c.partitions.conciliar
+                ]
+            ),
+        )
 
     for i, c in enumerate(collations, 1):
-        print(f"{i:>3}:", coll_fmt(c["equations"]))
+        print(f"{i:>3}:", coll_fmt(c.equations))
 
 
 def cmd_parse_month_or_prytany(month, abbrevs):
     if month.lower() == "any":
         return tuple(abbrevs.values())
 
-    return (abbrevs[month.lower()], )
+    return (abbrevs[month.lower()],)
 
 
 def cmd_parse_prytany_range(pryt_type, year):
@@ -216,7 +229,7 @@ def cmd_parse_days(day, is_festival, pryt_type, year):
     if "/" in day:
         return tuple([int(d) for d in day.split("/")])
 
-    return (int(day), )
+    return (int(day),)
 
 
 def cmd_parse_abbrevs(month, day, abbrevs, pryt_type=None, year=None):
@@ -233,8 +246,10 @@ def cmd_parse_abbrevs(month, day, abbrevs, pryt_type=None, year=None):
         raise e
     except ValueError as e:
         if "invalid literal" in e.__str__():
-            print(f"Invalid day '{day}' could not be converted "
-                  "to an integer", file=sys.stderr)
+            print(
+                f"Invalid day '{day}' could not be converted " "to an integer",
+                file=sys.stderr,
+            )
             sys.exit(-1)
         raise e
 
@@ -254,19 +269,20 @@ def cmd_parse_equations(equation, pryt_type, year):
 
         return (fest, conc)
     except TypeError as e:
-        print(f"Error parsing equation: '{' '.join(equation)}'",
-              file=sys.stderr)
+        print(f"Error parsing equation: '{' '.join(equation)}'", file=sys.stderr)
 
         if "required positional" in e.__str__():
-            print("Four elements required: month, month day, "
-                  "prytany, prytany day", file=sys.stderr)
+            print(
+                "Four elements required: month, month day, " "prytany, prytany day",
+                file=sys.stderr,
+            )
 
         sys.exit(-1)
 
 
 def prytany_type_year(pryt_cnt, year):
     if year is not None:
-        return (pryt.Prytany.AUTO, ha.bce_as_negative(year))
+        return (pryt.prytany_type(ha.bce_as_negative(year)), ha.bce_as_negative(year))
 
     if pryt_cnt == 10:
         return (pryt.Prytany.ALIGNED_10, None)
@@ -284,41 +300,75 @@ def main():
 heniautos  Copyright (C) 2021  Sean Redmond
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it
-under certain conditions.""")
-    parser.add_argument("-e", "--equation", type=str, nargs='+',
-                        action="append", required=True)
+under certain conditions.""",
+    )
+    parser.add_argument(
+        "-e", "--equation", type=str, nargs="+", action="append", required=True
+    )
     parser.add_argument("-c", "--collate", action="store_true")
-    parser.add_argument("-p", "--prytanies", type=int, default=10,
-                        help="Number of prytanies in equation(s)")
-    parser.add_argument("-y", "--year", type=int,
-                        help="Year of equation(s). Overrides -p and is only"
-                        "used to determine the number of prytanies.")
-    parser.add_argument("--ordinary", action=argparse.BooleanOptionalAction,
-                        default=True,
-                        help="Show solutions for ordinary years")
-    parser.add_argument("--intercalary", action=argparse.BooleanOptionalAction,
-                        default=True,
-                        help="Show solutions for intercalary years")
-    parser.add_argument("--version", action="version",
-                        version=f"heniautos {ha.version()}",
-                        help="Print version and exit")
+    parser.add_argument(
+        "-p",
+        "--prytanies",
+        type=int,
+        default=10,
+        help="Number of prytanies in equation(s)",
+    )
+    parser.add_argument(
+        "-y",
+        "--year",
+        type=int,
+        help="Year of equation(s). Overrides -p and is only "
+        "used to determine the number of prytanies.",
+    )
+    parser.add_argument(
+        "--ordinary",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Show solutions for ordinary years",
+    )
+    parser.add_argument(
+        "--intercalary",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Show solutions for intercalary years",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"heniautos {ha.version()}",
+        help="Print version and exit",
+    )
     args = parser.parse_args()
 
     pryt_type, year = prytany_type_year(args.prytanies, args.year)
 
-    equations = [cmd_parse_equations(e, pryt_type, year)
-                 for e in args.equation]
+    equations = [cmd_parse_equations(e, pryt_type, year) for e in args.equation]
 
-    [output_solution(fest, pryt, pryt_type, year, i, len(args.equation),
-                     args.ordinary, args.intercalary)
-     for i, (fest, pryt) in enumerate(equations, 1)]
+    [
+        output_solution(
+            fest,
+            pryt,
+            pryt_type,
+            year,
+            i,
+            len(args.equation),
+            args.ordinary,
+            args.intercalary,
+        )
+        for i, (fest, pryt) in enumerate(equations, 1)
+    ]
 
     if args.collate:
         output_collations(
             heq.collations(
-                *[heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
-                  for fest, pryt in equations]),
-            pryt_type, year)
+                *[
+                    heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
+                    for fest, pryt in equations
+                ]
+            ),
+            pryt_type,
+            year,
+        )
 
 
 if __name__ == "__main__":
