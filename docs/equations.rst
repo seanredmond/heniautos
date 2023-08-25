@@ -53,11 +53,11 @@ Because the months can be different lengths (29 or 30 days) and because any mont
 >>> for e in eq.festival_doy(ha.AthenianMonths.MET, 9):
 ...     e
 ...
-{'date': (<AthenianMonths.MET: 2>, 9), 'doy': 38, 'preceding': (29,), 'intercalation': False}
-{'date': (<AthenianMonths.MET: 2>, 9), 'doy': 39, 'preceding': (30,), 'intercalation': False}
-{'date': (<AthenianMonths.MET: 2>, 9), 'doy': 67, 'preceding': (29, 29), 'intercalation': True}
-{'date': (<AthenianMonths.MET: 2>, 9), 'doy': 68, 'preceding': (30, 29), 'intercalation': True}
-{'date': (<AthenianMonths.MET: 2>, 9), 'doy': 69, 'preceding': (30, 30), 'intercalation': True}
+FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=38, preceding=(29,), intercalation=False)
+FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=39, preceding=(30,), intercalation=False)
+FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=67, preceding=(29, 29), intercalation=True)
+FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=68, preceding=(30, 29), intercalation=True)
+FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=69, preceding=(30, 30), intercalation=True)
 
 The :py:func:`festival_doy` function takes a month constant (see
 :ref:`month-constant`) and the number of a day. It returns a tuple,
@@ -95,13 +95,14 @@ prytany constant (:py:enum:`heniautos.prytanies.Prytanies`), a day,
 and a prytany type (see :ref:`prytany-types`):
 
 >>> eq.prytany_doy(pryt.Prytanies.I, 39, pryt.Prytany.ALIGNED_10)
-({'date': (<Prytanies.I: 1>, 39), 'doy': 39, 'preceding': (), 'intercalation': True},)
+(PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True),)
 
 Since we know the year, we can use :py:func:`heniautos.prytanies.prytany_type`
 to find the correct (default) prytany type constant:
 
 >>> eq.prytany_doy(pryt.Prytanies.I, 39, pryt.prytany_type(-332))
-({'date': (<Prytanies.I: 1>, 39), 'doy': 39, 'preceding': (), 'intercalation': True},)
+(PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True),)
+
 
 The return value is analogous to :py:func:`festival_doy`. In this
 case, with ten prytanues the 39th day of a prytany can only occur in
@@ -134,7 +135,8 @@ containing the month constant and date, a tuple (or list) with the
 prytany constant and date, and the prytany type:
 
 >>> eq.equations((ha.AthenianMonths.MET, 9), (pryt.Prytanies.I, 39), pryt.prytany_type(-332))
-(({'date': (<AthenianMonths.MET: 2>, 9), 'doy': 39, 'preceding': (30,), 'intercalation': False}, {'date': (<Prytanies.I: 1>, 39), 'doy': 39, 'preceding': (), 'intercalation': True}),)
+((FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=39, preceding=(30,), intercalation=False), PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True)),)
+
 
 The return value is a tuple of solutions. Each solution is a tuple
 containing a matching festival DOY and prytany DOY. Since there is
@@ -154,18 +156,19 @@ inscriptions from the year 332/331: `IG II³,1 344
 ...     e[1]
 ...     print("-"*10)
 ...
-{'date': (<AthenianMonths.ELA: 9>, 19), 'doy': 253, 'preceding': (30, 30, 29, 29, 29, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.VIII: 8>, 7), 'doy': 253, 'preceding': (36, 35, 35, 35, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=253, preceding=(30, 30, 29, 29, 29, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=253, preceding=(36, 35, 35, 35, 35, 35, 35), intercalation=False)
 ----------
-{'date': (<AthenianMonths.ELA: 9>, 19), 'doy': 254, 'preceding': (30, 30, 30, 29, 29, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.VIII: 8>, 7), 'doy': 254, 'preceding': (36, 36, 35, 35, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)
 ----------
-{'date': (<AthenianMonths.ELA: 9>, 19), 'doy': 255, 'preceding': (30, 30, 30, 30, 29, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.VIII: 8>, 7), 'doy': 255, 'preceding': (36, 36, 36, 35, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)
 ----------
-{'date': (<AthenianMonths.ELA: 9>, 19), 'doy': 256, 'preceding': (30, 30, 30, 30, 30, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.VIII: 8>, 7), 'doy': 256, 'preceding': (36, 36, 36, 36, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=256, preceding=(30, 30, 30, 30, 30, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=256, preceding=(36, 36, 36, 36, 35, 35, 35), intercalation=False)
 ----------
+
 
 This could equate, then, to DOY 253–256. The prytany dates indicate an
 ordinary year, which agrees with none of the festival dates following
@@ -190,9 +193,9 @@ an equation, Tha 22 = Prytany 10.5, with no solutions:
 
 If we look at the festival and prytany parts separately we can see why:
 
->>> [e['doy'] for e in eq.festival_doy(ha.AthenianMonths.THA, 22)]
+>>> [e.doy for e in eq.festival_doy(ha.AthenianMonths.THA, 22)]
 [316, 317, 318, 319, 345, 346, 347, 348]
->>> [e['doy'] for e in eq.prytany_doy(pryt.Prytanies.X, 5, pryt.prytany_type(-324))]
+>>> [e.doy for e in eq.prytany_doy(pryt.Prytanies.X, 5, pryt.prytany_type(-324))]
 [323, 324, 350, 351]
 
 There is no overlap of the possible DOYs of Tha 22 with those of
@@ -225,14 +228,14 @@ for the same year, Tha 11 = Prytany 9.23:
 ...     e[1]
 ...     print("-"*10)
 ...
-{'date': (<AthenianMonths.THA: 11>, 11), 'doy': 305, 'preceding': (30, 30, 30, 30, 29, 29, 29, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.IX: 9>, 23), 'doy': 305, 'preceding': (36, 36, 35, 35, 35, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False)
 ----------
-{'date': (<AthenianMonths.THA: 11>, 11), 'doy': 306, 'preceding': (30, 30, 30, 30, 30, 29, 29, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.IX: 9>, 23), 'doy': 306, 'preceding': (36, 36, 36, 35, 35, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False)
 ----------
-{'date': (<AthenianMonths.THA: 11>, 11), 'doy': 307, 'preceding': (30, 30, 30, 30, 30, 30, 29, 29, 29, 29), 'intercalation': False}
-{'date': (<Prytanies.IX: 9>, 23), 'doy': 307, 'preceding': (36, 36, 36, 36, 35, 35, 35, 35), 'intercalation': False}
+FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False)
+PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False)
 ----------
 
 We had four solutions for the first equation and now three for this
@@ -246,112 +249,40 @@ combination. The output is a bit complicated:
 >>> e1 = eq.equations((ha.AthenianMonths.ELA, 19), (pryt.Prytanies.VIII, 7), pryt.prytany_type(-331))
 >>> e2 = eq.equations((ha.AthenianMonths.THA, 11), (pryt.Prytanies.IX, 23), pryt.prytany_type(-331))
 >>> pp.pprint(eq.collations(e1, e2))
-( { 'equations': ( ( { 'date': (<AthenianMonths.ELA: 9>, 19),
-                       'doy': 253,
-                       'intercalation': False,
-                       'preceding': (30, 30, 29, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.VIII: 8>, 7),
-                       'doy': 253,
-                       'intercalation': False,
-                       'preceding': (36, 35, 35, 35, 35, 35, 35)}),
-                   ( { 'date': (<AthenianMonths.THA: 11>, 11),
-                       'doy': 305,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 29, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.IX: 9>, 23),
-                       'doy': 305,
-                       'intercalation': False,
-                       'preceding': (36, 36, 35, 35, 35, 35, 35, 35)})),
+( { 'equations': ( ( FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=253, preceding=(30, 30, 29, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=253, preceding=(36, 35, 35, 35, 35, 35, 35), intercalation=False)),
+                   ( FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False))),
     'partitions': { 'conciliar': ((36, 35, 35, 35, 35, 35, 35), (36,)),
                     'festival': ((30, 30, 29, 29, 29, 29, 29, 29), (30, 30))}},
-  { 'equations': ( ( { 'date': (<AthenianMonths.ELA: 9>, 19),
-                       'doy': 254,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.VIII: 8>, 7),
-                       'doy': 254,
-                       'intercalation': False,
-                       'preceding': (36, 36, 35, 35, 35, 35, 35)}),
-                   ( { 'date': (<AthenianMonths.THA: 11>, 11),
-                       'doy': 305,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 29, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.IX: 9>, 23),
-                       'doy': 305,
-                       'intercalation': False,
-                       'preceding': (36, 36, 35, 35, 35, 35, 35, 35)})),
+  { 'equations': ( ( FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)),
+                   ( FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False))),
     'partitions': { 'conciliar': ((36, 36, 35, 35, 35, 35, 35), (35,)),
                     'festival': ((30, 30, 30, 29, 29, 29, 29, 29), (30, 29))}},
-  { 'equations': ( ( { 'date': (<AthenianMonths.ELA: 9>, 19),
-                       'doy': 254,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.VIII: 8>, 7),
-                       'doy': 254,
-                       'intercalation': False,
-                       'preceding': (36, 36, 35, 35, 35, 35, 35)}),
-                   ( { 'date': (<AthenianMonths.THA: 11>, 11),
-                       'doy': 306,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 30, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.IX: 9>, 23),
-                       'doy': 306,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 35, 35, 35, 35, 35)})),
+  { 'equations': ( ( FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)),
+                   ( FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False))),
     'partitions': { 'conciliar': ((36, 36, 35, 35, 35, 35, 35), (36,)),
                     'festival': ((30, 30, 30, 29, 29, 29, 29, 29), (30, 30))}},
-  { 'equations': ( ( { 'date': (<AthenianMonths.ELA: 9>, 19),
-                       'doy': 255,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.VIII: 8>, 7),
-                       'doy': 255,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 35, 35, 35, 35)}),
-                   ( { 'date': (<AthenianMonths.THA: 11>, 11),
-                       'doy': 306,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 30, 29, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.IX: 9>, 23),
-                       'doy': 306,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 35, 35, 35, 35, 35)})),
+  { 'equations': ( ( FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)),
+                   ( FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False))),
     'partitions': { 'conciliar': ((36, 36, 36, 35, 35, 35, 35), (35,)),
                     'festival': ((30, 30, 30, 30, 29, 29, 29, 29), (30, 29))}},
-  { 'equations': ( ( { 'date': (<AthenianMonths.ELA: 9>, 19),
-                       'doy': 255,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.VIII: 8>, 7),
-                       'doy': 255,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 35, 35, 35, 35)}),
-                   ( { 'date': (<AthenianMonths.THA: 11>, 11),
-                       'doy': 307,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 30, 30, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.IX: 9>, 23),
-                       'doy': 307,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 36, 35, 35, 35, 35)})),
+  { 'equations': ( ( FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)),
+                   ( FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False))),
     'partitions': { 'conciliar': ((36, 36, 36, 35, 35, 35, 35), (36,)),
                     'festival': ((30, 30, 30, 30, 29, 29, 29, 29), (30, 30))}},
-  { 'equations': ( ( { 'date': (<AthenianMonths.ELA: 9>, 19),
-                       'doy': 256,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 30, 29, 29, 29)},
-                     { 'date': (<Prytanies.VIII: 8>, 7),
-                       'doy': 256,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 36, 35, 35, 35)}),
-                   ( { 'date': (<AthenianMonths.THA: 11>, 11),
-                       'doy': 307,
-                       'intercalation': False,
-                       'preceding': (30, 30, 30, 30, 30, 30, 29, 29, 29, 29)},
-                     { 'date': (<Prytanies.IX: 9>, 23),
-                       'doy': 307,
-                       'intercalation': False,
-                       'preceding': (36, 36, 36, 36, 35, 35, 35, 35)})),
+  { 'equations': ( ( FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=256, preceding=(30, 30, 30, 30, 30, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=256, preceding=(36, 36, 36, 36, 35, 35, 35), intercalation=False)),
+                   ( FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False),
+                     PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False))),
     'partitions': { 'conciliar': ((36, 36, 36, 36, 35, 35, 35), (35,)),
                     'festival': ((30, 30, 30, 30, 30, 29, 29, 29), (30, 29))}})
 

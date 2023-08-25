@@ -6,69 +6,6 @@ from heniautos.equations import *
 O_SO = 424  # 354 days, quasi-solar prytanies
 
 
-# def test_fest_eq_tuple():
-#     eq = heniautos.equations._fest_eq((AthenianMonths.MET, 10))
-#     assert len(eq) == 5
-#     assert eq[0]["doy"] == 39
-#     assert eq[0]["intercalation"] is False
-#     assert eq[-1]["doy"] == 70
-#     assert eq[-1]["intercalation"] is True
-
-#     assert heniautos.equations._fest_eq(
-#         (AthenianMonths.MET, 10)
-#     ) == heniautos.equations._fest_eq(((AthenianMonths.MET, 10),))
-
-
-# def test_fest_eq_nested():
-#     eq = heniautos.equations._fest_eq(
-#         ((AthenianMonths.MET, 10), (AthenianMonths.MET, 11))
-#     )
-#     assert len(eq) == 10
-#     assert eq[0]["date"] == (AthenianMonths.MET, 10)
-#     assert eq[0]["doy"] == 39
-#     assert eq[0]["intercalation"] is False
-#     assert eq[4]["date"] == (AthenianMonths.MET, 10)
-#     assert eq[4]["doy"] == 70
-#     assert eq[4]["intercalation"] is True
-#     assert eq[5]["date"] == (AthenianMonths.MET, 11)
-#     assert eq[5]["doy"] == 40
-#     assert eq[5]["intercalation"] is False
-#     assert eq[-1]["date"] == (AthenianMonths.MET, 11)
-#     assert eq[-1]["doy"] == 71
-#     assert eq[-1]["intercalation"] is True
-
-
-# def test_pryt_eq_tuple():
-#     eq = heniautos.equations._pryt_eq((Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10)
-#     assert len(eq) == 4
-#     assert eq[0]["doy"] == 39
-#     assert eq[0]["intercalation"] is False
-#     assert eq[-1]["doy"] == 43
-#     assert eq[-1]["intercalation"] is True
-
-#     assert heniautos.equations._pryt_eq(
-#         (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
-#     ) == heniautos.equations._pryt_eq(
-#         ((Prytanies.II, 4),), pryt_type=Prytany.ALIGNED_10
-#     )
-
-
-# def test_pryt_eq_nested():
-#     eq = heniautos.equations._pryt_eq(
-#         ((Prytanies.II, 4), (Prytanies.II, 5)), pryt_type=Prytany.ALIGNED_10
-#     )
-#     assert len(eq) == 8
-#     assert eq[0]["date"] == (Prytanies.II, 4)
-#     assert eq[0]["doy"] == 39
-#     assert eq[0]["intercalation"] is False
-#     assert eq[3]["date"] == (Prytanies.II, 4)
-#     assert eq[3]["doy"] == 43
-#     assert eq[3]["intercalation"] is True
-#     assert eq[-1]["date"] == (Prytanies.II, 5)
-#     assert eq[-1]["doy"] == 44
-#     assert eq[-1]["intercalation"] is True
-
-
 def test_equations_tuples():
     eq = equations(
         (AthenianMonths.MET, 10), (Prytanies.II, 4), pryt_type=Prytany.ALIGNED_10
@@ -81,34 +18,34 @@ def test_equations_tuples():
     assert len(eq[0]) == 2
     f, c = eq[0]
 
-    assert f["doy"] == 39
-    assert c["doy"] == 39
+    assert f.doy == 39
+    assert c.doy == 39
 
-    assert f["preceding"] == (29,)
-    assert c["preceding"] == (35,)
+    assert f.preceding == (29,)
+    assert c.preceding == (35,)
 
-    assert f["intercalation"] is False
-    assert c["intercalation"] is False
+    assert f.intercalation is False
+    assert c.intercalation is False
 
     # The second solution is DOY 40
     assert len(eq[1]) == 2
     f, c = eq[1]
-    assert f["doy"] == 40
-    assert c["doy"] == 40
+    assert f.doy == 40
+    assert c.doy == 40
 
-    assert f["preceding"] == (30,)
-    assert c["preceding"] == (36,)
+    assert f.preceding == (30,)
+    assert c.preceding == (36,)
 
-    assert f["intercalation"] is False
-    assert c["intercalation"] is False
+    assert f.intercalation is False
+    assert c.intercalation is False
 
     eq = equations(
         (AthenianMonths.POS, 14), (Prytanies.V, 36), pryt_type=Prytany.ALIGNED_10
     )
 
     assert len(eq) == 5
-    assert [f[0]["doy"] for f in eq] == [188, 189, 190, 191, 192]
-    assert [p[0]["doy"] for p in eq] == [188, 189, 190, 191, 192]
+    assert [f[0].doy for f in eq] == [188, 189, 190, 191, 192]
+    assert [p[0].doy for p in eq] == [188, 189, 190, 191, 192]
 
 
 def test_equations_must_be_intercalary():
@@ -136,8 +73,8 @@ def test_equations_nested():
         pryt_type=Prytany.ALIGNED_10,
     )
 
-    assert all([e[0]["date"] == (AthenianMonths.HEK, 30) for e in eq[0:2]])
-    assert all([e[0]["date"] == (AthenianMonths.MET, 1) for e in eq[2:]])
+    assert all([e[0].date == (AthenianMonths.HEK, 30) for e in eq[0:2]])
+    assert all([e[0].date == (AthenianMonths.MET, 1) for e in eq[2:]])
 
     assert len(eq) == 6
 
@@ -148,7 +85,7 @@ def test_0_prytanies():
     )
 
     assert len(eq) == 1
-    assert len(eq[0][1]["preceding"]) == 0
+    assert len(eq[0][1].preceding) == 0
 
 
 @pytest.mark.skip(reason="probably remove this test")
@@ -209,37 +146,40 @@ def test_no_misaligned_intercalations():
 
     # Okay for festival intercalation to be False when conciliar
     # intercaltion is True
-    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
-        (False, True)
-    ) == 6
+    assert [(f.intercalation, p.intercalation) for f, p in eq].count((False, True)) == 6
 
     # Okay for both to be the same
-    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
-        (True, True)
-    ) == 6
-    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
+    assert [(f.intercalation, p.intercalation) for f, p in eq].count((True, True)) == 6
+    assert [(f.intercalation, p.intercalation) for f, p in eq].count(
         (False, False)
     ) == 7
 
     # This must be 0. There cannot be festival intercalations
     # alongside an ordinary conciliar year
-    assert [(f["intercalation"], p["intercalation"]) for f, p in eq].count(
-        (True, False)
-    ) == 0
+    assert [(f.intercalation, p.intercalation) for f, p in eq].count((True, False)) == 0
 
 
 def test_collations():
     # Equation 1: Boe 11 = II 31
     eq1 = equations(
-        (AthenianMonths.MAI, 11), (Prytanies.IV, 21), prytany_type(bce_as_negative(319)), year=bce_as_negative(319)
+        (AthenianMonths.MAI, 11),
+        (Prytanies.IV, 21),
+        prytany_type(bce_as_negative(319)),
+        year=bce_as_negative(319),
     )
 
     eq2 = equations(
-        (AthenianMonths.ELA, 12), (Prytanies.VII, 34), prytany_type(bce_as_negative(319)), year=bce_as_negative(319)
+        (AthenianMonths.ELA, 12),
+        (Prytanies.VII, 34),
+        prytany_type(bce_as_negative(319)),
+        year=bce_as_negative(319),
     )
 
     eq3 = equations(
-        (AthenianMonths.MOU, 12), (Prytanies.VIII, 29), prytany_type(bce_as_negative(319)), year=bce_as_negative(319)
+        (AthenianMonths.MOU, 12),
+        (Prytanies.VIII, 29),
+        prytany_type(bce_as_negative(319)),
+        year=bce_as_negative(319),
     )
 
     c = collations(eq1, eq2, eq3)
@@ -251,205 +191,165 @@ def test_collations():
     assert c[0]["partitions"]["conciliar"] == ((36, 35, 35), (36, 35, 35), (35,))
 
     # Festival DOYs
-    assert [e[0]["doy"] for e in c[0]["equations"]] == [127, 246, 276]
+    assert [e[0].doy for e in c[0]["equations"]] == [127, 246, 276]
 
     # Conciliar DOYs
-    assert [e[1]["doy"] for e in c[0]["equations"]] == [127, 246, 276]
+    assert [e[1].doy for e in c[0]["equations"]] == [127, 246, 276]
 
     # Festival Intercalations
-    assert [e[0]["intercalation"] for e in c[0]["equations"]] == [False, False, False]
+    assert [e[0].intercalation for e in c[0]["equations"]] == [False, False, False]
     # Conciliar Intercalations
-    assert [e[1]["intercalation"] for e in c[0]["equations"]] == [False, False, False]
+    assert [e[1].intercalation for e in c[0]["equations"]] == [False, False, False]
 
     c = collations(eq1, eq2, eq3, failures=True)
     assert len(c) == 19
-
-
-# def test_fest_doy_ranges():
-#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, False)
-#     assert len(r) == 6
-#     assert min([m["doy"] for m in r]) == 253
-#     assert max([m["doy"] for m in r]) == 258
-
-#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.ELA, 19, True)
-#     assert len(r) == 6
-#     assert min([m["doy"] for m in r]) == 282
-#     assert max([m["doy"] for m in r]) == 287
-
-#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, False)
-#     assert len(r) == 5
-#     assert min([m["doy"] for m in r]) == 135
-#     assert max([m["doy"] for m in r]) == 139
-
-#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MAI, 19, True)
-#     assert len(r) == 6
-#     assert min([m["doy"] for m in r]) == 164
-#     assert max([m["doy"] for m in r]) == 169
-
-#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, False)
-#     assert len(r) == 5
-#     assert min([m["doy"] for m in r]) == 291
-#     assert max([m["doy"] for m in r]) == 295
-
-#     r = heniautos.equations._fest_doy_ranges(AthenianMonths.MOU, 27, True)
-#     assert len(r) == 5
-#     assert min([m["doy"] for m in r]) == 320
-#     assert max([m["doy"] for m in r]) == 324
 
 
 def test_festival_doy():
     # 1st month, no intercalation possible
     doy = festival_doy(AthenianMonths.HEK, 5)
     assert len(doy) == 1
-    assert doy[0]["doy"] == 5
-    assert len(doy[0]["preceding"]) == 0
+    assert doy[0].doy == 5
+    assert len(doy[0].preceding) == 0
 
-    assert doy[0]["intercalation"] is False
-    assert not any([d["intercalation"] for d in doy])
+    assert doy[0].intercalation is False
+    assert not any([d.intercalation for d in doy])
 
     # 2nd month
     doy = festival_doy(AthenianMonths.MET, 5)
     print(doy)
     assert len(doy) == 5
-    assert doy[0]["doy"] == 34
-    assert len(doy[0]["preceding"]) == 1
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 34
+    assert len(doy[0].preceding) == 1
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 65
-    assert len(doy[-1]["preceding"]) == 2
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 65
+    assert len(doy[-1].preceding) == 2
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 63])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 35])
+    assert not any([d.intercalation for d in doy if d.doy < 63])
+    assert all([d.intercalation for d in doy if d.doy > 35])
 
     # 5th month
     doy = festival_doy(AthenianMonths.MAI, 27)
     assert len(doy) == 11
-    assert doy[0]["doy"] == 143
-    assert len(doy[0]["preceding"]) == 4
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 143
+    assert len(doy[0].preceding) == 4
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 177
-    assert len(doy[-1]["preceding"]) == 5
-    assert doy[-1]["intercalation"] is True
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 172])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 147])
+    assert doy[-1].doy == 177
+    assert len(doy[-1].preceding) == 5
+    assert doy[-1].intercalation is True
+    assert not any([d.intercalation for d in doy if d.doy < 172])
+    assert all([d.intercalation for d in doy if d.doy > 147])
 
     doy = festival_doy(AthenianMonths.MOU, 27)
     assert len(doy) == 10
-    assert doy[0]["doy"] == 291
-    assert len(doy[0]["preceding"]) == 9
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 291
+    assert len(doy[0].preceding) == 9
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 324
-    assert len(doy[-1]["preceding"]) == 10
-    assert doy[-1]["intercalation"] is True
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 320])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 295])
+    assert doy[-1].doy == 324
+    assert len(doy[-1].preceding) == 10
+    assert doy[-1].intercalation is True
+    assert not any([d.intercalation for d in doy if d.doy < 320])
+    assert all([d.intercalation for d in doy if d.doy > 295])
 
 
 def test_prytany_doy_quasi_solar():
     # 1st prytany
     doy = prytany_doy(Prytanies.I, 10, pryt_type=Prytany.QUASI_SOLAR)
     assert len(doy) == 1
-    assert doy[0]["doy"] == 10
-    assert len(doy[0]["preceding"]) == 0
+    assert doy[0].doy == 10
+    assert len(doy[0].preceding) == 0
 
     # There is no intercalation in the quasi-solar conciliar year
-    assert doy[0]["intercalation"] is None
+    assert doy[0].intercalation is None
 
     # 2nd prytany
     doy = prytany_doy(Prytanies.II, 10, pryt_type=Prytany.QUASI_SOLAR)
 
     assert len(doy) == 2
 
-    assert doy[0]["doy"] == 46
-    assert len(doy[0]["preceding"]) == 1
-    assert doy[0]["intercalation"] is None
+    assert doy[0].doy == 46
+    assert len(doy[0].preceding) == 1
+    assert doy[0].intercalation is None
 
-    assert doy[-1]["doy"] == 47
-    assert len(doy[-1]["preceding"]) == 1
-    assert doy[-1]["intercalation"] is None
+    assert doy[-1].doy == 47
+    assert len(doy[-1].preceding) == 1
+    assert doy[-1].intercalation is None
 
-    assert not any([d["intercalation"] for d in doy])
+    assert not any([d.intercalation for d in doy])
 
     # 9th prytany
     doy = prytany_doy(Prytanies.IX, 10, pryt_type=Prytany.QUASI_SOLAR)
 
     assert len(doy) == 3
 
-    assert doy[0]["doy"] == 301
-    assert len(doy[0]["preceding"]) == 8
-    assert doy[0]["intercalation"] is None
+    assert doy[0].doy == 301
+    assert len(doy[0].preceding) == 8
+    assert doy[0].intercalation is None
 
-    assert doy[-1]["doy"] == 303
-    assert len(doy[-1]["preceding"]) == 8
-    assert doy[-1]["intercalation"] is None
+    assert doy[-1].doy == 303
+    assert len(doy[-1].preceding) == 8
+    assert doy[-1].intercalation is None
 
-    # assert not any([d["intercalation"] for d in doy])
-    assert all([d["intercalation"] is None for d in doy])
+    # assert not any([d.intercalation for d in doy])
+    assert all([d.intercalation is None for d in doy])
 
     # All prytanies are 36 or 37 days
-    assert all([all([m in (36, 37) for m in d["preceding"]]) for d in doy])
+    assert all([all([m in (36, 37) for m in d.preceding]) for d in doy])
 
 
 def test_prytany_doy_aligned_10():
     # 1st prytany
     doy = prytany_doy(Prytanies.I, 10, pryt_type=Prytany.ALIGNED_10)
     assert len(doy) == 2
-    assert doy[0]["doy"] == 10
-    assert len(doy[0]["preceding"]) == 0
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 10
+    assert len(doy[0].preceding) == 0
+    assert doy[0].intercalation is False
 
     # Always an intercalated result (even if its identical to ordinary)
-    assert doy[-1]["doy"] == 10
-    assert len(doy[-1]["preceding"]) == 0
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 10
+    assert len(doy[-1].preceding) == 0
+    assert doy[-1].intercalation is True
 
     doy = prytany_doy(Prytanies.II, 10, pryt_type=Prytany.ALIGNED_10)
     assert len(doy) == 4
 
-    assert doy[0]["doy"] == 45
-    assert len(doy[0]["preceding"]) == 1
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 45
+    assert len(doy[0].preceding) == 1
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 49
-    assert len(doy[-1]["preceding"]) == 1
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 49
+    assert len(doy[-1].preceding) == 1
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 48])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 46])
+    assert not any([d.intercalation for d in doy if d.doy < 48])
+    assert all([d.intercalation for d in doy if d.doy > 46])
 
     doy = prytany_doy(Prytanies.IX, 10, pryt_type=Prytany.ALIGNED_10)
     assert len(doy) == 6
 
-    assert doy[0]["doy"] == 292
-    assert len(doy[0]["preceding"]) == 8
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 292
+    assert len(doy[0].preceding) == 8
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 318
-    assert len(doy[-1]["preceding"]) == 8
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 318
+    assert len(doy[-1].preceding) == 8
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 316])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 294])
+    assert not any([d.intercalation for d in doy if d.doy < 316])
+    assert all([d.intercalation for d in doy if d.doy > 294])
 
     # All ordinary prytanies are 35 or 36 days
     assert all(
-        [
-            all([m in (35, 36) for m in d["preceding"]])
-            for d in doy
-            if not d["intercalation"]
-        ]
+        [all([m in (35, 36) for m in d.preceding]) for d in doy if not d.intercalation]
     )
 
     # All intercalary prytanies are 38 or 39 days
     assert all(
-        [
-            all([m in (38, 39) for m in d["preceding"]])
-            for d in doy
-            if d["intercalation"]
-        ]
+        [all([m in (38, 39) for m in d.preceding]) for d in doy if d.intercalation]
     )
 
     doy = prytany_doy(Prytanies.I, 39, pryt_type=Prytany.ALIGNED_10)
@@ -462,157 +362,103 @@ def test_prytany_doy_aligned_12():
     # 1st prytany
     doy = prytany_doy(Prytanies.I, 10, pryt_type=Prytany.ALIGNED_12)
     assert len(doy) == 2
-    assert doy[0]["doy"] == 10
-    assert len(doy[0]["preceding"]) == 0
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 10
+    assert len(doy[0].preceding) == 0
+    assert doy[0].intercalation is False
 
     # Always an intercalated result (even if its identical to ordinary)
-    assert doy[-1]["doy"] == 10
-    assert len(doy[-1]["preceding"]) == 0
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 10
+    assert len(doy[-1].preceding) == 0
+    assert doy[-1].intercalation is True
 
     # 2nd prytany
     doy = prytany_doy(Prytanies.II, 10, pryt_type=Prytany.ALIGNED_12)
     assert len(doy) == 3
 
-    assert doy[0]["doy"] == 39
-    assert len(doy[0]["preceding"]) == 1
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 39
+    assert len(doy[0].preceding) == 1
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 42
-    assert len(doy[-1]["preceding"]) == 1
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 42
+    assert len(doy[-1].preceding) == 1
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 42])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 40])
+    assert not any([d.intercalation for d in doy if d.doy < 42])
+    assert all([d.intercalation for d in doy if d.doy > 40])
 
     # 9th prytany
     doy = prytany_doy(Prytanies.IX, 10, pryt_type=Prytany.ALIGNED_12)
     assert len(doy) == 6
 
-    assert doy[0]["doy"] == 245
-    assert len(doy[0]["preceding"]) == 8
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 245
+    assert len(doy[0].preceding) == 8
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 266
-    assert len(doy[-1]["preceding"]) == 8
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 266
+    assert len(doy[-1].preceding) == 8
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 266])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 249])
+    assert not any([d.intercalation for d in doy if d.doy < 266])
+    assert all([d.intercalation for d in doy if d.doy > 249])
 
     # All ordinary prytanies are 29 or 30 days
     assert all(
-        [
-            all([m in (29, 30) for m in d["preceding"]])
-            for d in doy
-            if not d["intercalation"]
-        ]
+        [all([m in (29, 30) for m in d.preceding]) for d in doy if not d.intercalation]
     )
 
     # All intercalary prytanies are 32 days
-    assert all(
-        [all([m in (32,) for m in d["preceding"]]) for d in doy if d["intercalation"]]
-    )
+    assert all([all([m in (32,) for m in d.preceding]) for d in doy if d.intercalation])
 
 
 def test_prytany_doy_aligned_13():
     # 1st prytany
     doy = prytany_doy(Prytanies.I, 10, pryt_type=Prytany.ALIGNED_13)
     assert len(doy) == 2
-    assert doy[0]["doy"] == 10
-    assert len(doy[0]["preceding"]) == 0
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 10
+    assert len(doy[0].preceding) == 0
+    assert doy[0].intercalation is False
 
     # Always an intercalated result (even if its identical to ordinary)
-    assert doy[-1]["doy"] == 10
-    assert len(doy[-1]["preceding"]) == 0
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 10
+    assert len(doy[-1].preceding) == 0
+    assert doy[-1].intercalation is True
 
     # 2nd prytany
     doy = prytany_doy(Prytanies.II, 10, pryt_type=Prytany.ALIGNED_13)
     assert len(doy) == 4
 
-    assert doy[0]["doy"] == 37
-    assert len(doy[0]["preceding"]) == 1
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 37
+    assert len(doy[0].preceding) == 1
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 40
-    assert len(doy[-1]["preceding"]) == 1
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 40
+    assert len(doy[-1].preceding) == 1
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 39])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 38])
+    assert not any([d.intercalation for d in doy if d.doy < 39])
+    assert all([d.intercalation for d in doy if d.doy > 38])
 
     # 9th prytany
     doy = prytany_doy(Prytanies.IX, 10, pryt_type=Prytany.ALIGNED_13)
     assert len(doy) == 10
 
-    assert doy[0]["doy"] == 226
-    assert len(doy[0]["preceding"]) == 8
-    assert doy[0]["intercalation"] is False
+    assert doy[0].doy == 226
+    assert len(doy[0].preceding) == 8
+    assert doy[0].intercalation is False
 
-    assert doy[-1]["doy"] == 249
-    assert len(doy[-1]["preceding"]) == 8
-    assert doy[-1]["intercalation"] is True
+    assert doy[-1].doy == 249
+    assert len(doy[-1].preceding) == 8
+    assert doy[-1].intercalation is True
 
-    assert not any([d["intercalation"] for d in doy if d["doy"] < 244])
-    assert all([d["intercalation"] for d in doy if d["doy"] > 229])
+    assert not any([d.intercalation for d in doy if d.doy < 244])
+    assert all([d.intercalation for d in doy if d.doy > 229])
 
     # All ordinary prytanies are 27 or 28 days
     assert all(
-        [
-            all([m in (27, 28) for m in d["preceding"]])
-            for d in doy
-            if not d["intercalation"]
-        ]
+        [all([m in (27, 28) for m in d.preceding]) for d in doy if not d.intercalation]
     )
 
     # All intercalary prytanies are 29 or 30 days
     assert all(
-        [
-            all([m in (29, 30) for m in d["preceding"]])
-            for d in doy
-            if d["intercalation"]
-        ]
+        [all([m in (29, 30) for m in d.preceding]) for d in doy if d.intercalation]
     )
-
-
-# def test_prytany_doy_auto():
-#     # QUASI_SOLAR, all prytanies 36 or 37 days
-#     assert all(
-#         [
-#             all([p in (36, 37) for p in d["preceding"]])
-#             for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_SO))
-#         ]
-#     )
-
-#     # ALIGNED_10, all prytanies 35, 36, 38, or 39 days
-#     assert all(
-#         [
-#             all([p in (35, 36, 38, 39) for p in d["preceding"]])
-#             for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_10))
-#         ]
-#     )
-
-#     # ALIGNED_12, all prytanies 29, 30, or 32 days
-#     assert all(
-#         [
-#             all([p in (29, 30, 32) for p in d["preceding"]])
-#             for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_12))
-#         ]
-#     )
-
-#     # ALIGNED_13, all prytanies 27, 28, 29, or 30 days
-#     assert all(
-#         [
-#             all([p in (27, 28, 29, 30) for p in d["preceding"]])
-#             for d in prytany_doy(Prytanies.IV, 10, Prytany.AUTO, bce_as_negative(O_13))
-#         ]
-#     )
-
-#     # Error if you choose Prytany.AUTO and forget to give a year
-#     with pytest.raises(HeniautosError):
-#         prytany_doy(Prytanies.IV, 10, Prytany.AUTO)
-
-

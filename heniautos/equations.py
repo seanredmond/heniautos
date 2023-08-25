@@ -1,4 +1,4 @@
-# Copyright (C) 2022 Sean Redmond
+g# Copyright (C) 2022 Sean Redmond
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,9 +13,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#import heniautos
-#import heniautos.prytanies
 from itertools import product
+from collections import namedtuple
+
+FestivalDOY = namedtuple(
+    "FestivalDOY",
+    (
+        "date",
+        "doy",
+        "preceding",
+        "intercalation",
+    ),
+)
+
+PrytanyDOY = namedtuple(
+    "PrytanyDOY",
+    (
+        "date",
+        "doy",
+        "preceding",
+        "intercalation",
+    ),
+)
+
 
 def __fest_doy_ranges(month, day, intercalation):
     """Return possible DOYs with preceding months."""
@@ -31,12 +51,12 @@ def __fest_doy_ranges(month, day, intercalation):
     ranges = [(30,) * p[0] + (29,) * p[1] for p in pairs]
 
     return [
-        {
-            "date": (month, day),
-            "doy": sum(m) + day,
-            "preceding": m,
-            "intercalation": intercalation,
-        }
+        FestivalDOY(
+            (month, day),
+            sum(m) + day,
+            m,
+            intercalation,
+        )
         for m in ranges
     ]
 
@@ -66,7 +86,7 @@ def festival_doy(month, day):
     return tuple(
         sorted(
             __fest_doy_ranges(month, day, False) + __fest_doy_ranges(month, day, True),
-            key=lambda m: m["doy"],
+            key=lambda m: m.doy,
         )
     )
 
@@ -79,7 +99,7 @@ def __max_or_fewer(n, mx):
 def __pryt_long_count(n, pryt_type, intercalated):
     """Return the number of long prytanies allowed for prytany type."""
     from heniautos.prytanies import Prytany
-    
+
     if pryt_type == Prytany.QUASI_SOLAR:
         return __max_or_fewer(n - 1, 5)
 
@@ -101,7 +121,7 @@ def __pryt_long_count(n, pryt_type, intercalated):
 def __pryt_short_count(n, pryt_type, intercalated):
     """Return the number of short prytanies allowed for prytany type."""
     from heniautos.prytanies import Prytany
-    
+
     if pryt_type == Prytany.QUASI_SOLAR:
         return __max_or_fewer(n - 1, 5)
 
@@ -124,15 +144,15 @@ def __pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
     """Return possible DOYs with preceding prytanies."""
 
     from heniautos.prytanies import Prytany
-    
+
     if pryt_type == Prytany.ALIGNED_12 and intercalation:
         return [
-            {
-                "date": (pry, day),
-                "doy": sum(r) + day,
-                "preceding": r,
-                "intercalation": intercalation,
-            }
+            PrytanyDOY(
+                (pry, day),
+                sum(r) + day,
+                r,
+                intercalation,
+            )
             for r in ((32,) * (pry - 1),)
         ]
 
@@ -150,12 +170,12 @@ def __pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
     ranges = [(lng,) * p[0] + (lng - 1,) * p[1] for p in pairs]
 
     return [
-        {
-            "date": (pry, day),
-            "doy": sum(r) + day,
-            "preceding": r,
-            "intercalation": intercalation,
-        }
+        PrytanyDOY(
+            (pry, day),
+            sum(r) + day,
+            r,
+            intercalation,
+        )
         for r in ranges
     ]
 
@@ -175,7 +195,7 @@ def prytany_doy(pry, day, pryt_type):
     Returns a tuple of dicts, one for each DOY, and each consisting of:
         date: Prytany and day supplied
         doy: The DOY
-        preceding: tuple of ints that are the lengths of the prytanies 
+        preceding: tuple of ints that are the lengths of the prytanies
         preceding the given date, which goes in the DOY calculation
         intercalation: True if the DOY is for an intercalated year. N.B.: this
         is different from festival_doy() because it True
@@ -194,7 +214,7 @@ def prytany_doy(pry, day, pryt_type):
     if pryt_type == Prytany.QUASI_SOLAR:
         return tuple(
             sorted(
-                __pryt_doy_ranges(pry, day, pryt_type, 37, None), key=lambda p: p["doy"]
+                __pryt_doy_ranges(pry, day, pryt_type, 37, None), key=lambda p: p.doy
             )
         )
 
@@ -204,7 +224,7 @@ def prytany_doy(pry, day, pryt_type):
             return tuple(
                 sorted(
                     __pryt_doy_ranges(pry, day, pryt_type, 39, True),
-                    key=lambda p: p["doy"],
+                    key=lambda p: p.doy,
                 )
             )
 
@@ -212,7 +232,7 @@ def prytany_doy(pry, day, pryt_type):
             sorted(
                 __pryt_doy_ranges(pry, day, pryt_type, 36, False)
                 + __pryt_doy_ranges(pry, day, pryt_type, 39, True),
-                key=lambda p: p["doy"],
+                key=lambda p: p.doy,
             )
         )
 
@@ -221,7 +241,7 @@ def prytany_doy(pry, day, pryt_type):
             return tuple(
                 sorted(
                     __pryt_doy_ranges(pry, day, pryt_type, 32, True),
-                    key=lambda p: p["doy"],
+                    key=lambda p: p.doy,
                 )
             )
 
@@ -229,7 +249,7 @@ def prytany_doy(pry, day, pryt_type):
             sorted(
                 __pryt_doy_ranges(pry, day, pryt_type, 30, False)
                 + __pryt_doy_ranges(pry, day, pryt_type, 32, True),
-                key=lambda p: p["doy"],
+                key=lambda p: p.doy,
             )
         )
 
@@ -238,7 +258,7 @@ def prytany_doy(pry, day, pryt_type):
             return tuple(
                 sorted(
                     __pryt_doy_ranges(pry, day, pryt_type, 30, True),
-                    key=lambda p: p["doy"],
+                    key=lambda p: p.doy,
                 )
             )
 
@@ -246,7 +266,7 @@ def prytany_doy(pry, day, pryt_type):
             sorted(
                 __pryt_doy_ranges(pry, day, pryt_type, 28, False)
                 + __pryt_doy_ranges(pry, day, pryt_type, 30, True),
-                key=lambda p: p["doy"],
+                key=lambda p: p.doy,
             )
         )
 
@@ -281,12 +301,9 @@ def __pryt_eq(prytanies, pryt_type):
         pass
 
     return tuple(
-        [
-            a
-            for b in [__pryt_eq(p, pryt_type=pryt_type) for p in prytanies]
-            for a in b
-        ]
+        [a for b in [__pryt_eq(p, pryt_type=pryt_type) for p in prytanies] for a in b]
     )
+
 
 def equations(months, prytanies, pryt_type, year=None):
     """Return possible solutions for a calendar equation
@@ -326,7 +343,7 @@ def equations(months, prytanies, pryt_type, year=None):
     fest_eqs = __fest_eq(months)
 
     intersection = sorted(
-        set([f["doy"] for f in fest_eqs]) & set([p["doy"] for p in pryt_eqs])
+        set([f.doy for f in fest_eqs]) & set([p.doy for p in pryt_eqs])
     )
 
     return tuple(
@@ -335,8 +352,8 @@ def equations(months, prytanies, pryt_type, year=None):
             for b in [
                 tuple(
                     product(
-                        [f for f in fest_eqs if f["doy"] == i],
-                        [p for p in pryt_eqs if p["doy"] == i],
+                        [f for f in fest_eqs if f.doy == i],
+                        [p for p in pryt_eqs if p.doy == i],
                     )
                 )
                 for i in intersection
@@ -349,7 +366,7 @@ def equations(months, prytanies, pryt_type, year=None):
 
 def __misaligned_intercalation(i):
     """Check if festival is intercalated but conciliar not."""
-    if i[0]["intercalation"] is True and i[1]["intercalation"] is False:
+    if i[0].intercalation is True and i[1].intercalation is False:
         return True
 
     return False
@@ -391,7 +408,7 @@ def __no_deintercalations(i, pre=False):
 def __is_contained_in(a, b):
     """Test whether the values in first tuple are contained in second."""
     from heniautos import HeniautosNoMatchError
-    
+
     if not len(a):
         # Successfully exhausted the first tuple. Return remainder
         return b
@@ -456,23 +473,23 @@ def collations(*args, failures=False):
 
     """
     from heniautos import HeniautosNoMatchError
-    
+
     successes = tuple()
     not_successes = tuple()
 
     for p in product(*args):
         try:
             # Criterion #1
-            if len(set([c[1]["intercalation"] for c in p])) > 1:
+            if len(set([c[1].intercalation for c in p])) > 1:
                 raise HeniautosNoMatchError()
 
             # Criterion #2
-            if not __no_deintercalations([c[0]["intercalation"] for c in p]):
+            if not __no_deintercalations([c[0].intercalation for c in p]):
                 raise HeniautosNoMatchError()
 
             # Criterion #3
-            fest_partitions = __each_overlaps([c[0]["preceding"] for c in p])
-            pryt_partitions = __each_overlaps([c[1]["preceding"] for c in p])
+            fest_partitions = __each_overlaps([c[0].preceding for c in p])
+            pryt_partitions = __each_overlaps([c[1].preceding for c in p])
             successes = successes + (
                 {
                     "partitions": {
@@ -490,5 +507,3 @@ def collations(*args, failures=False):
         return not_successes
 
     return successes
-
-

@@ -99,6 +99,10 @@ Astronomical Dates
 :py:mod:`heniautos.equations`
 -----------------------------
 
+.. autoclass:: heniautos.equations.FestivalDOY
+.. autoclass:: heniautos.equations.PrytanyDOY
+
+
 .. autofunction:: heniautos.equations.festival_doy
 .. autofunction:: heniautos.equations.prytany_doy
 .. autofunction:: heniautos.equations.equations
