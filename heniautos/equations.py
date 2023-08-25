@@ -40,7 +40,23 @@ Equation = namedtuple(
     "Equation",
     (
         "festival",
-        "prytany",
+        "conciliar",
+    ),
+)
+
+Partition = namedtuple(
+    "Partition",
+    (
+        "festival",
+        "conciliar",
+    ),
+)
+
+Collation = namedtuple(
+    "Collation",
+    (
+        "equations",
+        "partitions",
     ),
 )
 
@@ -499,13 +515,13 @@ def collations(*args, failures=False):
             fest_partitions = __each_overlaps([c[0].preceding for c in p])
             pryt_partitions = __each_overlaps([c[1].preceding for c in p])
             successes = successes + (
-                {
-                    "partitions": {
-                        "festival": fest_partitions,
-                        "conciliar": pryt_partitions,
-                    },
-                    "equations": p,
-                },
+                Collation(
+                    p,
+                    Partition(
+                        fest_partitions,
+                        pryt_partitions,
+                    ),
+                ),
             )
 
         except HeniautosNoMatchError as e:

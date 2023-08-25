@@ -135,7 +135,7 @@ containing the month constant and date, a tuple (or list) with the
 prytany constant and date, and the prytany type:
 
 >>> eq.equations((ha.AthenianMonths.MET, 9), (pryt.Prytanies.I, 39), pryt.prytany_type(-332))
-(Equation(festival=FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=39, preceding=(30,), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True)),)
+(Equation(festival=FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=39, preceding=(30,), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True)),)
 
 
 The return value is a tuple of solutions. Each solution is a tuple
@@ -153,7 +153,7 @@ inscriptions from the year 332/331: `IG II³,1 344
 
 >>> for e in eq.equations((ha.AthenianMonths.ELA, 19), (pryt.Prytanies.VIII, 7), pryt.prytany_type(-331)):
 ...     e.festival
-...     e.prytany
+...     e.conciliar
 ...     print("-"*10)
 ...
 FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=253, preceding=(30, 30, 29, 29, 29, 29, 29, 29), intercalation=False)
@@ -244,35 +244,24 @@ and if so, how. :py:func:`collations` will take any number of results
 from :py:func:`equations` and test and report on each possible
 combination. The output is a bit complicated:
 
->>> import pprint
->>> pp = pprint.PrettyPrinter(indent=2)
 >>> e1 = eq.equations((ha.AthenianMonths.ELA, 19), (pryt.Prytanies.VIII, 7), pryt.prytany_type(-331))
 >>> e2 = eq.equations((ha.AthenianMonths.THA, 11), (pryt.Prytanies.IX, 23), pryt.prytany_type(-331))
->>> pp.pprint(eq.collations(e1, e2))
-( { 'equations': ( Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=253, preceding=(30, 30, 29, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=253, preceding=(36, 35, 35, 35, 35, 35, 35), intercalation=False)),
-                   Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False))),
-    'partitions': { 'conciliar': ((36, 35, 35, 35, 35, 35, 35), (36,)),
-                    'festival': ((30, 30, 29, 29, 29, 29, 29, 29), (30, 30))}},
-  { 'equations': ( Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)),
-                   Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False))),
-    'partitions': { 'conciliar': ((36, 36, 35, 35, 35, 35, 35), (35,)),
-                    'festival': ((30, 30, 30, 29, 29, 29, 29, 29), (30, 29))}},
-  { 'equations': ( Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)),
-                   Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False))),
-    'partitions': { 'conciliar': ((36, 36, 35, 35, 35, 35, 35), (36,)),
-                    'festival': ((30, 30, 30, 29, 29, 29, 29, 29), (30, 30))}},
-  { 'equations': ( Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)),
-                   Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False))),
-    'partitions': { 'conciliar': ((36, 36, 36, 35, 35, 35, 35), (35,)),
-                    'festival': ((30, 30, 30, 30, 29, 29, 29, 29), (30, 29))}},
-  { 'equations': ( Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)),
-                   Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False))),
-    'partitions': { 'conciliar': ((36, 36, 36, 35, 35, 35, 35), (36,)),
-                    'festival': ((30, 30, 30, 30, 29, 29, 29, 29), (30, 30))}},
-  { 'equations': ( Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=256, preceding=(30, 30, 30, 30, 30, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=256, preceding=(36, 36, 36, 36, 35, 35, 35), intercalation=False)),
-                   Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), prytany=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False))),
-    'partitions': { 'conciliar': ((36, 36, 36, 36, 35, 35, 35), (35,)),
-                    'festival': ((30, 30, 30, 30, 30, 29, 29, 29), (30, 29))}})
+>>> for c in eq.collations(e1, e2):
+...     c
+...     print("-"*10)
+...
+Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=253, preceding=(30, 30, 29, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=253, preceding=(36, 35, 35, 35, 35, 35, 35), intercalation=False)), Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False))), partitions=Partition(festival=((30, 30, 29, 29, 29, 29, 29, 29), (30, 30)), conciliar=((36, 35, 35, 35, 35, 35, 35), (36,))))
+----------
+Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)), Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=305, preceding=(30, 30, 30, 30, 29, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=305, preceding=(36, 36, 35, 35, 35, 35, 35, 35), intercalation=False))), partitions=Partition(festival=((30, 30, 30, 29, 29, 29, 29, 29), (30, 29)), conciliar=((36, 36, 35, 35, 35, 35, 35), (35,))))
+----------
+Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=254, preceding=(30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=254, preceding=(36, 36, 35, 35, 35, 35, 35), intercalation=False)), Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False))), partitions=Partition(festival=((30, 30, 30, 29, 29, 29, 29, 29), (30, 30)), conciliar=((36, 36, 35, 35, 35, 35, 35), (36,))))
+----------
+Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)), Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=306, preceding=(30, 30, 30, 30, 30, 29, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=306, preceding=(36, 36, 36, 35, 35, 35, 35, 35), intercalation=False))), partitions=Partition(festival=((30, 30, 30, 30, 29, 29, 29, 29), (30, 29)), conciliar=((36, 36, 36, 35, 35, 35, 35), (35,))))
+----------
+Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=255, preceding=(30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=255, preceding=(36, 36, 36, 35, 35, 35, 35), intercalation=False)), Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False))), partitions=Partition(festival=((30, 30, 30, 30, 29, 29, 29, 29), (30, 30)), conciliar=((36, 36, 36, 35, 35, 35, 35), (36,))))
+----------
+Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>, 19), doy=256, preceding=(30, 30, 30, 30, 30, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=256, preceding=(36, 36, 36, 36, 35, 35, 35), intercalation=False)), Equation(festival=FestivalDOY(date=(<AthenianMonths.THA: 11>, 11), doy=307, preceding=(30, 30, 30, 30, 30, 30, 29, 29, 29, 29), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.IX: 9>, 23), doy=307, preceding=(36, 36, 36, 36, 35, 35, 35, 35), intercalation=False))), partitions=Partition(festival=((30, 30, 30, 30, 30, 29, 29, 29), (30, 29)), conciliar=((36, 36, 36, 36, 35, 35, 35), (35,))))
+----------
 
 
 The results are a tuple of "collation" dicts, six in this case. Each

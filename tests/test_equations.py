@@ -186,20 +186,20 @@ def test_collations():
     assert len(c) == 8
 
     # Festival year partitions
-    assert c[0]["partitions"]["festival"] == ((29, 29, 29, 29), (30, 30, 29, 29), (30,))
+    assert c[0].partitions.festival == ((29, 29, 29, 29), (30, 30, 29, 29), (30,))
 
-    assert c[0]["partitions"]["conciliar"] == ((36, 35, 35), (36, 35, 35), (35,))
+    assert c[0].partitions.conciliar == ((36, 35, 35), (36, 35, 35), (35,))
 
     # Festival DOYs
-    assert [e[0].doy for e in c[0]["equations"]] == [127, 246, 276]
+    assert [e[0].doy for e in c[0].equations] == [127, 246, 276]
 
     # Conciliar DOYs
-    assert [e[1].doy for e in c[0]["equations"]] == [127, 246, 276]
+    assert [e[1].doy for e in c[0].equations] == [127, 246, 276]
 
     # Festival Intercalations
-    assert [e[0].intercalation for e in c[0]["equations"]] == [False, False, False]
+    assert [e[0].intercalation for e in c[0].equations] == [False, False, False]
     # Conciliar Intercalations
-    assert [e[1].intercalation for e in c[0]["equations"]] == [False, False, False]
+    assert [e[1].intercalation for e in c[0].equations] == [False, False, False]
 
     c = collations(eq1, eq2, eq3, failures=True)
     assert len(c) == 19
