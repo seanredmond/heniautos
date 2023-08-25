@@ -19,6 +19,7 @@ Conciliar calendar functions are in a sub-package
 :py:mod:`heniautos.prytanies` and the examples below assume you have
 imported this package like so:
 
+>>> import heniautos as ha
 >>> import heniautos.prytanies as pryt
 
 The :py:func:`prytany_calendar` is analogous to
