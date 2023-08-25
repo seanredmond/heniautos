@@ -1,4 +1,4 @@
-g# Copyright (C) 2022 Sean Redmond
+# Copyright (C) 2022 Sean Redmond
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,6 +33,14 @@ PrytanyDOY = namedtuple(
         "doy",
         "preceding",
         "intercalation",
+    ),
+)
+
+Equation = namedtuple(
+    "Equation",
+    (
+        "festival",
+        "prytany",
     ),
 )
 
@@ -348,7 +356,7 @@ def equations(months, prytanies, pryt_type, year=None):
 
     return tuple(
         [
-            a
+            Equation(*a)
             for b in [
                 tuple(
                     product(
