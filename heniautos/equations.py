@@ -88,20 +88,26 @@ def __fest_doy_ranges(month, day, intercalation):
 def festival_doy(month, day):
     """Return possible DOYs for a given month and day.
 
+    :param month: Months constant for the month.
+    :type month: :py:enum:`heniautos.CalendarMonth`
+    :param day: Day of the month.
+    :type  day: int
+    :return: List of possible days of the year.
+    :rtype: tuple
+
     Calculates every possible DOY for a month and day with all the
     possible combinations of full and hollow months preceding it.
 
-    Parameters:
-        month (Months): Months constant for the month
-        day (int): Day of the month
+    Returns a tuple of :py:class:`FestivalDOY` objects, one for each
+    DOY, and each consisting of: 
 
-    Returns a tuple of dicts, one for each DOY, and each consisting of:
-        date: Month and day supplied
-        doy: The DOY
-        preceding: tuple of ints that are the lengths of the months preceding
-        the given date, which goes in the DOY calculation
-        intercalation: True if the DOY requires in intercalation among the
-        months preceding the given date. False otherwise
+    * :py:attr:`date`: Month and day supplied 
+    * :py:attr:`doy`: The day of the year
+    * :py:attr:`preceding`: tuple of ints that are the lengths of the months 
+      preceding the given date, which goes in the DOY calculation
+    * :py:attr:`intercalation`: :py:obj:`True` if the DOY requires an 
+      intercalation among the months preceding the given date. 
+      :py:obj:`False` otherwise
 
     """
     if month == 1:
