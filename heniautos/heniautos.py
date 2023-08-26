@@ -85,13 +85,17 @@ class TZOptions(Enum):
     ALT = "ALT"
 
 
-class Months(IntEnum):
+class CalendarMonth(IntEnum):
+    """Base class for month enums"""
+    pass
+    
+class Months(CalendarMonth):
     """Represents non-specific months"""
     INT = 13
     UNC = 14
 
 
-class ArgiveMonths(IntEnum):
+class ArgiveMonths(CalendarMonth):
     """Represents months on the Argive calendar"""
     AGU = 1
     KAR = 2
@@ -107,7 +111,7 @@ class ArgiveMonths(IntEnum):
     APE = 12
 
 
-class AthenianMonths(IntEnum):
+class AthenianMonths(CalendarMonth):
     """Represents months on the Athenian calendar"""
     HEK = 1
     MET = 2
@@ -123,7 +127,7 @@ class AthenianMonths(IntEnum):
     SKI = 12
 
 
-class DelianMonths(IntEnum):
+class DelianMonths(CalendarMonth):
     """Represents months on the Delian calendar"""
     LEN = 1
     IER = 2
@@ -139,7 +143,7 @@ class DelianMonths(IntEnum):
     POS = 12
 
 
-class DelphianMonths(IntEnum):
+class DelphianMonths(CalendarMonth):
     """Represents months on the Delphian calendar"""
     APE = 1
     BOU = 2
@@ -155,7 +159,7 @@ class DelphianMonths(IntEnum):
     ILA = 12
 
 
-class CorinthianMonths(IntEnum):
+class CorinthianMonths(CalendarMonth):
     """Represents months on the Corinthian calendar"""
     PHO = 1
     KRA = 2
@@ -171,7 +175,7 @@ class CorinthianMonths(IntEnum):
     APE = 12
 
 
-class MacedonianMonths(IntEnum):
+class MacedonianMonths(CalendarMonth):
     """Represents months on the Macedonian calendar"""
     DIO = 1
     APE = 2
@@ -187,7 +191,7 @@ class MacedonianMonths(IntEnum):
     HYP = 12
     
 
-class GenericMonths(IntEnum):
+class GenericMonths(CalendarMonth):
     """Represents Generic calendar months"""
     M01 = 1
     M02 = 2
