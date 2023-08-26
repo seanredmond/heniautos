@@ -18,6 +18,7 @@ Exceptions
 Enums and Classes
 ^^^^^^^^^^^^^^^^^
 
+.. autoenum:: CalendarMonth
 .. autoenum:: GenericMonths
 .. autoenum:: ArgiveMonths
 .. autoenum:: AthenianMonths
@@ -85,6 +86,7 @@ Astronomical Dates
 -----------------------------
 
 .. autoenum:: heniautos.prytanies.Prytanies
+.. autoenum:: heniautos.prytanies.Prytany
 
 .. autofunction:: heniautos.prytanies.prytany_calendar
 .. autofunction:: heniautos.prytanies.by_prytanies
@@ -99,9 +101,17 @@ Astronomical Dates
 :py:mod:`heniautos.equations`
 -----------------------------
 
+Classes
+^^^^^^^^^^^^^^^^^
+
 .. autoclass:: heniautos.equations.FestivalDOY
 .. autoclass:: heniautos.equations.PrytanyDOY
+.. autoclass:: heniautos.equations.Equation
+.. autoclass:: heniautos.equations.Partition
+.. autoclass:: heniautos.equations.Collation
 
+Functions
+^^^^^^^^^^^^^^^^^
 
 .. autofunction:: heniautos.equations.festival_doy
 .. autofunction:: heniautos.equations.prytany_doy

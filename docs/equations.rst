@@ -60,11 +60,23 @@ FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=68, preceding=(30, 29), inter
 FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=69, preceding=(30, 30), intercalation=True)
 
 The :py:func:`festival_doy` function takes a month constant (see
-:ref:`month-constant`) and the number of a day. It returns a tuple,
-containing dicts. Each dict contains the `date`, a possible `doy`, a
-tuple, `preceding` containing the lengths of months that must precede
-that `doy`, and `intercalation` which will be `True` if one of those
-months must be an intercalary month.
+:ref:`month-constant`) and the number of a day. It returns a tuple of :py:class:`FestivalDOY` objects, with these properties:
+
+
++-------------+-------+----------------------------------+
+|Property     |Value  |Meaning                           |
++=============+=======+==================================+
+|date         |tuple  |:py:enum:`heniautos.CalendarMonth`|
+|             |       |and day (int)                     |
++-------------+-------+----------------------------------+
+|doy          |int    |Doy of the year                   |
++-------------+-------+----------------------------------+
+|preceding    |tuple  |Lengths of months preceding this  |
+|             |       |month to result in DOY            |
++-------------+-------+----------------------------------+
+|intercalation|bool   |:py:obj:`True` if on of the       |
+|             |       |preceding months is intercalary   |
++-------------+-------+----------------------------------+
 
 The values returned above mean that Metageitnion 9 can be five
 possible days of the year: the 38th, 39th, 67th, 68th, or 69th. Since
@@ -89,7 +101,7 @@ second Hekatombaion).
 Days of the Year (Conciliar)
 ----------------------------
 
-There is a simlar function for determing what days of the year a
+There is a similar function for determing what days of the year a
 conciliar calendar date can have, :py:func:`prytany_doy`. This takes a
 prytany constant (:py:enum:`heniautos.prytanies.Prytanies`), a day,
 and a prytany type (see :ref:`prytany-types`):
@@ -104,10 +116,14 @@ to find the correct (default) prytany type constant:
 (PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True),)
 
 
-The return value is analogous to :py:func:`festival_doy`. In this
-case, with ten prytanues the 39th day of a prytany can only occur in
-an intercalary year. Since it is the first prytany it cannot be
-preceded by any, so ``preceding`` is empty.
+The return value is a tuple of :py:class:`PrytanyDOY` objects with the
+same properties as :py:class:`FestivalDOY` objects. For
+:py:class:`PrytanyDOY`, though, :py:attr:`intercalary` is
+:py:obj:`True` if the *year* is intercalary, since this affects the
+lengths of all prytanies in the year. In this case, with ten prytanies
+the 39th day of a prytany can only occur in an intercalary year. Since
+it is the first prytany it cannot be preceded by any, so ``preceding``
+is empty.
 
 Putting the Two Together
 ------------------------
@@ -115,7 +131,7 @@ Putting the Two Together
 So, what day then is Met 9 = Prytany 1.39? Because this example is
 simple, we can easily see the answer. The prytany date can be only one
 DOY, the 39th, and only in an intercalary year. The festival date can
-be the 39th DOY also, if it is preceded by one 30-day month. Therefor,
+be the 39th DOY also, if it is preceded by one 30-day month. Therefore,
 the year 333/332 was intercalary, and began with a 30-day
 Hekatombaion. That is the only solution to the calendar equation!
 
@@ -138,10 +154,15 @@ prytany constant and date, and the prytany type:
 (Equation(festival=FestivalDOY(date=(<AthenianMonths.MET: 2>, 9), doy=39, preceding=(30,), intercalation=False), conciliar=PrytanyDOY(date=(<Prytanies.I: 1>, 39), doy=39, preceding=(), intercalation=True)),)
 
 
-The return value is a tuple of solutions. Each solution is a tuple
-containing a matching festival DOY and prytany DOY. Since there is
-only one solution for our example, there is only one item in the
-tuple.
+The return value is a tuple of :py:class:`Equation` objects. Each
+:py:class:`Equation` has two properties, :py:attr:`festival`, a
+:py:class:`FestivalDOY` objects, and :py:attr:`conciliar`, a
+:py:class:`PrytanyDOY` object. The pairing in each
+:py:class:`Equation` represents one solution. The simple example above
+can be interpreter to mean that Met 9 = Prytany 1.39 can be true if
+both are the 39th day of the year, meeting the circumstances given in
+the respective :py:attr:`preceding` and :py:attr:`intercalation`
+values.
 
 An example with more possibilities is represented by a few
 inscriptions from the year 332/331: `IG II³,1 344
@@ -171,19 +192,19 @@ PrytanyDOY(date=(<Prytanies.VIII: 8>, 7), doy=256, preceding=(36, 36, 36, 36, 35
 
 
 This could equate, then, to DOY 253–256. The prytany dates indicate an
-ordinary year, which agrees with none of the festival dates following
-an intercalation. We would now look to other details to decide if any
-of the possibilities were better than others. The more even the number
-of full and hollow months the better, so DOY 253 looks problematic
-because it requires Elaphebolion to be preceded by 2 full and six
-hollow months, which would mean at least two hollow months in a
-row. Since this is the the period of the :ref:`ten prytanies
-<ten-prytanies>` the whole year will have four 36-day prytanies and
-six 35-day prytanies. If you believe the Rule of Aristotle that all
-the long prutanies should come at the beginining of the year, only the
-DOY 256 solution fits this criterion.
+ordinary year, which agrees with the fact that none of the festival
+dates follow an intercalation. We would now look to other details to
+decide if any of the possibilities were better than others. The more
+even the number of full and hollow months the better, so DOY 253 looks
+problematic because it requires Elaphebolion to be preceded by 2 full
+and six hollow months. Since this is the the period of the :ref:`ten
+prytanies <ten-prytanies>` the whole year will have four 36-day
+prytanies and six 35-day prytanies. If you believe the Rule of
+Aristotle that all the long prytanies should come at the beginning of
+the year, and only the DOY 256 solution fits this criterion since it
+has all four 36-day prytanies preceding the day of the equation.
 
-There are not always solution, often because there are hidden
+There are not always solutions, often because there are hidden
 intercalary days in the equations. `IG II³,1 368
 <https://epigraphy.packhum.org/text/347225>`_, from 325/324, contains
 an equation, Tha 22 = Prytany 10.5, with no solutions:
@@ -199,8 +220,8 @@ If we look at the festival and prytany parts separately we can see why:
 [323, 324, 350, 351]
 
 There is no overlap of the possible DOYs of Tha 22 with those of
-Prytany 10.5. Pritchett and Neugebauer who believe in the Rule of
-Aristotle and the absolute regularity of prytanies hypothesize that
+Prytany 10.5. Pritchett and Neugebauer, who believe in the Rule of
+Aristotle and the absolute regularity of prytanies, hypothesize that
 intercalated days earlier in the calendar (*The Calendars of
 Athens*. Cambridge: Harvard University Press, 1947, p. 56). This could
 result, for instance in Tha 22 not being DOY 348 but DOY 351 if three
@@ -264,11 +285,11 @@ Collation(equations=(Equation(festival=FestivalDOY(date=(<AthenianMonths.ELA: 9>
 ----------
 
 
-The results are a tuple of "collation" dicts, six in this case. Each
-collation has two parts, the equations and the partitions. The
-partitions are groups of lengths of months and prytanies. The
-equations are groups of equations solutions that go together given the
-related partitions.
+The results are a tuple of :py:class:`Collation` objects, six in this
+case. Each :py:class:`Collation` has two parts, :py:attr:`equations`
+and :py:attr:`partitions`. The partitions are groups of lengths of
+months and prytanies. The equations are groups of :py:class:`Equation`
+objects that go together as solutions given the related partitions.
 
 The idea behind the partitions is that each equation is preceded by
 some number of months or prytanies of certain lengths, and later
@@ -279,8 +300,8 @@ DOY 305.
 
 The partitions are:
 
-- conciliar: (36, 35, 35, 35, 35, 35, 35), (36)
 - festival: (30, 30, 29, 29, 29, 29, 29, 29), (30, 30)
+- conciliar: (36, 35, 35, 35, 35, 35, 35), (36)
 
 This means that for Ela 19 = Prytany 8.7 to be DOY 253, it must be
 preceded by the first groups of month and prytany lengths (two full

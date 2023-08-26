@@ -99,14 +99,14 @@ def festival_doy(month, day):
     possible combinations of full and hollow months preceding it.
 
     Returns a tuple of :py:class:`FestivalDOY` objects, one for each
-    DOY, and each consisting of: 
+    DOY, and each consisting of:
 
-    * :py:attr:`date`: Month and day supplied 
+    * :py:attr:`date`: Month and day supplied
     * :py:attr:`doy`: The day of the year
-    * :py:attr:`preceding`: tuple of ints that are the lengths of the months 
+    * :py:attr:`preceding`: tuple of ints that are the lengths of the months
       preceding the given date, which goes in the DOY calculation
-    * :py:attr:`intercalation`: :py:obj:`True` if the DOY requires an 
-      intercalation among the months preceding the given date. 
+    * :py:attr:`intercalation`: :py:obj:`True` if the DOY requires an
+      intercalation among the months preceding the given date.
       :py:obj:`False` otherwise
 
     """
@@ -213,33 +213,26 @@ def __pryt_doy_ranges(pry, day, pryt_type, lng, intercalation):
 def prytany_doy(pry, day, pryt_type):
     """Return possible DOYs for a given prytany and day.
 
+
+    :param pry: Prytany
+    :type pry: heniautos.prytanies.Prytanies
+    :param day: Day of the prytany
+    :type day: int
+    :param pryt_type: Type of prytany
+    :type pryt_type: heniautos.prytanies.Prytanies
+    :return: List of possible days of the year
+    :rtype: tuple
+    :raises heniautos.HeniautosError: If :py:class:`heniautos.prytanies.Prytany.AUTO` or other unrecognized prytany type is supplied
+
+
     Calculates every possible DOY for a prytany and day with all the
-    possible combinations of long and short prytanies preceding it.
-
-    Parameters:
-        pry (Prytanies): Prytanies constant for the month
-        day (int): Day of the prytany
-        pryt_type: Prytany constant for the type of prytany
-        year: year, needed of pryt_type is Prytany.AUTO
-
-    Returns a tuple of dicts, one for each DOY, and each consisting of:
-        date: Prytany and day supplied
-        doy: The DOY
-        preceding: tuple of ints that are the lengths of the prytanies
-        preceding the given date, which goes in the DOY calculation
-        intercalation: True if the DOY is for an intercalated year. N.B.: this
-        is different from festival_doy() because it True
-        for and intercalary DOY whether or not the intercalation
-        occurs before the given prytany or not.
+    possible combinations of long and short prytanies preceding
+    it. Returns a tuple of :py:class:`FestivalDOY` objects, one for
+    each DOY.
 
     """
     from heniautos import HeniautosError
     from heniautos.prytanies import Prytany
-
-    # if pryt_type == Prytany.AUTO:
-    #     if year is None:
-    #         raise HeniautosError("Year required if pryt_type is Prytany.AUTO")
-    #     return prytany_doy(pry, day, _pryt_auto(year))
 
     if pryt_type == Prytany.QUASI_SOLAR:
         return tuple(
@@ -300,7 +293,7 @@ def prytany_doy(pry, day, pryt_type):
             )
         )
 
-    raise HeniautosError("Unhandled")
+    raise HeniautosError(f"Unhandled prytany type: {pryt_type}")
 
 
 def __fest_eq(months):
@@ -335,38 +328,33 @@ def __pryt_eq(prytanies, pryt_type):
     )
 
 
-def equations(months, prytanies, pryt_type, year=None):
+def equations(months, prytanies, pryt_type):
     """Return possible solutions for a calendar equation
 
-    Parameters:
-            month (tuple): A tuple consisting of a Month constant and a day, or a
-    tuple of such tuples
-            prytanies: A tuple consisting of a Prytany constant and a day, or a
-    tuple of such tuples
-            year (int): Year, used to calculate prytany type is Prytany.AUTO
-            pryt_type (Prytany): Type of prytany calendar to use
-            (default Prytany.AUTO)
 
-    Returns a tuple of tuples. Each inner tuple is a pair of dicts,
-    one for festival and one for conciliar calendar conditions that
-    satisfy the equation for a particular DOY. Each of these dicts
-    consists of:
+    :param month: (tuple): A tuple consisting of a :py:class:`heniautos.CalendarMonth` constant and a day (:py:class:`int`), or a tuple of such tuples
+    :type month: tuple
+    :param prytanies: A tuple consisting of a :py:class:`heniautos.prytanies.Prytanies` constant and a day (:py:class:`int`), or a tuple of such tuples
+    :param pryt_type: Type of prytany calendar to use
+    :type pryt_type: heniautos.prytanies.Prytanies
+    :return: List of matching :py:class:`Equation` objects
+    :rtype: tuple
+    :raises heniautos.HeniautosError: If :py:class:`heniautos.prytanies.Prytany.AUTO` or other unrecognized prytany type is supplied
 
-            date: The festival or prytany date
-            doy: The DOY of the date
-            preceding: A tuple of lengths of the preceding months or prytanies
-            intercalation: True if intercalation required for this solution
+
+    Returns a tuple of :py:class:`Equation` objects, each containing a pair of :py:class:`FestivalDOY` and :py:class:`PrytanyDOY` that together a solution for the given calendar equation(s) (:py:obj:`months` = :py:obj:`prytanies`)
 
     Intercalation means something slightly different for the festival
-    and conciliar calendar solutions. For the conciliar calendar True
-    means that the year is intercalary because that affects the
-    lengths of all the prytanies. For the festival calendar True means
-    that an intercalation must precede the date because that effects
-    the number of months, not the lengths. If a pair has intercalation
-    = False in the festival solution but intercalation = True in the
-    conciliar, it indicated that that solution is valid for an
-    intercalary, but only if the intercalation follows the festival
-    date.
+    and conciliar calendar solutions. For the conciliar calendar
+    :py:class:`True` means that the year is intercalary because that
+    affects the lengths of all the prytanies. For the festival
+    calendar, :py:class:`True` means that an intercalation must
+    precede the date because that effects the number of months, not
+    the lengths. If a pair has :py:attr:`intercalation` =
+    :py:class:`False` in the festival solution but
+    py:attr:`intercalation` = :py:class:`True` in the conciliar, it
+    indicates that that solution is valid for an intercalary, but only
+    if the intercalation follows the festival date.
 
     """
     pryt_eqs = __pryt_eq(prytanies, pryt_type)
@@ -470,36 +458,23 @@ def __each_overlaps(b, a=tuple()):
 def collations(*args, failures=False):
     """Collate multiple equations, looking for those that fit together.
 
-    Take an arbitrary number of calendar equation results (args,
-    i.e. results from equations()) and find those that fit together
-    according to the following criteria:
+    :param args: Arbitrary number of equation results
+    :type args: heniautos.equations.Equation
+    :return: tuple of :py:class:`Collation` objects
 
-        1) required conciliar years are all normal or all intercalary
-        2) all equations that require festival year intercalation follow any
-           that require no intercalations
-        3) Each sequence of month and prytany lengths fits into the following
-           sequences.
+    Take an arbitrary number of calendar :py:class:`Equation` results
+    (i.e. results from :py:func:`equations`) and find those that fit
+    together according to the following criteria:
 
-    Each equation results probably has multiple solutions. This test
-    all combinations of solutions. Returns results as a tuple of dicts,
-    each consiting of
+    1. required conciliar years are all normal or all intercalary
+    2. all equations that require festival year intercalation follow any
+       that require no intercalations
+    3. Each sequence of month and prytany lengths fits into the following
+       sequences.
 
-        partitions: a dict with two members: "festival" and
-        "conciliar." Each is a list of month or prytany lengths
-        partitioned according to the requirements of the
-        equations. For instance, ((30, 29), (30, 29), (30, 30, 29))
-        means that the first equation must be preceded by one full and
-        one hollow month; after the first equation but before the
-        second there must by on full and one hollow month; after the
-        second but before the third there must be two full and one
-        hollow.
-
-        equations: a list of equations making up this combined
-        solution. Each is identical to a result returned from
-        equations().
-
-    If the optional "failures" parameter is true, return combinations
-    that cannot be fitted together, as a list of combinations
+    Each equation result probably has multiple solutions. This tests
+    all combinations of solutions. Returns results as a tuple
+    :py:class:`Collation` objects.
 
     """
     from heniautos import HeniautosNoMatchError
