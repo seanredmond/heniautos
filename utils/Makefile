@@ -2,10 +2,10 @@
 
 .PHONY: lunar solar
 
-bce_start := -603
-bce_end := -1
-ce_start := 1896
-ce_end := 2104
+bce_start := -631
+bce_end := 1
+ce_start := 1900
+ce_end := 2151
 
 lunar_tsv := ../heniautos/new_moons.tsv
 solar_tsv := ../heniautos/solstices.tsv
