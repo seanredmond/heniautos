@@ -69,6 +69,7 @@ def _moon_phases(year1, year2, eph={}):
                     almanac.moon_phases(eph["eph"]),
                 )
             )
+            if p[1] == 0
         ]
     )
 
