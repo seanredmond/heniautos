@@ -165,21 +165,18 @@ def test_collations():
         (AthenianMonths.MAI, 11),
         (Prytanies.IV, 21),
         prytany_type(bce_as_negative(319)),
-        year=bce_as_negative(319),
     )
 
     eq2 = equations(
         (AthenianMonths.ELA, 12),
         (Prytanies.VII, 34),
         prytany_type(bce_as_negative(319)),
-        year=bce_as_negative(319),
     )
 
     eq3 = equations(
         (AthenianMonths.MOU, 12),
         (Prytanies.VIII, 29),
         prytany_type(bce_as_negative(319)),
-        year=bce_as_negative(319),
     )
 
     c = collations(eq1, eq2, eq3)
