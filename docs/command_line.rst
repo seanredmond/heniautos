@@ -2,6 +2,10 @@
 Command-Line Applications
 *************************
 
+
+.. _heniautos-command:
+
+
 :command:`heniautos`
 ====================
 
