@@ -6,25 +6,30 @@
 Heniautos
 =========
 
-Heniautos (ἐνιαυτός, Greek for "the span of a year") generates
-examples of possible Greek calendars, ancient or modern, and provides
-has features for exploring the calendar and working with calendar
+Heniautos (ἐνιαυτός, Greek for ”the span of a year”) generates
+examples of possible Greek calendars, ancient or modern, and has
+features for exploring the calendar and working with calendar
 equations. It is hopefully useful for:
 
-* Learning about and teaching the ancient Athenian Calendar
+* Learning about and teaching the ancient Athenian and other Greek calendars
 * Following along with often complex discussions of dating of events
   in ancient Greek history
-* Just having fun with questions like "When would the City Dionysia be
-  this year, if it was still being held."
+* Just having fun with questions like ”When would the City Dionysia be
+  this year, if it was still being held.”
 
-Heniautos also comes with a command-line program, `heniautos` for
-generating calendars See the documentation.
+Heniautos also comes with a command-line application,
+:command:`heniautos`, for generating calendars without any programming
+required. See the :ref:`documentation <heniautos-command>` for all the
+features and options.
 
 
-
-
-
-Heniautos generates lunisolar calendars as used by ancient Greece cities based on modern calculations of historical (or modern) astronomical events—solstices, equinoxes, and phases of the moon. For fun it can create a calendar for current years so you can, for instance, see when important festivals would occur if they were still going on today. For instance, here's what the Athenian calendar might look like in 2023:
+Heniautos generates lunisolar calendars as used by ancient Greece
+cities based on modern calculations of historical (or modern)
+astronomical events—solstices, equinoxes, and phases of the moon. For
+fun it can create a calendar for current years so you can, for
+instance, see when important festivals would occur if they were still
+going on today. For instance, here’s what the Athenian calendar might
+look like in 2023 (as output by the command-line application):
 
 .. code-block:: console
 
@@ -44,9 +49,13 @@ Heniautos generates lunisolar calendars as used by ancient Greece cities based o
      CE 2023/2024 | Thargēliṓn            |  CE 2024-May-09 |   29
      CE 2023/2024 | Skirophoriṓn          |  CE 2024-Jun-07 |   29
 
-If you were excited about seeing the tragedies and comedies, make plans for January when they would be performed as part of the Lenaia festival in the Greek month of Gamēliṓn.
+If you were excited about seeing the tragedies and comedies, make
+plans for January because that’s when they would be performed as part
+of the Lenaia festival in the Greek month of Gamēliṓn.
 
-For research it can generate a calendar for any year in the past as a baseline for understanding, For instance, the Athenian calendar for 431/430 BCE, the year the Peloponnesian War starte
+For research purposes it can generate a calendar for any year in the
+past as a baseline for understanding, For instance, the Athenian
+calendar for 431/430 BCE, the year the Peloponnesian War started:
 
 .. code-block:: console
 
@@ -67,9 +76,19 @@ For research it can generate a calendar for any year in the past as a baseline f
     BCE 431/430   | Thargēliṓn            | BCE 0430-May-26 |   30
     BCE 431/430   | Skirophoriṓn          | BCE 0430-Jun-25 |   29
 
-Since a few aspects of the calendar were subjective or could be modified Heniautos' version is no way definitive. But this can be a starting point in uderstanding discussions around whether or not the war started towards the end of the month of Anthestēriṓn.
+Since a few aspects of the calendar were subjective or could be
+modified Heniautos’ version is no way definitive. But this can be a
+starting point in understanding, for instance, discussions about
+whether or not the Peloponnesian war started towards the end of the
+month of Anthestēriṓn.
 
-If you are new to the Greek calendar, start with Festival Calendar Basics and The Conciliar Calendar. Athenians used two parallel calendars and it is their differences and overlaps that allow us to explore many of the details about how they reckoned the year. Heniautos can generate both.
+
+
+If you are new to the Greek calendar, start with Festival Calendar
+Basics and The Conciliar Calendar. Athenians used two parallel
+calendars and it is their differences and overlaps that allow us to
+explore many of the details about how they reckoned the
+year. Heniautos can generate both.
 
 heniautos Command has full details about how to use heniautos to generate many different views of the Athenian calendar.
 
