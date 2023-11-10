@@ -82,24 +82,7 @@ starting point in understanding, for instance, discussions about
 whether or not the Peloponnesian war started towards the end of the
 month of Anthestēriṓn.
 
-
-
-If you are new to the Greek calendar, start with Festival Calendar
-Basics and The Conciliar Calendar. Athenians used two parallel
-calendars and it is their differences and overlaps that allow us to
-explore many of the details about how they reckoned the
-year. Heniautos can generate both.
-
-heniautos Command has full details about how to use heniautos to generate many different views of the Athenian calendar.
-
-Programming with Heniautos and the API Reference are the full guide to using the Heniautos Python library for writing your own programs.
-
-Reading Dated Inscriptions is a very brief overview of the prescripts of dated decrees of the Athenian Ekklēsía that give us so much information about ancient dates. These prescripts follow a fairly inflexible formula, so once you know a few principles, you can easily read many of these inscriptions yourself.
-
-Once you are more interested in the nitty-gritty of this calendar, read Calendar Equations and calendar-equations Command to get started on the fascinating (and frustrating) puzzles in the evidence from ancient dated inscriptions.
-
-
-
+There are a few examples in the :ref:`cookbook` to get you started programming with Heniautos.
 
 
 .. toctree::
@@ -110,7 +93,7 @@ Once you are more interested in the nitty-gritty of this calendar, read Calendar
    conciliar_calendar
    equations
    command_line
-   greek_calendar_basics
+   cookbook
    func_ref
 
 
