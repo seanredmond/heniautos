@@ -543,6 +543,7 @@ under certain conditions.""",
         "--visibility-offset",
         type=int,
         metavar="N",
+        default=1,
         help="Offset for determining date of new moon."
         " N days after astronomical conjunction"
         "(default: 1)",
@@ -552,6 +553,7 @@ under certain conditions.""",
         "--solar-offset",
         metavar="N",
         type=int,
+        default=0,
         help="Offset for determining the date of solstices " "and equinoxes",
     )
     parser.add_argument(
