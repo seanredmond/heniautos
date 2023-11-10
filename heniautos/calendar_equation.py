@@ -122,7 +122,7 @@ def eq_fmt(fest, pryt, ph_cnt):
 def output_solution(fest, pryt, pryt_type, year, i, cnt, ordinary, intercalary):
     solutions = [
         e
-        for e in heq.equations(fest, pryt, pryt_type=pryt_type, year=year)
+        for e in heq.equations(fest, pryt, pryt_type=pryt_type)
         if year_type(e, ordinary, intercalary)
     ]
 
