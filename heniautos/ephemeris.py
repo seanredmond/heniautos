@@ -6,11 +6,17 @@ from skyfield.api import GREGORIAN_START
 def init_ephemeris(cfg={}, eph="de422.bsp", lat=37.983972, lon=23.727806, force=False):
     """Initialize data required for calculations.
 
-    Parameters:
-        eph (str): Path to ephemeris file
-        lat (float): Latitude for calculations (default 37.983972)
-        lon (float): Longitude for calculations (default 23.727806)
-        force (bool): Force reinitialization
+    :param eph: Path to ephemeris file
+    :type eph: str
+    :param lat: Latitude for calculations (default 37.983972)
+    :type lat: float
+    :param lon: Longitude for calculations (default 23.727806)
+    :type lon: float
+    :param force: Force reinitialization
+    :type force: bool
+    :return: A dictionary of ephemeris details
+    :rtype: dict
+
 
     If an ephemeris file cannot be found in the path and no file is
     specified by the eph parameter, de422.bsp will be downloaded.
@@ -82,6 +88,25 @@ def _get_new_moons(year1, year2=None, eph={}):
 
 
 def get_ephemeris_data(year1, year2=None, eph=None):
+    """Get data for use by calendar functions
+
+    :param year1: Year or start year for data
+    :type year1: int
+    :param year2: End year for data (default: None)
+    :type year2: int
+    :param eph: initialized ephemeris
+    :type eph: dict
+    :returns: A data object for use by calendar functions
+    :rtype: dict
+
+    The `eph` parameter should be a dict as returned by
+    :func:`init_ephemeris`. For `year1` or a span of `year1` to
+    `year2` (inclusive), returns a dictionary containg the dates of
+    solar events (solstices and equinoxes), and new moons, suitable to
+    be passed as the `data` parameter of calendar functions.
+
+    """
+
     return {
         "solstices": _get_solar_events(year1, year2, eph),
         "new_moons": _get_new_moons(year1, year2, eph),

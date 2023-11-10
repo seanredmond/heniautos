@@ -808,8 +808,8 @@ FestivalDay(jdn=1575531, month_name='Hekatombaiṓn', month_index=1, month=<Athe
 Ephimerides and Custom Data
 ---------------------------
 
-Heniautos comes with solstice/equinox and new moon data from 605 to 1
-BCE and 1896 to 2104 CE. This range should allow generating calendars
+Heniautos comes with solstice/equinox and new moon data from 633 to 1
+BCE and 1899 to 2150 CE. This range should allow generating calendars
 for most of the interesting years in the time of the Greeks as well as
 decent coverage for hypothetical modern day calendars. This data has
 been derived from the `DE431 ephemeris
@@ -853,6 +853,27 @@ data.
 
 Use Ephemeris
 ^^^^^^^^^^^^^
+
+You can use an ephemeris like `DE431
+<https://ssd.jpl.nasa.gov/doc/de430_de431.html>`_ directly for any
+date supported by the ephemeris. You must first have the optional
+dependency `Skyfield <https://rhodesmill.org/skyfield/>`_ installed as
+well as an ephemeris file downloaded.
+
+To access this ephemeris data, import :mod:`heniautos.ephemeris`
+module, initialize the ephemeris, and use
+:func:`heniautos.ephemeris.get_ephemeris_data` to extract a data
+structure in the proper format. For example, if a copy of de431.bsp is
+in your current working directory:
+
+>>> import heniautos.ephemeris as heph
+>>> e = heph.init_ephemeris(eph="de431.bsp")
+>>> data = heph.get_ephemeris_data(-999, -949, e)
+>>> ha.athenian_festival_calendar(-999, data=data)
+
+
+
+
 
 
 

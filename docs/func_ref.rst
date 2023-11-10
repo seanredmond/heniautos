@@ -117,3 +117,9 @@ Functions
 .. autofunction:: heniautos.equations.prytany_doy
 .. autofunction:: heniautos.equations.equations
 .. autofunction:: heniautos.equations.collations
+
+:py:mod:`heniautos.ephemeris`
+-----------------------------
+
+.. autofunction:: heniautos.ephemeris.init_ephemeris
+.. autofunction:: heniautos.ephemeris.get_ephemeris_data
