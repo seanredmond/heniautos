@@ -12,7 +12,7 @@ features for exploring the calendar and working with calendar
 equations. It is hopefully useful for:
 
 * Learning about and teaching the ancient Athenian and other Greek calendars
-* Following along with often complex discussions of dating of events
+* Following along with often complex discussions of dating events
   in ancient Greek history
 * Just having fun with questions like ”When would the City Dionysia be
   this year, if it was still being held.”
@@ -26,10 +26,9 @@ features and options.
 Heniautos generates lunisolar calendars as used by ancient Greece
 cities based on modern calculations of historical (or modern)
 astronomical events—solstices, equinoxes, and phases of the moon. For
-fun it can create a calendar for current years so you can, for
-instance, see when important festivals would occur if they were still
-going on today. For instance, here’s what the Athenian calendar might
-look like in 2023 (as output by the command-line application):
+fun it can create a calendar for current years. For instance, here’s
+what the Athenian calendar might look like in 2023 (as output by the
+command-line application):
 
 .. code-block:: console
 
