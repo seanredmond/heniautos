@@ -1,5 +1,15 @@
 # Release History
 
+## 2.0.0
+
+Complete refactor with many, many changes
+
+* Removed hard dependency on Skyfield (but can be optionally used)
+* Changed approximation of visible new moon. Now 1 day after conjunction rather than 2 days
+* Added calendars for other poleis (Corinth, Delphi, Delos, Sparta) and generation of generirc calendars based on several parameters
+* Some functions moved to sub-modules
+* Documentation moved to sphinx and readthedocs.io
+
 ## 1.3.0 (2021-12-03, Maimaktēriṓn 29 2021/2022)
 
 * Add `--full-moons` option to `heniautos` command to output full moon dates
