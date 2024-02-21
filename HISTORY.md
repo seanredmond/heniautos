@@ -5,8 +5,8 @@
 Complete refactor with many, many changes
 
 * Removed hard dependency on Skyfield (but can be optionally used)
-* Changed approximation of visible new moon. Now 1 day after conjunction rather than 2 days
-* Added calendars for other poleis (Corinth, Delphi, Delos, Sparta) and generation of generirc calendars based on several parameters
+* Changed default approximation of visible new moon. Now 1 day after conjunction rather than 2 days
+* Added calendars for other poleis (Corinth, Delphi, Delos, Sparta) and generation of generic calendars based on several parameters
 * Some functions moved to sub-modules
 * Documentation moved to sphinx and readthedocs.io
 
