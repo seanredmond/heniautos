@@ -1,6 +1,6 @@
 # Release History
 
-## 2.0.0
+## 2.0.0 (2024-02-21, Anthestēriṓn 12 2023/2024)
 
 Complete refactor with many, many changes
 
