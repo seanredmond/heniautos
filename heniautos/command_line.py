@@ -266,7 +266,8 @@ def festival_calendar(year, args, astro_data):
 def prytany_calendar(year, args, astro_data):
     """Filter prytany calendar to requested scope."""
     return ha.prytanies.prytany_calendar(
-        year, v_off=args.visibility_offset, data=astro_data()
+        year, v_off=args.visibility_offset,
+        pryt_start=args.quasi_solar_start, data=astro_data()
     )
 
 
@@ -571,6 +572,12 @@ under certain conditions.""",
         "--after-solar-event",
         action="store_true",
         help="Calendar begins after --calendar-start (with -c generic)",
+    )
+    parser.add_argument(
+        "--quasi-solar-start",
+        type=int,
+        default=heniautos.prytanies.Prytany.AUTO,
+        help="JDN for any Prytany 1.1 for quasi-solar prytanies"
     )
     parser.add_argument(
         "-E", "--use-ephemeris", action="store_true", help="Use ephemeris for data"
