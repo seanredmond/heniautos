@@ -1,6 +1,15 @@
 from skyfield import api
 from skyfield import almanac
 from skyfield.api import GREGORIAN_START
+from enum import IntEnum
+
+class Phases(IntEnum):
+    """Constants representing lunar phases."""
+
+    NEW = 0
+    FIRSTQ = 1
+    FULL = 2
+    LASTQ = 3
 
 
 def init_ephemeris(cfg={}, eph="de422.bsp", lat=37.983972, lon=23.727806, force=False):
@@ -63,7 +72,7 @@ def _get_solar_events(year1, year2=None, eph={}):
     return _solar_events(year1 - 1, year1 + 1, eph)
 
 
-def _moon_phases(year1, year2, eph={}):
+def _moon_phases(year1, year2, eph={}, phase=0):
     """Return Time objects for all moon phases in year y."""
     return tuple(
         [
@@ -75,7 +84,7 @@ def _moon_phases(year1, year2, eph={}):
                     almanac.moon_phases(eph["eph"]),
                 )
             )
-            if p[1] == 0
+            if p[1] == phase
         ]
     )
 
