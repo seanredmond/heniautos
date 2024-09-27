@@ -49,11 +49,19 @@ def init_ephemeris(cfg={}, eph="de422.bsp", lat=37.983972, lon=23.727806, force=
 
     return cfg
 
+def __delta_t(t, delta_t):
+    """Return terrestrial time, modified by ΔT if delta_t is True, unmodified if False"""
+    if delta_t:
+        # ΔT is given in seconds and needs to be converted to portion
+        # of a day
+        return t.tt - (t.delta_t/86400.0)
 
-def _solar_events(year1, year2, eph):
+    return t.tt
+
+def _solar_events(year1, year2, eph, delta_t):
     return tuple(
         [
-            (s[0].tt, s[1])
+            (__delta_t(s[0], delta_t), s[1])
             for s in zip(
                 *almanac.find_discrete(
                     eph["ts"].ut1(year1, 1, 31),
@@ -65,18 +73,18 @@ def _solar_events(year1, year2, eph):
     )
 
 
-def _get_solar_events(year1, year2=None, eph={}):
+def _get_solar_events(year1, year2=None, eph={}, delta_t=True):
     if year2 is not None:
-        return _solar_events(year1 - 1, year2 + 1, eph)
+        return _solar_events(year1 - 1, year2 + 1, eph, delta_t)
 
-    return _solar_events(year1 - 1, year1 + 1, eph)
+    return _solar_events(year1 - 1, year1 + 1, eph, delta_t)
 
 
-def _moon_phases(year1, year2, eph={}, phase=0):
+def _moon_phases(year1, year2, eph={}, phase=0, delta_t=True):
     """Return Time objects for all moon phases in year y."""
     return tuple(
         [
-            (p[0].tt, p[1])
+            (__delta_t(p[0], delta_t), p[1])
             for p in zip(
                 *almanac.find_discrete(
                     eph["ts"].ut1(year1, 1, 1),
@@ -89,14 +97,14 @@ def _moon_phases(year1, year2, eph={}, phase=0):
     )
 
 
-def _get_new_moons(year1, year2=None, eph={}):
+def _get_new_moons(year1, year2=None, eph={}, phase=0, delta_t=True):
     if year2 is not None:
-        return _moon_phases(year1 - 1, year2 + 1, eph)
+        return _moon_phases(year1 - 1, year2 + 1, eph, phase, delta_t)
 
-    return _moon_phases(year1 - 1, year1 + 1, eph)
+    return _moon_phases(year1 - 1, year1 + 1, eph, phase, delta_t)
 
 
-def get_ephemeris_data(year1, year2=None, eph=None):
+def get_ephemeris_data(year1, year2=None, eph=None, delta_t=True):
     """Get data for use by calendar functions
 
     :param year1: Year or start year for data
@@ -117,6 +125,6 @@ def get_ephemeris_data(year1, year2=None, eph=None):
     """
 
     return {
-        "solstices": _get_solar_events(year1, year2, eph),
-        "new_moons": _get_new_moons(year1, year2, eph),
+        "solstices": _get_solar_events(year1, year2, eph, delta_t),
+        "new_moons": _get_new_moons(year1, year2, eph, 0, delta_t),
     }
