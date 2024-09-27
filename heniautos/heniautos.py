@@ -1449,6 +1449,145 @@ def festival_to_jdn(
         )
 
 
+def __calendar_months_r(start, end, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0):
+    """Recursively return a sequence of calendar months, possibly
+    over multiple years."""
+    if start > end:
+        return ()
+    
+    return __calendar_months(start, data, event, before_event,v_off, s_off) + __calendar_months_r(start + 1, end, data, event, before_event, v_off, s_off)
+
+
+def octaeteris_gen(start):
+    """ Cycle through octaeteric intercalations beginning at start"""
+    cycle = (12, 12, 13, 12, 13, 12, 12, 13)
+
+    i = (start - 1) % 8 + 1
+    while 1:
+        yield cycle[i - 1]
+        i = i % 8 + 1
+
+
+def __octaeteris_years(months, year1, year2, oct_gen, calendar=Cal.GENERIC, intercalate=6, name_as=MonthNameOptions.TRANSLITERATION, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0, data=load_data
+):
+    """Recursively return a sequence of festival calendars based on
+    octaeteric intercalation."""
+    if year1 > year2:
+        return ()
+    
+    m_count = next(oct_gen)
+    
+    festival_months = tuple(
+        [
+            {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
+            for m in enumerate(months[0:m_count],
+                1,
+            )
+        ]
+    )    
+
+    doy = _doy_gen()
+
+    base_cal = tuple([a for b in [__make_generic_month(m, doy) for m in festival_months] for a in b])
+
+    month_o = __month_order(calendar, intercalate, len(by_months(base_cal)) > 12)
+
+    cal_year = arkhon_year(year1)
+    month_names = __intercalated_month_name_map(calendar, month_o)
+    oct_year = tuple(
+        [
+            __make_festival_day(
+                d,
+                cal_year,
+                name_as,
+                year1,
+                base_cal[-1].doy,
+                calendar,
+                month_o,
+                d.month_length,
+                month_names,
+            )
+            for d in base_cal
+        ]
+    )
+
+    return (oct_year,) + __octaeteris_years(months[m_count:], year1 + 1, year2, oct_gen, calendar, intercalate, name_as)
+
+
+def octaeteris(
+    oct_index,
+    year1,
+    year2 = None,
+    calendar=Cal.GENERIC,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    event=Seasons.SUMMER_SOLSTICE,
+    before_event=False,
+    v_off=1,
+    s_off=0,
+    data=load_data,
+):
+    """Return a tuple representing festival calendar.
+
+    Parameters:
+    oct_index (int) -- The index of point in which to start the octaeteric cycle (1–8)
+    year (int) -- The first year for the calendar
+    year2 (int) -- The last year for the calender (if None, calendar will be generate for a sigle year, year1)
+    calendar (Cal) -- A Cal constant for the requested calendar
+    intercalate (int) -- Month index of month to intercalate if necessary (default: 6)
+    name_as (MonthNameOption) -- Option corresponding to desired form of the month name (transliteration, abbreviation, Greek, default: MonthNameOptions.TRANSLITERATION)
+    event (Season) -- The solar event with the year begins (default: Seasons.SUMMER_SOLSTICE)
+    before_event (bool) -- True if the first month of year begins immediately before the solar_event, False (default) if it begins after
+    v_off (int) -- Offset from the conjunction for lunar visibility (default: 1)
+    s_off (int) -- Offet for solar event in days (default: 0)
+    data -- Astronomical data for calculations. By default this is
+    returned from load_data()
+
+    See visible_new_moons for documentation of visibility offset.
+
+    Returns a tuple in which each member is the calendar for one year(a tuple of FestivalDay objects with one member for each day).
+
+    If intercalation is necessary, the month indicated by the
+    intercalate parameter will be intercalated. For example, the 6th
+    month if intercalate=6 (the default).
+
+    If the calendar parameter is None, a generic calendar will be
+    returned with the month and month_name members of each
+    FestivalDay being None.
+
+    The pattern of intercalations generated over multiple years by
+    festival_calendar() and related functions forms a proper Metonic
+    cycle as a natural phenomenon that emerges from the lunar and
+    solar cycles. There is a theory, based largely on the writings of
+    Geminos, that before the 19-year Metonic cycle was understood,
+    Greeks and other cultures using a lunisolar calendar employed an
+    8-year cycle of intercalations known as an octaeteris.
+
+    Given a year or a range of years, this function generates an
+    octaeteric festival calendar. There is only one proper octaeteric
+    cycle, OOIOIOOI, and since this is not directly based on
+    astronomical observations, the cycle cannot be generated from
+    data. Instead, use the oct_index parameter to indicate where year1
+    falls in the cycle. For example, with oct_index=3, the first day
+    of year1 will be calculated based on the chosen solstice or
+    equinox (event parameter) and new moon, but it will be generated
+    as an intercalary year because year 3 in the cycle is
+    intercalary. Subsequent years are then based on the length
+    indicated by the cycle, not the the dates of solar events and
+    lunar phases.
+
+    oct_index should be an integer between 1 and 8. Other values will
+    be wrapped around to this range, modulo 8 (for example,
+    oct_index=9 will be treated as oct_index=1)
+
+    """
+
+    end_year = year1 if year2 is None else year2
+    lunar_months = __calendar_months_r(year1, end_year + 1, data, event, before_event,v_off, s_off)
+
+    return __octaeteris_years(lunar_months, year1, end_year, octaeteris_gen(oct_index), calendar, intercalate, name_as)
+
+
 def version():
     return __version__
 

@@ -556,3 +556,17 @@ def test_month_name():
 
     with pytest.raises(HeniautosError):
         assert month_name(Months.UNC)
+
+def test_octaeteris():
+    oct = octaeteris(1, -432, -423, calendar=Cal.ATHENIAN)
+    assert len(oct) == 10
+    assert [len(y) < 356 for y in oct] == [True, True, False, True, False, True, True, False, True, True]
+
+    oct = octaeteris(3, -432, -423, calendar=Cal.ATHENIAN)
+    assert [len(y) < 356 for y in oct] == [False, True, False, True, True, False, True, True, False, True]
+
+def test_octaeteris_rollover():
+    oct = octaeteris(9, -432, -423, calendar=Cal.ATHENIAN)
+    assert len(oct) == 10
+    assert [len(y) < 356 for y in oct] == [True, True, False, True, False, True, True, False, True, True]
+    
