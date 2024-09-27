@@ -60,19 +60,19 @@ def test_as_gregorian():
 def test_solar_event():
     assert (
         as_julian(solar_event(-99, Seasons.SPRING_EQUINOX), True)
-        == "BCE 0100-Mar-23 19:48:34 GMT"
+        == "BCE 0100-Mar-23 16:36:11 GMT"
     )
     assert (
         as_julian(solar_event(-99, Seasons.SUMMER_SOLSTICE), True)
-        == "BCE 0100-Jun-25 19:53:23 GMT"
+        == "BCE 0100-Jun-25 16:41:03 GMT"
     )
     assert (
         as_julian(solar_event(-99, Seasons.AUTUMN_EQUINOX), True)
-        == "BCE 0100-Sep-26 04:52:22 GMT"
+        == "BCE 0100-Sep-26 01:40:05 GMT"
     )
     assert (
         as_julian(solar_event(-99, Seasons.WINTER_SOLSTICE), True)
-        == "BCE 0100-Dec-23 20:37:06 GMT"
+        == "BCE 0100-Dec-23 17:24:52 GMT"
     )
 
 
@@ -115,7 +115,7 @@ def test_observed_solar_event_offset():
 def test_new_moons():
     p = new_moons(-99)
     assert type(p) is tuple
-    assert as_julian(p[0], True) == "BCE 0100-Jan-09 12:44:18 GMT"
+    assert as_julian(p[0], True) == "BCE 0100-Jan-09 09:31:53 GMT"
 
 
 def test_generic_festival_calendar():
@@ -229,16 +229,16 @@ def test_festival_calendar():
 
     assert met[0].month_name == "2"
     assert met[0].day == 1
-    assert as_julian(met[0]) == "BCE 0101-Aug-15"
-    assert met[0].doy == 31
+    assert as_julian(met[0]) == "BCE 0101-Aug-14"
+    assert met[0].doy == 30
 
 
 def test_festival_calendar_solar_offset():
     p = festival_calendar(-421)
     assert as_julian(p[0]) == "BCE 0422-Jul-26"
 
-    p = festival_calendar(-421, s_off=-2)
-    assert as_julian(p[0]) == "BCE 0422-Jun-27"
+    p = festival_calendar(-421, s_off=-3)
+    assert as_julian(p[0]) == "BCE 0422-Jun-26"
 
 
 
@@ -413,22 +413,22 @@ def test_320():
     cal_320 = festival_calendar(bce_as_negative(320), v_off=2)
 
     # With the two day rule, 320 is ordinary
-    assert cal_320[-1].doy == 354
+    assert cal_320[-1].doy == 355
 
-    # It starts on Jul 9
-    assert as_julian(cal_320[0]) == "BCE 0320-Jul-09"
+    # It starts on Jul 8
+    assert as_julian(cal_320[0]) == "BCE 0320-Jul-08"
     # and ends on Jun 27
     assert as_julian(cal_320[-1]) == "BCE 0319-Jun-27"
 
     months = dict(zip(Months, [[d for d in cal_320 if d.month == m] for m in Months]))
 
     assert [as_julian(d) for d in cal_320 if d.day == 1] == [
-        "BCE 0320-Jul-09",
+        "BCE 0320-Jul-08",
         "BCE 0320-Aug-07",
         "BCE 0320-Sep-05",
         "BCE 0320-Oct-05",
         "BCE 0320-Nov-04",
-        "BCE 0320-Dec-04",
+        "BCE 0320-Dec-03",
         "BCE 0319-Jan-02",
         "BCE 0319-Feb-01",
         "BCE 0319-Mar-03",

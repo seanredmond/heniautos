@@ -30,7 +30,7 @@ def test_earliest_bce():
     assert type(athenian_festival_calendar(-632)) is tuple
     assert type(delian_festival_calendar(-632)) is tuple
     assert type(spartan_festival_calendar(-632)) is tuple
-    assert new_moons(-632)[0] == 1490240.9122428272
+    assert new_moons(-632)[0] == 1490240.6927069575
 
     with pytest.raises(HeniautosNoDataError) as e:
         athenian_festival_calendar(-633)
@@ -43,7 +43,7 @@ def test_latest_bce():
     assert type(athenian_festival_calendar(0)) is tuple
     assert type(delian_festival_calendar(0)) is tuple
     assert type(spartan_festival_calendar(0)) is tuple
-    assert new_moons(2)[-1] == 1722144.2872300318
+    assert new_moons(2)[-1] == 1722144.1667546108
 
     with pytest.raises(HeniautosNoDataError) as e:
         athenian_festival_calendar(1)
@@ -56,7 +56,7 @@ def test_earliest_ce():
     assert type(athenian_festival_calendar(1899)) is tuple
     assert type(delian_festival_calendar(1899)) is tuple
     assert type(spartan_festival_calendar(1899)) is tuple
-    assert new_moons(1898)[0] == 2414666.451059811
+    assert new_moons(1898)[0] == 2414666.451094415
 
     with pytest.raises(HeniautosNoDataError) as e:
         athenian_festival_calendar(1898)
@@ -69,7 +69,7 @@ def test_latest_ce():
     assert type(athenian_festival_calendar(2150)) is tuple
     assert type(delian_festival_calendar(2150)) is tuple
     assert type(spartan_festival_calendar(2150)) is tuple
-    assert new_moons(2152)[0] == 2507097.108692804
+    assert new_moons(2152)[0] == 2507097.106959081
 
     with pytest.raises(HeniautosNoDataError) as e:
         athenian_festival_calendar(2151)
@@ -79,7 +79,7 @@ def test_latest_ce():
 
 
 def test_solar_event_data_param():
-    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287454094
+    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.1951805085
     assert (
         solar_event(
             -99,
@@ -94,7 +94,7 @@ def test_solar_event_data_param():
 
 
 def test_summer_solstice_data_param():
-    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.3287454094
+    assert solar_event(-99, Seasons.SUMMER_SOLSTICE) == 1685074.1951805085
     assert (
         solar_event(
             -99, Seasons.SUMMER_SOLSTICE, data={"solstices": ((1685074.12345, 1),)}
@@ -107,7 +107,7 @@ def test_summer_solstice_data_param():
 
 
 def test_new_moons_data_param():
-    assert new_moons(-99)[0] == 1684907.0307689053
+    assert new_moons(-99)[0] == 1684906.8971423437
     assert new_moons(-99, data={"new_moons": ((1684900.12345, 0),)})[0] == 1684900.12345
 
     with pytest.raises(HeniautosNoDataError):

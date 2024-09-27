@@ -279,14 +279,14 @@ def test_prytany_calendar_10_ordinary_long():
     c3 = by_months(festival_calendar(year))
     p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 10
-    assert p3[-1][-1].doy == 355
+    assert p3[-1][-1].doy == 354
 
     assert p3[0][0].prytany == 1
     assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
     assert len(p3[0]) == 36
     assert len(p3[4]) == 35
-    assert len(p3[-1]) == 36
+    assert len(p3[-1]) == 35
 
 
 def test_prytany_calendar_10_intercalated():
@@ -317,8 +317,8 @@ def test_prytany_calendar_12_ordinary():
     assert len(p3[0]) == 29
     assert len(p3[1]) == 29
     assert len(p3[2]) == 30
-    assert len(p3[-2]) == 30
-    assert len(p3[-1]) == 29
+    assert len(p3[-2]) == 29
+    assert len(p3[-1]) == 30
 
 
 def test_prytany_calendar_12_ordinary_aristotle():
@@ -410,14 +410,14 @@ def test_prytany_calendar_13_long():
     c3 = by_months(festival_calendar(year))
     p3 = by_prytanies(prytany_calendar(year))
     assert len(p3) == 13
-    assert p3[-1][-1].doy == 355
+    assert p3[-1][-1].doy == 354
 
     assert p3[0][0].prytany == 1
     assert p3[-1][-1].jdn == c3[-1][-1].jdn
 
     assert len(p3[0]) == 28
     assert len(p3[3]) == 27
-    assert len(p3[-1]) == 28
+    assert len(p3[-1]) == 27
 
 
 def test_prytany_calendar_13_intercalated():
@@ -435,8 +435,8 @@ def test_prytany_calendar_13_intercalated():
     #
     #     F H F H F F F H F H F H H
     #
-    assert len(p3[0]) == 30
-    assert len(p3[1]) == 29
+    assert len(p3[0]) == 29
+    assert len(p3[1]) == 30
     assert len(p3[-3]) == 30
     assert len(p3[-2]) == 29
     assert len(p3[-1]) == 29

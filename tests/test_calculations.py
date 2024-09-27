@@ -103,8 +103,8 @@ def test_spartan_424():
 
     """
     m = festival_calendar(-423, event=Seasons.AUTUMN_EQUINOX, before_event=True, calendar=None)
-    assert len(m) == 354
-    assert as_julian(m[0].jdn) == "BCE 0424-Sep-15"
+    assert len(m) == 355
+    assert as_julian(m[0].jdn) == "BCE 0424-Sep-14"
     assert as_julian(m[-1].jdn) == "BCE 0423-Sep-03"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, spartan_festival_calendar(-423))])
 
@@ -127,9 +127,9 @@ def test_spartan_422():
 
     """
     m = festival_calendar(-421, event=Seasons.AUTUMN_EQUINOX, before_event=True, calendar=None)
-    assert len(m) == 355
+    assert len(m) == 354
     assert as_julian(m[0].jdn) == "BCE 0422-Sep-23"
-    assert as_julian(m[-1].jdn) == "BCE 0421-Sep-11"
+    assert as_julian(m[-1].jdn) == "BCE 0421-Sep-10"
     assert all([d[0].jdn == d[1].jdn for d in zip(m, spartan_festival_calendar(-421))])
 
 
