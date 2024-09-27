@@ -81,22 +81,27 @@ class Cal(Enum):
 
 class TZOptions(Enum):
     """Options for time zones"""
+
     GMT = "GMT"
     ALT = "ALT"
 
 
 class CalendarMonth(IntEnum):
     """Base class for month enums"""
+
     pass
-    
+
+
 class Months(CalendarMonth):
     """Represents non-specific months"""
+
     INT = 13
     UNC = 14
 
 
 class ArgiveMonths(CalendarMonth):
     """Represents months on the Argive calendar"""
+
     AGU = 1
     KAR = 2
     ERI = 3
@@ -113,6 +118,7 @@ class ArgiveMonths(CalendarMonth):
 
 class AthenianMonths(CalendarMonth):
     """Represents months on the Athenian calendar"""
+
     HEK = 1
     MET = 2
     BOE = 3
@@ -129,6 +135,7 @@ class AthenianMonths(CalendarMonth):
 
 class DelianMonths(CalendarMonth):
     """Represents months on the Delian calendar"""
+
     LEN = 1
     IER = 2
     GAL = 3
@@ -145,6 +152,7 @@ class DelianMonths(CalendarMonth):
 
 class DelphianMonths(CalendarMonth):
     """Represents months on the Delphian calendar"""
+
     APE = 1
     BOU = 2
     BOA = 3
@@ -161,6 +169,7 @@ class DelphianMonths(CalendarMonth):
 
 class CorinthianMonths(CalendarMonth):
     """Represents months on the Corinthian calendar"""
+
     PHO = 1
     KRA = 2
     LAN = 3
@@ -177,6 +186,7 @@ class CorinthianMonths(CalendarMonth):
 
 class MacedonianMonths(CalendarMonth):
     """Represents months on the Macedonian calendar"""
+
     DIO = 1
     APE = 2
     AUD = 3
@@ -189,10 +199,11 @@ class MacedonianMonths(CalendarMonth):
     LOI = 10
     GOR = 11
     HYP = 12
-    
+
 
 class GenericMonths(CalendarMonth):
     """Represents Generic calendar months"""
+
     M01 = 1
     M02 = 2
     M03 = 3
@@ -215,7 +226,7 @@ CALENDAR_MAP = {
     Cal.DELIAN: DelianMonths,
     Cal.MACEDONIAN: MacedonianMonths,
     Cal.SPARTAN: GenericMonths,
-    Cal.GENERIC: GenericMonths
+    Cal.GENERIC: GenericMonths,
 }
 
 # Since the values of Enums like AthenianMonths.HEK and
@@ -294,11 +305,10 @@ MONTH_NAME_MAP = {
     (Cal.ARGIVE, ArgiveMonths.AMU): ("Amuklaîos", "Amu", "Ἀμυκλαῖος"),
     (Cal.ARGIVE, ArgiveMonths.PAN): ("Pánamos", "Pan", "Πάναμος"),
     (Cal.ARGIVE, ArgiveMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
-
     (Cal.MACEDONIAN, MacedonianMonths.DIO): ("Dîos", "Dio", "Δῖος"),
     (Cal.MACEDONIAN, MacedonianMonths.APE): ("Apellaîos", "Ape", "Ἀπελλαῖος"),
     (Cal.MACEDONIAN, MacedonianMonths.AUD): ("Audnaîos", "Aud", "Αὐδναῖος"),
-    (Cal.MACEDONIAN, MacedonianMonths.PER): ("Perítios", "Per", "Περίτιος"),    
+    (Cal.MACEDONIAN, MacedonianMonths.PER): ("Perítios", "Per", "Περίτιος"),
     (Cal.MACEDONIAN, MacedonianMonths.DYS): ("Dústros", "Dus", "Δύστρος"),
     (Cal.MACEDONIAN, MacedonianMonths.XAN): ("Xandikós", "Xan", "Ξανδικός"),
     (Cal.MACEDONIAN, MacedonianMonths.ART): ("Artemísios", "Art", "Ἀρτεμίσιος"),
@@ -362,7 +372,8 @@ def __load_data_file(fn):
     Event ids for solar events are: 0 = Spring Equinox, 1 = Summer Solstice,
     2 = Autumn Equinox, 3 = Winter Solstice
 
-    Lunar phase ids are:  0 = New Moon, 1 = First Quarter, 2 = Full Moon, 4 = Last Quarter"""
+    Lunar phase ids are:  0 = New Moon, 1 = First Quarter, 2 = Full Moon, 4 = Last Quarter
+    """
     with open(fn) as data:
         return tuple(
             [
@@ -438,14 +449,14 @@ def arkhon_year(year):
 
 def to_jdn(t):
     """Converts a Julian date to a Julian Day Number.
-    
+
     :param t: Julian date to be rounded to a JDN
     :type t: float, int
     :return: Corresponding Julian day number
     :rtype: int
 
     Rounds a Julian date to the nearest whole Julian Day Number.
-"""
+    """
     return int(t + 0.5)
 
 
@@ -470,10 +481,11 @@ def __jul_month(m):
         "Dec",
     )[m - 1]
 
+
 def __tz_val(tz):
     """Return tz value if TZOptions constant, blank string otherwise"""
     if isinstance(tz, (float, int)):
-        return "   " 
+        return "   "
 
     return tz.value
 
@@ -532,7 +544,7 @@ def as_julian(t, full=False, tz=TZOptions.GMT):
     Returns a brief (default) or full date representation of a Julian
     date. The full date representation of 1685074.3287423, for example
     is 'BCE 0100-Jun-25 19:53:23 GMT', the brief BCE 'BCE
-    0100-Jun-25'. 
+    0100-Jun-25'.
 
     Dates following the start of the gregorian calendar (10/15/1682)
     are returned as Gregorian calendar dates.
@@ -564,7 +576,7 @@ def as_gregorian(t, full=False, tz=TZOptions.GMT):
     """
     if isinstance(t, FestivalDay) or isinstance(t, PrytanyDay):
         return as_gregorian(t.jdn, full, tz)
-    
+
     if __is_bce(t):
         return __gmt_fmt_bce(jd.to_gregorian(tz_offset(t, tz)), full, tz=tz)
 
@@ -601,8 +613,7 @@ def solar_event(year, e, data=load_data):
 def observed_solar_event(year, e, s_off=0, data=load_data):
     """Return solar_event round to JDN and 'observed' according to the offset"""
     return to_jdn(solar_event(year, e, data=data)) + s_off
-    
-    
+
 
 def new_moons(year, data=load_data):
     """Return a list of Julian dates for all new moons e in the given year.
@@ -614,7 +625,9 @@ def new_moons(year, data=load_data):
     """
     d1 = jd.from_julian(year, 1, 1)
     d2 = jd.from_julian(year, 12, 31, 23, 59, 59)
-    phases = [m[0] for m in __optionally_load_data(data)["new_moons"] if d1 <= m[0] <= d2] or None
+    phases = [
+        m[0] for m in __optionally_load_data(data)["new_moons"] if d1 <= m[0] <= d2
+    ] or None
     if phases:
         return tuple(phases)
 
@@ -689,9 +702,8 @@ def __bounding_moons(moons, sol1, sol2, before_event):
 
 
 def __calendar_months(
-        year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
+    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
 ):
-
     """Return a tuple representing start and end dates of Athenian festival
     calendar months.
 
@@ -730,7 +742,7 @@ def __calendar_months(
 
 
 def __festival_months(
-        year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
+    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
 ):
     """Return a tuple of dicts, each containing a month index, start JDN for the month and (non-inclusive) end JND
 
@@ -748,14 +760,21 @@ def __festival_months(
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
             for m in enumerate(
                 __calendar_months(
-                    year, data, event=event, before_event=before_event, v_off=v_off, s_off=s_off
+                    year,
+                    data,
+                    event=event,
+                    before_event=before_event,
+                    v_off=v_off,
+                    s_off=s_off,
                 ),
                 1,
             )
         ]
     )
 
+
 calendar_months = __calendar_months
+
 
 def _doy_gen(n=1):
     """Recursivly return natural numbers starting with n."""
@@ -798,12 +817,7 @@ def __make_generic_month(month, doy):
 
 
 def __base_festival_calendar(
-    year,
-    data,
-    event=Seasons.SUMMER_SOLSTICE,
-    before_event=False,
-    v_off=1,
-    s_off=0
+    year, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0
 ):
     """Generate a base calendar for a given year
 
@@ -1251,7 +1265,9 @@ def jdn_to_festival_calendar(
         )
 
     for y in reversed(range(year - 1, year + 1)):
-        candidate_cal = CAL_FUNCTION_MAP[calendar](y, intercalate, name_as, v_off, s_off, data)
+        candidate_cal = CAL_FUNCTION_MAP[calendar](
+            y, intercalate, name_as, v_off, s_off, data
+        )
         if jdn in [d.jdn for d in candidate_cal]:
             return candidate_cal
 
@@ -1313,7 +1329,7 @@ def julian_to_festival_day(
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
     v_off=1,
-        s_off=0,
+    s_off=0,
     data=load_data,
 ):
     """Find the Athenian date corresponding to a Julian date
@@ -1449,17 +1465,27 @@ def festival_to_jdn(
         )
 
 
-def __calendar_months_r(start, end, data, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0):
+def __calendar_months_r(
+    start,
+    end,
+    data,
+    event=Seasons.SUMMER_SOLSTICE,
+    before_event=False,
+    v_off=1,
+    s_off=0,
+):
     """Recursively return a sequence of calendar months, possibly
     over multiple years."""
     if start > end:
         return ()
-    
-    return __calendar_months(start, data, event, before_event,v_off, s_off) + __calendar_months_r(start + 1, end, data, event, before_event, v_off, s_off)
+
+    return __calendar_months(
+        start, data, event, before_event, v_off, s_off
+    ) + __calendar_months_r(start + 1, end, data, event, before_event, v_off, s_off)
 
 
 def octaeteris_gen(start):
-    """ Cycle through octaeteric intercalations beginning at start"""
+    """Cycle through octaeteric intercalations beginning at start"""
     cycle = (12, 12, 13, 12, 13, 12, 12, 13)
 
     i = (start - 1) % 8 + 1
@@ -1468,27 +1494,42 @@ def octaeteris_gen(start):
         i = i % 8 + 1
 
 
-def __octaeteris_years(months, year1, year2, oct_gen, calendar=Cal.GENERIC, intercalate=6, name_as=MonthNameOptions.TRANSLITERATION, event=Seasons.SUMMER_SOLSTICE, before_event=False, v_off=1, s_off=0, data=load_data
+def __octaeteris_years(
+    months,
+    year1,
+    year2,
+    oct_gen,
+    calendar=Cal.GENERIC,
+    intercalate=6,
+    name_as=MonthNameOptions.TRANSLITERATION,
+    event=Seasons.SUMMER_SOLSTICE,
+    before_event=False,
+    v_off=1,
+    s_off=0,
+    data=load_data,
 ):
     """Recursively return a sequence of festival calendars based on
     octaeteric intercalation."""
     if year1 > year2:
         return ()
-    
+
     m_count = next(oct_gen)
-    
+
     festival_months = tuple(
         [
             {"month_index": m[0], "start": m[1][0], "end": m[1][1]}
-            for m in enumerate(months[0:m_count],
+            for m in enumerate(
+                months[0:m_count],
                 1,
             )
         ]
-    )    
+    )
 
     doy = _doy_gen()
 
-    base_cal = tuple([a for b in [__make_generic_month(m, doy) for m in festival_months] for a in b])
+    base_cal = tuple(
+        [a for b in [__make_generic_month(m, doy) for m in festival_months] for a in b]
+    )
 
     month_o = __month_order(calendar, intercalate, len(by_months(base_cal)) > 12)
 
@@ -1511,13 +1552,15 @@ def __octaeteris_years(months, year1, year2, oct_gen, calendar=Cal.GENERIC, inte
         ]
     )
 
-    return (oct_year,) + __octaeteris_years(months[m_count:], year1 + 1, year2, oct_gen, calendar, intercalate, name_as)
+    return (oct_year,) + __octaeteris_years(
+        months[m_count:], year1 + 1, year2, oct_gen, calendar, intercalate, name_as
+    )
 
 
 def octaeteris(
     oct_index,
     year1,
-    year2 = None,
+    year2=None,
     calendar=Cal.GENERIC,
     intercalate=6,
     name_as=MonthNameOptions.TRANSLITERATION,
@@ -1583,9 +1626,19 @@ def octaeteris(
     """
 
     end_year = year1 if year2 is None else year2
-    lunar_months = __calendar_months_r(year1, end_year + 1, data, event, before_event,v_off, s_off)
+    lunar_months = __calendar_months_r(
+        year1, end_year + 1, data, event, before_event, v_off, s_off
+    )
 
-    return __octaeteris_years(lunar_months, year1, end_year, octaeteris_gen(oct_index), calendar, intercalate, name_as)
+    return __octaeteris_years(
+        lunar_months,
+        year1,
+        end_year,
+        octaeteris_gen(oct_index),
+        calendar,
+        intercalate,
+        name_as,
+    )
 
 
 def version():
