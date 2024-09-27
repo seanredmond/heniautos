@@ -1,5 +1,14 @@
 # Release History
 
+## 2.1.0 (2024-09-27, , Boēdromiṓn 18 2025/2025)
+
+Add function to generate octaeteric calendars
+
+## 2.0.2 (2024-09-21, Boēdromiṓn 18 2025/2025)
+
+Make _moon_phases more generic so that it can be used to generate
+dates for phases other than the new moon
+
 ## 2.0.1 (2024-02-21, Anthestēriṓn 12 2023/2024)
 
 Added missing TSV data files and manifest
