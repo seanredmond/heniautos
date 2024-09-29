@@ -1,6 +1,10 @@
 # Release History
 
-## 2.1.0 (2024-09-27, , Boēdromiṓn 18 2025/2025)
+## 2.2.0 (2024-09-29, Boēdromiṓn 26 2025/2025)
+
+Apply ΔT to dates
+
+## 2.1.0 (2024-09-27, Boēdromiṓn 24 2025/2025)
 
 Add function to generate octaeteric calendars
 

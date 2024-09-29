@@ -3,7 +3,7 @@ import pytest
 
 
 def test_version():
-    assert version() == "2.1.0"
+    assert version() == "2.2.0"
 
 
 def test_bce_as_negative():
