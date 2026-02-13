@@ -1,6 +1,44 @@
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=61.2"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "heniautos"
+version = "2.2.1"
+authors = [{name = "Sean Redmond", email = "github-smr@sneakemail.com"}]
+description = "Ancient Athenian calendar generator"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.8"
+dependencies = ["juliandate"]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[project.urls]
+Homepage = "https://github.com/seanredmond/heniautos"
+"Bug Tracker" = "https://github.com/seanredmond/heniautos/issues"
+
+[project.scripts]
+heniautos = "heniautos.command_line:main"
+calendar-equation = "heniautos.calendar_equation:main"
+
+[project.optional-dependencies]
+ephemeris = [
+    "skyfield>=1.54",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
