@@ -3,7 +3,7 @@ import pytest
 
 
 def test_version():
-    assert version() == "2.2.0"
+    assert version() == "2.2.1"
 
 
 def test_bce_as_negative():
@@ -570,3 +570,7 @@ def test_octaeteris_rollover():
     assert len(oct) == 10
     assert [len(y) < 356 for y in oct] == [True, True, False, True, False, True, True, False, True, True]
     
+
+def test_posideon():
+    assert month_name(AthenianMonths.POS) == "Posideṓn"
+    assert month_name(AthenianMonths.POS, name_as=MonthNameOptions.GREEK) == "Ποσιδεών"
