@@ -1,14 +1,21 @@
 # Release History
 
-## 2.2.0 (2024-09-29, Boēdromiṓn 26 2025/2025)
+## 2.2.2 (2026-02-13, Gamēliṓn 26 2025/2026)
+
+* Switch package management to uv
+* Change spelling of Ποσιδεών/Posideṓn
+
+## 2.2.1 (skipped)
+
+## 2.2.0 (2024-09-29, Boēdromiṓn 26 2024/2025)
 
 Apply ΔT to dates
 
-## 2.1.0 (2024-09-27, Boēdromiṓn 24 2025/2025)
+## 2.1.0 (2024-09-27, Boēdromiṓn 24 2024/2025)
 
 Add function to generate octaeteric calendars
 
-## 2.0.2 (2024-09-21, Boēdromiṓn 18 2025/2025)
+## 2.0.2 (2024-09-21, Boēdromiṓn 18 2024/2025)
 
 Make _moon_phases more generic so that it can be used to generate
 dates for phases other than the new moon
